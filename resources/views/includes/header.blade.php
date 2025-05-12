@@ -1,4 +1,12 @@
-<nav class="navbar navbar-expand-lg navbar-scroll shadow-0 text-white" style="background-color: #C1E8FF;">
+<style>
+    header {
+        background-color: transparent !important; /* Hilangkan background */
+        /* box-shadow: none !important; */
+    }
+</style>
+
+
+<nav class="navbar navbar-expand-lg navbar-scroll shadow-0" style="">
     <div class="container fw-semibold">
       <a class="navbar-brand" href="#">Chillé Mart</a>
       <button class="navbar-toggler ps-0" type="button" data-mdb-collapse-init data-mdb-target="#navbarExample01"
@@ -23,21 +31,10 @@
         <ul class="navbar-nav flex-row">
           <li class="nav-item">
             <a class="nav-link pe-3" href="#!">
-              <i class="fab fa-youtube"></i>
+              Logout
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3" href="#!">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link ps-3" href="#!">
-              <i class="fab fa-instagram"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-
             @auth
               <li class="nav-item">
                 <a class="nav-link ps-3" href="{{ route('view_cart') }}">
@@ -56,9 +53,8 @@
                 <button type="submit" class="btn btn-link">Logout</button>
               </form>
             @endauth
-
-            
-          </li>
+          </li>        
+          
         </ul>
       </div>
     </div>

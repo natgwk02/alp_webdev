@@ -26,6 +26,7 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
     Route::get('/wishlist', [CartController::class, 'wishlist'])->name('wishlist');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
