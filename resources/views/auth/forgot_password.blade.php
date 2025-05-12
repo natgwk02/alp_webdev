@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Forget Password Page')
+@section('content')
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -44,11 +44,11 @@
                                    class="form-control" required>
                         </div>
 
-                        <button type="submit" class="btn btn-success w-100">Reset Password</button>
+                        <button type="submit" class="btn btn-primary w-100">Reset Password</button>
                     </form>
 
                     <div class="mt-3 text-center">
-                        <a href="{{ route('login') }}">← Kembali ke Login</a>
+                        <a href="{{ route('login.show') }}">← Kembali ke Login</a>
                     </div>
                 </div>
             </div>
