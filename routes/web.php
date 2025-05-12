@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
@@ -21,7 +28,7 @@ Route::middleware(['auth', 'customer'])->group(function () {
 
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/', [AdminOrderController::class, 'dashboard'])->name('admin.dashboard');
     
     // Product Management
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
