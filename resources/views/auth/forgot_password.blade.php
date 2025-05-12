@@ -5,113 +5,127 @@
     body {
         background: url('/images/background.jpg') no-repeat center center fixed;
         background-size: cover;
+        font-family: 'Segoe UI', sans-serif;
         margin: 0;
         padding: 0;
-        font-family: 'Segoe UI', sans-serif;
     }
 
-    .login-wrapper {
+    .forgot-wrapper {
         display: flex;
-        align-items: center;
         justify-content: center;
+        align-items: center;
         min-height: 100vh;
-        padding-top: 100px;
-        padding-bottom: 60px;
     }
 
-    .login-card {
-        background-color: rgba(240, 240, 240, 0.8);
+    .forgot-card {
+        background-color: rgba(240, 240, 240, 0.85);
         padding: 40px;
         border-radius: 18px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         width: 100%;
         max-width: 420px;
+        text-align: center;
     }
 
-    .login-card h4 {
-        text-align: center;
+    .forgot-card img {
+        width: 50%;
+        max-width: 150px;
+        margin-bottom: 0px;
+    }
+
+    .forgot-card h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-top: 10px;
         margin-bottom: 10px;
         color: #224488;
-        font-weight: bold;
     }
 
-    .login-card p {
-        text-align: center;
-        color: #555;
+    .forgot-card p {
+        font-size: 0.9rem;
+        color: #444;
         margin-bottom: 25px;
-        font-size: 0.95rem;
     }
 
     .form-control {
-        border-radius: 10px;
-        background-color: #f8fbff;
+        width: 100%;
         padding: 12px 15px;
+        border-radius: 10px;
         border: 1px solid #ccddee;
-        margin-bottom: 15px;
+        background-color: #f8fbff;
+        margin-bottom: 20px;
+        font-size: 0.95rem;
     }
 
     .btn-blue {
         background-color: #224488;
         color: white;
-        border: none;
         padding: 12px;
-        border-radius: 10px;
         width: 100%;
+        border: none;
+        border-radius: 10px;
         font-weight: 600;
+        transition: 0.3s;
     }
 
     .btn-blue:hover {
         background-color: #C1E8FF;
+        color: #224488;
     }
 
-    .text-link {
+    .back-link {
+        display: block;
+        margin-top: 20px;
         color: #224488;
+        font-size: 0.9rem;
         text-decoration: none;
     }
 
-    .text-link:hover {
+    .back-link:hover {
         text-decoration: underline;
     }
 </style>
 
-<div class="login-wrapper">
-    <div class="login-card">
+<div class="forgot-wrapper">
+    <div class="forgot-card">
+        <img src="{{ asset('assets/forget-imagee.png') }}" alt="Forgot Password Image">
 
-        <h4>Reset Password</h4>
-        <p>Enter your email and new password</p>
+        <h2>Forgot your password?</h2>
+        <p>Enter your email and new password to reset your account.</p>
 
         @if (session('status'))
-            <div class="alert alert-success text-center">
-                {{ session('status') }}
-            </div>
+            <div class="alert alert-success">{{ session('status') }}</div>
+        @elseif (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
         <form method="POST" action="{{ route('password.update') }}">
             @csrf
 
-            <input type="email" id="email" name="email"
-                   class="form-control @error('email') is-invalid @enderror"
-                   value="{{ old('email') }}" placeholder="Email Address" required>
-            @error('email')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-            @enderror
+            <input type="email" name="email" class="form-control" placeholder="Email Address" required>
 
-            <input type="password" id="password" name="password"
-                   class="form-control @error('password') is-invalid @enderror"
-                   placeholder="New Password" required>
-            @error('password')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-            @enderror
+            <div class="mb-3 text-start">
+                <label for="password" class="form-label">New Password</label>
+                <input type="password" id="password" name="password"
+                       class="form-control @error('password') is-invalid @enderror" required>
+                @error('password')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
 
-            <input type="password" id="password_confirmation" name="password_confirmation"
-                   class="form-control" placeholder="Confirm New Password" required>
+            <div class="mb-3 text-start">
+                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation"
+                       class="form-control" required>
+            </div>
 
-            <button type="submit" class="btn btn-blue mt-2">Reset Password</button>
+            <button type="submit" class="btn btn-blue">Reset Password</button>
         </form>
 
-        <div class="text-center mt-3">
-            <a href="{{ route('login.show') }}" class="text-link">← Back to Login</a>
-        </div>
+        <a href="{{ route('login.show') }}" class="back-link">← Back to Login</a>
     </div>
 </div>
 @endsection
+
