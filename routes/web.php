@@ -18,6 +18,7 @@ Route::post('/login_auth', [AuthController::class, "login_auth"])
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
+Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
 
 // Customer Routes
 Route::middleware(['auth', 'customer'])->group(function () {

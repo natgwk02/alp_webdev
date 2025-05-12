@@ -37,4 +37,7 @@ class AuthController extends Controller
         
             return redirect()->route('login.show');
     }
+    public function showForgotPassword(){
+        return view('auth.forgot_password');
+    }
 }
