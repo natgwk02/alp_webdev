@@ -1,57 +1,116 @@
-@extends('layouts.app')
+@extends('base.base')
+
 @section('content')
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow rounded">
-                <div class="card-header text-center">
-                    <h4>Reset Password</h4>
-                </div>
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success text-center">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+<style>
+    body {
+        background: url('/images/background.jpg') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-                    <form method="POST" action="{{ route('password.update') }}">
-                        @csrf
+    .login-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding-top: 100px;
+        padding-bottom: 60px;
+    }
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Alamat Email</label>
-                            <input type="email" id="email" name="email"
-                                   class="form-control @error('email') is-invalid @enderror"
-                                   value="{{ old('email') }}" required>
+    .login-card {
+        background-color: rgba(240, 240, 240, 0.8);
+        padding: 40px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 420px;
+    }
 
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+    .login-card h4 {
+        text-align: center;
+        margin-bottom: 10px;
+        color: #224488;
+        font-weight: bold;
+    }
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">New Password</label>
-                            <input type="password" id="password" name="password"
-                                   class="form-control @error('password') is-invalid @enderror" required>
+    .login-card p {
+        text-align: center;
+        color: #555;
+        margin-bottom: 25px;
+        font-size: 0.95rem;
+    }
 
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+    .form-control {
+        border-radius: 10px;
+        background-color: #f8fbff;
+        padding: 12px 15px;
+        border: 1px solid #ccddee;
+        margin-bottom: 15px;
+    }
 
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="form-label">Password Confirmation</label>
-                            <input type="password" id="password_confirmation" name="password_confirmation"
-                                   class="form-control" required>
-                        </div>
+    .btn-blue {
+        background-color: #224488;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        width: 100%;
+        font-weight: 600;
+    }
 
-                        <button type="submit" class="btn btn-primary w-100">Reset Password</button>
-                    </form>
+    .btn-blue:hover {
+        background-color: #C1E8FF;
+    }
 
-                    <div class="mt-3 text-center">
-                        <a href="{{ route('login.show') }}">← Kembali ke Login</a>
-                    </div>
-                </div>
+    .text-link {
+        color: #224488;
+        text-decoration: none;
+    }
+
+    .text-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <h4>Reset Password</h4>
+        <p>Enter your email and new password</p>
+
+        @if (session('status'))
+            <div class="alert alert-success text-center">
+                {{ session('status') }}
             </div>
+        @endif
+
+        <form method="POST" action="{{ route('password.update') }}">
+            @csrf
+
+            <input type="email" id="email" name="email"
+                   class="form-control @error('email') is-invalid @enderror"
+                   value="{{ old('email') }}" placeholder="Email Address" required>
+            @error('email')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
+
+            <input type="password" id="password" name="password"
+                   class="form-control @error('password') is-invalid @enderror"
+                   placeholder="New Password" required>
+            @error('password')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
+
+            <input type="password" id="password_confirmation" name="password_confirmation"
+                   class="form-control" placeholder="Confirm New Password" required>
+
+            <button type="submit" class="btn btn-blue mt-2">Reset Password</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="{{ route('login.show') }}" class="text-link">← Back to Login</a>
         </div>
     </div>
 </div>
