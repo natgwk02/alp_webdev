@@ -15,8 +15,8 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
-        padding-top: 100px;
-        padding-bottom: 60px;
+        /* padding-top: 20px;
+        padding-bottom: 60px; */
     }
 
     .login-card {
@@ -80,7 +80,7 @@
     }
 </style>
 
-<div class="login-wrapper">
+<div class="login-wrapper mb-5 mt-2">
     <div class="login-card">
 
         <h4>Welcome Back!</h4>
