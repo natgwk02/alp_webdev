@@ -11,11 +11,11 @@
     <title>My Store</title>
 </head>
 <body>
-    @include('header')
+    @include('includes.header')
     <div class="container-fluid" style="min-width:100%; margin:0 auto;" >
         @yield('content')
         {{-- ngambil view" ke sini --}}
     </div>
-    @include('footer')
+    @include('includes.footer')
 </body>
 </html>
