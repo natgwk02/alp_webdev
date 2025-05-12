@@ -8,7 +8,7 @@ class OrderController extends Controller
 {
     public function checkout()
     {
-        // Get cart data (in a real app, this would come from session/database)
+        // Hardcoded cart data
         $cartItems = [
             [
                 'product_id' => 1,
@@ -24,6 +24,7 @@ class OrderController extends Controller
             ]
         ];
 
+        // Calculate totals
         $subtotal = array_reduce($cartItems, function($carry, $item) {
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
@@ -66,16 +67,17 @@ class OrderController extends Controller
 
     public function placeOrder(Request $request)
     {
-        // In a real application, this would process the order
+        // Hardcoded order number (in a real app, generate this dynamically)
         $orderNumber = 'CHILE-' . date('Y') . '-' . rand(1000, 9999);
-        
-        return redirect()->route('orders.show', 1001)
+
+        // Hardcoded success message and redirect (without actual database saving)
+        return redirect()->route('orders.show', ['id' => 1001])
             ->with('success', 'Order placed successfully! Your order number is: ' . $orderNumber);
     }
 
     public function index()
     {
-        // Hardcoded customer orders
+        // Hardcoded list of orders
         $orders = [
             [
                 'id' => 1001,
@@ -100,7 +102,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        // Hardcoded order details
+        // Hardcoded order details based on $id
         $order = [
             'id' => $id,
             'order_number' => 'CHILE-2025-' . $id,
@@ -136,6 +138,6 @@ class OrderController extends Controller
             ]
         ];
 
-        return view('customer.order-detail', compact('order'));
+        return view('customer.order_details', compact('order'));
     }
 }
