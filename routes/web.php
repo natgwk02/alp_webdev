@@ -10,7 +10,12 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/login', [AuthController::class, "show"])
+->name('login.show');
+
+Route::post('/login_auth', [AuthController::class, "login_auth"])
+->name('login.auth');
+
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 
