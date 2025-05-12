@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-scroll shadow-0 text-white" style="background-color: #5483B3, color:white ;">
-    <div class="container">
-      <a class="navbar-brand" href="#">our products</a>
+<nav class="navbar navbar-expand-lg navbar-scroll shadow-0 text-white" style="background-color: #C1E8FF;">
+    <div class="container fw-semibold">
+      <a class="navbar-brand" href="#">Chillé Mart</a>
       <button class="navbar-toggler ps-0" type="button" data-mdb-collapse-init data-mdb-target="#navbarExample01"
         aria-controls="navbarExample01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="d-flex justify-content-start align-items-center">
