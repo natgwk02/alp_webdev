@@ -1,43 +1,65 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-scroll shadow-0" style="background-color: #4FC3F7;">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="{{ route('home') }}">
-            <i class="fas fa-ice-cream me-2"></i>Chile Mart
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('products') }}">Products</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About Us</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('cart') }}">
-                        <i class="fas fa-shopping-cart"></i> Cart
-                        <span class="badge bg-danger ms-1">3</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('wishlist') }}">
-                        <i class="fas fa-heart"></i> Wishlist
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle"></i> John Doe
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('orders') }}">My Orders</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+      <a class="navbar-brand" href="#">our products</a>
+      <button class="navbar-toggler ps-0" type="button" data-mdb-collapse-init data-mdb-target="#navbarExample01"
+        aria-controls="navbarExample01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="d-flex justify-content-start align-items-center">
+          <i class="fas fa-bars"></i>
+        </span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarExample01">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link px-3 {{ request()->routeIs('home.show') ? 'active' : '' }}" href="">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 {{ request()->routeIs('store') ? 'active' : '' }}" href="#!">Shop Here</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 {{ request()->routeIs('about') ? 'active' : '' }}" href="#!">About Us</a>
+          </li>
+        </ul>
+  
+        <ul class="navbar-nav flex-row">
+          <li class="nav-item">
+            <a class="nav-link pe-3" href="#!">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" href="#!">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link ps-3" href="#!">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+
+            @auth
+              <li class="nav-item">
+                <a class="nav-link ps-3" href="{{ route('view_cart') }}">
+                  <i class="fas fa-cart-shopping"></i>
+                </a>
+              </li>
+            @endauth
+            @auth
+              <li class="nav-item">
+                <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}" href="{{ route('order.index') }}">My Orders</a>
+              </li>
+            @endauth
+            @auth
+              <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-link">Logout</button>
+              </form>
+            @endauth
+
+            
+          </li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
