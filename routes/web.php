@@ -29,13 +29,17 @@ Route::middleware(['auth', 'customer'])->group(function () {
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [AdminOrderController::class, 'dashboard'])->name('admin.dashboard');
-    
+
     // Product Management
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
     Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
-    
+
     // Order Management
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
 });
+
+// Home Route
+Route::get('/home', [HomeController::class, 'showHome'])
+->name('home');
