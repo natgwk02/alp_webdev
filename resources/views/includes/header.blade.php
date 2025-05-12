@@ -1,14 +1,22 @@
+
 <style>
     header {
         background-color: transparent !important; /* Hilangkan background */
-        /* box-shadow: none !important; */
+        /* box-shadow: none !important; */    
+    }
+    .text-header{
+        color: #052659;
+    }
+    .logo{
+        width: 2.5%;
     }
 </style>
 
 
 <nav class="navbar navbar-expand-lg navbar-scroll shadow-0" style="">
     <div class="container fw-semibold">
-      <a class="navbar-brand" href="#">Chillé Mart</a>
+    <img src='/assets/logoGambar.png' alt="" class="logo me-3"/>
+      <a class="navbar-brand text-header fw-bold" href="#">Chillé Mart</a>
       <button class="navbar-toggler ps-0" type="button" data-mdb-collapse-init data-mdb-target="#navbarExample01"
         aria-controls="navbarExample01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="d-flex justify-content-start align-items-center">
@@ -26,14 +34,10 @@
           <li class="nav-item">
             <a class="nav-link px-3 {{ request()->routeIs('about') ? 'active' : '' }}" href="#!">About Us</a>
           </li>
-        </ul>
+        
   
-        <ul class="navbar-nav flex-row">
-          <li class="nav-item">
-            <a class="nav-link pe-3" href="#!">
-              Logout
-            </a>
-          </li>
+        
+          
           <li class="nav-item">
             @auth
               <li class="nav-item">
@@ -53,9 +57,14 @@
                 <button type="submit" class="btn btn-link">Logout</button>
               </form>
             @endauth
-          </li>        
-          
-        </ul>
+          </li>  
+          <li class="nav-item">
+            <a class="nav-link pe-3" href="#!">
+              Logout
+            </a>
+          </li>      
+        </ul>  
+        
       </div>
     </div>
   </nav>
