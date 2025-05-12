@@ -55,7 +55,7 @@
                                 <input class="form-check-input" type="checkbox" id="remember" name="remember">
                                 <label class="form-check-label" for="remember">Remember me</label>
                             </div>
-                            <a href="" class="text-decoration-none small">Forgot password?</a>
+                            <a href="{{ route('forgot-password') }}" class="text-decoration-none small">Forgot password?</a>
                         </div>
 
                         <div class="d-grid">

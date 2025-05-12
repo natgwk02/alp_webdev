@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Auth;
-=======
 use Illuminate\Support\Facades\Validator;
->>>>>>> Stashed changes
 
 class AuthController extends Controller
 {
@@ -33,7 +30,6 @@ class AuthController extends Controller
             'error' => 'The provided credentials do not match our records.'
         ]);
     }
-<<<<<<< Updated upstream
         public function logout(Request $request){
             Auth::logout();
         
@@ -42,8 +38,9 @@ class AuthController extends Controller
         
             return redirect()->route('login.show');
     }
+    public function showForgotPassword(){
+        return view('auth.forgot_password');
+    }
 }
-=======
      
-}
->>>>>>> Stashed changes
+
