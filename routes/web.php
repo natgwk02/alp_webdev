@@ -10,7 +10,12 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/login', [AuthController::class, "show"])
+->name('login.show');
+
+Route::post('/login_auth', [AuthController::class, "login_auth"])
+->name('login.auth');
+
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 
@@ -28,14 +33,18 @@ Route::middleware(['auth', 'customer'])->group(function () {
 
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    
+    Route::get('/', [AdminOrderController::class, 'dashboard'])->name('admin.dashboard');
+
     // Product Management
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
     Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
-    
+
     // Order Management
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
 });
+
+// Home Route
+Route::get('/home', [HomeController::class, 'showHome'])
+->name('home');
