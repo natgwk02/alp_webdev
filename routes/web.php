@@ -31,7 +31,6 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
     Route::get('/wishlist', [CartController::class, 'wishlist'])->name('wishlist');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
 });
 
@@ -52,3 +51,5 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 // Home Route
 Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
+Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
