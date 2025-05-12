@@ -8,7 +8,7 @@
         color: #052659;
     }
     .logo{
-        width: 4%;
+        width: 2.5%;
     }
 </style>
 
