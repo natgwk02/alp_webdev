@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-scroll shadow-0" style="background-color: #4FC3F7;">
+<nav class="navbar navbar-expand-lg navbar-scroll shadow-0 text-white" style="background-color: #004aad;">
     <div class="container">
       <a class="navbar-brand" href="#">our products</a>
       <button class="navbar-toggler ps-0" type="button" data-mdb-collapse-init data-mdb-target="#navbarExample01"
