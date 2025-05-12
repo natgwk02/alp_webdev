@@ -16,7 +16,9 @@ Route::get('/login', [AuthController::class, "show"])
 Route::post('/login_auth', [AuthController::class, "login_auth"])
 ->name('login.auth');
 
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
+
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
 
