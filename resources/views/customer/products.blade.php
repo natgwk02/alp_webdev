@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Frozen Food Products - Chile Mart')
+@section('title', 'Frozen Food Products - Chille Mart')
 
 @section('content')
 <div class="container">
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="fw-bold">Our Frozen Food Selection</h1>
-            <p class="text-muted">Premium quality frozen foods from Chile and around the world</p>
+            <p class="text-muted">Premium quality frozen foods from around the world</p>
         </div>
     </div>
-    
+
     <div class="row">
         @foreach($products as $product)
         <div class="col-md-4 mb-4">

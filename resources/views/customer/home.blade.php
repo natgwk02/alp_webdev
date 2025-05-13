@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Chille Mart')
+
 @section('content')
     <style>
         body {
@@ -112,7 +114,6 @@
             color: #4ed1f2;
         }
     </style>
-
     {{-- atas   --}}
     <section class="hero-section">
         <div class="container">
@@ -252,7 +253,7 @@
         <div class="container text-center">
             <h2 class="display-6 fw-bold mb-3">NEW CHILLÉ'S FRIEND 20%</h2>
             <p class="lead mb-4">Use code <span class="fw-bold">CHILLBRO</span> on your first order over Rp 200.000</p>
-            <a href="{{-- route('products') --}}" class="btn btn-light btn-lg">Shop Now</a>
+            <a href="{{ route('products') }}" class="btn btn-light btn-lg">Shop Now</a>
         </div>
     </section>
 
@@ -352,7 +353,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="#" class="btn btn-primary">View All Products</a>
+                <a href="{{ route('products') }}" class="btn btn-primary">View All Products</a>
             </div>
         </div>
     </section>
