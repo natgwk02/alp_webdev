@@ -118,8 +118,8 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-2">Welcome to Chillé Mart</h1>
-                    <h3 class="mb-4">Keep it cool, keep it chillé!</h3>
+                    <h1 class="display-4 fw-bold mb-2">Keep it cool, keep it Chillé!</h1>
+                    {{-- <h3 class="mb-4">Keep it cool, keep it chillé!</h3> --}}
                     <p class="lead mb-4">Deliciously frozen, always ready. Discover your next favorite meal today!</p>
                     <a href="" class="btn btn-primary btn-lg">Let's Chill</a>
                 </div>
@@ -252,7 +252,7 @@
         <div class="container text-center">
             <h2 class="display-6 fw-bold mb-3">NEW CHILLÉ'S FRIEND 20%</h2>
             <p class="lead mb-4">Use code <span class="fw-bold">CHILLBRO</span> on your first order over Rp 200.000</p>
-            <a href="#" class="btn btn-light btn-lg">Shop Now</a>
+            <a href="{{-- route('products') --}}" class="btn btn-light btn-lg">Shop Now</a>
         </div>
     </section>
 
@@ -265,7 +265,7 @@
                 <div class="col-lg-3 col-md-4 col-6">
                     <div class="card product-card h-100">
                         <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
-                        <img src="" class="card-img-top" alt="Product 1">
+                        <img src="{{ asset('images/products-img/kanzler-nugget.jpg') }}" class="card-img-top" alt="Product 1">
                         <div class="card-body">
                             <h5 class="card-title">Kanzler Nugget Crispy</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -288,12 +288,11 @@
                 <!-- Product 2 -->
                 <div class="col-lg-3 col-md-4 col-6">
                     <div class="card product-card h-100">
-                        <img src="" class="card-img-top" alt="Product 2">
+                        <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top" alt="Product 2">
                         <div class="card-body">
-                            <h5 class="card-title">Product 2</h5>
+                            <h5 class="card-title">Ready Meal Fiesta Beef Bulgogi With Rice</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp ---
-                                    {{-- <small class="text-decoration-line-through text-muted">$99.99</small> --}}
+                                <p class="card-text mb-0">Rp 26.999
                                 </p>
                                 <div>
                                     <i class="bi bi-star-fill text-warning"></i>
@@ -311,12 +310,12 @@
                 <!-- Product 3 -->
                 <div class="col-lg-3 col-md-4 col-6">
                     <div class="card product-card h-100">
-                        {{-- <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span> --}}
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Product 3">
+                        <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
+                        <img src="{{ asset('images/products-img/fish-grilled-salmon.jpg') }}" class="card-img-top" alt="Product 3">
                         <div class="card-body">
-                            <h5 class="card-title">Product 3</h5>
+                            <h5 class="card-title">Gorton's Classic Grilled Salmon</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp ---</p>
+                                <p class="card-text mb-0">Rp 56.000</p>
                                 <div>
                                     <i class="bi bi-star-fill text-warning"></i>
                                     <i class="bi bi-star-fill text-warning"></i>
@@ -333,11 +332,11 @@
                 <!-- Product 4 -->
                 <div class="col-lg-3 col-md-4 col-6">
                     <div class="card product-card h-100">
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Product 4">
+                        <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpeg') }}" class="card-img-top" alt="Product 4">
                         <div class="card-body">
-                            <h5 class="card-title">Product 4</h5>
+                            <h5 class="card-title">Fiesta Chicken Karage 500gr</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp ---</p>
+                                <p class="card-text mb-0">Rp 51.000</p>
                                 <div>
                                     <i class="bi bi-star-fill text-warning"></i>
                                     <i class="bi bi-star-fill text-warning"></i>
