@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app') {{-- nanti ganti ke layouts.admin kalo uda ada --}}
 
 @section('title', 'Dashboard - Chile Mart Admin')
 
@@ -113,7 +113,7 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ route('admin.orders') }}" class="btn btn-sm btn-outline-primary mt-2">View All Orders</a>
+                <a href="{{-- route('admin.orders') --}}" class="btn btn-sm btn-outline-primary mt-2">View All Orders</a>
             </div>
         </div>
     </div>
