@@ -3,7 +3,7 @@
 @section('content')
     <style>
         .hero-section {
-            background-color: #ffffff;
+            background-color: #b5e1f0;
             padding: 80px 0;
         }
 
@@ -206,7 +206,7 @@
     <!-- Why Choose Us Section -->
     <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-5">Why Choose Chillé Mart?</h2>
+            <h2 class="text-center mb-5">Why Chillé Mart?</h2>
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="card border-0 h-100 bg-transparent">
