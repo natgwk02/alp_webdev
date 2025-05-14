@@ -55,7 +55,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: rgba(130, 230, 245, 0.8);
+            background-color: #b5e9f0;
             color: white;
             padding: 15px;
         }
@@ -162,7 +162,7 @@
                         </div>
                         <div class="col-md-3 col-6 mb-4">
                             <div class="category-item">
-                                <img src="{{ asset('images/category-img/vegetable.jpeg') }}" alt="Frozen Vegetable"
+                                <img src="{{ asset('images/category-img/frozen-veg.jpeg') }}" alt="Frozen Vegetable"
                                     class="img-fluid">
                                 <div class="category-text">
                                     <h5 class="mb-0">Frozen Vegetable</h5>
@@ -180,7 +180,7 @@
                         </div>
                         <div class="col-md-3 col-6 mb-4">
                             <div class="category-item">
-                                <img src="{{ asset('images/category-img/meat.jpg') }}" alt="Frozen Meat"
+                                <img src="{{ asset('images/category-img/meat-fish.jpg') }}" alt="Frozen Meat"
                                     class="img-fluid">
                                 <div class="category-text">
                                     <h5 class="mb-0">Frozen Meat</h5>
@@ -204,7 +204,7 @@
                         </div>
                         <div class="col-md-3 col-6 mb-4">
                             <div class="category-item">
-                                <img src="{{ asset('images/category-img/fruit.jpg') }}" alt="Frozen Fruit"
+                                <img src="{{ asset('images/category-img/fruits.jpg') }}" alt="Frozen Fruit"
                                     class="img-fluid">
                                 <div class="category-text">
                                     <h5 class="mb-0">Frozen Fruit</h5>
@@ -213,7 +213,7 @@
                         </div>
                         <div class="col-md-3 col-6 mb-4">
                             <div class="category-item">
-                                <img src="{{ asset('images/category-img/seafood.png') }}" alt="Frozen Seafood"
+                                <img src="{{ asset('images/category-img/seafood.jpeg') }}" alt="Frozen Seafood"
                                     class="img-fluid">
                                 <div class="category-text">
                                     <h5 class="mb-0">Frozen Seafood</h5>
@@ -282,10 +282,10 @@
 
 
     {{-- special offer --}}
-<section class="special-offer mb-5"> 
+    <section class="special-offer mb-5"> 
     <div class="container text-center" style="background-color:#00000020; border-radius: 20px 20px 0 0; padding: 30px 15px; box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);">
         <div class="mb-3">
-            <img src="{{ asset('images/offer.png') }}" alt="Special Offer" class="img-fluid" style="max-width: 120px; margin-bottom: 10px;"> 
+        <img src="{{ asset('images/voucher.png') }}" alt="Special Offer" class="img-fluid" style="max-width: 500px; margin-bottom: 10px;">
         </div>
 
         <h2 class="display-4 fw-bold mb-3" style="font-size: 2.5rem; letter-spacing: 1px; color: #003366;">NEW CHILLÉ'S FRIEND 20%</h2>
@@ -400,7 +400,7 @@
                 <!-- Product 4 -->
                 <div class="col-lg-3 col-md-4 col-6">
                     <div class="card product-card h-100">
-                        <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpeg') }}" class="card-img-top" alt="Product 4">
+                        <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpg') }}" class="card-img-top" alt="Product 4">
                         <div class="card-body">
                             <h5 class="card-title">Fiesta Chicken Karage 500gr</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
