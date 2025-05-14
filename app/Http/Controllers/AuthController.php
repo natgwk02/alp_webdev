@@ -70,4 +70,24 @@ class AuthController extends Controller
 
         return redirect('/dashboard'); // arahkan ke halaman utama
     }
+    public function resetPassword(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+
+    // Simulasi list email "terdaftar"
+    $allowedEmails = [
+        'user@example.com',
+        'admin@chilemart.com',
+        'test@domain.com'
+    ];
+
+    if (in_array($request->email, $allowedEmails)) {
+        return back()->with('status', 'Password has been successfully reset.');
+    } else {
+        // Email tidak ditemukan
+        return back()->with('error', 'Email address not found.');
+    }
+}
 }
