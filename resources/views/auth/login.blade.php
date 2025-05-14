@@ -15,10 +15,12 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
+        padding-top: 100px;
+        padding-bottom: 60px;
     }
 
     .login-card {
-        background-color: rgba(240, 240, 240, 0.85);
+        background-color: rgba(240, 240, 240, 0.8);
         padding: 40px;
         border-radius: 18px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -60,13 +62,17 @@
 
     .btn-blue:hover {
         background-color: #C1E8FF;
-        color: #224488;
+    }
+
+    .form-check-label,
+    .text-muted,
+    .text-link {
+        font-size: 0.9rem;
     }
 
     .text-link {
         color: #224488;
         text-decoration: none;
-        font-size: 0.9rem;
     }
 
     .text-link:hover {
@@ -89,60 +95,23 @@
 
             <input type="text" name="email" class="form-control" placeholder="Email Address" required>
 
-            <div class="position-relative">
-                <input 
-                    type="password" 
-                    class="form-control" 
-                    id="password" 
-                    name="password" 
-                    placeholder="Password"
-                    required
-                >
-                <button type="button" 
-                    class="btn position-absolute top-50 end-0 translate-middle-y me-2 p-1 bg-transparent border-0" 
-                    onclick="togglePassword()" 
-                    style="z-index: 2;"
-                >
-                    <i id="toggleIcon" class="fa fa-eye"></i>
-                </button>
-            </div>
+            <input type="password" name="password" class="form-control" placeholder="Password" required>
 
-            <div class="d-flex justify-content-between align-items-center mb-3 mt-2">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="remember" name="remember">
                     <label class="form-check-label" for="remember">Remember Me</label>
                 </div>
-                <a href="{{ route('forgot-password') }}" class="text-link">Forgot Password?</a>
+                <a href="forgot-password" class="text-link">Forgot Password?</a>
             </div>
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-blue">Sign In</button>
-            </div>        
+            <button type="submit" class="btn btn-blue">Sign In</button>
         </form>
 
         <div class="text-center mt-3">
-            <span class="text-muted">Don't have an account? 
-                <a href="{{ route('register') }}" class="text-link">Sign Up</a>
-            </span>
+            <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-link">Sign Up</a></span>
         </div>
 
     </div>
 </div>
-
-<script>
-function togglePassword() {
-    const passwordInput = document.getElementById('password');
-    const icon = document.getElementById('toggleIcon');
-
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-    } else {
-        passwordInput.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-    }
-}
-</script>
 @endsection
