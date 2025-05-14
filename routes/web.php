@@ -20,6 +20,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
 
 
+
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name('password.update');

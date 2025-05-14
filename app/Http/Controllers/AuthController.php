@@ -23,7 +23,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        // Sesuaikan jika kolom loginmu adalah `users_email`
+        // Jika kamu menggunakan kolom users_email, sesuaikan:
         if (Auth::attempt([
             'users_email' => $request->email,
             'password' => $request->password,
@@ -76,11 +76,10 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-
         return redirect('/dashboard');
     }
 
-    // Proses reset password (dummy)
+    // Dummy Reset Password
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -100,7 +99,7 @@ class AuthController extends Controller
         }
     }
 
-    // (Opsional) Fungsi validasi email saja, bisa dihapus jika tidak dipakai
+    // (Opsional) Validasi Email
     public function login(Request $request)
     {
         $request->validate([
