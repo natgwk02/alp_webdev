@@ -34,7 +34,7 @@ class AdminController extends Controller
             [
                 'id' => 'PRD001',
                 'name' => 'Gourmet Frozen Pizza',
-                'image' => 'https://via.placeholder.com/60',
+                'image' => 'gourmet-pizza.jpg',
                 'category' => 'Ready Meals',
                 'price' => 25000,
                 'stock' => 125,
@@ -44,7 +44,7 @@ class AdminController extends Controller
             [
                 'id' => 'PRD002',
                 'name' => 'Organic Mixed Vegetables',
-                'image' => 'https://via.placeholder.com/60',
+                'image' => 'organic-veg.jpg',
                 'category' => 'Frozen Vegetables',
                 'price' => 36000,
                 'stock' => 210,
@@ -54,7 +54,7 @@ class AdminController extends Controller
             [
                 'id' => 'PRD003',
                 'name' => 'Premium Vanilla Ice Cream',
-                'image' => 'https://via.placeholder.com/60',
+                'image' => 'vanilla-icecream.jpg',
                 'category' => 'Ice Cream & Desserts',
                 'price' => 43000,
                 'stock' => 78,
@@ -64,7 +64,7 @@ class AdminController extends Controller
             [
                 'id' => 'PRD004',
                 'name' => 'Chicken Alfredo Meal',
-                'image' => 'https://via.placeholder.com/60',
+                'image' => 'chicken-alfredo.jpg',
                 'category' => 'Ready Meals',
                 'price' => 39000,
                 'stock' => 15,
@@ -74,7 +74,7 @@ class AdminController extends Controller
             [
                 'id' => 'PRD005',
                 'name' => 'Frozen Salmon Fillets',
-                'image' => 'https://via.placeholder.com/60',
+                'image' => 'salmon-fillet.jpg',
                 'category' => 'Frozen Meat & Fish',
                 'price' => 74999,
                 'stock' => 0,
@@ -84,7 +84,7 @@ class AdminController extends Controller
             [
                 'id' => 'PRD006',
                 'name' => 'Chocolate Chip Cookie Dough',
-                'image' => 'https://via.placeholder.com/60',
+                'image' => 'chocolate-cookie-dough.jpg',
                 'category' => 'Ice Cream & Desserts',
                 'price' => 24999,
                 'stock' => 89,

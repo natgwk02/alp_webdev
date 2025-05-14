@@ -121,7 +121,8 @@
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}"
+                                    <img src="{{ asset('images/products-img/' . $product['image']) }}"
+                                    alt="{{ $product['name'] }}"
                                         class="product-img me-3">
                                     <div>
                                         <h6 class="mb-0">{{ $product['name'] }}</h6>

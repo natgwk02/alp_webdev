@@ -5,6 +5,7 @@
 <section class="py-5" style="background-color: #C1E8FF;">
     <div class="container py-4">
         <h1 class="display-4 fw-bold text-center" style="color: #052659;">About Chille Mart</h1>
+        <h4 class="display-10 mt-3 text-center" style="color: #052659;">"Freshness preserved, convenience delivered, happiness guaranteed."</h4>
     </div>
 </section>
 
