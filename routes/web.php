@@ -59,3 +59,8 @@ Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
 //Route::get('/orders', [OrderController::class, 'index'])->name('orders');
 //Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
+
+
+Route::get('/about', function () {
+    return view('customer.about');
+})->name('about');
