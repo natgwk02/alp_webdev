@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-
-    //
+    // Menampilkan halaman login
     public function show()
     {
         return view('auth.login');
     }
 
+    // Proses login
     public function login_auth(Request $request)
     {
         $credentials = $request->validate([
@@ -23,69 +23,70 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-         if (Auth::attempt([
-            'users_email' => $request['email'],
-            'password' => $request['password'],
+        // Sesuaikan jika kolom loginmu adalah `users_email`
+        if (Auth::attempt([
+            'users_email' => $request->email,
+            'password' => $request->password,
         ])) {
-
-        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard'); // ubah sesuai halaman tujuanmu
+            return redirect()->route('admin.dashboard');
         }
 
-        return back()->with([
-            'error' => 'The provided credentials do not match our records.'
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
         ]);
     }
-}
-        public function logout(Request $request)
-        {
-            Auth::logout();
 
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+    // Logout
+    public function logout(Request $request)
+    {
+        Auth::logout();
 
-            return redirect()->route('login.show');
-        }
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login.show');
+    }
+
+    // Menampilkan halaman lupa password
     public function showForgotPassword()
     {
         return view('auth.forgot_password');
     }
 
+    // Menampilkan halaman register
     public function registerForm()
     {
-        return view('auth.register'); // arahkan ke Blade view
+        return view('auth.register');
     }
 
-    // Memproses data register
+    // Proses pendaftaran
     public function register(Request $request)
     {
-        // Validasi input
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'min:6', 'confirmed'], // butuh input name="password_confirmation"
+            'password' => ['required', 'min:6', 'confirmed'],
         ]);
 
-        // Simpan user baru
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        // Login otomatis setelah register (opsional)
         Auth::login($user);
 
-        return redirect('/dashboard'); // arahkan ke halaman utama
+        return redirect('/dashboard');
     }
+
+    // Proses reset password (dummy)
     public function resetPassword(Request $request)
     {
         $request->validate([
             'email' => 'required|email'
         ]);
 
-        // Simulasi list email "terdaftar"
         $allowedEmails = [
             'user@example.com',
             'admin@chilemart.com',
@@ -95,18 +96,17 @@ class AuthController extends Controller
         if (in_array($request->email, $allowedEmails)) {
             return back()->with('status', 'Password has been successfully reset.');
         } else {
-            // Email tidak ditemukan
             return back()->with('error', 'Email address not found.');
         }
     }
 
+    // (Opsional) Fungsi validasi email saja, bisa dihapus jika tidak dipakai
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email'
         ]);
 
-        // Simulasi list email "terdaftar"
         $allowedEmails = [
             'user@example.com',
             'admin@chilemart.com',
@@ -114,11 +114,9 @@ class AuthController extends Controller
         ];
 
         if (in_array($request->email, $allowedEmails)) {
-            return back()->with('status', 'Password has been successfully reset.');
+            return back()->with('status', 'Email verified.');
         } else {
-            // Email tidak ditemukan
             return back()->with('error', 'Email address not found.');
         }
     }
 }
-
