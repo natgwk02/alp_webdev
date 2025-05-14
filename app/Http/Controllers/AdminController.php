@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class AdminController extends Controller
 {
@@ -21,43 +22,123 @@ class AdminController extends Controller
 
     public function products()
     {
-        // Hardcoded products for admin view
+        // Sample products data matching your view structure
         $products = [
             [
-                'id' => 1,
-                'name' => 'Chilean Sea Bass Fillet',
-                'price' => 24.99,
-                'stock' => 50,
-                'category' => 'Fish',
-                'status' => 'Active'
+                'id' => 'PRD001',
+                'name' => 'Gourmet Frozen Pizza',
+                'image' => 'https://via.placeholder.com/60',
+                'category' => 'Ready Meals',
+                'price' => 25000,
+                'stock' => 125,
+                'status' => 'In Stock',
+                'updated_at' => '2025-05-10'
             ],
-            // More products...
+            [
+                'id' => 'PRD002',
+                'name' => 'Organic Mixed Vegetables',
+                'image' => 'https://via.placeholder.com/60',
+                'category' => 'Frozen Vegetables',
+                'price' => 36000,
+                'stock' => 210,
+                'status' => 'In Stock',
+                'updated_at' => '2025-05-12'
+            ],
+            [
+                'id' => 'PRD003',
+                'name' => 'Premium Vanilla Ice Cream',
+                'image' => 'https://via.placeholder.com/60',
+                'category' => 'Ice Cream & Desserts',
+                'price' => 43000,
+                'stock' => 78,
+                'status' => 'In Stock',
+                'updated_at' => '2025-05-11'
+            ],
+            [
+                'id' => 'PRD004',
+                'name' => 'Chicken Alfredo Meal',
+                'image' => 'https://via.placeholder.com/60',
+                'category' => 'Ready Meals',
+                'price' => 39000,
+                'stock' => 15,
+                'status' => 'Low Stock',
+                'updated_at' => '2025-05-09'
+            ],
+            [
+                'id' => 'PRD005',
+                'name' => 'Frozen Salmon Fillets',
+                'image' => 'https://via.placeholder.com/60',
+                'category' => 'Frozen Meat & Fish',
+                'price' => 74999,
+                'stock' => 0,
+                'status' => 'Out of Stock',
+                'updated_at' => '2025-05-08'
+            ],
+            [
+                'id' => 'PRD006',
+                'name' => 'Chocolate Chip Cookie Dough',
+                'image' => 'https://via.placeholder.com/60',
+                'category' => 'Ice Cream & Desserts',
+                'price' => 24999,
+                'stock' => 89,
+                'status' => 'In Stock',
+                'updated_at' => '2025-05-07'
+            ]
         ];
 
-        return view('admin.products.index', compact('products'));
+        // Get unique categories for the filter dropdown
+        $categories = array_unique(array_column($products, 'category'));
+
+        // For pagination information
+        $totalProducts = count($products);
+        $currentPage = 1;
+        $perPage = 6;
+        $totalPages = ceil($totalProducts / $perPage);
+
+        return view('admin.products.index', compact('products', 'categories', 'totalProducts', 'currentPage', 'perPage', 'totalPages'));
     }
 
     public function createProduct()
     {
-        $categories = ['Fish', 'Shellfish', 'Meat', 'Vegetables', 'Prepared Meals'];
-        return view('admin.products.create', compact('categories'));
+        $categories = ['Ready Meals', 'Frozen Vegetables', 'Ice Cream & Desserts', 'Frozen Meat & Fish'];
+        return view('admin.products.index', compact('categories'));
     }
 
     public function editProduct($id)
     {
-        // Hardcoded product data
+        // Find the product by ID
+
         $product = [
             'id' => $id,
-            'name' => 'Chilean Sea Bass Fillet',
-            'price' => 24.99,
-            'stock' => 50,
-            'category' => 'Fish',
-            'description' => 'Premium Chilean sea bass fillets, wild-caught from the cold waters of Chile.',
-            'status' => 'Active'
+            'name' => 'Gourmet Frozen Pizza',
+            'price' => 25000,
+            'stock' => 125,
+            'description' => 'Delicious gourmet pizza with premium toppings, ready to bake from frozen.',
+            'weight' => '400g',
+            'category' => 'Ready Meals',
+            'image' => 'https://via.placeholder.com/100',
+            'storage_temp' => 'freezer',
+            'featured' => true,
+            'status' => 'In Stock'
         ];
 
-        $categories = ['Fish', 'Shellfish', 'Meat', 'Vegetables', 'Prepared Meals'];
-        
-        return view('admin.products.edit', compact('product', 'categories'));
+        $categories = ['Ready Meals', 'Frozen Vegetables', 'Ice Cream & Desserts', 'Frozen Meat & Fish'];
+
+        return view('admin.products.index', compact('product', 'categories'));
+    }
+
+    public function storeProduct(Request $request)
+    {
+        return redirect()->route('admin.products')->with('success', 'Product added successfully!');
+    }
+
+    public function updateProduct(Request $request, $id)
+    {
+        return redirect()->route('admin.products')->with('success', 'Product updated successfully!');
+    }
+
+    public function deleteProduct($id)
+    {
+        return redirect()->route('admin.products')->with('success', 'Product deleted successfully!');
     }
 }

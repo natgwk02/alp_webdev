@@ -1,8 +1,9 @@
-@extends('layouts.app') {{-- ganti ke layouts.admin kali uda ada --}}
+@extends('layouts.admin')
 
 @section('title', 'Manage Products - Chile Mart Admin')
 
 @section('content')
+
     <style>
         .product-img {
             width: 60px;
@@ -48,6 +49,13 @@
             </button>
         </div>
 
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         {{-- search n filter --}}
         <div class="search-container mb-4">
             <div class="row g-3">
@@ -62,10 +70,9 @@
                 <div class="col-md-3">
                     <select class="form-select">
                         <option selected>All Categories</option>
-                        <option>Ready Meals</option>
-                        <option>Frozen Vegetables</option>
-                        <option>Dimsum</option>
-                        <option>Frozen Meat & Fish</option>
+                        @foreach ($categories as $category)
+                            <option>{{ $category }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -105,209 +112,51 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Product 1 -->
-                    <tr>
-                        <td>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Gourmet Frozen Pizza"
-                                    class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-0">Gourmet Frozen Pizza</h6>
-                                    <small class="text-muted">#PRD001</small>
+                    @foreach ($products as $product)
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox">
                                 </div>
-                            </div>
-                        </td>
-                        <td>Ready Meals</td>
-                        <td>Rp 25.000</td>
-                        <td>125</td>
-                        <td><span class="badge bg-success status-badge">In Stock</span></td>
-                        <td>May 10, 2025</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary action-btn" data-bs-toggle="modal"
-                                data-bs-target="#editProductModal">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger action-btn" data-bs-toggle="modal"
-                                data-bs-target="#deleteProductModal">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- Product 2 -->
-                    <tr>
-                        <td>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Organic Mixed Vegetables"
-                                    class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-0">Organic Mixed Vegetables</h6>
-                                    <small class="text-muted">#PRD002</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}"
+                                        class="product-img me-3">
+                                    <div>
+                                        <h6 class="mb-0">{{ $product['name'] }}</h6>
+                                        <small class="text-muted">#{{ $product['id'] }}</small>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>Frozen Vegetables</td>
-                        <td>Rp 36.000</td>
-                        <td>210</td>
-                        <td><span class="badge bg-success status-badge">In Stock</span></td>
-                        <td>May 12, 2025</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary action-btn" data-bs-toggle="modal"
-                                data-bs-target="#editProductModal">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger action-btn" data-bs-toggle="modal"
-                                data-bs-target="#deleteProductModal">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- Product 3 -->
-                    <tr>
-                        <td>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Premium Vanilla Ice Cream"
-                                    class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-0">Premium Vanilla Ice Cream</h6>
-                                    <small class="text-muted">#PRD003</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Ice Cream & Desserts</td>
-                        <td>Rp 43.000</td>
-                        <td>78</td>
-                        <td><span class="badge bg-success status-badge">In Stock</span></td>
-                        <td>May 11, 2025</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary action-btn" data-bs-toggle="modal"
-                                data-bs-target="#editProductModal">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger action-btn" data-bs-toggle="modal"
-                                data-bs-target="#deleteProductModal">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- Product 4 -->
-                    <tr>
-                        <td>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Chicken Alfredo Meal"
-                                    class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-0">Chicken Alfredo Meal</h6>
-                                    <small class="text-muted">#PRD004</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Ready Meals</td>
-                        <td>Rp 39.000</td>
-                        <td>15</td>
-                        <td><span class="badge bg-warning text-dark status-badge">Low Stock</span></td>
-                        <td>May 9, 2025</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary action-btn" data-bs-toggle="modal"
-                                data-bs-target="#editProductModal">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger action-btn" data-bs-toggle="modal"
-                                data-bs-target="#deleteProductModal">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- Product 5 -->
-                    <tr>
-                        <td>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Frozen Salmon Fillets"
-                                    class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-0">Frozen Salmon Fillets</h6>
-                                    <small class="text-muted">#PRD005</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Frozen Meat & Fish</td>
-                        <td>Rp 74.999</td>
-                        <td>0</td>
-                        <td><span class="badge bg-danger status-badge">Out of Stock</span></td>
-                        <td>May 8, 2025</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary action-btn" data-bs-toggle="modal"
-                                data-bs-target="#editProductModal">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger action-btn" data-bs-toggle="modal"
-                                data-bs-target="#deleteProductModal">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- Product 6 -->
-                    <tr>
-                        <td>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Chocolate Chip Cookie Dough"
-                                    class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-0">Chocolate Chip Cookie Dough</h6>
-                                    <small class="text-muted">#PRD006</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Ice Cream & Desserts</td>
-                        <td>Rp 24.999</td>
-                        <td>89</td>
-                        <td><span class="badge bg-success status-badge">In Stock</span></td>
-                        <td>May 7, 2025</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary action-btn" data-bs-toggle="modal"
-                                data-bs-target="#editProductModal">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger action-btn" data-bs-toggle="modal"
-                                data-bs-target="#deleteProductModal">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
+                            </td>
+                            <td>{{ $product['category'] }}</td>
+                            <td>Rp {{ number_format($product['price'], 0, ',', '.') }}</td>
+                            <td>{{ $product['stock'] }}</td>
+                            <td>
+                                @php
+                                    $badgeClass = 'bg-success';
+                                    if ($product['status'] == 'Low Stock') {
+                                        $badgeClass = 'bg-warning text-dark';
+                                    } elseif ($product['status'] == 'Out of Stock') {
+                                        $badgeClass = 'bg-danger';
+                                    }
+                                @endphp
+                                <span class="badge {{ $badgeClass }} status-badge">{{ $product['status'] }}</span>
+                            </td>
+                            <td>{{ date('M d, Y', strtotime($product['updated_at'])) }}</td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary action-btn" data-bs-toggle="modal"
+                                    data-bs-target="#editProductModal" data-product-id="{{ $product['id'] }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger action-btn" data-bs-toggle="modal"
+                                    data-bs-target="#deleteProductModal" data-product-id="{{ $product['id'] }}"
+                                    data-product-name="{{ $product['name'] }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -315,21 +164,28 @@
         <!-- Page -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <p class="mb-0">Showing 1 to 6 of 24 entries</p>
+                <p class="mb-0">Showing {{ ($currentPage - 1) * $perPage + 1 }} to
+                    {{ min($currentPage * $perPage, $totalProducts) }} of {{ $totalProducts }} entries</p>
             </div>
             <nav aria-label="Page navigation">
                 <ul class="pagination mb-0">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" aria-label="Previous">
+                    <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
+                        <a class="page-link"
+                            href="{{ $currentPage > 1 ? route('admin.products', ['page' => $currentPage - 1]) : '#' }}"
+                            aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
+                    @for ($i = 1; $i <= $totalPages; $i++)
+                        <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
+                            <a class="page-link"
+                                href="{{ route('admin.products', ['page' => $i]) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+                    <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
+                        <a class="page-link"
+                            href="{{ $currentPage < $totalPages ? route('admin.products', ['page' => $currentPage + 1]) : '#' }}"
+                            aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -342,8 +198,7 @@
     {{-- modal --}}
 
     <!-- Add Product - Modal -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -351,65 +206,68 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="addProductForm" action="{{ admin.products }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="productName" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="productName" required>
+                                <input type="text" class="form-control" id="productName" name="name" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="productCategory" class="form-label">Category</label>
-                                <select class="form-select" id="productCategory" required>
+                                <select class="form-select" id="productCategory" name="category" required>
                                     <option value="" selected disabled>Select category</option>
-                                    <option>Ready Meals</option>
-                                    <option>Frozen Vegetables</option>
-                                    <option>Ice Cream & Desserts</option>
-                                    <option>Frozen Meat & Fish</option>
+                                    @foreach ($categories as $category)
+                                        <option>{{ $category }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="productPrice" class="form-label">Price (Rp)</label>
-                                <input type="number" class="form-control" id="productPrice" step="0.01"
-                                    min="0" required>
+                                <input type="number" class="form-control" id="productPrice" name="price"
+                                    step="1" min="0" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="productStock" class="form-label">Stock Quantity</label>
-                                <input type="number" class="form-control" id="productStock" min="0" required>
+                                <input type="number" class="form-control" id="productStock" name="stock"
+                                    min="0" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="productDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="productDescription" rows="3" required></textarea>
+                            <textarea class="form-control" id="productDescription" name="description" rows="3" required></textarea>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="productWeight" class="form-label">Weight/Size</label>
-                                <input type="text" class="form-control" id="productWeight"
+                                <input type="text" class="form-control" id="productWeight" name="weight"
                                     placeholder="e.g., 500g, 1kg">
                             </div>
                             <div class="col-md-6">
                                 <label for="productID" class="form-label">ID</label>
-                                <input type="text" class="form-control" id="productID">
+                                <input type="text" class="form-control" id="productID" name="product_id">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="productImage" class="form-label">Product Image</label>
-                            <input class="form-control" type="file" id="productImage">
+                            <input class="form-control" type="file" id="productImage" name="image">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Storage Temperature</label>
                             <div class="d-flex gap-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="storageTemp" id="freezer"
-                                        checked>
+                                    <input class="form-check-input" type="radio" name="storage_temp" value="freezer"
+                                        id="freezer" checked>
                                     <label class="form-check-label" for="freezer">
                                         Deep Freeze (-18°C or below)
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="storageTemp" id="refrigerator">
+                                    <input class="form-check-input" type="radio" name="storage_temp"
+                                        value="refrigerator" id="refrigerator">
                                     <label class="form-check-label" for="refrigerator">
                                         Refrigerator (0°C to 5°C)
                                     </label>
@@ -417,7 +275,7 @@
                             </div>
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="featuredProduct">
+                            <input class="form-check-input" type="checkbox" id="featuredProduct" name="featured">
                             <label class="form-check-label" for="featuredProduct">
                                 Featured Product (Tasty Picks)
                             </label>
@@ -426,7 +284,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary">Add Product</button>
+                    <button type="submit" form="addProductForm" class="btn btn-primary">Add Product</button>
                 </div>
             </div>
         </div>
@@ -442,71 +300,74 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="editProductForm" action="{{ admin.products }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="editProductName" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="editProductName"
-                                    value="Gourmet Frozen Pizza" required>
+                                <input type="text" class="form-control" id="editProductName" name="name"
+                                    value="" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="editProductCategory" class="form-label">Category</label>
-                                <select class="form-select" id="editProductCategory" required>
-                                    <option>Ready Meals</option>
-                                    <option>Frozen Vegetables</option>
-                                    <option>Ice Cream & Desserts</option>
-                                    <option>Frozen Meat & Fish</option>
+                                <select class="form-select" id="editProductCategory" name="category" required>
+                                    @foreach ($categories as $category)
+                                        <option>{{ $category }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="editProductPrice" class="form-label">Price (Rp)</label>
-                                <input type="number" class="form-control" id="editProductPrice" step="0.01"
-                                    min="0" value="8.99" required>
+                                <input type="number" class="form-control" id="editProductPrice" name="price"
+                                    step="1" min="0" value="" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="editProductStock" class="form-label">Stock Quantity</label>
-                                <input type="number" class="form-control" id="editProductStock" min="0"
-                                    value="125" required>
+                                <input type="number" class="form-control" id="editProductStock" name="stock"
+                                    min="0" value="" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="editProductDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="editProductDescription" rows="3" required>Delicious gourmet pizza with premium toppings, ready to bake from frozen.</textarea>
+                            <textarea class="form-control" id="editProductDescription" name="description" rows="3" required></textarea>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="editProductWeight" class="form-label">Weight/Size</label>
-                                <input type="text" class="form-control" id="editProductWeight" value="400g">
+                                <input type="text" class="form-control" id="editProductWeight" name="weight"
+                                    value="">
                             </div>
                             <div class="col-md-6">
                                 <label for="editProductID" class="form-label">ID</label>
-                                <input type="text" class="form-control" id="editProductID" value="PRD001">
+                                <input type="text" class="form-control" id="editProductID" name="product_id"
+                                    value="" readonly>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="editProductImage" class="form-label">Product Image</label>
                             <div class="d-flex align-items-center mb-2">
-                                <img src="https://via.placeholder.com/100" alt="Current product image"
-                                    class="me-3 rounded">
+                                <img src="" id="currentProductImage" alt="Current product image"
+                                    class="me-3 rounded" style="width: 100px; height: 100px; object-fit: cover;">
                                 <span class="text-muted">Current image</span>
                             </div>
-                            <input class="form-control" type="file" id="editProductImage">
+                            <input class="form-control" type="file" id="editProductImage" name="image">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Storage Temperature</label>
                             <div class="d-flex gap-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="editStorageTemp"
-                                        id="editFreezer" checked>
+                                    <input class="form-check-input" type="radio" name="storage_temp" value="freezer"
+                                        id="editFreezer">
                                     <label class="form-check-label" for="editFreezer">
                                         Deep Freeze (-18°C or below)
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="editStorageTemp"
-                                        id="editRefrigerator">
+                                    <input class="form-check-input" type="radio" name="storage_temp"
+                                        value="refrigerator" id="editRefrigerator">
                                     <label class="form-check-label" for="editRefrigerator">
                                         Refrigerator (0°C to 5°C)
                                     </label>
@@ -514,7 +375,7 @@
                             </div>
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="editFeaturedProduct" checked>
+                            <input class="form-check-input" type="checkbox" id="editFeaturedProduct" name="featured">
                             <label class="form-check-label" for="editFeaturedProduct">
                                 Featured Product
                             </label>
@@ -523,7 +384,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -539,12 +400,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete <strong>Gourmet Frozen Pizza</strong>?</p>
+                    <p>Are you sure you want to delete <strong id="deleteProductName"></strong>?</p>
                     <p class="text-danger mb-0">This action cannot be undone.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger">Delete Product</button>
+                    <form id="deleteProductForm" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete Product</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -560,6 +425,42 @@
                 checkbox.checked = this.checked;
             });
         });
-    </script>
 
+        // Handle edit product modal
+        const editProductModal = document.getElementById('editProductModal');
+        editProductModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const productId = button.getAttribute('data-product-id');
+
+            // Set the form action URL
+            const form = document.getElementById('editProductForm');
+            form.action = `/product/update/${productId}`;
+
+            document.getElementById('editProductName').value = 'Gourmet Frozen Pizza';
+            document.getElementById('editProductCategory').value = 'Ready Meals';
+            document.getElementById('editProductPrice').value = '25000';
+            document.getElementById('editProductStock').value = '125';
+            document.getElementById('editProductDescription').value =
+                'Delicious gourmet pizza with premium toppings, ready to bake from frozen.';
+            document.getElementById('editProductWeight').value = '400g';
+            document.getElementById('editProductID').value = productId;
+            document.getElementById('currentProductImage').src = '';
+            document.getElementById('editFreezer').checked = true;
+            document.getElementById('editFeaturedProduct').checked = true;
+        });
+
+        // Handle delete product modal
+        const deleteProductModal = document.getElementById('deleteProductModal');
+        deleteProductModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const productId = button.getAttribute('data-product-id');
+            const productName = button.getAttribute('data-product-name');
+
+            // Set the product name in the confirmation message
+            document.getElementById('deleteProductName').textContent = productName;
+
+            const form = document.getElementById('deleteProductForm');
+            form.action = `/product/delete/${productId}`;
+        });
+    </script>
 @endsection
