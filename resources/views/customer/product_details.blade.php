@@ -6,12 +6,12 @@
 <div class="container py-4">
     <div class="row">
         <div class="col-md-6">
-            <img src="{{ asset('images/products/' . $product['image']) }}" class="img-fluid rounded shadow-sm" alt="{{ $product['name'] }}">
+            <img src="{{ asset('images/products-img/' . $product['image']) }}" class="img-fluid rounded shadow-sm" alt="{{ $product['name'] }}">
         </div>
         <div class="col-md-6">
             <h1 class="fw-bold">{{ $product['name'] }}</h1>
             <p class="text-muted mb-1">{{ $product['category'] }}</p>
-            <h4 class="text-primary mb-3">${{ number_format($product['price'], 2) }}</h4>
+            <h4 class="text-primary mb-0">Rp {{ number_format($product['price'], 0, ',', '.') }}</h4>
 
             <p class="mb-3">Delicious and fresh, our {{ strtolower($product['name']) }} is a customer favorite sourced from high-quality suppliers.</p>
 

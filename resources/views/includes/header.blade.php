@@ -1,8 +1,9 @@
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
 <style>
     header {
         background-color: transparent !important;
-        /* Hilangkan background */
-        /* box-shadow: none !important; */
     }
 
     .text-header {
@@ -12,10 +13,31 @@
     .logo {
         width: 2.5%;
     }
+
+    .cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 0.2rem 0.45rem;
+    line-height: 1;
+}
+
+
+    .navbar-toggler {
+        border: none;
+    }
+
+    .navbar-collapse {
+        text-align: right;
+    }
 </style>
 
-
-<nav class="navbar navbar-expand-lg navbar-scroll shadow-0" style="">
+<nav class="navbar navbar-expand-lg navbar-scroll shadow-0">
     <div class="container fw-semibold">
         <img src='/assets/logoGambar.png' alt="" class="logo me-3" />
         <a class="navbar-brand text-header fw-bold" href="{{ route('home') }}">Chillé Mart</a>
@@ -28,45 +50,42 @@
         <div class="collapse navbar-collapse" id="navbarExample01">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link px-3 {{ request()->routeIs('store') ? 'active' : '' }}" href="#">Shop
-                        Here</a>
+                    <a class="nav-link px-3 {{ request()->routeIs('store') ? 'active' : '' }}" href="#">Shop Here</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-3 {{ request()->routeIs('about') ? 'active' : '' }}" href="#!">About
-                        Us</a>
+                    <a class="nav-link px-3 {{ request()->routeIs('about') ? 'active' : '' }}" href="#!">About Us</a>
                 </li>
 
-
-
-
-                <li class="nav-item">
-                    @auth
+                @auth
+                    <!-- Cart Icon with Badge -->
                     <li class="nav-item">
-                        <a class="nav-link ps-3" href="{{ route('view_cart') }}">
-                            <i class="fas fa-cart-shopping"></i>
+                        <a class="nav-link ps-3" href="{{ route('cart') }}">
+                            <i class="fas fa-cart-shopping position-relative">
+                               <span class="cart-badge">{{ $cart_count }}</span>
+                            </i>
                         </a>
                     </li>
-                @endauth
-                @auth
+
+                    <!-- My Orders -->
                     <li class="nav-item">
                         <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
-                            href="{{ route('order.index') }}">My Orders</a>
+                            href="{{ route('order.show') }}">My Orders</a>
                     </li>
-                @endauth
-                @auth
+
+                    <!-- Logout Button -->
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-link">Logout</button>
                     </form>
                 @endauth
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link pe-3" href="#!">
-                        Logout
-                    </a>
-                </li>
-            </ul>
 
+                <!-- For guests -->
+                @guest
+                    <li class="nav-item">
+                        <a class="nav-link pe-3" href="{{ route('login.show') }}">Login</a>
+                    </li>
+                @endguest
+            </ul>
         </div>
     </div>
 </nav>
