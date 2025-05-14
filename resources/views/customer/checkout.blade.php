@@ -130,7 +130,7 @@
                         @foreach($cartItems as $item)
                         <div class="d-flex justify-content-between mb-2">
                             <div>
-                                {{ $item['product_name'] }} 
+                                {{ $item['product_name'] }}
                                 <span class="text-muted">x{{ $item['quantity'] }}</span>
                             </div>
                             <div>${{ number_format($item['price'] * $item['quantity'], 2) }}</div>
@@ -166,7 +166,7 @@
                         </label>
                     </div>
 
-                    <button class="btn btn-primary w-100 py-3" onclick="window.location.href='{{ route('orders.show', 1001) }}'">
+                    <button class="btn btn-primary w-100 py-3" onclick="window.location.href='/orders/1001'">
                         Place Order
                     </button>
                 </div>

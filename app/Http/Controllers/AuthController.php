@@ -17,14 +17,16 @@ class AuthController extends Controller
 
     public function login_auth(Request $request){
         $credentials = $request->validate([
-            'email' => 'required|email:dns',
-            'password' => 'required',
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
-        if(Auth::attempt($credentials)){
+         if (Auth::attempt([
+            'users_email' => $request['email'],
+            'password' => $request['password'],
+        ])) {
             $request->session()->regenerate();
-
-            return redirect()->intended('/home');
+            return redirect()->route('admin.dashboard'); // ubah sesuai halaman tujuanmu
         }
 
         return back()->with([
@@ -69,5 +71,46 @@ class AuthController extends Controller
         Auth::login($user);
 
         return redirect('/dashboard'); // arahkan ke halaman utama
+    }
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        // Simulasi list email "terdaftar"
+        $allowedEmails = [
+            'user@example.com',
+            'admin@chilemart.com',
+            'test@domain.com'
+        ];
+
+        if (in_array($request->email, $allowedEmails)) {
+            return back()->with('status', 'Password has been successfully reset.');
+        } else {
+            // Email tidak ditemukan
+            return back()->with('error', 'Email address not found.');
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        // Simulasi list email "terdaftar"
+        $allowedEmails = [
+            'user@example.com',
+            'admin@chilemart.com',
+            'test@domain.com'
+        ];
+
+        if (in_array($request->email, $allowedEmails)) {
+            return back()->with('status', 'Password has been successfully reset.');
+        } else {
+            // Email tidak ditemukan
+            return back()->with('error', 'Email address not found.');
+        }
     }
 }

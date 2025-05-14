@@ -95,14 +95,30 @@
 
             <input type="text" name="email" class="form-control" placeholder="Email Address" required>
 
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
+            <div class="mb-3 position-relative">
+                <input 
+                    type="password" 
+                    class="form-control" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Password"
+                >
+
+            <button type="button" 
+                class="btn position-absolute top-50 end-0 translate-middle-y me-2 p-1 bg-transparent border-0" 
+                onclick="togglePassword()" 
+                style="z-index: 2;"
+            >
+                <i id="toggleIcon" class="fa fa-eye"></i>
+            </button>
+        </div>
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="remember" name="remember">
                     <label class="form-check-label" for="remember">Remember Me</label>
                 </div>
-                <a href="" class="text-link">Forgot Password?</a>
+                <a href="forgot-password" class="text-link">Forgot Password?</a>
             </div>
 
             <button type="submit" class="btn btn-blue">Sign In</button>
@@ -115,3 +131,20 @@
     </div>
 </div>
 @endsection
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const icon = document.getElementById('toggleIcon');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>

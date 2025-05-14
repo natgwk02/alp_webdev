@@ -58,6 +58,6 @@ class ProductController extends Controller
             ]
         ];
 
-        return view('customer.product-detail', compact('product'));
+        return view('customer.product_details', compact('product'));
     }
 }

@@ -6,7 +6,7 @@
 <div class="container py-4">
     <div class="row">
         <div class="col-12">
-            <h1 class="fw-bold">Your Shopping Cart</h1>
+            <h1 class="fw-bold">Shopping Cart</h1>
             @if(count($cartItems) == 0)
                 <div class="alert alert-info">
                     Your cart is empty. <a href="{{ route('products') }}">Browse products</a> to add items.
@@ -59,17 +59,6 @@
                     </table>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Have a coupon?</h5>
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Coupon code">
-                                    <button class="btn btn-primary" type="button">Apply</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="card">
