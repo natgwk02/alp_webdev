@@ -59,6 +59,7 @@
 
     .btn-blue:hover {
         background-color: #C1E8FF;
+        color: #224488;
     }
 
     .text-link {
@@ -73,6 +74,19 @@
 
     .text-muted {
         font-size: 0.9rem;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #666;
+    }
+
+    .position-relative {
+        position: relative;
     }
 </style>
 
@@ -93,28 +107,32 @@
         @endif
 
         <form action="{{ route('register.submit') }}" method="POST">
-    @csrf
-    <!-- form input -->
-</form>
+            @csrf
 
-    <input type="text" name="name" class="form-control" placeholder="Full Name" required>
-    <input type="email" name="email" class="form-control" placeholder="Email Address" required>
-    <input type="text"
-       name="Phone Number"
-       class="form-control"
-       placeholder="Phone Number"
-       maxlength="12"
-       pattern="[0-9]+"
-       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-       required>
-    <input type="text" name="address" class="form-control" placeholder="Address" required>
+            <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+            <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+            <input type="text" name="phone" class="form-control" placeholder="Phone Number"
+                   maxlength="12" pattern="[0-9]+"
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                   required>
+            <input type="text" name="address" class="form-control" placeholder="Address" required>
 
-    <input type="password" name="password" class="form-control" placeholder="Password" required>
-    <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password" required>
+            <div class="position-relative">
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('password', this)">
+                    <i class="fa fa-eye"></i>
+                </span>
+            </div>
 
-    <button type="submit" class="btn btn-blue w-100 mt-3">Register</button>
-</form>
+            <div class="position-relative">
+                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Confirm Password" required>
+                <span class="toggle-password" onclick="togglePassword('password_confirmation', this)">
+                    <i class="fa fa-eye"></i>
+                </span>
+            </div>
 
+            <button type="submit" class="btn btn-blue w-100 mt-3">Register</button>
+        </form>
 
         <div class="text-center mt-3">
             <span class="text-muted">Already have an account?
@@ -124,4 +142,20 @@
 
     </div>
 </div>
+
+<script>
+function togglePassword(fieldId, iconElement) {
+    const input = document.getElementById(fieldId);
+    const icon = iconElement.querySelector('i');
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
 @endsection
