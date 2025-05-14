@@ -39,8 +39,8 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     // Product Management
-    Route::get('/products', [AdminController::class, 'products'])
-    ->name('admin.products');
+    // Route::get('/products', [AdminController::class, 'products'])
+    // ->name('admin.products');
     // ->name('products');
     //dijadiin satu sm products
     // Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
