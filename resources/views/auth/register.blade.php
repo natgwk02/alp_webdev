@@ -92,19 +92,20 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
+        <form action="{{ route('register') }}" method="POST">
+    @csrf
 
-            <input type="text" name="name" class="form-control" placeholder="Full Name" value="{{ old('name') }}" required>
+    <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+    <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+    <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
+    <input type="text" name="address" class="form-control" placeholder="Address" required>
 
-            <input type="email" name="email" class="form-control" placeholder="Email Address" value="{{ old('email') }}" required>
+    <input type="password" name="password" class="form-control" placeholder="Password" required>
+    <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password" required>
 
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
+    <button type="submit" class="btn btn-blue w-100 mt-3">Register</button>
+</form>
 
-            <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password" required>
-
-            <button type="submit" class="btn btn-blue">Register</button>
-        </form>
 
         <div class="text-center mt-3">
             <span class="text-muted">Already have an account?
