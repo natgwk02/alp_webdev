@@ -131,132 +131,202 @@
     </div>
     </section>
 
-
-
-    {{-- Category with Carousel --}}
+    {{-- category --}}
+                        
     <section class="category py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Shop by Category</h2>
+    <div class="container">
+        <h2 class="text-center mb-5">Shop by Category</h2>
 
-            <div id="categoryCarousel" class="carousel slide category-carousel" data-bs-ride="carousel"
-                data-bs-interval="4000" data-bs-pause="hover">
-                <!-- Carousel indicators -->
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="0" class="active"
-                        aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="1"
-                        aria-label="Slide 2"></button>
-                </div>
-
-                <div class="carousel-inner">
-                    <!-- First slide -->
-                    <div class="carousel-item active">
-                        <div class="row">
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/ready-meals.jpg') }}" alt="Ready Meals"
-                                        class="img-fluid">
-                                    <div class="category-overlay">
-                                        <h5 class="mb-0">Ready Meals</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/frozen-veg.jpeg') }}" alt="Frozen Vegetables"
-                                        class="img-fluid">
-                                    <div class="category-overlay">
-                                        <h5 class="mb-0">Frozen Vegetables</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Dimsum"
-                                        class="img-fluid">
-                                    <div class="category-overlay">
-                                        <h5 class="mb-0">Dimsum</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/meat-fish.jpg') }}" alt="Frozen Meat & Fish"
-                                        class="img-fluid">
-                                    <div class="category-overlay">
-                                        <h5 class="mb-0">Frozen Meat & Fish</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Second slide (you can add more categories here) -->
-                    <div class="carousel-item">
-                        <div class="row">
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Ice Cream"
-                                        class="img-fluid">
-                                    <div class="category-overlay">
-                                        <h5 class="mb-0">Ice Cream</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Frozen Fruits"
-                                        class="img-fluid">
-                                    <div class="category-overlay">
-                                        <h5 class="mb-0">Frozen Fruits</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Frozen Seafood"
-                                        class="img-fluid">
-                                    <div class="category-overlay">
-                                        <h5 class="mb-0">Frozen Seafood</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Desserts"
-                                        class="img-fluid">
-                                    <div class="category-overlay">
-                                        <h5 class="mb-0">Desserts</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Carousel controls -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+        <div id="categoryCarousel" class="carousel slide category-carousel" data-bs-ride="carousel"
+            data-bs-interval="4000" data-bs-pause="hover">
+            <!-- Carousel indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
             </div>
+
+            <div class="carousel-inner">
+                <!-- First slide -->
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col-md-3 col-6 mb-4">
+                            <div class="category-item">
+                                <img src="{{ asset('images/category-img/ready-meals.jpg') }}" alt="Ready Meals"
+                                    class="img-fluid">
+                                <div class="category-text">
+                                    <h5 class="mb-0">Ready Meals</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-4">
+                            <div class="category-item">
+                                <img src="{{ asset('images/category-img/vegetable.jpeg') }}" alt="Frozen Vegetable"
+                                    class="img-fluid">
+                                <div class="category-text">
+                                    <h5 class="mb-0">Frozen Vegetable</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-4">
+                            <div class="category-item">
+                                <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Frozen Dimsum"
+                                    class="img-fluid">
+                                <div class="category-text">
+                                    <h5 class="mb-0">Frozen Dimsum</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-4">
+                            <div class="category-item">
+                                <img src="{{ asset('images/category-img/meat.jpg') }}" alt="Frozen Meat"
+                                    class="img-fluid">
+                                <div class="category-text">
+                                    <h5 class="mb-0">Frozen Meat</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second slide -->
+                <div class="carousel-item">
+                    <div class="row">
+                        <div class="col-md-3 col-6 mb-4">
+                            <div class="category-item">
+                                <img src="{{ asset('images/category-img/nugget.jpg') }}" alt="Frozen Nugget"
+                                    class="img-fluid">
+                                <div class="category-text">
+                                    <h5 class="mb-0">Frozen Nugget</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-4">
+                            <div class="category-item">
+                                <img src="{{ asset('images/category-img/fruit.jpg') }}" alt="Frozen Fruit"
+                                    class="img-fluid">
+                                <div class="category-text">
+                                    <h5 class="mb-0">Frozen Fruit</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-4">
+                            <div class="category-item">
+                                <img src="{{ asset('images/category-img/seafood.png') }}" alt="Frozen Seafood"
+                                    class="img-fluid">
+                                <div class="category-text">
+                                    <h5 class="mb-0">Frozen Seafood</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-4">
+                            <div class="category-item">
+                                <img src="{{ asset('images/category-img/dessert.jpg') }}" alt="Dessert"
+                                    class="img-fluid">
+                                <div class="category-text">
+                                    <h5 class="mb-0">Dessert</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-    </section>
+    </div>
+</section>
+
+    <style>
+        .category-item {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .category-item img {
+            width: 100%;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .category-item:hover img {
+            transform: scale(1.05); /* Slightly enlarge the image on hover */
+        }
+
+        .category-text {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            text-align: center;
+            background: rgba(102, 204, 255, 0.8); /* Light blue background for contrast */
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .category-item:hover .category-text {
+            transform: translateY(-5px); /* Lift the text along with the image */
+        }
+    </style>
+
 
     {{-- special offer --}}
-    <section class="special-offer mb-5">
-        <div class="container text-center">
-            <h2 class="display-6 fw-bold mb-3">NEW CHILLÉ'S FRIEND 20%</h2>
-            <p class="lead mb-4">Use code <span class="fw-bold">CHILLBRO</span> on your first order over Rp 200.000</p>
-            <a href="{{ route('products') }}" class="btn btn-light btn-lg">Shop Now</a>
+<section class="special-offer mb-5">
+    <div class="container text-center" style="background-color: #C1E8FF; border-radius: 20px 20px 0 0; padding: 30px 15px; box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);">
+        <!-- Optional: Add an icon for better UI -->
+        <div class="mb-3">
+            <img src="{{ asset('images/offer.png') }}" alt="Special Offer" class="img-fluid" style="max-width: 120px; margin-bottom: 10px;"> <!-- Reduced size of logo -->
         </div>
-    </section>
+
+        <h2 class="display-4 fw-bold mb-3 text-white" style="font-size: 2.5rem; letter-spacing: 1px;">NEW CHILLÉ'S FRIEND 20%</h2>
+        
+        <p class="lead mb-4 text-white" style="font-size: 1.2rem; font-weight: 600;">Use code <span class="fw-bold" style="color: #ffdd00;">CHILLBRO</span> on your first order over Rp 200.000</p>
+        
+        <a href="{{ route('products') }}" class="btn btn-light btn-lg" style="background-color: #ffdd00; color: #003366; padding: 12px 30px; border-radius: 50px; font-weight: bold; text-transform: uppercase; font-size: 1rem; transition: all 0.3s ease-in-out;">
+            Shop Now
+        </a>
+    </div>
+
+    <!-- Bottom color section -->
+    <div class="container text-center" style="background-color: #00000020; border-radius: 0 0 20px 20px; padding: 20px 15px;">
+        <p class="text-white">Exclusive Offer for New Customers</p>
+    </div>
+</section>
+
+<style>
+    .special-offer:hover .btn {
+        background-color: #003366;
+        color: #ffdd00;
+        transform: scale(1.05); /* Slightly enlarge the button on hover */
+    }
+
+    .special-offer .btn {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .special-offer .container {
+        padding: 30px 25px;
+    }
+
+    /* Box shadow for depth */
+    .special-offer .container:hover {
+        box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+
+
 
     {{-- Top seller --}}
     <section class="best-product py-5">
