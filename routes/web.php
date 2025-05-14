@@ -16,7 +16,8 @@ Route::get('/login', [AuthController::class, "show"])
 Route::post('/login_auth', [AuthController::class, "login_auth"])
 ->name('login.auth');
 
-Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
+Route::get('/register', [AuthController::class, 'registerForm'])->name('register'); // untuk tampilkan form
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit'); 
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
@@ -38,8 +39,8 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     // Product Management
-    // Route::get('/products', [AdminController::class, 'products'])
-    // ->name('admin.products');
+    Route::get('/products', [AdminController::class, 'products'])
+    ->name('admin.products');
     // ->name('products');
     //dijadiin satu sm products
     // Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');

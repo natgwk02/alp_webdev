@@ -71,14 +71,15 @@ class AuthController extends Controller
 
     // Proses pendaftaran
     public function register(Request $request)
-{
-    $validated = $request->validate([
+    {
+        $validated = $request->validate([
         'name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'email', 'unique:users,users_email'],
         'password' => ['required', 'min:6', 'confirmed'],
-        'phone' => ['required'],
+        'phone' => ['required', 'regex:/^[0-9]{10,12}$/'],
         'address' => ['required'],
     ]);
+
 
     $user = \App\Models\User::create([
         'users_name' => $validated['name'],
@@ -93,7 +94,7 @@ class AuthController extends Controller
 
     Auth::login($user);
 
-    return redirect()->route('home');
+    return redirect()->route('login.show')->with('success', 'Registration successful! Please login.');
 }
 
 

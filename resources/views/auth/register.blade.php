@@ -92,12 +92,21 @@
             </div>
         @endif
 
-        <form action="{{ route('register') }}" method="POST">
+        <form action="{{ route('register.submit') }}" method="POST">
     @csrf
+    <!-- form input -->
+</form>
 
     <input type="text" name="name" class="form-control" placeholder="Full Name" required>
     <input type="email" name="email" class="form-control" placeholder="Email Address" required>
-    <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
+    <input type="text"
+       name="Phone Number"
+       class="form-control"
+       placeholder="Phone Number"
+       maxlength="12"
+       pattern="[0-9]+"
+       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+       required>
     <input type="text" name="address" class="form-control" placeholder="Address" required>
 
     <input type="password" name="password" class="form-control" placeholder="Password" required>
