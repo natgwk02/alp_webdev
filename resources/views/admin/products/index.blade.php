@@ -206,7 +206,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addProductForm" action="{{ admin.products }}" method="POST"
+                    <form id="addProductForm" action="{{ route('admin.products') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
@@ -300,7 +300,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editProductForm" action="{{ admin.products }}" method="POST" enctype="multipart/form-data">
+                    <form id="editProductForm" action="{{ route('admin.products') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row mb-3">
