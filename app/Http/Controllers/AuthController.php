@@ -57,7 +57,8 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login.show');
+        return redirect()->route('login.show')->with('success', 'Registration successful!');
+
     }
     public function showForgotPassword()
     {

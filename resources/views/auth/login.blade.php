@@ -1,6 +1,18 @@
 @extends('base.base')
 
 @section('content')
+@if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('success') }}',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    </script>
+@endif
+
 <style>
     body {
         background: url('/images/background.jpg') no-repeat center center fixed;
@@ -97,8 +109,16 @@
             @csrf
 
             <input type="text" name="email" class="form-control" placeholder="Email Address" required>
+            
+            <div class="position-relative">
+            <input type="password" name="password" id="password" class="form-control pe-5" placeholder="Password" required>
 
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
+            <span onclick="togglePassword('password', this)"
+                class="position-absolute end-0 top-50 translate-middle-y me-3"
+                style="cursor: pointer; z-index: 2;">
+                <i class="fa fa-eye" id="toggleIcon"></i>
+            </span>
+            </div>
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="form-check">
@@ -118,3 +138,22 @@
     </div>
 </div>
 @endsection
+
+<script>
+function togglePassword(fieldId, el) {
+    const input = document.getElementById(fieldId);
+    const icon = el.querySelector('i');
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
+
+
