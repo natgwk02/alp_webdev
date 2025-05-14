@@ -56,5 +56,5 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
 // Home Route
 Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
-Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
+//Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+//Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
