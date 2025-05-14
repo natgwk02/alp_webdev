@@ -23,13 +23,22 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        if (
+        $request->email === 'admin@chillemart.com' &&
+        $request->password === 'admin123'
+    )   {
+        // Simulasi login admin tanpa database
+        session(['is_admin' => true, 'email' => $request->email]);
+
+        return redirect()->route('admin.dashboard');
+        }
         // Jika kamu menggunakan kolom users_email, sesuaikan:
         if (Auth::attempt([
             'users_email' => $request->email,
             'password' => $request->password,
         ])) {
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('home');
         }
 
         return back()->withErrors([
@@ -62,22 +71,31 @@ class AuthController extends Controller
 
     // Proses pendaftaran
     public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'min:6', 'confirmed'],
-        ]);
+{
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'unique:users,users_email'],
+        'password' => ['required', 'min:6', 'confirmed'],
+        'phone' => ['required'],
+        'address' => ['required'],
+    ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+    $user = \App\Models\User::create([
+        'users_name' => $validated['name'],
+        'users_email' => $validated['email'],
+        'users_password' => Hash::make($validated['password']),
+        'users_phone' => $validated['phone'],
+        'users_address' => $validated['address'],
+        'status_del' => false,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
 
-        Auth::login($user);
-        return redirect('/dashboard');
-    }
+    Auth::login($user);
+
+    return redirect()->route('home');
+}
+
 
     // Dummy Reset Password
     public function resetPassword(Request $request)
