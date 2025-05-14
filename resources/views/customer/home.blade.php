@@ -115,22 +115,23 @@
         }
     </style>
     {{-- atas   --}}
-    <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-2">Keep it cool, keep it Chillé!</h1>
-                    {{-- <h3 class="mb-4">Keep it cool, keep it chillé!</h3> --}}
-                    <p class="lead mb-4">Deliciously frozen, always ready. Discover your next favorite meal today!</p>
-                    <a href="" class="btn btn-primary btn-lg">Let's Chill</a>
-                </div>
-                <div class="col-lg-6 m-100 text-center">
-                    <img src="{{ asset('images/logo-chille.png') }}" alt="Chille-mart"
-                        class="img-fluid rounded-circle w-50">
-                </div>
+   <section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12 text-center mb-4">
+                <img src="{{ asset('images/logo-chille.png') }}" alt="Chille-mart"
+                    class="img-fluid rounded-circle" style="width: 30%; margin-bottom: 10px; margin-top: -30px;">
+            </div>
+            <div class="col-lg-12 text-center" style="margin-top: -20px;">
+                <h1 class="display-4 fw-bold mb-2">Keep it cool, keep it Chillé!</h1>
+                <p class="lead mb-4">Deliciously frozen, always ready. Discover your next favorite meal today!</p>
+                <a href="" class="btn btn-primary btn-lg">Let's Chill</a>
             </div>
         </div>
+    </div>
     </section>
+
+
 
     {{-- Category with Carousel --}}
     <section class="category py-5">
