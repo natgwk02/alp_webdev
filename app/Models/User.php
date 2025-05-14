@@ -2,47 +2,58 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    // Nama tabel (opsional jika kamu memang pakai tabel bernama 'users')
+    protected $table = 'users';
+
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Kolom yang boleh diisi massal
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'users_name',
+        'users_email',
+        'users_password',
+        'users_phone',
+        'users_address',
+        'status_del',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Kolom login yang digunakan oleh Auth::attempt()
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'users_email';
+    }
+
+    /**
+     * Kolom password yang digunakan oleh Auth
+     */
+    public function getAuthPassword()
+    {
+        return $this->users_password;
+    }
+
+    /**
+     * Kolom yang tidak boleh ditampilkan (misal saat toArray atau JSON)
      */
     protected $hidden = [
-        'password',
+        'users_password',
         'remember_token',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Cast field ke tipe tertentu (optional)
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'status_del' => 'boolean',
+    ];
 }

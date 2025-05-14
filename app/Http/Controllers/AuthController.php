@@ -16,23 +16,40 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login_auth(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email:dns',
-            'password' => 'required',
+   public function login_auth(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // Hardcoded admin login
+    if (
+        $request->email === 'admin@chillemart.com' &&
+        $request->password === 'admin123'
+    ) {
+        session([
+            'is_admin' => true,
+            'email' => $request->email,
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return redirect()->intended('/home');
-        }
-
-        return back()->with([
-            'error' => 'The provided credentials do not match our records.'
-        ]);
+        return redirect()->route('admin.dashboard');
     }
+
+    // Login via database
+    if (Auth::attempt([
+        'users_email' => $request->email,
+        'password' => $request->password,
+    ])) {
+        $request->session()->regenerate();
+
+        return redirect()->route('home');
+    }
+
+    // ❗ Login gagal, tampilkan pesan error
+    return back()->with('error', 'Incorrect email or password.');
+}
+
     public function logout(Request $request)
     {
         Auth::logout();
