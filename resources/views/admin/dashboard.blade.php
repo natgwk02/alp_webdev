@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- nanti ganti ke layouts.admin kalo uda ada --}}
+@extends('layouts.admin') {{-- nanti ganti ke layouts.admin kalo uda ada --}}
 
 @section('title', 'Dashboard - Chile Mart Admin')
 
