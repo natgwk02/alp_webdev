@@ -64,3 +64,14 @@ Route::get('/home', [HomeController::class, 'showHome'])
 Route::get('/about', function () {
     return view('customer.about');
 })->name('about');
+
+Route::get('/profile', function () {
+    return view('customer.profile');
+})->name('profile');
+
+// Profile Routes
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+//     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+// });

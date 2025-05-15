@@ -111,7 +111,7 @@
 
                 {{-- Profile --}}
                 <li class="nav-item">
-                    <a class="nav-link" href="">
+                    <a class="nav-link" href="{{ route('profile') }}">
                         <img src='/assets/profile.png' alt="Profile" class="profile" />
                     </a>
                 </li>
