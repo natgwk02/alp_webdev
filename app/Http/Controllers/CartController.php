@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -17,41 +18,46 @@ class CartController extends Controller
         ['id' => 9, 'name' => 'Fiesta Siomay', 'price' => 34000, 'image' => 'fiesta-siomay.jpg', 'stock' => 50, 'category' => 'Frozen Dim Sum', 'description' => 'Delicious and ready-to-steam chicken siomay, perfect for snacks or side dishes.'],
     ];
 
+    // 🛒 Show Cart Page
     public function index(Request $request)
     {
-        // Ambil data cart dari session
         $cartItems = session('cart', []);
 
-        // Hitung subtotal
         $subtotal = 0;
-        foreach ($cartItems as $item) {
+        foreach ($cartItems as &$item) {
+            // Tambahkan quantity jika belum ada
+            if (!isset($item['quantity'])) {
+                $item['quantity'] = 1;
+            }
+
             $subtotal += $item['price'] * $item['quantity'];
         }
 
-        $shippingFee = 5000; // biaya shipping fix contoh
-        $tax = round($subtotal * 0.1); // pajak 10%
+        // Simpan kembali cart yang sudah diberi quantity (jika sebelumnya belum ada)
+        session(['cart' => $cartItems]);
+
+        $shippingFee = 5000;
+        $tax = round($subtotal * 0.1);
         $total = $subtotal + $shippingFee + $tax;
 
         return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total'));
     }
 
+    // ➕ Add Item to Cart
     public function addToCart(Request $request)
     {
         $productId = $request->input('product_id');
-        // cari produk dari array berdasarkan id (index dimulai 0, id mulai 1)
+        $cart = session('cart', []);
+
         $product = collect($this->products)->firstWhere('id', (int)$productId);
 
         if (!$product) {
-            return redirect()->back()->with('error', 'Product not found');
+            return redirect()->back()->with('error', 'Product not found.');
         }
 
-        $cart = session('cart', []);
-
-        // Jika produk sudah ada di cart, tambah quantity
         if (isset($cart[$productId])) {
-            $cart[$productId]['quantity']++;
+            $cart[$productId]['quantity'] = ($cart[$productId]['quantity'] ?? 1) + 1;
         } else {
-            // Baru tambah produk dengan quantity 1
             $cart[$productId] = [
                 'id' => $product['id'],
                 'name' => $product['name'],
@@ -63,15 +69,16 @@ class CartController extends Controller
 
         session(['cart' => $cart]);
 
-        return redirect()->route('cart.index')->with('success', 'Product added to cart');
+        return redirect()->route('cart.index')->with('success', 'Product added to cart.');
     }
 
+    // ➖ Remove or Decrease Item from Cart
     public function removeFromCart(Request $request, $productId)
     {
         $cart = session('cart', []);
 
         if (isset($cart[$productId])) {
-            $cart[$productId]['quantity']--;
+            $cart[$productId]['quantity'] = ($cart[$productId]['quantity'] ?? 1) - 1;
 
             if ($cart[$productId]['quantity'] <= 0) {
                 unset($cart[$productId]);
@@ -80,6 +87,6 @@ class CartController extends Controller
             session(['cart' => $cart]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Product quantity updated');
+        return redirect()->route('cart.index')->with('success', 'Product quantity updated.');
     }
 }
