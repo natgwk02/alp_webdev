@@ -18,13 +18,6 @@
         object-fit: cover;
     }
 
-    .profile-container {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-left: auto;
-    }
-
     .icon-link {
         font-size: 1.25rem;
         position: relative;
@@ -51,30 +44,36 @@
     .navbar-collapse {
         justify-content: space-between;
     }
+
     .custom-cart-color {
-    color: #052659;
-}
-.custom-wishlist-color {
-    color: red;
-}
+        color: #052659;
+    }
+
+    .custom-wishlist-color {
+        color: red;
+    }
+
+    .dropdown-toggle::after {
+        display: none;
+    }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-scroll shadow-0">
+<nav class="navbar navbar-expand-lg navbar-scroll shadow-0 bg-white">
     <div class="container fw-semibold">
+
         <!-- Logo dan Brand -->
-        <img src='/assets/logoGambar.png' alt="" class="logo me-3" />
+        <img src='{{ asset("assets/logoGambar.png") }}' alt="Logo" class="logo me-3" />
         <a class="navbar-brand text-header fw-bold" href="{{ route('home') }}">Chillé Mart</a>
 
         <!-- Toggle button -->
-        <button class="navbar-toggler ps-0" type="button" data-mdb-collapse-init data-mdb-target="#navbarExample01"
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarExample01"
             aria-controls="navbarExample01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="d-flex justify-content-start align-items-center">
-                <i class="fas fa-bars"></i>
-            </span>
+            <i class="fas fa-bars"></i>
         </button>
 
         <!-- Navbar Content -->
         <div class="collapse navbar-collapse" id="navbarExample01">
+
             <!-- Menu kiri -->
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item">
@@ -95,6 +94,7 @@
                     </li> --}}
             </ul>
 
+            <!-- Menu kanan -->
             <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
 
                 {{-- Wishlist --}}
@@ -104,19 +104,37 @@
                     </a>
                 </li>
 
-                 {{-- Cart --}}
-               <li class="nav-item position-relative">
+                {{-- Cart --}}
+                <li class="nav-item position-relative">
                     <a class="nav-link custom-cart-color" href="{{ route('cart') }}">
-                        <i class="fas fa-cart-shopping fs-5 position-relative"></i>
+                        <i class="fas fa-cart-shopping fs-5"></i>
                     </a>
                 </li>
 
                 {{-- Profile --}}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('profile') }}">
-                        <img src='/assets/profile.png' alt="Profile" class="profile" />
-                    </a>
-                </li>
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false" onclick="event.preventDefault();">
+                    <img src="{{ asset('assets/profile.png') }}" alt="Profile" class="profile" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
+                <li>
+                <a class="dropdown-item" href="{{ route('profile') }}">
+                    <i class="fa fa-user me-2"></i> Edit Profile
+                </a>
+                </li>                    
+                <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item text-danger" href="#"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fa fa-sign-out-alt me-2"></i> Sign Out
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
+                </ul>
+            </li>
             </ul>
         </div>
     </div>

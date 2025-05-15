@@ -53,13 +53,12 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login.show')->with('success', 'Registration successful!');
-
+        return redirect('/'); // atau ke route lain
     }
+
     public function showForgotPassword()
     {
         return view('auth.forgot_password');
@@ -120,4 +119,15 @@ class AuthController extends Controller
             return back()->with('error', 'Email address not found.');
         }
     }
+
+    public function destroy(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login'); 
+    }
+
 }
