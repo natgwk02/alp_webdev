@@ -43,7 +43,7 @@
     .login-card h4 {
         text-align: center;
         margin-bottom: 10px;
-        color: #224488;
+        color: #052659;
         font-weight: bold;
     }
 
@@ -63,7 +63,7 @@
     }
 
     .btn-blue {
-        background-color: #224488;
+        background-color: #052659;
         color: white;
         border: none;
         padding: 12px;
@@ -83,7 +83,7 @@
     }
 
     .text-link {
-        color: #224488;
+        color: #052659;
         text-decoration: none;
     }
 
