@@ -17,56 +17,69 @@ class CartController extends Controller
         ['id' => 9, 'name' => 'Fiesta Siomay', 'price' => 34000, 'image' => 'fiesta-siomay.jpg', 'stock' => 50, 'category' => 'Frozen Dim Sum', 'description' => 'Delicious and ready-to-steam chicken siomay, perfect for snacks or side dishes.'],
     ];
 
-
     public function index(Request $request)
     {
-        $products = $this->products;
-        $wishlist = session('wishlist', []);
+        // Ambil data cart dari session
+        $cartItems = session('cart', []);
 
-        foreach ($products as &$product) {
-            $product['wishlist'] = in_array($product['id'], $wishlist);
+        // Hitung subtotal
+        $subtotal = 0;
+        foreach ($cartItems as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
         }
 
-        return view('customer.products', compact('products', 'wishlist'));
-    }
+        $shippingFee = 5000; // biaya shipping fix contoh
+        $tax = round($subtotal * 0.1); // pajak 10%
+        $total = $subtotal + $shippingFee + $tax;
 
-    public function addToWishlist($productId, Request $request)
-    {
-        $wishlist = session('wishlist', []);
-        $wishlist[] = $productId;
-        session(['wishlist' => array_unique($wishlist)]);
-
-        return redirect()->back();
-    }
-
-    public function removeFromWishlist($productId, Request $request)
-    {
-        $wishlist = session('wishlist', []);
-        $wishlist = array_diff($wishlist, [$productId]);
-        session(['wishlist' => $wishlist]);
-
-        return redirect()->back();
+        return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total'));
     }
 
     public function addToCart(Request $request)
     {
-        $cart = session('cart', []);
         $productId = $request->input('product_id');
-        $cart[$productId] = $this->products[$productId]; // Assuming products array is indexed by id
+        // cari produk dari array berdasarkan id (index dimulai 0, id mulai 1)
+        $product = collect($this->products)->firstWhere('id', (int)$productId);
+
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found');
+        }
+
+        $cart = session('cart', []);
+
+        // Jika produk sudah ada di cart, tambah quantity
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity']++;
+        } else {
+            // Baru tambah produk dengan quantity 1
+            $cart[$productId] = [
+                'id' => $product['id'],
+                'name' => $product['name'],
+                'price' => $product['price'],
+                'image' => $product['image'],
+                'quantity' => 1,
+            ];
+        }
+
         session(['cart' => $cart]);
 
-        return redirect()->route('cart.index');
+        return redirect()->route('cart.index')->with('success', 'Product added to cart');
     }
 
     public function removeFromCart(Request $request, $productId)
     {
         $cart = session('cart', []);
+
         if (isset($cart[$productId])) {
             $cart[$productId]['quantity']--;
-            if ($cart[$productId]['quantity'] <= 0) unset($cart[$productId]);
+
+            if ($cart[$productId]['quantity'] <= 0) {
+                unset($cart[$productId]);
+            }
+
             session(['cart' => $cart]);
         }
-        return redirect(route('cart'))
-        ->with('success', 'Product quantity updated');
+
+        return redirect()->route('cart.index')->with('success', 'Product quantity updated');
     }
 }

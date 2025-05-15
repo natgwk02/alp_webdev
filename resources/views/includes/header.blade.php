@@ -82,12 +82,12 @@
                 <li class="nav-item">
                     <a class="nav-link px-3" href="{{ route('about') }}">About Us</a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <form action="{{ route('logout') }}" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-link nav-link">Logout</button>
                     </form>
-                </li>
+                </li> --}}
                     <li class="nav-item">
                         <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
                             href="{{ route('orders') }}">My Orders</a>
@@ -106,7 +106,7 @@
 
                 {{-- Cart --}}
                 <li class="nav-item position-relative">
-                    <a class="nav-link custom-cart-color" href="{{ route('cart') }}">
+                    <a class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
                         <i class="fas fa-cart-shopping fs-5"></i>
                     </a>
                 </li>
