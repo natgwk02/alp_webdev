@@ -116,7 +116,7 @@
                 <a class="dropdown-item" href="{{ route('profile') }}">
                     <i class="fa fa-user me-2"></i> Edit Profile
                 </a>
-                </li>                    
+                </li>
                 <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item text-danger" href="#"

@@ -4,7 +4,7 @@
 <!-- About Hero -->
 <section class="py-5" style="background-color: #C1E8FF;">
     <div class="container py-4">
-        <h1 class="display-4 fw-bold text-center" style="color: #052659;">About Chille Mart</h1>
+        <h1 class="display-4 fw-bold text-center" style="color: #052659;">About Chillé Mart</h1>
         <h4 class="display-10 mt-3 text-center" style="color: #052659;">"Freshness preserved, convenience delivered, happiness guaranteed."</h4>
     </div>
 </section>
@@ -18,7 +18,7 @@
             </div>
             <div class="col-md-6">
                 <h2 class="mb-4" style="color: #052659;">Our Story</h2>
-                <p>Founded in 2025, Chille Mart began with a simple mission: to provide high-quality frozen foods with convenience. What started as a small local business has grown into a trusted name in frozen food e-commerce.</p>
+                <p>Founded in 2025, Chille Mart began with a simple mission: to provide high quality frozen foods with convenience. What started as a small local business has grown into a trusted name in frozen food e-commerce.</p>
                 <p>We carefully select our products to ensure they meet the highest standards of quality and freshness.</p>
             </div>
         </div>
@@ -68,23 +68,23 @@
         <div class="row">
             <div class="col-md-4 mb-4 text-center">
                 <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Amanda Michelle Darwis</h5>                
+                <h5>Amanda Michelle Darwis</h5>
             </div>
             <div class="col-md-4 mb-4 text-center">
                 <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Anne Tantan</h5>                
+                <h5>Anne Tantan</h5>
             </div>
             <div class="col-md-4 mb-4 text-center">
                 <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Jessica Laurentia Tedja</h5>                
+                <h5>Jessica Laurentia Tedja</h5>
             </div>
              <div class="col-md-6 mb-4 text-center">
                 <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Natalie Grace Widjaja Kuswanto</h5>                
+                <h5>Natalie Grace Widjaja Kuswanto</h5>
             </div>
             <div class="col-md-6 mb-4 text-center">
                 <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Sharon Tan</h5>                
+                <h5>Sharon Tan</h5>
             </div>
         </div>
     </div>
