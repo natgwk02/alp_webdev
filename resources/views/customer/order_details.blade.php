@@ -27,9 +27,9 @@
                             @foreach($order['items'] as $item)
                             <tr>
                                 <td>{{ $item['product_name'] }}</td>
-                                <td>${{ number_format($item['price'], 2) }}</td>
+                                <td>Rp {{ number_format($order['total_amount'], 0, ',', '.') }}</td>
                                 <td>{{ $item['quantity'] }}</td>
-                                <td>${{ number_format($item['total'], 2) }}</td>
+                                <td>Rp {{ number_format($order['total_amount'], 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -66,19 +66,19 @@
                     <div>
                         <div class="d-flex justify-content-between">
                             <span>Subtotal:</span>
-                            <span>${{ number_format($order['subtotal'], 2) }}</span>
+                            <span>Rp {{ number_format($order['total_amount'], 0, ',', '.') }}</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Shipping Fee:</span>
-                            <span>${{ number_format($order['shipping_fee'], 2) }}</span>
+                            <span>Rp {{ number_format($order['total_amount'], 0, ',', '.') }}</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Tax:</span>
-                            <span>${{ number_format($order['tax'], 2) }}</span>
+                            <span>Rp {{ number_format($order['total_amount'], 0, ',', '.') }}</span>
                         </div>
                         <div class="d-flex justify-content-between fw-bold">
                             <span>Total:</span>
-                            <span>${{ number_format($order['total_amount'], 2) }}</span>
+                            <span>Rp {{ number_format($order['total_amount'], 0, ',', '.') }}</span>
                         </div>
                     </div>
 

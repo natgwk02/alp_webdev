@@ -88,10 +88,10 @@
                         <button type="submit" class="btn btn-link nav-link">Logout</button>
                     </form>
                 </li>
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
-                            href="{{ route('order.show') }}">My Orders</a>
-                    </li> --}}
+                            href="{{ route('orders') }}">My Orders</a>
+                    </li>
             </ul>
 
             <!-- Menu kanan -->

@@ -133,7 +133,7 @@
                                 {{ $item['product_name'] }}
                                 <span class="text-muted">x{{ $item['quantity'] }}</span>
                             </div>
-                            <div>${{ number_format($item['price'] * $item['quantity'], 2) }}</div>
+                            <div>Rp{{ number_format($item['price'] * $item['quantity'], 2) }}</div>
                         </div>
                         @endforeach
                     </div>
@@ -143,19 +143,19 @@
                     <div class="order-totals mb-3">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Subtotal:</span>
-                            <span>${{ number_format($subtotal, 2) }}</span>
+                            <span>Rp{{ number_format($subtotal, 2) }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Shipping:</span>
-                            <span>${{ number_format($shippingFee, 2) }}</span>
+                            <span>Rp{{ number_format($shippingFee, 2) }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Tax:</span>
-                            <span>${{ number_format($tax, 2) }}</span>
+                            <span>Rp{{ number_format($tax, 2) }}</span>
                         </div>
                         <div class="d-flex justify-content-between fw-bold">
                             <span>Total:</span>
-                            <span>${{ number_format($total, 2) }}</span>
+                            <span>Rp{{ number_format($total, 2) }}</span>
                         </div>
                     </div>
 

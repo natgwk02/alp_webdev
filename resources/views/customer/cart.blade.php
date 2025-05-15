@@ -34,7 +34,7 @@
                                              style="width: 80px; height: 80px; object-fit: cover;">
                                         <div>
                                             <h5 class="mb-1">{{ $item['name'] }}</h5>
-                                            {{-- <small class="text-muted">Stock: {{ $item['stock'] }}</small> --}}
+                                            <small class="text-muted">Stock: {{ $item['stock'] }}</small>
                                         </div>
                                     </div>
                                 </td>
