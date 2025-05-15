@@ -179,6 +179,26 @@ class ProductController extends Controller
 
         return view('customer.product_details', compact('product'));
     }
+  public function wishlist()
+{
+    $wishlist = session('wishlist', []); // pastikan default array kosong
+    $allProducts = $this->products();
+
+    // Filter produk yang ada di wishlist
+    $wishlistItems = array_filter($allProducts, function($product) use ($wishlist) {
+        return isset($wishlist[$product['id']]);
+    });
+
+    // Contoh tambahkan 'in_stock' dan 'product_name' agar sesuai view (kalau belum ada)
+    $wishlistItems = array_map(function($product) {
+        $product['product_name'] = $product['name'];
+        $product['in_stock'] = true; // bisa disesuaikan logika stoknya
+        return $product;
+    }, $wishlistItems);
+
+    return view('customer.wishlist', compact('wishlistItems'));
+}
+
 
     public function addToWishlist(Request $request, $productId)
     {
