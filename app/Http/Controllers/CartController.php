@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    // Show the cart
     public function index()
     {
         // Hardcoded cart items
@@ -28,12 +29,12 @@ class CartController extends Controller
             ]
         ];
 
-        // Menghitung jumlah total item dalam keranjang
+        // Calculate the total number of items in the cart
         $totalItems = array_reduce($cartItems, function($carry, $item) {
             return $carry + $item['quantity'];
         }, 0);
 
-        // Menghitung subtotal, shipping fee, tax, dan total
+        // Calculate subtotal, shipping fee, tax, and total
         $subtotal = array_reduce($cartItems, function($carry, $item) {
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
@@ -42,17 +43,19 @@ class CartController extends Controller
         $tax = $subtotal * 0.1; // 10% tax
         $total = $subtotal + $shippingFee + $tax;
 
-        // Mengirimkan data ke view
+        // Return data to the view
         return view('customer.cart', compact('cartItems', 'totalItems', 'subtotal', 'shippingFee', 'tax', 'total'));
     }
 
+    // Add a product to the cart
     public function addToCart(Request $request, $productId)
     {
-        // In a real application, this would add item to cart
+        // In a real application, this would add item to the cart
         return redirect()->route('cart')
             ->with('success', 'Product added to cart successfully');
     }
 
+    // Update cart quantities
     public function updateCart(Request $request)
     {
         // In a real application, this would update cart quantities
@@ -60,13 +63,15 @@ class CartController extends Controller
             ->with('success', 'Cart updated successfully');
     }
 
+    // Remove a product from the cart
     public function removeFromCart($productId)
     {
-        // In a real application, this would remove item from cart
+        // In a real application, this would remove item from the cart
         return redirect()->route('cart')
             ->with('success', 'Product removed from cart');
     }
 
+    // Show the wishlist
     public function wishlist()
     {
         // Hardcoded wishlist items
@@ -75,28 +80,31 @@ class CartController extends Controller
                 'product_id' => 3,
                 'product_name' => 'Alaskan King Crab Legs',
                 'price' => 39.99,
-                'image' => 'crab-legs.jpg',
+                'image' => 'sea-bass.jpg',
                 'in_stock' => true
             ],
             [
                 'product_id' => 4,
                 'product_name' => 'Patagonian Scallops',
                 'price' => 29.99,
-                'image' => 'scallops.jpg',
+                'image' => 'sea-bass.jpg',
                 'in_stock' => false
             ]
         ];
 
+        // Return wishlist view
         return view('customer.wishlist', compact('wishlistItems'));
     }
 
+    // Add a product to the wishlist
     public function addToWishlist($productId)
     {
         // In a real application, this would add item to wishlist
-        return redirect()->back()
+        return redirect()->route('wishlist')
             ->with('success', 'Product added to wishlist');
     }
 
+    // Remove a product from the wishlist
     public function removeFromWishlist($productId)
     {
         // In a real application, this would remove item from wishlist

@@ -25,7 +25,7 @@
         }
 
         .special-offer {
-            background-color: #4ed1f2;
+            background-color: #C1E8FF;
             color: white;
             padding: 40px 0;
         }
@@ -282,16 +282,15 @@
 
 
     {{-- special offer --}}
-<section class="special-offer mb-5">
-    <div class="container text-center" style="background-color: #C1E8FF; border-radius: 20px 20px 0 0; padding: 30px 15px; box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);">
-        <!-- Optional: Add an icon for better UI -->
+<section class="special-offer mb-5"> 
+    <div class="container text-center" style="background-color:#00000020; border-radius: 20px 20px 0 0; padding: 30px 15px; box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);">
         <div class="mb-3">
-            <img src="{{ asset('images/offer.png') }}" alt="Special Offer" class="img-fluid" style="max-width: 120px; margin-bottom: 10px;"> <!-- Reduced size of logo -->
+            <img src="{{ asset('images/offer.png') }}" alt="Special Offer" class="img-fluid" style="max-width: 120px; margin-bottom: 10px;"> 
         </div>
 
-        <h2 class="display-4 fw-bold mb-3 text-white" style="font-size: 2.5rem; letter-spacing: 1px;">NEW CHILLÉ'S FRIEND 20%</h2>
+        <h2 class="display-4 fw-bold mb-3" style="font-size: 2.5rem; letter-spacing: 1px; color: #003366;">NEW CHILLÉ'S FRIEND 20%</h2>
         
-        <p class="lead mb-4 text-white" style="font-size: 1.2rem; font-weight: 600;">Use code <span class="fw-bold" style="color: #ffdd00;">CHILLBRO</span> on your first order over Rp 200.000</p>
+        <p class="lead mb-4" style="font-size: 1.2rem; font-weight: 600; color: #003366;">Use code <span class="fw-bold" style="color: #ffdd00;">CHILLBRO</span> on your first order over Rp 200.000</p>
         
         <a href="{{ route('products') }}" class="btn btn-light btn-lg" style="background-color: #ffdd00; color: #003366; padding: 12px 30px; border-radius: 50px; font-weight: bold; text-transform: uppercase; font-size: 1rem; transition: all 0.3s ease-in-out;">
             Shop Now
@@ -300,7 +299,7 @@
 
     <!-- Bottom color section -->
     <div class="container text-center" style="background-color: #00000020; border-radius: 0 0 20px 20px; padding: 20px 15px;">
-        <p class="text-white">Exclusive Offer for New Customers</p>
+        <p style="color: #003366;">Exclusive Offer for New Customers</p>
     </div>
 </section>
 
@@ -324,9 +323,6 @@
         box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
     }
 </style>
-
-
-
 
     {{-- Top seller --}}
     <section class="best-product py-5">
