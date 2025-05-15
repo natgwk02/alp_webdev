@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app') 
 
 @section('title', 'Frozen Food Products - Chille Mart')
 
@@ -16,11 +16,11 @@
         @foreach($products as $product)
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100 shadow-sm position-relative">
-                <form action="{{ route('wishlist', ['productId' => $product['id']]) }}" method="POST" class="position-absolute top-0 end-0 m-2">
-                    @csrf
-                    <button type="submit" class="btn btn-light btn-sm border-0">
-                        <i class="fas fa-heart text-danger"></i>
-                    </button>
+                <form action="{{ isset($wishlist[$product['id']]) ? route('wishlist.remove', $product['id']) : route('wishlist.add', $product['id']) }}" method="POST" class="position-absolute top-0 end-0 m-2">
+                      @csrf
+                <button type="submit" class="btn btn-light btn-sm border-0">
+               <i class="fas fa-heart {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }}"></i>
+                 </button>
                 </form>
 
                 <div class="text-center p-3">
