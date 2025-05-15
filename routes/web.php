@@ -62,7 +62,6 @@ Route::get('/home', [HomeController::class, 'showHome'])
 Route::get('/about', function () {
     return view('customer.about');
 })->name('about');
-<<<<<<< Updated upstream
 
 Route::get('/profile', function () {
     return view('customer.profile');
@@ -74,5 +73,3 @@ Route::get('/profile', function () {
 //     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 //     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 // });
-=======
->>>>>>> Stashed changes
