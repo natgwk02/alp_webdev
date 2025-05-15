@@ -3,6 +3,24 @@
 @section('title', 'Shopping Cart - Chile Mart')
 
 @section('content')
+
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+        role="alert" style="min-width: 300px;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow-lg z-3"
+        role="alert" style="min-width: 300px;">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+
 <div class="container py-4">
     <div class="row">
         <div class="col-12">
@@ -28,9 +46,9 @@
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/products-img/' . $item['image']) }}" 
-                                             alt="{{ $item['name'] }}" 
-                                             class="img-thumbnail me-3" 
+                                        <img src="{{ asset('images/products-img/' . $item['image']) }}"
+                                             alt="{{ $item['name'] }}"
+                                             class="img-thumbnail me-3"
                                              style="width: 80px; height: 80px; object-fit: cover;">
                                         <div>
                                             <h5 class="mb-1">{{ $item['name'] }}</h5>

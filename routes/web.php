@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
@@ -40,10 +41,13 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
+    Route::get('/wishlist/toggle/{productId}', [CartController::class, 'toggleWishlist']);
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
+    Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
+
 // //});
 
 // Admin Routes
@@ -64,8 +68,8 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
 // Home Route
 Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
-//Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-//Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
+Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
 
 
 Route::get('/about', function () {

@@ -6,99 +6,102 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function checkout()
-    {
-        // Hardcoded cart data
-        $cartItems = [
-            [
-                'product_id' => 1,
-                'product_name' => 'Chilean Sea Bass Fillet',
-                'price' => 24.99,
-                'quantity' => 2
-            ],
-            [
-                'product_id' => 2,
-                'product_name' => 'Argentinian Red Shrimp',
-                'price' => 18.99,
-                'quantity' => 1
-            ]
-        ];
+   public function index()
+{
+    // Ambil data produk dari ProductController
+    $productController = new \App\Http\Controllers\ProductController;
+    $products = $productController->products();
 
-        // Calculate totals
-        $subtotal = array_reduce($cartItems, function($carry, $item) {
-            return $carry + ($item['price'] * $item['quantity']);
-        }, 0);
-
-        $shippingFee = 5.00;
-        $tax = $subtotal * 0.1; // 10% tax
-        $total = $subtotal + $shippingFee + $tax;
-
-        // Hardcoded user addresses
-        $userAddresses = [
-            [
-                'id' => 1,
-                'address_type' => 'Home',
-                'street' => '123 Main St',
-                'city' => 'Santiago',
-                'postal_code' => '8320000',
-                'country' => 'Chile',
-                'is_default' => true
-            ],
-            [
-                'id' => 2,
-                'address_type' => 'Office',
-                'street' => '456 Business Ave',
-                'city' => 'Santiago',
-                'postal_code' => '8320001',
-                'country' => 'Chile',
-                'is_default' => false
-            ]
-        ];
-
-        return view('customer.checkout', compact(
-            'cartItems',
-            'subtotal',
-            'shippingFee',
-            'tax',
-            'total',
-            'userAddresses'
-        ));
+    // Buat array keyed by product_id agar gampang cari
+    $productsById = [];
+    foreach ($products as $product) {
+        $productsById[$product['id']] = $product;
     }
 
-    public function placeOrder(Request $request)
-    {
-        // Hardcoded order number (in a real app, generate this dynamically)
-        $orderNumber = 'CHILE-' . date('Y') . '-' . rand(1000, 9999);
-
-        // Hardcoded success message and redirect (without actual database saving)
-        return redirect()->route('orders.show', ['id' => 1001])
-            ->with('success', 'Order placed successfully! Your order number is: ' . $orderNumber);
-    }
-
-    public function index()
-    {
-        // Hardcoded list of orders
-        $orders = [
-            [
-                'id' => 1001,
-                'order_number' => 'CHILE-2025-1001',
-                'order_date' => '2025-05-10',
-                'status' => 'Processing',
-                'total_amount' => 103.96,
-                'item_count' => 3
-            ],
-            [
-                'id' => 1002,
-                'order_number' => 'CHILE-2025-1002',
-                'order_date' => '2025-05-05',
-                'status' => 'Delivered',
-                'total_amount' => 64.98,
-                'item_count' => 2
+    // Hardcoded list of orders, tambah item dengan image dari produk
+    $orders = [
+        [
+            'id' => 1001,
+            'order_number' => 'CHILE-2025-1001',
+            'order_date' => '2025-05-10',
+            'status' => 'Processing',
+            'total_amount' => 103960,
+            'item_count' => 3,
+            'items' => [
+                [
+                    'product_id' => 1,
+                    'product_name' => 'Chilean Sea Bass Fillet',
+                    'quantity' => 2,
+                    'price' => 24990,
+                    'total' => 49980,
+                ],
+                [
+                    'product_id' => 2,
+                    'product_name' => 'Argentinian Red Shrimp',
+                    'quantity' => 1,
+                    'price' => 18990,
+                    'total' => 18990,
+                ]
             ]
-        ];
+        ],
+        [
+            'id' => 1002,
+            'order_number' => 'CHILE-2025-1002',
+            'order_date' => '2025-05-05',
+            'status' => 'Delivered',
+            'total_amount' => 64980,
+            'item_count' => 2,
+            'items' => [
+                [
+                    'product_id' => 3,
+                    'product_name' => 'Kanzler Nugget Crispy',
+                    'quantity' => 2,
+                    'price' => 25000,
+                    'total' => 50000,
+                ]
+            ]
+        ]
+    ];
 
-        return view('customer.orders', compact('orders'));
+    // Tambahkan 'image' ke setiap item dari data produk
+    foreach ($orders as &$order) {
+        foreach ($order['items'] as &$item) {
+            $pid = $item['product_id'];
+            if (isset($productsById[$pid])) {
+                $item['image'] = $productsById[$pid]['image'];
+            } else {
+                $item['image'] = 'no-image.png'; // default image kalau produk gak ketemu
+            }
+        }
     }
+
+    return view('customer.orders', compact('orders'));
+}
+  public function markAsReceived($id)
+{
+    $orders = session('orders', []);
+
+    $orderIndex = null;
+    foreach ($orders as $index => $order) {
+        if ($order['id'] == $id) {
+            $orderIndex = $index;
+            break;
+        }
+    }
+
+    if ($orderIndex === null) {
+        return redirect()->back()->with('error', 'Order not found.');
+    }
+
+    if ($orders[$orderIndex]['status'] === 'Delivered') {
+        $orders[$orderIndex]['status'] = 'Completed';
+        session(['orders' => $orders]);
+
+        return redirect()->back()->with('success', 'Order marked as received.');
+    }
+
+    return redirect()->back()->with('error', 'This order cannot be marked as received.');
+}
 
     public function show($id)
     {

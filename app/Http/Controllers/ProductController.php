@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    private function products()
+    public function products()
     {
         return [
             [
@@ -218,3 +218,5 @@ class ProductController extends Controller
         return redirect()->back()->with('success', 'Product removed from wishlist');
     }
 }
+
+
