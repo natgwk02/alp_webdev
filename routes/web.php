@@ -31,7 +31,7 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     Route::get('/products', action: [ProductController::class, 'index'])->name('products');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
-    Route::post('/cart//add/{productId}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/wishlist', [CartController::class, 'wishlist'])->name('wishlist');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
