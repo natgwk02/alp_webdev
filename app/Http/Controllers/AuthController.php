@@ -16,23 +16,40 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login_auth(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email:dns',
-            'password' => 'required',
+   public function login_auth(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // Hardcoded admin login
+    if (
+        $request->email === 'admin@chillemart.com' &&
+        $request->password === 'admin123'
+    ) {
+        session([
+            'is_admin' => true,
+            'email' => $request->email,
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return redirect()->intended('/home');
-        }
-
-        return back()->with([
-            'error' => 'The provided credentials do not match our records.'
-        ]);
+        return redirect()->route('admin.dashboard');
     }
+
+    // Login via database
+    if (Auth::attempt([
+        'users_email' => $request->email,
+        'password' => $request->password,
+    ])) {
+        $request->session()->regenerate();
+
+        return redirect()->route('home');
+    }
+
+    // ❗ Login gagal, tampilkan pesan error
+    return back()->with('error', 'Incorrect email or password.');
+}
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -40,7 +57,8 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login.show');
+        return redirect()->route('login.show')->with('success', 'Registration successful!');
+
     }
     public function showForgotPassword()
     {
@@ -55,25 +73,34 @@ class AuthController extends Controller
     // Memproses data register
     public function register(Request $request)
     {
-        // Validasi input
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'min:6', 'confirmed'], // butuh input name="password_confirmation"
-        ]);
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'unique:users,users_email'],
+        'password' => ['required', 'min:6', 'confirmed'],
+        'phone' => ['required', 'regex:/^[0-9]{10,12}$/'],
+        'address' => ['required'],
+    ]);
 
-        // Simpan user baru
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+
+    $user = \App\Models\User::create([
+        'users_name' => $validated['name'],
+        'users_email' => $validated['email'],
+        'users_password' => Hash::make($validated['password']),
+        'users_phone' => $validated['phone'],
+        'users_address' => $validated['address'],
+        'status_del' => false,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
 
         // Login otomatis setelah register (opsional)
         Auth::login($user);
 
-        return redirect('/dashboard'); // arahkan ke halaman utama
-    }
+    return redirect()->route('login.show')->with('success', 'Registration successful! Please login.');
+}
+
+
+    // Dummy Reset Password
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -82,9 +109,8 @@ class AuthController extends Controller
 
         // Simulasi list email "terdaftar"
         $allowedEmails = [
-            'user@example.com',
+            'alice@mail.com',
             'admin@chilemart.com',
-            'test@domain.com'
         ];
 
         if (in_array($request->email, $allowedEmails)) {

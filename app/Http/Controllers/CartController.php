@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -59,6 +60,8 @@ class CartController extends Controller
     public function updateCart(Request $request)
     {
         // In a real application, this would update cart quantities
+        $productId = $request->input('product_id');
+       $quantity = $request->input('quantity');
         return redirect()->route('cart')
             ->with('success', 'Cart updated successfully');
     }

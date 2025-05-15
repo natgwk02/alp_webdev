@@ -25,10 +25,19 @@
                 <div class="card-body d-flex flex-column justify-content-between">
                     <h5 class="card-title fw-semibold">{{ $product['name'] }}</h5>
                     <p class="card-text text-muted mb-2">{{ $product['category'] }}</p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <h5 class="text-primary mb-0">Rp {{ number_format($product['price'], 0, ',', '.') }}</h5>
-                        <a href="{{ route('product.detail', $product['id']) }}" class="btn btn-outline-primary">View Details</a>
-                    </div>
+                    <h5 class="text-primary mb-3">Rp {{ number_format($product['price'], 0, ',', '.') }}</h5>
+
+                    <form action="{{ route('cart.add') }}" method="POST" class="mt-auto">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('product.detail', $product['id']) }}" class="btn btn-outline-primary">View Details</a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-cart-plus-fill"></i> Add
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
