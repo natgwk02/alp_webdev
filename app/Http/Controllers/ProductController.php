@@ -96,31 +96,77 @@ class ProductController extends Controller
                 'reviews' => []
             ],
             [
-            'id' => 6,
-            'name' => 'Fiesta Chicken Karaage 500gr',
-            'price' => 48000,
-            'image' => 'chicken-fiesta.jpg',
-            'category' => 'Chicken',
-            'description' => 'Crispy Japanese-style chicken karaage, made from tender chicken thigh meat. Ready to fry.',
-            'weight' => '500g',
-            'origin' => 'Indonesia',
-            'nutrition' => [
-            'calories' => 290,
-            'protein' => '18g',
-            'fat' => '20g',
+                'id' => 6,
+                'name' => 'Fiesta Chicken Karaage 500gr',
+                'price' => 48000,
+                'image' => 'chicken-fiesta-karage.jpg',
+                'category' => 'Chicken',
+                'description' => 'Crispy Japanese-style chicken karaage, made from tender chicken thigh meat. Ready to fry.',
+                'weight' => '500g',
+                'origin' => 'Indonesia',
+                'nutrition' => [
+                    'calories' => 290,
+                    'protein' => '18g',
+                    'fat' => '20g',
+                ],
+                'reviews' => []
             ],
-            'reviews' => []
+            [
+                'id' => 7,
+                'name' => 'Good Value Mixed Fruit',
+                'price' => 32000,
+                'image' => 'gv-mixed-fruit.jpg',
+                'category' => 'Frozen Fruit',
+                'description' => 'A convenient mix of frozen strawberries, blueberries, mango, and pineapple. Perfect for smoothies or desserts.',
+                'weight' => '400g',
+                'origin' => 'Indonesia',
+                'nutrition' => [
+                    'calories' => 160,
+                    'protein' => '1g',
+                    'fat' => '0g',
+                ],
+                'reviews' => []
             ],
-
-
-            
+            [
+                'id' => 8,
+                'name' => 'Golden Farm Mixed Vegetable',
+                'price' => 25000,
+                'image' => 'gf-mixedvegetables.jpg',
+                'category' => 'Frozen Vegetables',
+                'description' => 'A healthy blend of frozen carrots, corn, green beans, and peas. Great for stir-fries or soups.',
+                'weight' => '500g',
+                'origin' => 'Indonesia',
+                'nutrition' => [
+                    'calories' => 90,
+                    'protein' => '3g',
+                    'fat' => '0.5g',
+                ],
+                'reviews' => []
+            ],
+            [
+                'id' => 9,
+                'name' => 'Fiesta Siomay',
+                'price' => 34000,
+                'image' => 'fiesta-siomay.jpg',
+                'category' => 'Frozen Dim Sum',
+                'description' => 'Delicious and ready-to-steam chicken siomay, perfect for snacks or side dishes.',
+                'weight' => '250g',
+                'origin' => 'Indonesia',
+                'nutrition' => [
+                    'calories' => 190,
+                    'protein' => '8g',
+                    'fat' => '9g',
+                ],
+                'reviews' => []
+            ]
         ];
     }
 
     public function index()
     {
         $products = $this->products();
-        return view('customer.products', compact('products'));
+        $wishlist = session('wishlist', []);
+        return view('customer.products', compact('products', 'wishlist'));
     }
 
     public function show($id)
@@ -133,4 +179,24 @@ class ProductController extends Controller
 
         return view('customer.product_details', compact('product'));
     }
+
+    public function addToWishlist(Request $request, $productId)
+    {
+        $wishlist = session()->get('wishlist', []);
+        $wishlist[$productId] = true;
+        session(['wishlist' => $wishlist]);
+
+        return redirect()->back()->with('success', 'Product added to wishlist');
+    }
+
+    public function removeFromWishlist(Request $request, $productId)
+    {
+        $wishlist = session()->get('wishlist', []);
+        unset($wishlist[$productId]);
+        session(['wishlist' => $wishlist]);
+
+        return redirect()->back()->with('success', 'Product removed from wishlist');
+    }
 }
+
+

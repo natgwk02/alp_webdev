@@ -1,116 +1,60 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    // Show the cart
-    public function index()
+    private $products = [
+        ['id' => 1, 'name' => 'Chilean Sea Bass Fillet', 'price' => 200000, 'image' => 'sea-bass.jpg', 'stock' => 10, 'category' => 'Fish', 'description' => 'Premium Chilean sea bass fillets, wild-caught from the cold waters of Chile.'],
+        ['id' => 2, 'name' => 'Argentinian Red Shrimp', 'price' => 220000, 'image' => 'red-shrimp.jpg', 'stock' => 15, 'category' => 'Shellfish', 'description' => 'Large, sweet Argentinian red shrimp, perfect for grilling or sautéing.'],
+        ['id' => 3, 'name' => 'Kanzler Nugget Crispy', 'price' => 50000, 'image' => 'kanzler-nugget.jpg', 'stock' => 20, 'category' => 'Chicken Nugget', 'description' => 'Crispy and flavorful chicken nuggets, perfect for quick meals or party snacks.'],
+        ['id' => 4, 'name' => 'Ready Meal Fiesta Beef Bulgogi With Rice', 'price' => 26999, 'image' => 'rm-fiesta-bulgogi.jpg', 'stock' => 25, 'category' => 'Ready Meals', 'description' => 'Tender beef in a savory bulgogi marinade, perfectly paired with fluffy rice, ideal for a quick and delicious meal.'],
+        ['id' => 5, 'name' => 'Gorton\'s Classic Grilled Salmon', 'price' => 56000, 'image' => 'fish-grilled-salmon.jpg', 'stock' => 30, 'category' => 'Fish', 'description' => 'Grilled salmon fillets seasoned and ready to enjoy.'],
+        ['id' => 6, 'name' => 'Fiesta Chicken Karaage 500gr', 'price' => 48000, 'image' => 'chicken-fiesta-karage.jpg', 'stock' => 15, 'category' => 'Chicken', 'description' => 'Crispy Japanese-style chicken karaage, made from tender chicken thigh meat. Ready to fry.'],
+        ['id' => 7, 'name' => 'Good Value Mixed Fruit', 'price' => 32000, 'image' => 'gv-mixed-fruit.jpg', 'stock' => 40, 'category' => 'Frozen Fruit', 'description' => 'A convenient mix of frozen strawberries, blueberries, mango, and pineapple. Perfect for smoothies or desserts.'],
+        ['id' => 8, 'name' => 'Golden Farm Mixed Vegetable', 'price' => 25000, 'image' => 'gf-mixedvegetables.jpg', 'stock' => 35, 'category' => 'Frozen Vegetables', 'description' => 'A healthy blend of frozen carrots, corn, green beans, and peas. Great for stir-fries or soups.'],
+        ['id' => 9, 'name' => 'Fiesta Siomay', 'price' => 34000, 'image' => 'fiesta-siomay.jpg', 'stock' => 50, 'category' => 'Frozen Dim Sum', 'description' => 'Delicious and ready-to-steam chicken siomay, perfect for snacks or side dishes.'],
+    ];
+
+
+    public function index(Request $request)
     {
-        $cartItems = [
-            [
-                'product_id' => 1,
-                'product_name' => 'Chilean Sea Bass Fillet',
-                'price' => 24.99,
-                'quantity' => 2,
-                'image' => 'sea-bass.jpg',
-                'stock' => 10
-            ],
-            [
-                'product_id' => 2,
-                'product_name' => 'Argentinian Red Shrimp',
-                'price' => 18.99,
-                'quantity' => 1,
-                'image' => 'red-shrimp.jpg',
-                'stock' => 15
-            ]
-        ];
+        $products = $this->products;
+        $wishlist = session('wishlist', []);
 
-        // Calculate the total number of items in the cart
-        $totalItems = array_reduce($cartItems, function($carry, $item) {
-            return $carry + $item['quantity'];
-        }, 0);
+        foreach ($products as &$product) {
+            $product['wishlist'] = in_array($product['id'], $wishlist);
+        }
 
-        // Calculate subtotal, shipping fee, tax, and total
-        $subtotal = array_reduce($cartItems, function($carry, $item) {
-            return $carry + ($item['price'] * $item['quantity']);
-        }, 0);
-
-        $shippingFee = 5.00;
-        $tax = $subtotal * 0.1; // 10% tax
-        $total = $subtotal + $shippingFee + $tax;
-
-        // Return data to the view
-        return view('customer.cart', compact('cartItems', 'totalItems', 'subtotal', 'shippingFee', 'tax', 'total'));
+        return view('customer.products', compact('products', 'wishlist'));
     }
 
-    // Add a product to the cart
-    public function addToCart(Request $request, $productId)
+    public function addToWishlist($productId, Request $request)
     {
-        // In a real application, this would add item to the cart
-        return redirect()->route('cart')
-            ->with('success', 'Product added to cart successfully');
+        $wishlist = session('wishlist', []);
+        $wishlist[] = $productId;
+        session(['wishlist' => array_unique($wishlist)]);
+
+        return redirect()->back();
     }
 
-    // Update cart quantities
-    public function updateCart(Request $request)
+    public function removeFromWishlist($productId, Request $request)
     {
-        // In a real application, this would update cart quantities
+        $wishlist = session('wishlist', []);
+        $wishlist = array_diff($wishlist, [$productId]);
+        session(['wishlist' => $wishlist]);
+
+        return redirect()->back();
+    }
+
+    public function addToCart(Request $request)
+    {
+        $cart = session('cart', []);
         $productId = $request->input('product_id');
-       $quantity = $request->input('quantity');
-        return redirect()->route('cart')
-            ->with('success', 'Cart updated successfully');
-    }
+        $cart[$productId] = $this->products[$productId]; // Assuming products array is indexed by id
+        session(['cart' => $cart]);
 
-    // Remove a product from the cart
-    public function removeFromCart($productId)
-    {
-        // In a real application, this would remove item from the cart
-        return redirect()->route('cart')
-            ->with('success', 'Product removed from cart');
-    }
-
-    // Show the wishlist
-    public function wishlist()
-    {
-        // Hardcoded wishlist items
-        $wishlistItems = [
-            [
-                'product_id' => 3,
-                'product_name' => 'Alaskan King Crab Legs',
-                'price' => 39.99,
-                'image' => 'sea-bass.jpg',
-                'in_stock' => true
-            ],
-            [
-                'product_id' => 4,
-                'product_name' => 'Patagonian Scallops',
-                'price' => 29.99,
-                'image' => 'sea-bass.jpg',
-                'in_stock' => false
-            ]
-        ];
-
-        // Return wishlist view
-        return view('customer.wishlist', compact('wishlistItems'));
-    }
-
-    // Add a product to the wishlist
-    public function addToWishlist($productId)
-    {
-        // In a real application, this would add item to wishlist
-        return redirect()->route('wishlist')
-            ->with('success', 'Product added to wishlist');
-    }
-
-    // Remove a product from the wishlist
-    public function removeFromWishlist($productId)
-    {
-        // In a real application, this would remove item from wishlist
-        return redirect()->route('wishlist')
-            ->with('success', 'Product removed from wishlist');
+        return redirect()->route('cart.index');
     }
 }
