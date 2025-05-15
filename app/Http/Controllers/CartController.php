@@ -57,4 +57,16 @@ class CartController extends Controller
 
         return redirect()->route('cart.index');
     }
+
+    public function removeFromCart(Request $request, $productId)
+    {
+        $cart = session('cart', []);
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity']--;
+            if ($cart[$productId]['quantity'] <= 0) unset($cart[$productId]);
+            session(['cart' => $cart]);
+        }
+        return redirect(route('cart'))
+        ->with('success', 'Product quantity updated');
+    }
 }
