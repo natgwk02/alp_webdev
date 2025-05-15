@@ -55,7 +55,7 @@ class CartController extends Controller
         $cart[$productId] = $this->products[$productId]; // Assuming products array is indexed by id
         session(['cart' => $cart]);
 
-        return redirect()->route('cart.index');
+        return redirect()->back();
     }
 
     public function removeFromCart(Request $request, $productId)
