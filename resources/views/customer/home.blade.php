@@ -1,6 +1,25 @@
 @extends('layouts.app')
 
 @section('title', 'Chille Mart')
+<script>
+    function scrollWithOffset(e) {
+        e.preventDefault();
+        const target = document.querySelector('#shop-category');
+        const offset = -100; // scroll lebih atas agar "Shop by Category" tetap terlihat
+
+        if (target) {
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = target.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition + offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    }
+</script>
 
 @section('content')
     <style>
@@ -9,7 +28,7 @@
         }
 
         .hero-section {
-            background-color: #b5e9f0;
+            background-color: #C1E8FF;
             padding: 80px 0;
             color: #052659;
         }
@@ -113,6 +132,11 @@
         .feature-icon {
             color: #4ed1f2;
         }
+
+        html {
+        scroll-behavior: smooth;
+        }
+
     </style>
     {{-- atas   --}}
    <section class="hero-section">
@@ -125,7 +149,12 @@
             <div class="col-lg-12 text-center" style="margin-top: -20px;">
                 <h1 class="display-4 fw-bold mb-2">Keep it cool, keep it Chillé!</h1>
                 <p class="lead mb-4">Deliciously frozen, always ready. Discover your next favorite meal today!</p>
-                <a href="" class="btn btn-primary btn-lg">Let's Chill</a>
+                <a href="#shop-category" 
+                class="btn btn-lg text-white border-0" 
+                style="background-color: #052659; border-radius: 12px; padding: 12px 24px; font-weight: 600;" 
+                onclick="scrollWithOffset(event)">
+                Let's Chill
+                </a>
             </div>
         </div>
     </div>
@@ -135,7 +164,9 @@
                         
     <section class="category py-5">
     <div class="container">
-        <h2 class="text-center mb-5">Shop by Category</h2>
+        <section id="shop-category">
+    <h2 class="text-center mb-4">Shop by Category</h2>
+    </section>
 
         <div id="categoryCarousel" class="carousel slide category-carousel" data-bs-ride="carousel"
             data-bs-interval="4000" data-bs-pause="hover">
@@ -278,24 +309,67 @@
         .category-item:hover .category-text {
             transform: translateY(-5px); /* Lift the text along with the image */
         }
+
+        .voucher-hero {
+            background: linear-gradient(to bottom right, #C1E8FF, #C1E8FF);
+            padding: 40px 20px;
+        }
+
+
+        .voucher-box {
+            max-width: 1100px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .voucher-img {
+            flex: 1;
+            min-height: 280px;
+            max-height: 450px;
+        }
+
+        .voucher-img img {
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+        }
+
+        .voucher-content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .voucher-box {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
     </style>
 
 
     {{-- special offer --}}
-    <section class="special-offer mb-5"> 
-    <div class="container text-center" style="background-color:#00000020; border-radius: 20px 20px 0 0; padding: 30px 15px; box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);">
-        <div class="mb-3">
-        <img src="{{ asset('images/voucher.png') }}" alt="Special Offer" class="img-fluid" style="max-width: 500px; margin-bottom: 10px;">
+    <section class="voucher-hero d-flex align-items-center justify-content-center py-5 px-3">
+    <div class="voucher-box shadow-lg rounded-4 d-flex flex-column flex-md-row overflow-hidden">
+
+        <!-- Gambar -->
+        <div class="voucher-img bg-light">
+            <img src="/images/voucher.png" alt="Voucher Banner" class="img-fluid w-100 h-100 object-fit-cover">
         </div>
 
-        <h2 class="display-4 fw-bold mb-3" style="font-size: 2.5rem; letter-spacing: 1px; color: #003366;">NEW CHILLÉ'S FRIEND 20%</h2>
-        
-        <p class="lead mb-4" style="font-size: 1.2rem; font-weight: 600; color: #003366;">Use code <span class="fw-bold" style="color: #ffdd00;">CHILLBRO</span> on your first order over Rp 200.000</p>
-        
-        <a href="{{ route('products') }}" class="btn btn-light btn-lg" style="background-color: #ffdd00; color: #003366; padding: 12px 30px; border-radius: 50px; font-weight: bold; text-transform: uppercase; font-size: 1rem; transition: all 0.3s ease-in-out;">
-            Shop Now
-        </a>
+        <!-- Konten -->
+        <div class="voucher-content p-4 p-md-5 d-flex flex-column justify-content-center text-center text-md-start bg-white">
+            <h2 class="text-blue fw-bold mb-2">🎉 20% OFF NEW CHILLÉ MEMBERS</h2>
+            <p class="mb-3 text-dark fs-5">Valid for all types of frozen food – minimum purchase Rp 200.000</p>
+            <p class="mb-4 text-muted">Use code <span class="text-warning fw-bold">CHILLBRO</span> on your first order</p>
+            <a href="{{ route('products') }}" class="btn btn-warning px-4 py-2 fw-semibold rounded-pill shadow-sm text-dark">SHOP NOW</a>
+        </div>
+
     </div>
+    </section>
+
+
 
     <style>
     .special-offer:hover .btn {
@@ -414,7 +488,11 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="{{ route('products') }}" class="btn btn-primary">View All Products</a>
+            <a href="{{ route('products') }}" 
+            class="btn text-white" 
+            style="background-color: #052659; padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none;">
+            View All Products
+            </a>
             </div>
         </div>
     </section>
