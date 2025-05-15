@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
@@ -16,8 +17,13 @@ Route::get('/login', [AuthController::class, "show"])
 Route::post('/login_auth', [AuthController::class, "login_auth"])
 ->name('login.auth');
 
-Route::get('/logout', [AuthController::class, "logout"])
-->name('logout');
+Route::POST('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout');
+
 
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register'); // untuk tampilkan form
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
