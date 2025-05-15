@@ -1,12 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\AdminOrderController;
 
-<<<<<<< Updated upstream
-Route::get('/', function () {
-    return view('welcome');
-});
-=======
 // Authentication Routes
 Route::get('/login', [AuthController::class, "show"])
 ->name('login.show');
@@ -14,38 +17,66 @@ Route::get('/login', [AuthController::class, "show"])
 Route::post('/login_auth', [AuthController::class, "login_auth"])
 ->name('login.auth');
 
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
-Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
+Route::get('/logout', [AuthController::class, "logout"])
+->name('logout');
 
-// Customer Routes
-Route::middleware(['auth', 'customer'])->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::get('/products', [ProductController::class, 'index'])->name('products');
+Route::get('/register', [AuthController::class, 'registerForm'])->name('register'); // untuk tampilkan form
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
+Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
+
+// // Customer Routes
+// //Route::middleware(['auth', 'customer'])->group(function () {
+    Route::get( '/', [HomeController::class, 'showHome'])->name('home');
+    Route::get('/products', action: [ProductController::class, 'index'])->name('products');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
-    Route::get('/cart', [CartController::class, 'index'])->name('cart');
-    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-    Route::get('/wishlist', [CartController::class, 'wishlist'])->name('wishlist');
+Route::get('cart', [CartController::class, 'index'])->name('cart');
+Route::post('cart/{productId}/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+Route::delete('cart/{productId}/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+
+// Wishlist Routes
+Route::get('wishlist', [CartController::class, 'wishlist'])->name('wishlist');
+Route::post('wishlist/{productId}/add', [CartController::class, 'addToWishlist'])->name('wishlist.add');
+Route::delete('wishlist/{productId}/remove', [CartController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
-});
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
+// //});
 
 // Admin Routes
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', [AdminOrderController::class, 'dashboard'])->name('admin.dashboard');
+//Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-    // Product Management
-    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
-    Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
-    Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
+  //  Product Management
+    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+    Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 
     // Order Management
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-});
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+//});
 
 // Home Route
 Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
->>>>>>> Stashed changes
+//Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+//Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
+
+
+Route::get('/about', function () {
+    return view('customer.about');
+})->name('about');
+
+Route::get('/profile', function () {
+    return view('customer.profile');
+})->name('profile');
+
+// Profile Routes
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+//     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+// });

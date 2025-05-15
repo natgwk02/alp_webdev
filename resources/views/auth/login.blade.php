@@ -1,199 +1,159 @@
 @extends('base.base')
 
 @section('content')
+@if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('success') }}',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    </script>
+@endif
+
 <style>
     body {
-        background: #f7faff;
+        background: url('/images/background.jpg') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
         font-family: 'Segoe UI', sans-serif;
     }
 
-    .login-container {
+    .login-wrapper {
         display: flex;
-        min-height: 100vh;
         align-items: center;
         justify-content: center;
-        padding: 40px 20px;
+        min-height: 100vh;
+        padding-top: 100px;
+        padding-bottom: 60px;
     }
 
     .login-card {
-        background: white;
-        display: flex;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        overflow: hidden;
-        max-width: 900px;
+        background-color: rgba(240, 240, 240, 0.8);
+        padding: 40px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         width: 100%;
+        max-width: 420px;
     }
 
-    .login-left {
-        flex: 1;
-        background: url('/images/login-illustration.png') no-repeat center;
-        background-size: cover;
-        min-height: 400px;
-    }
-
-    .login-right {
-        flex: 1;
-        padding: 60px 40px;
-    }
-
-    .login-right h3 {
-        font-weight: 700;
+    .login-card h4 {
+        text-align: center;
         margin-bottom: 10px;
-        color: #1e3a8a;
+        color: #224488;
+        font-weight: bold;
     }
 
-    .login-right p {
-        font-size: 0.95rem;
+    .login-card p {
+        text-align: center;
         color: #555;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
+        font-size: 0.95rem;
     }
 
-    .form-control-custom {
-        width: 100%;
+    .form-control {
+        border-radius: 10px;
+        background-color: #f8fbff;
         padding: 12px 15px;
-        border: 1px solid #ccc;
-        border-radius: 30px;
-        margin-bottom: 20px;
-        background-color: #f3f6fa;
+        border: 1px solid #ccddee;
+        margin-bottom: 15px;
     }
 
-    .btn-primary-custom {
-        background-color: #1e3a8a;
+    .btn-blue {
+        background-color: #224488;
         color: white;
         border: none;
         padding: 12px;
-        border-radius: 30px;
-        width: 48%;
-        font-weight: 600;
-        transition: 0.3s ease;
-    }
-
-    .btn-secondary-custom {
-        border: 2px solid #1e3a8a;
-        background-color: white;
-        color: #1e3a8a;
-        padding: 12px;
-        border-radius: 30px;
-        width: 48%;
+        border-radius: 10px;
+        width: 100%;
         font-weight: 600;
     }
 
-    .btn-primary-custom:hover {
-        background-color: #183072;
+    .btn-blue:hover {
+        background-color: #C1E8FF;
     }
 
-    .btn-secondary-custom:hover {
-        background-color: #1e3a8a;
-        color: white;
+    .form-check-label,
+    .text-muted,
+    .text-link {
+        font-size: 0.9rem;
     }
 
-    @media (max-width: 768px) {
-        .login-card {
-            flex-direction: column;
-        }
+    .text-link {
+        color: #224488;
+        text-decoration: none;
+    }
 
-        .login-left {
-            height: 250px;
-        }
-
-        .btn-primary-custom,
-        .btn-secondary-custom {
-            width: 100%;
-            margin-bottom: 10px;
-        }
+    .text-link:hover {
+        text-decoration: underline;
     }
 </style>
 
-<div class="login-container">
+<div class="login-wrapper">
     <div class="login-card">
 
-        <!-- Left illustration -->
-        <div class="login-left d-none d-md-block"></div>
+        <h4>Welcome Back!</h4>
+        <p>Sign in to your Account</p>
 
-        <!-- Right form -->
-        <div class="login-right">
-            <h3>Welcome!</h3>
-            <p>Sign in to your Account</p>
+        @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
 
-            @if(session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif
 
-            <form method="POST" action="{{ route('login.auth') }}">
-                @csrf
+        <form method="POST" action="{{ route('login.auth') }}">
+            @csrf
 
-                <input type="text" name="email" class="form-control-custom" placeholder="Email Address" required>
-                <input type="password" name="password" class="form-control-custom" placeholder="Password" required>
+            <input type="text" name="email" class="form-control" placeholder="Email Address" required>
 
-                <div class="text-end mb-4">
-                    <a href="" class="small text-muted">Forgot Password?</a>
+            <div class="position-relative">
+            <input type="password" name="password" id="password" class="form-control pe-5" placeholder="Password" required>
+
+            <span onclick="togglePassword('password', this)"
+                class="position-absolute end-0 top-50 translate-middle-y me-3"
+                style="cursor: pointer; z-index: 2;">
+                <i class="fa fa-eye" id="toggleIcon"></i>
+            </span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                    <label class="form-check-label" for="remember">Remember Me</label>
                 </div>
+                <a href="forgot-password" class="text-link">Forgot Password?</a>
+            </div>
 
-                <div class="card-body p-4">
+            <button type="submit" class="btn btn-blue">Sign In</button>
+        </form>
 
-                    @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    <form action="{{ route('login.auth') }}" method="POST" novalidate>
-                        @csrf
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email"
-                                   id="email"
-                                   name="email"
-                                   value="{{ old('email') }}"
-                                   class="form-control @error('email') is-invalid @enderror"
-                                   required
-                                   autofocus>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password"
-                                   id="password"
-                                   name="password"
-                                   class="form-control @error('password') is-invalid @enderror"
-                                   required>
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                                <label class="form-check-label" for="remember">Remember me</label>
-                            </div>
-                            <a href="{{ route('forgot-password') }}" class="text-decoration-none small">Forgot password?</a>
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Login</button>
-                        </div>
-
-                        <div class="text-center mt-3">
-                            <span class="text-muted">Don't have an account?</span>
-                            <a href="{{ route('register') }}" class="text-primary text-decoration-none">Register</a>
-                        </div>
-
-                    </form>
-
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary-custom">SIGN IN</button>
-                    <a href="{{ route('register') }}" class="btn btn-secondary-custom">SIGN UP</a>
-                </div>
-            </form>
+        <div class="text-center mt-3">
+            <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-link">Sign Up</a></span>
         </div>
 
     </div>
 </div>
 @endsection
+
+<script>
+function togglePassword(fieldId, el) {
+    const input = document.getElementById(fieldId);
+    const icon = el.querySelector('i');
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
+
+
