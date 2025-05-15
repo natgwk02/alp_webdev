@@ -149,9 +149,9 @@
             <div class="col-lg-12 text-center" style="margin-top: -20px;">
                 <h1 class="display-4 fw-bold mb-2">Keep it cool, keep it Chillé!</h1>
                 <p class="lead mb-4">Deliciously frozen, always ready. Discover your next favorite meal today!</p>
-                <a href="#shop-category" 
-                class="btn btn-lg text-white border-0" 
-                style="background-color: #052659; border-radius: 12px; padding: 12px 24px; font-weight: 600;" 
+                <a href="#shop-category"
+                class="btn btn-lg text-white border-0"
+                style="background-color: #052659; border-radius: 12px; padding: 12px 24px; font-weight: 600;"
                 onclick="scrollWithOffset(event)">
                 Let's Chill
                 </a>
@@ -161,7 +161,7 @@
     </section>
 
     {{-- category --}}
-                        
+
     <section class="category py-5">
     <div class="container">
         <section id="shop-category">
@@ -369,8 +369,6 @@
     </div>
     </section>
 
-
-
     <style>
     .special-offer:hover .btn {
         background-color: #003366;
@@ -390,6 +388,22 @@
     .special-offer .container:hover {
         box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
     }
+
+    .btn-best-product {
+        transition: all 0.3s ease-in-out;
+        background-color: #052659;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+    }
+
+    .btn-best-product:hover {
+        background-color:#326fcb;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+
 </style>
 
     {{-- Top seller --}}
@@ -488,10 +502,9 @@
             </div>
 
             <div class="text-center mt-4">
-            <a href="{{ route('products') }}" 
-            class="btn text-white" 
-            style="background-color: #052659; padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none;">
-            View All Products
+            <a href="{{ route('products') }}"
+                class="btn text-white btn-best-product">
+                View All Products
             </a>
             </div>
         </div>
