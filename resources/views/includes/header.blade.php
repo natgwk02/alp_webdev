@@ -100,7 +100,7 @@
 
                 {{-- Cart --}}
                 <li class="nav-item position-relative">
-                    <a class="nav-link custom-cart-color" href="{{ route('cart') }}">
+                    <a class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
                         <i class="fas fa-cart-shopping fs-5"></i>
                     </a>
                 </li>
