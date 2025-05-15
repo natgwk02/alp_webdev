@@ -28,16 +28,16 @@
         <div class="row">
             @foreach($wishlistItems as $item)
             <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
+                <div class="card h-100 shadow-sm position-relative">
                     @if(!$item['in_stock'])
                         <div class="badge bg-danger position-absolute m-2">Out of Stock</div>
                     @endif
-                    <img src="{{ asset('images/products/' . $item['image']) }}" 
+                    <img src="{{ asset('images/products-img/' . $item['image']) }}" 
                          class="card-img-top p-3 product-img" 
                          alt="{{ $item['product_name'] }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ $item['product_name'] }}</h5>
-                        <h5 class="text-primary mb-3">${{ number_format($item['price'], 2) }}</h5>
+                        <h5 class="text-primary mb-3">Rp {{ number_format($item['price'], 0, ',', '.') }}</h5>
                         <div class="d-flex justify-content-between">
                             @if($item['in_stock'])
                                 <button class="btn btn-sm btn-outline-primary">
@@ -48,9 +48,12 @@
                                     Not Available
                                 </button>
                             @endif
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
+                            <form action="{{ route('wishlist.remove', $item['id']) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Remove
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
