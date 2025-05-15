@@ -13,18 +13,18 @@
                 </div>
             @else
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table align-middle">
                         <thead>
                             <tr>
                                 <th>Product</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
+                                <th class="text-end">Price</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-end">Total</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($cartItems as $item)
+                            @foreach($cartItems as $index => $item)
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -34,63 +34,64 @@
                                              style="width: 80px; height: 80px; object-fit: cover;">
                                         <div>
                                             <h5 class="mb-1">{{ $item['name'] }}</h5>
-                                            {{-- <small class="text-muted">Stock: {{ $item['stock'] }}</small> --}}
                                         </div>
                                     </div>
                                 </td>
-                                <td>Rp{{ number_format($item['price'], 2) }}</td>
-                                <td>
-                                    <input type="number" 
-                                           class="form-control" 
-                                           value="{{ $item['quantity'] }}" 
-                                           min="1" 
-                                           {{-- max="{{ $item['stock'] }}"  --}}
-                                           style="width: 80px;">
+                                <td class="text-end">
+                                    <span class="price-column">Rp{{ number_format($item['price'], 0, ',', '.') }}</span>
                                 </td>
-                                <td>Rp{{ number_format($item['price'] * $item['quantity'], 2) }}</td>
                                 <td>
-                            <div class="d-flex flex-column">
-                            <form action="{{ route('cart.remove', ['productId' => $item['id']]) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                  <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-                              </div>
-                              </td>
-     
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <input type="number" 
+                                               class="form-control quantity-input" 
+                                               value="{{ $item['quantity'] }}" 
+                                               min="1" 
+                                               data-index="{{ $index }}"
+                                               data-price="{{ $item['price'] }}" 
+                                               style="width: 80px;">
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <span class="price-column" id="item-total-{{ $index }}">Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
+                                </td>
+                                <td>
+                                    <form action="{{ route('cart.remove', ['productId' => $item['id']]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
 
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Order Summary</h5>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Subtotal:</span>
-                                    <span>${{ number_format($subtotal, 2) }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Shipping:</span>
-                                    <span>${{ number_format($shippingFee, 2) }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Tax:</span>
-                                    <span>${{ number_format($tax, 2) }}</span>
-                                </div>
-                                <hr>
-                                <div class="d-flex justify-content-between fw-bold">
-                                    <span>Total:</span>
-                                    <span>${{ number_format($total, 2) }}</span>
-                                </div>
-                                <a href="{{ route('checkout') }}" class="btn btn-primary w-100 mt-3">
-                                    Proceed to Checkout
-                                </a>
+                <div class="col-md-6">
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Summary</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal:</span>
+                                <span id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                             </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping:</span>
+                                <span id="shipping-display">Rp{{ number_format($shippingFee, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax:</span>
+                                <span id="tax-display">Rp{{ number_format($tax, 0, ',', '.') }}</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>Total:</span>
+                                <span id="total-display">Rp{{ number_format($total, 0, ',', '.') }}</span>
+                            </div>
+                            <a href="{{ route('checkout') }}" class="btn btn-primary w-100 mt-3">
+                                Proceed to Checkout
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -98,4 +99,61 @@
         </div>
     </div>
 </div>
+
+{{-- Script --}}
+<script>
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('input', updateCart);
+    });
+
+    function formatRupiah(angka) {
+        return 'Rp' + angka.toLocaleString('id-ID');
+    }
+
+    function updateCart() {
+        let subtotal = 0;
+        const shipping = 5000;
+
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            const index = input.getAttribute('data-index');
+            const price = parseInt(input.getAttribute('data-price')) || 0;
+            const qty = parseInt(input.value) || 0;
+            const total = price * qty;
+
+            // Update total per item
+            const itemTotalEl = document.getElementById(`item-total-${index}`);
+            if (itemTotalEl) {
+                itemTotalEl.textContent = formatRupiah(total);
+            }
+
+            subtotal += total;
+        });
+
+        const tax = Math.round(subtotal * 0.1);
+        const grandTotal = subtotal + tax + shipping;
+
+        document.getElementById('subtotal-display').textContent = formatRupiah(subtotal);
+        document.getElementById('shipping-display').textContent = formatRupiah(shipping);
+        document.getElementById('tax-display').textContent = formatRupiah(tax);
+        document.getElementById('total-display').textContent = formatRupiah(grandTotal);
+    }
+
+    updateCart(); // Initial run on page load
+</script>
+
+{{-- Style --}}
+<style>
+    .price-column {
+        display: inline-block;
+        width: 120px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+
+    .quantity-input {
+        height: 40px;
+        text-align: center;
+    }
+</style>
 @endsection

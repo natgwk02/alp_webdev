@@ -92,11 +92,11 @@
             <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
 
                 {{-- Wishlist --}}
-                <li class="nav-item">
-                    <a class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
-                        <i class="fas fa-heart fs-5"></i>
-                    </a>
-                </li>
+            <li class="nav-item">
+                <a class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
+                    <i class="bi bi-bookmark-heart fs-5"></i>
+                </a>
+            </li>
 
                 {{-- Cart --}}
                 <li class="nav-item position-relative">

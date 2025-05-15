@@ -41,7 +41,7 @@
                             <td>${{ number_format($order['total_amount'], 2) }}</td>
                             <td>{{ $order['item_count'] }}</td>
                             <td>
-                                <a href="{{ route('order.detail', ['id' => $order['id']]) }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ route('order.details', ['id' => $order['id']]) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-eye me-1"></i> View
                                 </a>
                             </td>
