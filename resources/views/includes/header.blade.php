@@ -82,12 +82,6 @@
                 <li class="nav-item">
                     <a class="nav-link px-3" href="{{ route('about') }}">About Us</a>
                 </li>
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-link nav-link">Logout</button>
-                    </form>
-                </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
                             href="{{ route('order.show') }}">My Orders</a>
@@ -122,7 +116,7 @@
                 <a class="dropdown-item" href="{{ route('profile') }}">
                     <i class="fa fa-user me-2"></i> Edit Profile
                 </a>
-                </li>                    
+                </li>
                 <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item text-danger" href="#"
