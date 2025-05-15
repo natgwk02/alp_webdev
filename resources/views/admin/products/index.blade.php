@@ -64,11 +64,11 @@
                         <span class="input-group-text bg-white border-end-0">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0" placeholder="Search products...">
+                        <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search products...">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select">
+                    <select id="categorySelect" class="form-select">
                         <option selected>All Categories</option>
                         @foreach ($categories as $category)
                             <option>{{ $category }}</option>
@@ -76,7 +76,7 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <select class="form-select">
+                    <select id="statusSelect" class="form-select">
                         <option selected>All Status</option>
                         <option>In Stock</option>
                         <option>Low Stock</option>
@@ -85,8 +85,8 @@
                 </div>
                 <div class="col-md-3">
                     <div class="d-flex gap-2">
-                        <button class="btn btn-primary flex-grow-1">Filter</button>
-                        <button class="btn btn-outline-secondary">Reset</button>
+                        <button id="filterBtn" class="btn btn-primary flex-grow-1">Filter</button>
+                        <button id="resetBtn" class="btn btn-outline-secondary">Reset</button>
                     </div>
                 </div>
             </div>
@@ -462,5 +462,26 @@
             const form = document.getElementById('deleteProductForm');
             form.action = `/product/delete/${productId}`;
         });
+
+        const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
+        const statusSelect = document.getElementById('statusSelect');
+        const resetBtn = document.getElementById('resetBtn');
+        const filterBtn = document.getElementById('filterBtn');
+        const currentFilter = document.getElementById('currentFilter');
+
+        // Add event listener for the reset button
+        resetBtn.addEventListener('click', function() {
+            // Reset the search input
+            searchInput.value = '';
+
+            // Reset both select dropdowns to their first options
+            categorySelect.selectedIndex = 0;
+            statusSelect.selectedIndex = 0;
+
+            // Update the filter display
+            currentFilter.textContent = 'None';
+        });
+
     </script>
 @endsection
