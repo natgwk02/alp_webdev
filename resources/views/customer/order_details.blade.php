@@ -83,12 +83,6 @@
                     </div>
 
                     <hr>
-
-                    <button class="btn btn-outline-primary">Print Invoice</button>
-                    <button class="btn btn-outline-secondary">Reorder Items</button>
-                    @if($order['status'] == 'Processing')
-                    <button class="btn btn-outline-danger">Cancel Order</button>
-                    @endif
                 </div>
             </div>
         </div>
