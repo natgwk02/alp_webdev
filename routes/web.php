@@ -37,14 +37,16 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     Route::get( '/', [HomeController::class, 'showHome'])->name('home');
     Route::get('/products', action: [ProductController::class, 'index'])->name('products');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
-Route::get('/cart', [CartController::class, 'cart'])->name('cart');
-Route::put('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
-Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
+    Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
+
 // //});
 
 // Admin Routes
@@ -65,8 +67,8 @@ Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'
 // Home Route
 Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
-//Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-//Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
+Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
 
 
 Route::get('/about', function () {

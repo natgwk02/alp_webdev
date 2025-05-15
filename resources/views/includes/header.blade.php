@@ -82,10 +82,10 @@
                 <li class="nav-item">
                     <a class="nav-link px-3" href="{{ route('about') }}">About Us</a>
                 </li>
-                    {{-- <li class="nav-item">
+                <li class="nav-item">
                         <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
-                            href="{{ route('order.show') }}">My Orders</a>
-                    </li> --}}
+                            href="{{ route('orders') }}">My Orders</a>
+                </li>
             </ul>
 
             <!-- Menu kanan -->
@@ -94,13 +94,13 @@
                 {{-- Wishlist --}}
                 <li class="nav-item">
                     <a class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
-                        <i class="fas fa-heart fs-5"></i>
+                        <i class="bi bi-bookmark-heart fs-5"></i>
                     </a>
                 </li>
 
                 {{-- Cart --}}
                 <li class="nav-item position-relative">
-                    <a class="nav-link custom-cart-color" href="{{ route('cart') }}">
+                    <a class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
                         <i class="fas fa-cart-shopping fs-5"></i>
                     </a>
                 </li>

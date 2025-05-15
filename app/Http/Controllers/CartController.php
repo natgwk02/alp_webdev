@@ -63,7 +63,7 @@ class CartController extends Controller
 
         session(['cart' => $cart]);
 
-        return redirect()->route('cart')->with('success', 'Product added to cart');
+        return redirect()->route('cart.index')->with('success', 'Product added to cart');
     }
 
     public function removeFromCart(Request $request, $productId)
@@ -80,6 +80,6 @@ class CartController extends Controller
             session(['cart' => $cart]);
         }
 
-        return redirect()->route('cart')->with('success', 'Product quantity updated');
+        return redirect()->route('cart.index')->with('success', 'Product quantity updated');
     }
 }
