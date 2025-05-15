@@ -49,10 +49,22 @@
                                 </td>
                                 <td>${{ number_format($item['price'] * $item['quantity'], 2) }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
+    <div class="d-flex flex-column">
+        <form action="{{ route('cart.add', ['productId' => $item['product_id']]) }}" method="POST" class="mb-1">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-cart-plus"></i> Add Again
+            </button>
+        </form>
+
+        <form action="{{ route('cart.remove', ['productId' => $item['product_id']]) }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
+    </div>
+</td>
                             </tr>
                             @endforeach
                         </tbody>
