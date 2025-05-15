@@ -134,18 +134,21 @@ class AdminController extends Controller
         return view('admin.products.index', compact('product', 'categories'));
     }
 
-    public function storeProduct(Request $request)
+    public function insertProduct(Request $request)
     {
-        return redirect()->route('admin.products')->with('success', 'Product added successfully!');
+        return redirect(route('admin.products'))
+        ->with('success', 'Product added successfully!');
     }
 
     public function updateProduct(Request $request, $id)
     {
-        return redirect()->route('admin.products')->with('success', 'Product updated successfully!');
+        return redirect(route('admin.products'))
+        ->with('success', 'Product updated successfully!');
     }
 
     public function deleteProduct($id)
     {
-        return redirect()->route('admin.products')->with('success', 'Product deleted successfully!');
+        return redirect(route('admin.products'))
+        ->with('success', 'Product deleted successfully!');
     }
 }

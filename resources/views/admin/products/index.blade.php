@@ -207,16 +207,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addProductForm" action="{{ route('admin.products') }}" method="POST"
+                    <form id="addProductForm" action="{{ route('admin.products.create', $product['id'])}}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="productName" class="form-label">Product Name</label>
+                                <label for="productName" class="form-label">Product Name*</label>
                                 <input type="text" class="form-control" id="productName" name="name" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="productCategory" class="form-label">Category</label>
+                                <label for="productCategory" class="form-label">Category*</label>
                                 <select class="form-select" id="productCategory" name="category" required>
                                     <option value="" selected disabled>Select category</option>
                                     @foreach ($categories as $category)
@@ -227,37 +227,37 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="productPrice" class="form-label">Price (Rp)</label>
+                                <label for="productPrice" class="form-label">Price (Rp)*</label>
                                 <input type="number" class="form-control" id="productPrice" name="price"
                                     step="1" min="0" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="productStock" class="form-label">Stock Quantity</label>
+                                <label for="productStock" class="form-label">Stock Quantity*</label>
                                 <input type="number" class="form-control" id="productStock" name="stock"
                                     min="0" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="productDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="productDescription" name="description" rows="3" required></textarea>
+                            <textarea class="form-control" id="productDescription" name="description" rows="3"></textarea>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="productWeight" class="form-label">Weight/Size</label>
+                                <label for="productWeight" class="form-label">Weight/Size*</label>
                                 <input type="text" class="form-control" id="productWeight" name="weight"
-                                    placeholder="e.g., 500g, 1kg">
+                                    placeholder="e.g., 500g, 1kg" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="productID" class="form-label">ID</label>
-                                <input type="text" class="form-control" id="productID" name="product_id">
+                                <label for="productID" class="form-label">ID*</label>
+                                <input type="text" class="form-control" id="productID" name="product_id" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="productImage" class="form-label">Product Image</label>
-                            <input class="form-control" type="file" id="productImage" name="image">
+                            <label for="productImage" class="form-label">Product Image*</label>
+                            <input class="form-control" type="file" id="productImage" name="image" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Storage Temperature</label>
+                            <label class="form-label">Storage Temperature*</label>
                             <div class="d-flex gap-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="storage_temp" value="freezer"
@@ -301,17 +301,17 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editProductForm" action="{{ route('admin.products') }}" method="POST" enctype="multipart/form-data">
+                    <form id="editProductForm" action="{{ route('admin.products.update', $product['id'])}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="editProductName" class="form-label">Product Name</label>
+                                <label for="editProductName" class="form-label">Product Name*</label>
                                 <input type="text" class="form-control" id="editProductName" name="name"
                                     value="" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="editProductCategory" class="form-label">Category</label>
+                                <label for="editProductCategory" class="form-label">Category*</label>
                                 <select class="form-select" id="editProductCategory" name="category" required>
                                     @foreach ($categories as $category)
                                         <option>{{ $category }}</option>
@@ -321,34 +321,34 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="editProductPrice" class="form-label">Price (Rp)</label>
+                                <label for="editProductPrice" class="form-label">Price (Rp)*</label>
                                 <input type="number" class="form-control" id="editProductPrice" name="price"
                                     step="1" min="0" value="" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="editProductStock" class="form-label">Stock Quantity</label>
+                                <label for="editProductStock" class="form-label">Stock Quantity*</label>
                                 <input type="number" class="form-control" id="editProductStock" name="stock"
                                     min="0" value="" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="editProductDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="editProductDescription" name="description" rows="3" required></textarea>
+                            <textarea class="form-control" id="editProductDescription" name="description" rows="3"></textarea>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="editProductWeight" class="form-label">Weight/Size</label>
-                                <input type="text" class="form-control" id="editProductWeight" name="weight"
+                                <label for="editProductWeight" class="form-label">Weight/Size*</label>
+                                <input type="text" class="form-control" id="editProductWeight" name="weight" required
                                     value="">
                             </div>
                             <div class="col-md-6">
-                                <label for="editProductID" class="form-label">ID</label>
+                                <label for="editProductID" class="form-label">ID*</label>
                                 <input type="text" class="form-control" id="editProductID" name="product_id"
-                                    value="" readonly>
+                                    value="" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="editProductImage" class="form-label">Product Image</label>
+                            <label for="editProductImage" class="form-label">Product Image*</label>
                             <div class="d-flex align-items-center mb-2">
                                 <img src="" id="currentProductImage" alt="Current product image"
                                     class="me-3 rounded" style="width: 100px; height: 100px; object-fit: cover;">
@@ -357,7 +357,7 @@
                             <input class="form-control" type="file" id="editProductImage" name="image">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Storage Temperature</label>
+                            <label class="form-label">Storage Temperature*</label>
                             <div class="d-flex gap-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="storage_temp" value="freezer"
@@ -385,7 +385,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" form="editProductForm"  class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -406,9 +406,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteProductForm" method="POST">
+                    <form id="deleteProductForm" action="{{ route('admin.products.delete', $product['id'])}}" method="POST">
                         @csrf
-                        @method('DELETE')
                         <button type="submit" class="btn btn-danger">Delete Product</button>
                     </form>
                 </div>
@@ -445,7 +444,7 @@
                 'Delicious gourmet pizza with premium toppings, ready to bake from frozen.';
             document.getElementById('editProductWeight').value = '400g';
             document.getElementById('editProductID').value = productId;
-            document.getElementById('currentProductImage').src = '';
+            document.getElementById('currentProductImage').src = '{{ asset('images/products-img/gourmet-pizza.jpg') }}';
             document.getElementById('editFreezer').checked = true;
             document.getElementById('editFeaturedProduct').checked = true;
         });

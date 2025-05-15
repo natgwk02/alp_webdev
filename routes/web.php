@@ -20,7 +20,7 @@ Route::get('/logout', [AuthController::class, "logout"])
 ->name('logout');
 
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register'); // untuk tampilkan form
-Route::post('/register', [AuthController::class, 'register'])->name('register.submit'); 
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
@@ -39,19 +39,17 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
 
 // Admin Routes
 //Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-    // Product Management
-    // Route::get('/products', [AdminController::class, 'products'])
-    // ->name('admin.products');
-    // ->name('products');
-    //dijadiin satu sm products
-    // Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
-    // Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
+  //  Product Management
+    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+    Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 
     // Order Management
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
 //});
 
 // Home Route
@@ -64,6 +62,7 @@ Route::get('/home', [HomeController::class, 'showHome'])
 Route::get('/about', function () {
     return view('customer.about');
 })->name('about');
+<<<<<<< Updated upstream
 
 Route::get('/profile', function () {
     return view('customer.profile');
@@ -75,3 +74,5 @@ Route::get('/profile', function () {
 //     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 //     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 // });
+=======
+>>>>>>> Stashed changes
