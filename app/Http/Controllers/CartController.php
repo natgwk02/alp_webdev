@@ -7,71 +7,74 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    private $products = [
+        ['id'=>1,'name'=>'Chilean Sea Bass Fillet','price'=>200000,'image'=>'sea-bass.jpg','stock'=>10],
+        ['id'=>2,'name'=>'Argentinian Red Shrimp','price'=>220000,'image'=>'red-shrimp.jpg','stock'=>15],
+        ['id'=>3,'name'=>'Kanzler Nugget Crispy','price'=>50000,'image'=>'kanzler-nugget.jpg','stock'=>20],
+        ['id'=>4,'name'=>'Ready Meal Fiesta Beef Bulgogi With Rice','price'=>26999,'image'=>'rm-fiesta-bulgogi.jpg','stock'=>25],
+        ['id'=>5,'name'=>'Gorton\'s Classic Grilled Salmon','price'=>56000,'image'=>'fish-grilled-salmon.jpg','stock'=>30],
+        ['id'=>6,'name'=>'Fiesta Chicken Karaage 500gr','price'=>48000,'image'=>'chicken-fiesta-karage.jpg','stock'=>15],
+        ['id'=>7,'name'=>'Good Value Mixed Fruit','price'=>32000,'image'=>'gv-mixed-fruit.jpg','stock'=>40],
+        ['id'=>8,'name'=>'Golden Farm Mixed Vegetable','price'=>25000,'image'=>'gf-mixedvegetables.jpg','stock'=>35],
+        ['id'=>9,'name'=>'Fiesta Siomay','price'=>34000,'image'=>'fiesta-siomay.jpg','stock'=>50],
+    ];
+
     public function index()
     {
-        // Hardcoded cart items
-        $cartItems = [
-            [
-                'product_id' => 1,
-                'product_name' => 'Chilean Sea Bass Fillet',
-                'price' => 24.99,
-                'quantity' => 2,
-                'image' => 'sea-bass.jpg',
-                'stock' => 10
-            ],
-            [
-                'product_id' => 2,
-                'product_name' => 'Argentinian Red Shrimp',
-                'price' => 18.99,
-                'quantity' => 1,
-                'image' => 'red-shrimp.jpg',
-                'stock' => 15
-            ]
-        ];
-
-        
-
-        // Menghitung jumlah total item dalam keranjang
-        $totalItems = array_reduce($cartItems, function($carry, $item) {
-            return $carry + $item['quantity'];
-        }, 0);
-
-        // Menghitung subtotal, shipping fee, tax, dan total
-        $subtotal = array_reduce($cartItems, function($carry, $item) {
-            return $carry + ($item['price'] * $item['quantity']);
-        }, 0);
-
-        $shippingFee = 5.00;
-        $tax = $subtotal * 0.1; // 10% tax
+        $cartItems = session('cart', []);
+        $totalItems = array_sum(array_column($cartItems, 'quantity'));
+        $subtotal = 0;
+        foreach($cartItems as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+        $shippingFee = 5000;
+        $tax = $subtotal * 0.1;
         $total = $subtotal + $shippingFee + $tax;
 
-        // Mengirimkan data ke view
         return view('customer.cart', compact('cartItems', 'totalItems', 'subtotal', 'shippingFee', 'tax', 'total'));
     }
 
     public function addToCart(Request $request, $productId)
-    {
-        // In a real application, this would add item to cart
-        return redirect()->route('cart')
-            ->with('success', 'Product added to cart successfully');
-    }
-    
-    public function updateCart(Request $request)
-    {
-        // In a real application, this would update cart quantities
-        $productId = $request->input('product_id');
-       $quantity = $request->input('quantity');
-        return redirect()->route('cart')
-            ->with('success', 'Cart updated successfully');
+{
+    $products = collect($this->products)->keyBy('id');
+    if (!$products->has($productId)) 
+        return redirect()->route('cart')->with('error', 'Product not found');
+
+    $cart = session('cart', []);
+    $product = $products->get($productId);
+
+    // Cek apakah product punya 'stock'
+    if(!isset($product['stock'])) {
+        return redirect()->route('cart')->with('error', 'Product stock information missing');
     }
 
-    public function removeFromCart($productId)
-    {
-        // In a real application, this would remove item from cart
-        return redirect()->route('cart')
-            ->with('success', 'Product removed from cart');
+    if(isset($cart[$productId])) {
+        if($cart[$productId]['quantity'] < $product['stock']) {
+            $cart[$productId]['quantity']++;
+        } else {
+            return redirect()->route('cart')->with('error', 'Cannot add more than stock available');
+        }
+    } else {
+        $product['quantity'] = 1;
+        $cart[$productId] = $product;
     }
 
+    session(['cart' => $cart]);
+
+    return redirect()->route('cart')->with('success', 'Product added to cart');
+}
+
+
+    public function removeFromCart(Request $request, $productId)
+    {
+        $cart = session('cart', []);
+        if(isset($cart[$productId])) {
+            $cart[$productId]['quantity']--;
+            if($cart[$productId]['quantity'] <= 0) unset($cart[$productId]);
+            session(['cart' => $cart]);
+        }
+        return redirect()->route('cart')->with('success', 'Product quantity updated');
+    }
     public function wishlist()
     {
         // Hardcoded wishlist items

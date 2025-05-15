@@ -28,31 +28,37 @@
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/products/' . $item['image']) }}" 
-                                             alt="{{ $item['product_name'] }}" 
+                                        <img src="{{ asset('images/products-img/' . $item['image']) }}" 
+                                             alt="{{ $item['name'] }}" 
                                              class="img-thumbnail me-3" 
                                              style="width: 80px; height: 80px; object-fit: cover;">
                                         <div>
-                                            <h5 class="mb-1">{{ $item['product_name'] }}</h5>
-                                            <small class="text-muted">Stock: {{ $item['stock'] }}</small>
+                                            <h5 class="mb-1">{{ $item['name'] }}</h5>
+                                            {{-- <small class="text-muted">Stock: {{ $item['stock'] }}</small> --}}
                                         </div>
                                     </div>
                                 </td>
-                                <td>${{ number_format($item['price'], 2) }}</td>
+                                <td>Rp{{ number_format($item['price'], 2) }}</td>
                                 <td>
                                     <input type="number" 
                                            class="form-control" 
                                            value="{{ $item['quantity'] }}" 
                                            min="1" 
-                                           max="{{ $item['stock'] }}" 
+                                           {{-- max="{{ $item['stock'] }}"  --}}
                                            style="width: 80px;">
                                 </td>
-                                <td>${{ number_format($item['price'] * $item['quantity'], 2) }}</td>
+                                <td>Rp{{ number_format($item['price'] * $item['quantity'], 2) }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
+                            <div class="d-flex flex-column">
+                            <form action="{{ route('cart.remove', ['productId' => $item['id']]) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                  <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                              </div>
+                              </td>
+     
                             </tr>
                             @endforeach
                         </tbody>
