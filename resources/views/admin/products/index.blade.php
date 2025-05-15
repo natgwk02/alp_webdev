@@ -470,16 +470,11 @@
         const filterBtn = document.getElementById('filterBtn');
         const currentFilter = document.getElementById('currentFilter');
 
-        // Add event listener for the reset button
+        // Reset button
         resetBtn.addEventListener('click', function() {
-            // Reset the search input
             searchInput.value = '';
-
-            // Reset both select dropdowns to their first options
             categorySelect.selectedIndex = 0;
             statusSelect.selectedIndex = 0;
-
-            // Update the filter display
             currentFilter.textContent = 'None';
         });
 
