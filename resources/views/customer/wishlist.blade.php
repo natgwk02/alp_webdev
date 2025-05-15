@@ -1,16 +1,28 @@
 @extends('layouts.app')
 
-@section('title', 'Your Wishlist')
+@section('title', 'My Wishlist - Chile Mart')
 
 @section('content')
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">My Wishlist</h1>
+            <p class="text-muted">{{ count($wishlistItems) }} items</p>
+        </div>
+    </div>
 
-<div class="container">
-    <h1 class="fw-bold mb-4">Your Wishlist</h1>
-
-    <!-- Display success/error messages -->
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+    @if(count($wishlistItems) == 0)
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-heart fa-3x text-muted mb-3"></i>
+                        <h3>Your wishlist is empty</h3>
+                        <p class="text-muted">Save your favorite items here for later</p>
+                        <a href="{{ route('products') }}" class="btn btn-primary">Browse Products</a>
+                    </div>
+                </div>
+            </div>
         </div>
     @else
         <div class="row">
@@ -46,38 +58,8 @@
                     </div>
                 </div>
             </div>
-        @endforeach
-    </div>
-
-    <h2 class="fw-bold mt-5">Wishlist Items</h2>
-    <div class="row">
-        @forelse(session('wishlist', []) as $item)
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="text-center p-3">
-                        <img src="{{ asset('images/products-img/' . $item['image']) }}" alt="{{ $item['name'] }}" class="img-fluid" style="max-height: 200px; object-fit: contain;">
-                    </div>
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title fw-semibold">{{ $item['name'] }}</h5>
-                        <p class="card-text text-muted mb-2">{{ $item['category'] }}</p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <h5 class="text-primary mb-0">Rp {{ number_format($item['price'], 0, ',', '.') }}</h5>
-
-                            <!-- Remove from Wishlist Button -->
-                            <form action="{{ route('wishlist.remove', $item['id']) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger">Remove from Wishlist</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <div class="col-12">
-                <p>No products in your wishlist. Start adding some!</p>
-            </div>
-        @endforelse
-    </div>
+            @endforeach
+        </div>
+    @endif
 </div>
 @endsection
