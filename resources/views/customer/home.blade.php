@@ -240,6 +240,21 @@
             background-color: #326fcb;
 
         }
+
+        
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .product-card .card-body {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+        }
+
+
     </style>
 
 
@@ -412,40 +427,38 @@
             <h2 class="text-center mb-5">Tasty Picks</h2>
             <div class="row">
                 <!-- Product 1 -->
-                <div class="col-lg-3 col-md-4 col-6">
-                    <div class="card product-card h-100">
-                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
-                        <img src="{{ asset('images/products-img/kanzler-nugget.jpg') }}" class="card-img-top"
-                            alt="Product 1">
-                        <div class="card-body">
-                            <h5 class="card-title">Kanzler Nugget Crispy</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp 40.999
-                                    <small class="text-decoration-line-through text-muted">Rp 50.000</small>
-                                </p>
-                                <div>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-half text-warning"></i>
-                                </div>
+                <div class="col-lg-3 col-md-4 col-6 mb-4">
+                <div class="card product-card h-100 position-relative">
+                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
+                    <img src="{{ asset('images/products-img/kanzler-nugget.jpg') }}" class="card-img-top" alt="Product 1">
+                    <div class="card-body d-flex flex-column h-100">
+                        <h5 class="card-title">Kanzler Nugget Crispy</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <p class="card-text mb-0">
+                                Rp 40.999 <small class="text-decoration-line-through text-muted">Rp 50.000</small>
+                            </p>
+                            <div>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-half text-warning"></i>
                             </div>
-                            <button class="btn btn-outline-primary w-100">Add to Cart</button>
                         </div>
+                        <button class="btn btn-outline-primary w-100 mt-auto">Add to Cart</button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Product 2 -->
-                <div class="col-lg-3 col-md-4 col-6">
-                    <div class="card product-card h-100">
-                        <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top"
-                            alt="Product 2">
-                        <div class="card-body">
+
+                            <!-- Product 2 -->
+                <div class="col-lg-3 col-md-4 col-6 mb-4">
+                    <div class="card product-card h-100 position-relative">
+                        <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top" alt="Product 2">
+                        <div class="card-body d-flex flex-column h-100">
                             <h5 class="card-title">Ready Meal Fiesta Beef Bulgogi With Rice</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp 26.999
-                                </p>
+                                <p class="card-text mb-0">Rp 26.999</p>
                                 <div>
                                     <i class="bi bi-star-fill text-warning"></i>
                                     <i class="bi bi-star-fill text-warning"></i>
@@ -454,18 +467,17 @@
                                     <i class="bi bi-star-half text-warning"></i>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-primary w-100">Add to Cart</button>
+                            <button class="btn btn-outline-primary w-100 mt-auto">Add to Cart</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Product 3 -->
-                <div class="col-lg-3 col-md-4 col-6">
-                    <div class="card product-card h-100">
+                <div class="col-lg-3 col-md-4 col-6 mb-4">
+                    <div class="card product-card h-100 position-relative">
                         <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
-                        <img src="{{ asset('images/products-img/fish-grilled-salmon.jpg') }}" class="card-img-top"
-                            alt="Product 3">
-                        <div class="card-body">
+                        <img src="{{ asset('images/products-img/fish-grilled-salmon.jpg') }}" class="card-img-top" alt="Product 3">
+                        <div class="card-body d-flex flex-column h-100">
                             <h5 class="card-title">Gorton's Classic Grilled Salmon</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <p class="card-text mb-0">Rp 56.000</p>
@@ -477,17 +489,17 @@
                                     <i class="bi bi-star-fill text-warning"></i>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-primary w-100">Add to Cart</button>
+                            <button class="btn btn-outline-primary w-100 mt-auto">Add to Cart</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Product 4 -->
-                <div class="col-lg-3 col-md-4 col-6">
-                    <div class="card product-card h-100">
-                        <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpg') }}" class="card-img-top"
-                            alt="Product 4">
-                        <div class="card-body">
+                <div class="col-lg-3 col-md-4 col-6 mb-4">
+                    <div class="card product-card h-100 position-relative">
+                    <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpg') }}"
+                        class="card-img-top pt-2" alt="Product 4">
+                        <div class="card-body d-flex flex-column h-100">
                             <h5 class="card-title">Fiesta Chicken Karage 500gr</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <p class="card-text mb-0">Rp 51.000</p>
@@ -499,19 +511,19 @@
                                     <i class="bi bi-star text-warning"></i>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-primary w-100">Add to Cart</button>
+                            <button class="btn btn-outline-primary w-100 mt-auto">Add to Cart</button>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="text-center mt-4">
-                <a href="{{ route('products') }}" class="btn text-white btn-best-product">
-                    View All Products
-                </a>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{{ route('products') }}" class="btn text-white btn-best-product">
+                        View All Products
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
     {{-- why us --}}
     <section class="why-chille py-5">

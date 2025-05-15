@@ -82,12 +82,6 @@
                 <li class="nav-item">
                     <a class="nav-link px-3" href="{{ route('about') }}">About Us</a>
                 </li>
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-link nav-link">Logout</button>
-                    </form>
-                </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
                             href="{{ route('order.show') }}">My Orders</a>
