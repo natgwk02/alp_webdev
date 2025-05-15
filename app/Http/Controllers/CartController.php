@@ -9,7 +9,6 @@ class CartController extends Controller
 {
     public function index()
     {
-        // Hardcoded cart items
         $cartItems = [
             [
                 'product_id' => 1,
@@ -31,12 +30,11 @@ class CartController extends Controller
 
         
 
-        // Menghitung jumlah total item dalam keranjang
         $totalItems = array_reduce($cartItems, function($carry, $item) {
             return $carry + $item['quantity'];
         }, 0);
 
-        // Menghitung subtotal, shipping fee, tax, dan total
+        
         $subtotal = array_reduce($cartItems, function($carry, $item) {
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
@@ -45,13 +43,14 @@ class CartController extends Controller
         $tax = $subtotal * 0.1; // 10% tax
         $total = $subtotal + $shippingFee + $tax;
 
-        // Mengirimkan data ke view
+        
         return view('customer.cart', compact('cartItems', 'totalItems', 'subtotal', 'shippingFee', 'tax', 'total'));
     }
 
     public function addToCart(Request $request, $productId)
     {
-        // In a real application, this would add item to cart
+        
+
         return redirect()->route('cart')
             ->with('success', 'Product added to cart successfully');
     }
