@@ -31,12 +31,15 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     Route::get( '/', [HomeController::class, 'showHome'])->name('home');
     Route::get('/products', action: [ProductController::class, 'index'])->name('products');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
-    Route::get('/cart', [CartController::class, 'index'])->name('cart');
-    Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::get('/wishlist', [CartController::class, 'wishlist'])->name('wishlist');
-    Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
-    Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
+Route::get('cart', [CartController::class, 'index'])->name('cart');
+Route::post('cart/{productId}/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+Route::delete('cart/{productId}/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+
+// Wishlist Routes
+Route::get('wishlist', [CartController::class, 'wishlist'])->name('wishlist');
+Route::post('wishlist/{productId}/add', [CartController::class, 'addToWishlist'])->name('wishlist.add');
+Route::delete('wishlist/{productId}/remove', [CartController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
 // //});
