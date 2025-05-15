@@ -10,7 +10,6 @@ class CartController extends Controller
     // Show the cart
     public function index()
     {
-        // Hardcoded cart items
         $cartItems = [
             [
                 'product_id' => 1,
