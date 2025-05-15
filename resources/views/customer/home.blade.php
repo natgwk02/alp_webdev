@@ -296,7 +296,7 @@
                             </div>
                             <div class="col-md-3 col-6 mb-4">
                                 <div class="category-item">
-                                    <img src="{{ asset('images/category-img/frozen-veg.jpeg') }}" alt="Frozen Vegetable"
+                                    <img src="{{ asset('images/category-img/vegetable.jpeg') }}" alt="Frozen Vegetable"
                                         class="img-fluid">
                                     <div class="category-text">
                                         <h5 class="mb-0">Frozen Vegetable</h5>
@@ -314,7 +314,7 @@
                             </div>
                             <div class="col-md-3 col-6 mb-4">
                                 <div class="category-item">
-                                    <img src="{{ asset('images/category-img/meat.jpeg') }}" alt="Frozen Meat"
+                                    <img src="{{ asset('images/category-img/meat.jpg') }}" alt="Frozen Meat"
                                         class="img-fluid">
                                     <div class="category-text">
                                         <h5 class="mb-0">Frozen Meat</h5>
@@ -329,7 +329,7 @@
                         <div class="row">
                             <div class="col-md-3 col-6 mb-4">
                                 <div class="category-item">
-                                    <img src="{{ asset('images/category-img/nugget.jpeg') }}" alt="Frozen Nugget"
+                                    <img src="{{ asset('images/category-img/nugget.jpg') }}" alt="Frozen Nugget"
                                         class="img-fluid">
                                     <div class="category-text">
                                         <h5 class="mb-0">Frozen Nugget</h5>
@@ -356,7 +356,7 @@
                             </div>
                             <div class="col-md-3 col-6 mb-4">
                                 <div class="category-item">
-                                    <img src="{{ asset('images/category-img/dessert.jpeg') }}" alt="Dessert"
+                                    <img src="{{ asset('images/category-img/dessert.jpg') }}" alt="Dessert"
                                         class="img-fluid">
                                     <div class="category-text">
                                         <h5 class="mb-0">Dessert</h5>
