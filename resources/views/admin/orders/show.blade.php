@@ -8,8 +8,10 @@
             <div class="col-12">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }} " class="text-decoration-none text-secondary">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.orders') }}" class="text-decoration-none text-secondary">Orders</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }} "
+                                class="text-decoration-none text-secondary">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.orders') }}"
+                                class="text-decoration-none text-secondary">Orders</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Order #{{ $order['order_number'] }}</li>
                     </ol>
                 </nav>
@@ -66,6 +68,15 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Notes</h5>
+                    </div>
+                    <div class="card-body">
+                        <textarea class="form-control" rows="3" placeholder="Notes about this order..." readonly></textarea>
                     </div>
                 </div>
 
