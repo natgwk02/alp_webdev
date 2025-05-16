@@ -23,9 +23,9 @@
                                         <thead class="bg-light">
                                             <tr>
                                                 <th>Product</th>
-                                                <th class="text-end">Price</th>
+                                                <th class="text-left">Price</th>
                                                 <th class="text-center">Quantity</th>
-                                                <th class="text-end">Total</th>
+                                                <th class="text-left">Total</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
