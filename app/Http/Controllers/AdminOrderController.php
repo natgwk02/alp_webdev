@@ -39,7 +39,12 @@ class AdminOrderController extends Controller
             ]
         ];
 
-        return view('admin.orders.index', compact('orders'));
+        $totalProducts = count($orders);
+        $currentPage = 1;
+        $perPage = 6;
+        $totalPages = ceil($totalProducts / $perPage);
+
+        return view('admin.orders.index', compact('orders', 'totalProducts', 'currentPage', 'perPage', 'totalPages'));
     }
 
     public function show($id)
@@ -66,7 +71,7 @@ class AdminOrderController extends Controller
                     'product_name' => 'Chilean Sea Bass Fillet',
                     'quantity' => 2,
                     'price' => 24.99,
-                    'total' => 49.98, 
+                    'total' => 49.98,
                     'image'=> 'seabass.jpg'
                 ],
                 [
@@ -74,7 +79,7 @@ class AdminOrderController extends Controller
                     'product_name' => 'Argentinian Red Shrimp',
                     'quantity' => 1,
                     'price' => 18.99,
-                    'total' => 18.99, 
+                    'total' => 18.99,
                     'image'=> 'redshrimp.jpg'
                 ],
                 [
@@ -82,7 +87,7 @@ class AdminOrderController extends Controller
                     'product_name' => 'Alaskan King Crab Legs',
                     'quantity' => 1,
                     'price' => 39.99,
-                    'total' => 39.99, 
+                    'total' => 39.99,
                     'image'=>'redshrimp.jpg'
                 ]
             ]

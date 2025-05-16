@@ -32,7 +32,7 @@ class OrderController extends Controller
                 }
             }
         }
-
+        
         return view('customer.orders', ['orders' => $sessionOrders]);
     }
 
