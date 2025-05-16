@@ -19,7 +19,7 @@
         }
 
         .status-badge {
-            width: 80px;
+            width: 100px;
         }
 
         .action-btn {
