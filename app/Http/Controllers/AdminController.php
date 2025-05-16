@@ -94,7 +94,7 @@ class AdminController extends Controller
         ];
 
         // Get unique categories for the filter dropdown
-        $categories = array_unique(array_column($products, 'category'));
+        $categories = ['Ready Meals', 'Frozen Vegetables', 'Frozen Dimsum', 'Frozen Meat', 'Frozen Nugget', 'Frozen Fruit', 'Frozen Seafood', 'Dessert'];
 
         // For pagination information
         $totalProducts = count($products);
@@ -107,7 +107,7 @@ class AdminController extends Controller
 
     public function createProduct()
     {
-        $categories = ['Ready Meals', 'Frozen Vegetables', 'Ice Cream & Desserts', 'Frozen Meat & Fish'];
+        $categories = ['Ready Meals', 'Frozen Vegetables', 'Frozen Dimsum', 'Frozen Meat', 'Frozen Nugget', 'Frozen Fruit', 'Frozen Seafood', 'Dessert'];
         return view('admin.products.index', compact('categories'));
     }
 
@@ -129,7 +129,7 @@ class AdminController extends Controller
             'status' => 'In Stock'
         ];
 
-        $categories = ['Ready Meals', 'Frozen Vegetables', 'Ice Cream & Desserts', 'Frozen Meat & Fish'];
+        $categories = ['Ready Meals', 'Frozen Vegetables', 'Frozen Dimsum', 'Frozen Meat', 'Frozen Nugget', 'Frozen Fruit', 'Frozen Seafood', 'Dessert'];
 
         return view('admin.products.index', compact('product', 'categories'));
     }

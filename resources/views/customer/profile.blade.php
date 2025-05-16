@@ -27,7 +27,7 @@
                 </ul>
                 
             </div>
-            <a class="w-100 btn text-white mt-3 fw-bold" style="background-color: #052659" href="{{ route('logout') }}"><i class="fas fa-sign-out me-2" style="color: white"></i> Logout</a>
+            <a class="w-100 btn text-white mt-3 fw-bold" style="background-color: #052659" href="{{ route('logout') }}"><i class="fas fa-sign-out me-2" style="color: white"></i> Sign Out</a>
         </div>
 
         <!-- Main Profile Content -->
