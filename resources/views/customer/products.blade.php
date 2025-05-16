@@ -21,23 +21,6 @@
 @endif
 
 <div class="container">
-    <!-- Cart Section -->
-    {{-- <div class="cart-section mb-4">
-        <h2>Your Cart</h2>
-        @if(count($cart) > 0)
-            <ul>
-                @foreach($cart as $productId => $product)
-                    <li>
-                        <img src="{{ asset('images/products-img/' . $product['image']) }}" alt="{{ $product['name'] }}" width="50">
-                        <strong>{{ $product['name'] }}</strong> - Rp {{ number_format($product['price'], 0, ',', '.') }}
-                    </li>
-                @endforeach
-            </ul>
-            <a href="{{ route('checkout') }}" class="btn btn-primary">Proceed to Checkout</a>
-        @else
-            <p>Your cart is empty.</p>
-        @endif
-    </div> --}}
 
     <!-- Product Listing Section -->
     <div class="row mb-4 mt-4">
