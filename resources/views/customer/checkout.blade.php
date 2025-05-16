@@ -165,7 +165,7 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow-sm" style="background-color: #C1E8FF;">
+            <div class="card shadow-sm" style="background-color: white;">
                 <div class="card-header bg-white">
                     <h4 class="mb-0">Order Summary</h4>
                 </div>

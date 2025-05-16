@@ -29,11 +29,14 @@ Route::POST('/logout', function () {
 
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register'); // untuk tampilkan form
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
-Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name('password.update');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+
+Route::get('/reset-password', [AuthController::class, 'showResetForm'])->name('password.reset.form');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 
-// // Customer Routes
+// Customer Routes
 // //Route::middleware(['auth', 'customer'])->group(function () {
     Route::get( '/', [HomeController::class, 'showHome'])->name('home');
     Route::get('/products', action: [ProductController::class, 'index'])->name('products');
@@ -45,6 +48,7 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::get('/checkoutform', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
@@ -80,6 +84,7 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     // Order Management
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::post('/admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 //});
 
 // Home Route

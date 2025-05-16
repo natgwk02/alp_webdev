@@ -6,94 +6,70 @@ use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
-    public function index()
-    {
-        // Hardcoded orders data
-        $orders = [
-            [
-                'id' => 1001,
-                'order_number' => 'CHILE-2025-1001',
-                'customer_name' => 'John Doe',
-                'order_date' => '2025-05-10',
-                'total_amount' => 89.97,
-                'status' => 'Processing',
-                'payment_method' => 'Credit Card'
-            ],
-            [
-                'id' => 1002,
-                'order_number' => 'CHILE-2025-1002',
-                'customer_name' => 'Jane Smith',
-                'order_date' => '2025-05-11',
-                'total_amount' => 124.95,
-                'status' => 'Shipped',
-                'payment_method' => 'PayPal'
-            ],
-            [
-                'id' => 1003,
-                'order_number' => 'CHILE-2025-1003',
-                'customer_name' => 'Robert Johnson',
-                'order_date' => '2025-05-12',
-                'total_amount' => 64.98,
-                'status' => 'Delivered',
-                'payment_method' => 'Bank Transfer'
-            ]
-        ];
+   public function index(Request $request)
+{
+    $orders = session('orders', []);
 
-        return view('admin.orders.index', compact('orders'));
+    // Pastikan setiap order memiliki customer_name dan payment_method
+    foreach ($orders as &$order) {
+        $order['customer_name'] = $order['customer_name'] ?? 'Unknown Customer';
+        $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
     }
+
+    session(['orders' => $orders]);
+
+    // Pagination manual
+    $perPage = 10;
+    $currentPage = $request->get('page', 1);
+    $totalProducts = count($orders);
+    $totalPages = ceil($totalProducts / $perPage);
+    $pagedOrders = array_slice($orders, ($currentPage - 1) * $perPage, $perPage);
+
+    return view('admin.orders.index', [
+        'orders' => $pagedOrders,
+        'currentPage' => $currentPage,
+        'totalPages' => $totalPages,
+        'totalProducts' => $totalProducts,
+        'perPage' => $perPage,
+    ]);
+}
 
     public function show($id)
     {
-        // Hardcoded order details
-        $order = [
-            'id' => $id,
-            'order_number' => 'CHILE-2025-' . $id,
-            'customer_name' => 'John Doe',
-            'customer_email' => 'john.doe@example.com',
-            'order_date' => '2025-05-10 14:30:00',
-            'status' => 'Processing',
-            'payment_method' => 'Credit Card',
-            'payment_status' => 'Paid',
-            'shipping_address' => '123 Main St, Santiago, Chile',
-            'billing_address' => '123 Main St, Santiago, Chile',
-            'subtotal' => 89.97,
-            'shipping_fee' => 5.00,
-            'tax' => 8.99,
-            'total_amount' => 103.96,
-            'items' => [
-                [
-                    'product_id' => 1,
-                    'product_name' => 'Chilean Sea Bass Fillet',
-                    'quantity' => 2,
-                    'image' => 'sea-bass.jpg',
-                    'price' => 24.99,
-                    'total' => 49.98
-                ],
-                [
-                    'product_id' => 2,
-                    'product_name' => 'Argentinian Red Shrimp',
-                    'quantity' => 1,
-                    'image' => 'red-shrimp.jpg',
-                    'price' => 18.99,
-                    'total' => 18.99
-                ],
-                [
-                    'product_id' => 3,
-                    'product_name' => 'Salmon Belly Fillet',
-                    'quantity' => 1,
-                   'image' => 'salmon-fillet.jpg',
-                    'price' => 39.99,
-                    'total' => 39.99
-                ]
-            ]
-        ];
+        $orders = session('orders', []);
+        $order = collect($orders)->firstWhere('id', $id);
+
+        if (!$order) {
+            return redirect()->route('admin.orders')->with('error', 'Order not found.');
+        }
+
+        $order['customer_name'] = $order['customer_name'] ?? 'Unknown Customer';
+        $order['payment_method'] = $order['payment_method'] ?? 'Unknown'; // Tambahkan di detail juga
+
+        // Tambahkan gambar dari product
+        $productController = new \App\Http\Controllers\ProductController;
+        $products = $productController->products();
+        $productsById = collect($products)->keyBy('id');
+
+        foreach ($order['items'] as &$item) {
+            $item['image'] = $productsById[$item['product_id']]['image'] ?? 'no-image.png';
+        }
 
         return view('admin.orders.show', compact('order'));
     }
 
     public function updateStatus(Request $request, $id)
     {
-        // In a real application, this would update the order status
+        $orders = session('orders', []);
+        foreach ($orders as &$order) {
+            if ($order['id'] == $id) {
+                $order['status'] = $request->input('status');
+                break;
+            }
+        }
+
+        session(['orders' => $orders]);
+
         return redirect()->route('admin.orders.show', $id)
             ->with('success', 'Order status updated successfully');
     }

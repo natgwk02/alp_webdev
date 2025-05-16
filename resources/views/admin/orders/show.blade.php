@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+i@extends('layouts.admin')
 
 @section('title', 'Order #' . $order['order_number'] . ' - Chile Mart Admin')
 
@@ -73,6 +73,8 @@
                         </table>
                     </div>
                 </div>
+
+
             </div>
 
         <div class="col-md-4 mb-4">

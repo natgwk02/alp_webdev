@@ -16,7 +16,7 @@
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-body text-center py-5">
-                        <i class="fas fa-heart fa-3x text-muted mb-3"></i>
+                        <i class="bi bi-bookmark-heart-fill fa-3x text-muted mb-3"></i>
                         <h3>Your wishlist is empty</h3>
                         <p class="text-muted">Save your favorite items here for later</p>
                         <a href="{{ route('products') }}" class="btn btn-primary">Browse Products</a>

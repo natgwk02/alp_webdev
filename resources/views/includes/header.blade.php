@@ -1,5 +1,6 @@
 <style>
     header {
+
         background-color: transparent !important;
     }
 
@@ -23,6 +24,7 @@
         position: relative;
         color: inherit;
     }
+
 
     .cart-badge {
         position: absolute;
@@ -50,7 +52,7 @@
     }
 
     .custom-wishlist-color {
-        color: red;
+        color: #052659;
     }
 
     .dropdown-toggle::after {
@@ -94,7 +96,7 @@
                 {{-- Wishlist --}}
                 <li class="nav-item">
                     <a class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
-                        <i class="bi bi-bookmark-heart fs-5"></i>
+                        <i class="bi bi-bookmark-heart-fill fs-5"></i>
                     </a>
                 </li>
 
