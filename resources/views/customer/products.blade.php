@@ -21,7 +21,26 @@
 @endif
 
 <div class="container">
-    <div class="row mb-4">
+    <!-- Cart Section -->
+    <div class="cart-section mb-4">
+        <h2>Your Cart</h2>
+        @if(count($cart) > 0)
+            <ul>
+                @foreach($cart as $productId => $product)
+                    <li>
+                        <img src="{{ asset('images/products-img/' . $product['image']) }}" alt="{{ $product['name'] }}" width="50">
+                        <strong>{{ $product['name'] }}</strong> - Rp {{ number_format($product['price'], 0, ',', '.') }}
+                    </li>
+                @endforeach
+            </ul>
+            <a href="{{ route('checkout') }}" class="btn btn-primary">Proceed to Checkout</a>
+        @else
+            <p>Your cart is empty.</p>
+        @endif
+    </div>
+
+    <!-- Product Listing Section -->
+    <div class="row mb-4 mt-4"> 
         <div class="col-12">
             <h1 class="fw-bold">Our Frozen Food Selection</h1>
             <p class="text-muted">Premium quality frozen foods from around the world</p>
@@ -34,10 +53,10 @@
             <div class="card h-100 shadow-sm position-relative">
                 <!-- Wishlist Button -->
                 <form action="{{ isset($wishlist[$product['id']]) ? route('wishlist.remove', $product['id']) : route('wishlist.add', $product['id']) }}" method="POST" class="position-absolute top-0 end-0 m-2">
-                      @csrf
-                      <button type="submit" class="btn btn-light btn-sm border-0">
-                         <i class="fas fa-heart {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }}"></i>
-                      </button>
+                    @csrf
+                    <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn" data-product-id="{{ $product['id'] }}">
+                        <i class="fas fa-heart {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }} heart-icon"></i>
+                    </button>
                 </form>
 
                 <div class="text-center p-3">
@@ -73,20 +92,41 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).on('click', '.wishlist-btn', function() {
-            var productId = $(this).data('product-id');
+        $(document).on('click', '.wishlist-btn', function(e) {
+            e.preventDefault(); // Prevent the form from submitting immediately
 
+            var productId = $(this).data('product-id');
+            var icon = $(this).find('.heart-icon');
+
+            // Change heart color immediately for visual feedback
+            if (icon.hasClass('text-dark')) {
+                icon.removeClass('text-dark').addClass('text-danger'); // Add 'text-danger' class for red
+            } else {
+                icon.removeClass('text-danger').addClass('text-dark'); // Add 'text-dark' class for grey
+            }
+
+            // Temporarily update the wishlist in the client-side (session/local storage if required)
+            var currentWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+            if (currentWishlist.includes(productId)) {
+                // Remove from client-side wishlist
+                currentWishlist = currentWishlist.filter(function(item) {
+                    return item !== productId;
+                });
+            } else {
+                // Add to client-side wishlist
+                currentWishlist.push(productId);
+            }
+
+            // Save to local storage
+            localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
+
+            // Send AJAX request to update wishlist on the server after the visual change
             $.ajax({
                 url: '/wishlist/toggle/' + productId,
                 type: 'GET',
                 success: function(response) {
-                    // Change heart color based on wishlist status
-                    var icon = $('button[data-product-id="'+productId+'"] .heart-icon');
-                    if (icon.hasClass('filled')) {
-                        icon.removeClass('filled');
-                    } else {
-                        icon.addClass('filled');
-                    }
+                    // Optionally handle the server's response if needed
+                    console.log("Wishlist updated on the server");
                 }
             });
         });
