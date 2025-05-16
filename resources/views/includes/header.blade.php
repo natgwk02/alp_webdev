@@ -62,7 +62,25 @@
     font-size: 0.7rem;
     padding: 4px 7px;
 }
+.navbar-nav > li {
+    display: inline-flex;
+    align-items: center;
+}
 
+.profile {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    color: inherit;
+}
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-scroll shadow-0 bg-white">
@@ -128,7 +146,8 @@
                 <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false" onclick="event.preventDefault();">
-                    <img src="{{ asset('assets/profile.png') }}" alt="Profile" class="profile" />
+                    <i class="bi bi-person-fill fs-3"></i>
+                    {{-- <img src="{{ asset('assets/profile.png') }}" alt="Profile" class="profile" /> --}}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
                 <li>
