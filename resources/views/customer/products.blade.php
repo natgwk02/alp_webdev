@@ -1,174 +1,200 @@
 @extends('layouts.app')
 
-@section('title', $product['name'] . ' - Chillé Mart')
-
-@push('styles')
-<style>
-    .product-detail {
-        padding: 50px 0;
-    }
-
-    .product-image-container {
-        width: 100%;
-        aspect-ratio: 4 / 5;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
-    }
-
-    .product-image-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        object-position: center;
-        transition: transform 0.3s ease;
-    }
-
-    .product-image-container img:hover {
-        transform: scale(1.03);
-    }
-
-    .product-info-card {
-        background: #fff;
-        border-radius: 16px;
-        padding: 32px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-    }
-
-    .product-info-card h1 {
-        font-weight: 700;
-        font-size: 1.8rem;
-        margin-bottom: 5px;
-    }
-
-    .product-info-card .category {
-        font-size: 0.95rem;
-        color: #6c757d;
-        margin-bottom: 12px;
-    }
-
-    .product-info-card .price {
-        color: #0d6efd;
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 20px;
-    }
-
-    .product-info-card .desc {
-        font-size: 1rem;
-        color: #333;
-        margin-bottom: 24px;
-    }
-
-    .quantity-control {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    .quantity-control button {
-        width: 32px;
-        height: 32px;
-        border: 1px solid #ccc;
-        background-color: #f8f9fa;
-        font-weight: bold;
-        border-radius: 6px;
-        transition: all 0.2s;
-    }
-
-    .quantity-control input {
-        width: 60px;
-        text-align: center;
-        font-size: 1rem;
-        padding: 6px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-    }
-
-    .btn-buy {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .btn-buy button {
-        padding: 10px 24px;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 8px;
-        border: none;
-        transition: background 0.3s;
-    }
-
-    .btn-add {
-        background-color: #198754;
-        color: white;
-    }
-
-    .btn-add:hover {
-        background-color: #157347;
-    }
-
-    .btn-buy-now {
-        background-color: #212529;
-        color: white;
-    }
-
-    .btn-buy-now:hover {
-        background-color: #000;
-    }
-</style>
-@endpush
+@section('title', 'Frozen Food Products - Chille Mart')
 
 @section('content')
-<div class="container product-detail">
-    <div class="row g-5">
-        <!-- Left: Product Image -->
-        <div class="col-md-5">
-            <div class="product-image-container">
-                <img src="{{ asset('images/products-img/' . $product['image']) }}" alt="{{ $product['name'] }}">
-            </div>
+
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" role="alert" style="min-width: 300px;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" role="alert" style="min-width: 300px;">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+<div class="container">
+    <div class="row mb-4 mt-4">
+        <div class="col-12 text-center">
+            <h1 class="fw-bold display-5" style="color: #052659;">Our Frozen Food Selection</h1>
+            <p class="text-muted">Premium quality frozen foods from around the world</p>
         </div>
+    </div>
 
-        <!-- Right: Product Info -->
-        <div class="col-md-7">
-            <div class="product-info-card">
-                <h1>{{ $product['name'] }}</h1>
-                <div class="category">{{ $product['category'] }}</div>
-                <div class="price">Rp {{ number_format($product['price'], 0, ',', '.') }}</div>
-
-                <p class="desc">Delicious and fresh, our {{ strtolower($product['name']) }} is a customer favorite sourced from high-quality suppliers.</p>
-
-                <form method="POST" action="">
+    <div class="row">
+        @foreach($products as $product)
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden product-card transition-transform position-relative">
+                
+                <!-- Wishlist Button -->
+                <form action="{{ isset($wishlist[$product['id']]) ? route('wishlist.remove', $product['id']) : route('wishlist.add', $product['id']) }}" method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                     @csrf
-                    <div class="quantity-control">
-                        <label class="form-label me-2">Quantity:</label>
-                        <button type="button" onclick="updateQuantity(-1)">−</button>
-                        <input type="number" name="quantity" id="quantity" value="1" min="1">
-                        <button type="button" onclick="updateQuantity(1)">+</button>
+                    <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn" data-product-id="{{ $product['id'] }}">
+                        <i class="bi bi-bookmark-heart-fill {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
+                    </button>
+                </form>
+
+                <!-- Product Image with Hover -->
+                <div class="text-center p-4 bg-white position-relative product-img-container">
+                    <img src="{{ asset('images/products-img/' . $product['image']) }}" 
+                         alt="{{ $product['name'] }}" 
+                         class="img-fluid main-img" />
+
+                    @if (!empty($product['hover_image']))
+                    <img src="{{ asset('images/hoverproducts-img/' . $product['hover_image']) }}" 
+                         alt="{{ $product['name'] }} Hover" 
+                         class="img-fluid hover-img" />
+                    @endif
+                </div>
+
+                <!-- Product Info -->
+                <div class="card-body px-4 pb-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h5 class="card-title fw-bold text-dark mb-0">{{ $product['name'] }}</h5>
+                        <div class="rating-stars d-flex">
+                            @php
+                                $rating = $product['rating'] ?? 0;
+                                $fullStars = floor($rating);
+                                $halfStar = ($rating - $fullStars) >= 0.5;
+                                $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                            @endphp
+
+                            @for ($i = 0; $i < $fullStars; $i++)
+                                <i class="bi bi-star-fill text-warning small"></i>
+                            @endfor
+
+                            @if ($halfStar)
+                                <i class="bi bi-star-half text-warning small"></i>
+                            @endif
+
+                            @for ($i = 0; $i < $emptyStars; $i++)
+                                <i class="bi bi-star text-warning small"></i>
+                            @endfor
+                        </div>
                     </div>
 
-                    <div class="btn-buy">
-                        <button type="submit" class="btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
-                        <button type="button" class="btn-buy-now">Buy it now</button>
-                    </div>
-                </form>
+                    <p class="text-secondary small mb-1">{{ $product['category'] }}</p>
+                    <h5 class="text-primary fw-semibold mb-4">Rp {{ number_format($product['price'], 0, ',', '.') }}</h5>
+
+                    <form action="{{ route('cart.add', ['productId' => $product['id']]) }}" method="POST" class="mt-auto">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ route('product.detail', $product['id']) }}" class="btn btn-outline-primary rounded-pill">View Details</a>
+                            <button type="submit" class="btn btn-success rounded-pill">
+                                <i class="bi bi-cart-plus-fill"></i> Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
+        @endforeach
     </div>
 </div>
 
-<script>
-    function updateQuantity(amount) {
-        const input = document.getElementById("quantity");
-        let value = parseInt(input.value);
-        if (!isNaN(value)) {
-            value += amount;
-            if (value < 1) value = 1;
-            input.value = value;
-        }
+<!-- Custom Styling -->
+<style>
+    .product-card:hover {
+        transform: translateY(-5px);
+        transition: transform 0.3s ease-in-out;
     }
+
+    .wishlist-btn:hover .heart-icon {
+        transform: scale(1.2);
+        transition: transform 0.2s;
+    }
+
+    .product-img-container {
+        position: relative;
+        width: 100%;
+        height: 230px;
+        overflow: hidden;
+    }
+
+    .product-img-container .main-img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        position: relative;
+        z-index: 1;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .product-img-container .hover-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        opacity: 0;
+        z-index: 2;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .product-img-container:hover .hover-img {
+        opacity: 1;
+    }
+
+    .product-img-container:hover .main-img {
+        opacity: 0;
+    }
+
+    .bi-star-fill, .bi-star-half, .bi-star {
+        font-size: 0.95rem;
+    }
+
+    .rating-stars i {
+        margin-left: 1px;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+</style>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+@endsection
+
+@section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.wishlist-btn', function(e) {
+        e.preventDefault();
+        var productId = $(this).data('product-id');
+        var icon = $(this).find('.heart-icon');
+
+        if (icon.hasClass('text-dark')) {
+            icon.removeClass('text-dark').addClass('text-danger');
+        } else {
+            icon.removeClass('text-danger').addClass('text-dark');
+        }
+
+        var currentWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+        if (currentWishlist.includes(productId)) {
+            currentWishlist = currentWishlist.filter(item => item !== productId);
+        } else {
+            currentWishlist.push(productId);
+        }
+        localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
+
+        $.ajax({
+            url: '/wishlist/toggle/' + productId,
+            type: 'GET',
+            success: function(response) {
+                console.log("Wishlist updated");
+            }
+        });
+    });
 </script>
 @endsection
