@@ -100,7 +100,32 @@
                     </div>
                 </div>
 
-                <div class="card shadow-sm" style="background-color: white;">
+                <!-- Notes to Seller Section -->
+                <div class="card shadow-sm mb-4" style="background-color: #C1E8FF;">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Notes to Seller</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="sellerNotes" class="form-label">
+                                Special instructions or requests for the seller
+                                <span class="text-muted">(optional)</span>
+                            </label>
+                            <textarea class="form-control @error('sellerNotes') is-invalid @enderror" 
+                                    id="sellerNotes" name="sellerNotes" rows="3" 
+                                    placeholder="e.g. Please pack carefully, gift wrapping needed, specific delivery instructions">{{ old('sellerNotes') }}</textarea>
+                            @error('sellerNotes')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted float-end"><span id="notesCounter">0</span>/200</small>
+                            <div class="form-text">
+                                Let us know if you have any special requests for your order.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm" style="background-color: #C1E8FF;">
                     <div class="card-header bg-white">
                         <h4 class="mb-0">Payment Method *</h4>
                     </div>
@@ -231,7 +256,6 @@
     </div>
 </div>
 
-
 @section('scripts')
 <script>
     // Show/hide credit card form based on payment method selection
@@ -245,6 +269,29 @@
             }
         });
     });
+
+    // Character counter for notes to seller
+    const notesTextarea = document.getElementById('sellerNotes');
+    const notesCounter = document.getElementById('notesCounter');
+    
+    if (notesTextarea && notesCounter) {
+        notesTextarea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            notesCounter.textContent = currentLength;
+            
+            if (currentLength > 200) {
+                notesCounter.classList.add('text-danger');
+            } else {
+                notesCounter.classList.remove('text-danger');
+            }
+        });
+        
+        // Initialize counter on page load
+        notesCounter.textContent = notesTextarea.value.length;
+        if (notesTextarea.value.length > 200) {
+            notesCounter.classList.add('text-danger');
+        }
+    }
 </script>
 @endsection
 @endsection
