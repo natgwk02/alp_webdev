@@ -8,13 +8,14 @@
     <p class="text-muted">Placed on {{ $order['order_date'] }}</p>
 
     <div class="row mb-4">
+        <!-- Kiri: Tabel item dengan gambar -->
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5>Order Items</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table align-middle">
                         <thead>
                             <tr>
                                 <th>Product</th>
@@ -26,7 +27,10 @@
                         <tbody>
                             @foreach($order['items'] as $item)
                             <tr>
-                                <td>{{ $item['product_name'] }}</td>
+                                <td class="d-flex align-items-center gap-3">
+                                    <img src="{{ asset('images/products-img/' . $item['image']) }}" alt="{{ $item['product_name'] }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
+                                    <span>{{ $item['product_name'] }}</span>
+                                </td>
                                 <td>Rp {{ number_format($item['price'], 0, ',', '.') }}</td>
                                 <td>{{ $item['quantity'] }}</td>
                                 <td>Rp {{ number_format($item['total'], 0, ',', '.') }}</td>
@@ -51,6 +55,7 @@
             @endif
         </div>
 
+        <!-- Kanan: Summary -->
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header">
@@ -87,4 +92,5 @@
         </div>
     </div>
 </div>
+
 @endsection

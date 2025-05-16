@@ -66,7 +66,10 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     // Order Management
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-    Route::post('/admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    
+
+
 //});
 
 // Home Route
