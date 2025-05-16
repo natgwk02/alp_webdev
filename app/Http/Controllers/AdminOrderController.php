@@ -17,6 +17,8 @@ class AdminOrderController extends Controller
             $order['status'] = $order['status'] ?? 'Pending';
             $order['order_date'] = $order['order_date'] ?? now();
             $order['total_amount'] = $order['total_amount'] ?? 0;
+            $order['order_number'] = $order['order_number'] ?? 'ORD-' . str_pad($order['id'], 6, '0', STR_PAD_LEFT);
+
         }
 
         session(['orders' => $orders]); // simpan ulang untuk memastikan
@@ -47,7 +49,9 @@ class AdminOrderController extends Controller
         }
 
         // Set default values
-        $order['customer_name'] = $order['customer_name'] ?? 'Unknown Customer';
+       $order['customer_name'] = $order['customer_name']
+    ?? ($order['customer']['first_name'] ?? '') . ' ' . ($order['customer']['last_name'] ?? '')
+    ?? 'Unknown Customer';
         $order['customer_email'] = $order['customer_email'] ?? null;
         $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
         $order['payment_status'] = $order['payment_status'] ?? 'Unpaid';
@@ -55,10 +59,14 @@ class AdminOrderController extends Controller
         $order['billing_address'] = $order['billing_address'] ?? '-';
         $order['subtotal'] = $order['subtotal'] ?? 0;
         $order['shipping_fee'] = $order['shipping_fee'] ?? 0;
-        $order['total_amount'] = $order['total_amount'] ?? 0;
+        $order['total_amount'] = $order['total_amount']
+    ?? $order['total']
+    ?? (($order['subtotal'] ?? 0) + ($order['shipping_fee'] ?? 0) + ($order['tax'] ?? 0) - ($order['voucher_discount'] ?? 0));
         $order['status'] = $order['status'] ?? 'Pending';
         $order['order_date'] = $order['order_date'] ?? now();
         $order['items'] = $order['items'] ?? [];
+        
+        $order['customer']['notes'] = $order['customer']['notes'] ?? null;
 
         // Ambil data produk dari controller ProductController
         $productController = new \App\Http\Controllers\ProductController;

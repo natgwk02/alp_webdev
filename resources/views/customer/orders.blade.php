@@ -12,12 +12,11 @@
                 <div class="border rounded shadow-sm p-4 bg-white">
                     {{-- Header --}}
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold text-secondary">Order #{{ $order['order_number'] }}</span>
+                        <span class="fw-semibold text-secondary">Order #{{ $order['order_number'] ?? $order['id'] }}</span>
                         @php
                             $statusClass = match($order['status']) {
                                 'Delivered' => 'badge bg-success',
                                 'Processing' => 'badge bg-warning text-dark',
-                                'Cancelled' => 'badge bg-danger',
                                 default => 'badge bg-secondary'
                             };
                         @endphp
@@ -27,10 +26,10 @@
                     {{-- Tanggal & item count --}}
                     <div class="mb-3 text-muted small">
                         <i class="fas fa-calendar-alt me-1"></i>
-                        {{ \Carbon\Carbon::parse($order['order_date'])->format('d M Y') }}
+                        {{ isset($order['order_date']) ? \Carbon\Carbon::parse($order['order_date'])->format('d M Y') : 'Tanggal tidak tersedia' }}
                         &nbsp; | &nbsp;
                         <i class="fas fa-boxes me-1"></i>
-                        {{ $order['item_count'] }} item{{ $order['item_count'] > 1 ? 's' : '' }}
+                        {{ $order['item_count'] ?? count($order['items']) }} item{{ ($order['item_count'] ?? count($order['items'])) > 1 ? 's' : '' }}
                     </div>
 
                     {{-- Gambar + Nama Produk --}}
@@ -53,14 +52,14 @@
                     {{-- Total + Actions --}}
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <div class="fw-bold fs-5 text-dark">
-                            Total: Rp {{ number_format($order['total_amount'], 0, ',', '.') }}
+                            Total: Rp {{ isset($order['total']) ? number_format($order['total'], 0, ',', '.') : '0' }}
                         </div>
                         <div class="mt-2 mt-md-0 d-flex gap-2">
                             <a href="{{ route('order.detail', ['id' => $order['id']]) }}"
                                class="btn btn-outline-primary btn-sm px-4">
                                 View Details
                             </a>
-                            @if($order['status'] === 'Delivered')
+                            @if(isset($order['status']) && $order['status'] === 'Delivered')
                                 <form action="{{ route('order.received', ['id' => $order['id']]) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-success btn-sm px-4">
@@ -73,11 +72,10 @@
                 </div>
             @endforeach
         </div>
-            @else
-            <div class="alert alert-info">
-                You have no orders yet.
-            </div>
-            @endif
+    @else
+        <div class="alert alert-info">
+            You have no orders yet.
         </div>
+    @endif
 </div>
 @endsection

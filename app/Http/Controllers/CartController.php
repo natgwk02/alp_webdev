@@ -47,7 +47,6 @@ class CartController extends Controller
     return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
 }
 
-// app/Http/Controllers/CartController.php
 
 public function applyVoucher(Request $request)
 {
@@ -77,10 +76,6 @@ public function applyVoucher(Request $request)
 
     return back()->with('voucher_success', 'Voucher applied successfully!');
 }
-
-
-
-
 
 
 public function removeVoucher()
@@ -137,9 +132,6 @@ public function removeVoucher()
     }
 
 
-
-
-
     private function calculateSubtotal()
 {
     $cartItems = session('cart', []);
@@ -148,28 +140,28 @@ public function removeVoucher()
     }, 0);
 }
 
-// CartController.php
 
-public function proceedToCheckout(Request $request)
-{
-    $cartItems = session('cart', []);
+// public function proceedToCheckout(Request $request)
+// {
+//     $cartItems = session('cart', []);
     
-    if (empty($cartItems)) {
-        return redirect()->route('cart.index')->with('error', 'Keranjang Anda kosong.');
-    }
+//     if (empty($cartItems)) {
+//         return redirect()->route('cart.index')->with('error', 'Keranjang Anda kosong.');
+//     }
 
-    // Simpan semua data yang diperlukan untuk checkout di session
-    $checkoutData = [
-        'items' => $cartItems,
-        'subtotal' => $this->calculateSubtotal(),
-        'shipping' => 5000,
-        'tax' => round($this->calculateSubtotal() * 0.1),
-        'voucher_discount' => session('voucher_discount', 0),
-        'created_at' => now()->toDateTimeString()
-    ];
+//     // Simpan semua data yang diperlukan untuk checkout di session
+//     $checkoutData = [
+//         'items' => $cartItems,
+//         'subtotal' => $this->calculateSubtotal(),
+//         'shipping' => 5000,
+//         'tax' => round($this->calculateSubtotal() * 0.1),
+//         'voucher_discount' => session('voucher_discount', 0),
+//         'order_date' => now()->toDateTimeString()
+//     ];
     
-    session(['checkout_data' => $checkoutData]);
+//     session(['checkout_data' => $checkoutData]);
     
-    return redirect()->route('checkout');
-}
+//     return redirect()->route('orders');
+// }
+
 }

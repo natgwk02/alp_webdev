@@ -43,7 +43,7 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="text-end">
+                                                <td class="align-middle">
                                                     <span class="price-column">Rp{{ number_format($item['price'], 0, ',', '.') }}</span>
                                                 </td>
                                                 <td>
@@ -57,7 +57,7 @@
                                                                style="width: 80px;">
                                                     </div>
                                                 </td>
-                                                <td class="text-end">
+                                                <td class="align-middle">
                                                     <span class="price-column" id="item-total-{{ $index }}">Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
                                                 </td>
                                                 <td>
@@ -150,8 +150,7 @@
                                         <span>Total:</span>
                                         <span id="total-display">Rp{{ number_format($total, 0, ',', '.') }}</span>
                                     </div>
-                                   <form action="{{ route('cart.proceed-to-checkout') }}" method="POST">
-                                    @csrf
+                                   <form action="{{ route('checkout.form') }}" method="GET">
                                     <button type="submit" class="btn btn-primary" {{ count($cartItems) == 0 ? 'disabled' : '' }}>
                                         Proceed to Checkout
                                     </button>

@@ -110,6 +110,13 @@
                         <p class="mb-0">{{ $order['billing_address'] ?? '-' }}</p>
                     </div>
 
+                    <div class="mb-3">
+    <h6>Customer Notes</h6>
+    <p class="mb-0">
+        {{ $order['customer_notes'] ?? '-' }}
+    </p>
+</div>
+
                     <hr>
 
                     <div class="mb-3">
