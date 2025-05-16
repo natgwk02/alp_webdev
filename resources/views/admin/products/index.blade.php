@@ -102,7 +102,9 @@
                 </div>
                 <div class="col-md-3">
                     <div class="d-flex gap-2">
-                        <button id="filterBtn" class="btn btn-primary flex-grow-1">Filter</button>
+                        <button id="filterBtn" class="btn btn-primary flex-grow-1">
+                            <i class="fas fa-filter me-1"></i>Filter Products
+                        </button>
                         <button id="resetBtn" class="btn btn-outline-secondary">Reset</button>
                     </div>
                 </div>
