@@ -39,7 +39,7 @@
                 <form action="{{ isset($wishlist[$product['id']]) ? route('wishlist.remove', $product['id']) : route('wishlist.add', $product['id']) }}" method="POST" class="position-absolute top-0 end-0 m-2">
                     @csrf
                     <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn" data-product-id="{{ $product['id'] }}">
-                        <i class="bi bi-bookmark-heart {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }} heart-icon"></i>
+                        <i class="bi bi-bookmark-heart-fill {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }} heart-icon"></i>
                     </button>
                 </form>
 

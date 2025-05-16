@@ -178,7 +178,7 @@
             </table>
         </div>
 
-        <!-- Page -->
+        <!-- Pagenation -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <p class="mb-0">Showing {{ ($currentPage - 1) * $perPage + 1 }} to
@@ -209,7 +209,6 @@
                 </ul>
             </nav>
         </div>
-    </div>
     </div>
 
     {{-- modal --}}

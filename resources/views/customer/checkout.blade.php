@@ -6,7 +6,7 @@
 <div class="container py-4">
     <div class="row">
         <div class="col-md-8">
-            <div class="card shadow-sm mb-4" style="background-color: #C1E8FF;">
+            <div class="card shadow-sm mb-4" style="background-color: white;">
                 <div class="card-header bg-white">
                     <h4 class="mb-0">Shipping Information</h4>
                 </div>
@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm" style="background-color: #C1E8FF;">
+            <div class="card shadow-sm" style="background-color: white;">
                 <div class="card-header bg-white">
                     <h4 class="mb-0">Payment Method</h4>
                 </div>
@@ -121,7 +121,7 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow-sm" style="background-color: #C1E8FF;">
+            <div class="card shadow-sm" style="background-color: white;">
                 <div class="card-header bg-white">
                     <h4 class="mb-0">Order Summary</h4>
                 </div>
@@ -130,7 +130,7 @@
                         @foreach($cartItems as $item)
                         <div class="d-flex justify-content-between mb-2">
                             <div>
-                                {{ $item['product_name'] }}
+                                {{ $item['name'] }}
                                 <span class="text-muted">x{{ $item['quantity'] }}</span>
                             </div>
                             <div>Rp{{ number_format($item['price'] * $item['quantity'], 2) }}</div>
