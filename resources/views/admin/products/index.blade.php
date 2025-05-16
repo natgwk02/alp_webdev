@@ -41,13 +41,29 @@
         }
     </style>
 
-    <div class="container-fluid mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Products Management</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                <i class="bi bi-plus-lg"></i> Add New Product
-            </button>
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('admin.dashboard') }}"
+                                        class="text-decoration-none text-secondary">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Products</li>
+                            </ol>
+                        </nav>
+                        <h1 class="fw-bold mb-2 mb-md-0">Products Management</h1>
+                    </div>
+                    <button class="btn btn-primary mt-5" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <i class="bi bi-plus-lg"></i> Add New Product
+                    </button>
+                </div>
+            </div>
         </div>
+
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -64,7 +80,8 @@
                         <span class="input-group-text bg-white border-end-0">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search products...">
+                        <input type="text" id="searchInput" class="form-control border-start-0"
+                            placeholder="Search products...">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -122,8 +139,7 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <img src="{{ asset('images/products-img/' . $product['image']) }}"
-                                    alt="{{ $product['name'] }}"
-                                        class="product-img me-3">
+                                        alt="{{ $product['name'] }}" class="product-img me-3">
                                     <div>
                                         <h6 class="mb-0">{{ $product['name'] }}</h6>
                                         <small class="text-muted">#{{ $product['id'] }}</small>
@@ -148,12 +164,12 @@
                             <td class="text-end">
                                 <button class="btn btn-sm btn-outline-primary action-btn" data-bs-toggle="modal"
                                     data-bs-target="#editProductModal" data-product-id="{{ $product['id'] }}">
-                                    <i class="bi bi-pencil"></i>
+                                    <i class="fa fa-pencil"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger action-btn" data-bs-toggle="modal"
                                     data-bs-target="#deleteProductModal" data-product-id="{{ $product['id'] }}"
                                     data-product-name="{{ $product['name'] }}">
-                                    <i class="bi bi-trash"></i>
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
@@ -199,7 +215,8 @@
     {{-- modal --}}
 
     <!-- Add Product - Modal -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -207,8 +224,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addProductForm" action="{{ route('admin.products.create', $product['id'])}}" method="POST"
-                        enctype="multipart/form-data">
+                    <form id="addProductForm" action="{{ route('admin.products.create', $product['id']) }}"
+                        method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -301,7 +318,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editProductForm" action="{{ route('admin.products.update', $product['id'])}}" method="POST" enctype="multipart/form-data">
+                    <form id="editProductForm" action="{{ route('admin.products.update', $product['id']) }}"
+                        method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row mb-3">
@@ -338,8 +356,8 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="editProductWeight" class="form-label">Weight/Size*</label>
-                                <input type="text" class="form-control" id="editProductWeight" name="weight" required
-                                    value="">
+                                <input type="text" class="form-control" id="editProductWeight" name="weight"
+                                    required value="">
                             </div>
                             <div class="col-md-6">
                                 <label for="editProductID" class="form-label">ID*</label>
@@ -385,7 +403,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" form="editProductForm"  class="btn btn-primary">Save Changes</button>
+                    <button type="submit" form="editProductForm" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -406,7 +424,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteProductForm" action="{{ route('admin.products.delete', $product['id'])}}" method="POST">
+                    <form id="deleteProductForm" action="{{ route('admin.products.delete', $product['id']) }}"
+                        method="POST">
                         @csrf
                         <button type="submit" class="btn btn-danger">Delete Product</button>
                     </form>
@@ -444,7 +463,8 @@
                 'Delicious gourmet pizza with premium toppings, ready to bake from frozen.';
             document.getElementById('editProductWeight').value = '400g';
             document.getElementById('editProductID').value = productId;
-            document.getElementById('currentProductImage').src = '{{ asset('images/products-img/gourmet-pizza.jpg') }}';
+            document.getElementById('currentProductImage').src =
+                '{{ asset('images/products-img/gourmet-pizza.jpg') }}';
             document.getElementById('editFreezer').checked = true;
             document.getElementById('editFeaturedProduct').checked = true;
         });
@@ -477,6 +497,5 @@
             statusSelect.selectedIndex = 0;
             currentFilter.textContent = 'None';
         });
-
     </script>
 @endsection

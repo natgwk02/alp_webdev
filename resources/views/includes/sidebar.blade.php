@@ -92,7 +92,7 @@
         @csrf
         <button type="submit" class="nav-link text-danger btn btn-link p-0 m-0 text-start">
             <i class="bi bi-box-arrow-left"></i>
-            <span>Logout</span>
+            <span>Sign Out</span>
         </button>
     </form>
 </div>
