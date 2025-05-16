@@ -54,7 +54,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/logout');
     }
 
     public function showForgotPassword()
@@ -163,4 +163,6 @@ class AuthController extends Controller
 
         return redirect('/login');
     }
+
+    
 }

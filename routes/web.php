@@ -35,7 +35,7 @@ Route::get('/reset-password', [AuthController::class, 'showResetForm'])->name('p
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 
-// // Customer Routes
+// Customer Routes
 // //Route::middleware(['auth', 'customer'])->group(function () {
     Route::get( '/', [HomeController::class, 'showHome'])->name('home');
     Route::get('/products', action: [ProductController::class, 'index'])->name('products');

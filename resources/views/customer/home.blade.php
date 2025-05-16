@@ -407,18 +407,21 @@
 
             <!-- Gambar -->
             <div class="voucher-img bg-light">
-                <img src="/images/voucher.png" alt="Voucher Banner" class="img-fluid w-100 h-100 object-fit-cover">
+                <img src="/images/voucher1.png" alt="Voucher Banner" class="img-fluid w-100 h-100 object-fit-cover">
             </div>
 
             <!-- Konten -->
             <div
                 class="voucher-content p-4 p-md-5 d-flex flex-column justify-content-center text-center text-md-start bg-white">
-                <h2 class="text-blue fw-bold mb-2">🎉 20% OFF NEW CHILLÉ MEMBERS</h2>
-                <p class="mb-3 text-dark fs-5">Valid for all types of frozen food – minimum purchase Rp 200.000</p>
-                <p class="mb-4 text-muted">Use code <span class="text-warning fw-bold">CHILLBRO</span> on your first order
-                </p>
+                
+                <h2 class="text-blue fw-bold mb-2">🎉 Welcome to Chillé – Get Rp50.000 Off! 🎉</h2>
+                
+                <p class="mb-3 text-dark fs-5">Enjoy all your favorite frozen food with a minimum spend of Rp200.000</p>
+                
+                <p class="mb-4 text-muted">Use code <span class="text-warning fw-bold">CHILLBRO</span> at checkout for your first order</p>
+                
                 <a href="{{ route('products') }}"
-                    class="btn btn-warning px-4 py-2 fw-semibold rounded-pill shadow-sm text-dark">SHOP NOW</a>
+                    class="btn btn-warning px-4 py-2 fw-semibold rounded-pill shadow-sm text-dark">Shop Now</a>
             </div>
 
         </div>

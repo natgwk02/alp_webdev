@@ -13,53 +13,57 @@
 
     <div class="row">
         <!-- Stats Cards -->
-        <div class="col-lg-4 mb-4">
-            <div class="card bg-primary text-white">
+            <!-- TOTAL ORDERS -->
+            <div class="col-lg-4 mb-4">
                 <a href="{{ route('admin.orders') }}" class="text-decoration-none text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-uppercase">Total Orders</h6>
-                            <h2 class="mb-0">{{ $stats['total_orders'] }}</h2>
+                    <div class="card stat-card gradient-blue text-white rounded-4 h-100">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase fw-semibold mb-1">Total Orders</h6>
+                                <h2 class="fw-bold mb-0">{{ $stats['total_orders'] }}</h2>
+                            </div>
+                            <div class="icon-circle">
+                                <i class="fas fa-shopping-bag fa-lg"></i>
+                            </div>
                         </div>
-                        <i class="fas fa-shopping-bag fa-2x opacity-50"></i>
                     </div>
-                </div>
-            </a>
+                </a>
             </div>
-        </div>
 
-        <div class="col-lg-4 mb-4">
-            <div class="card bg-success text-white">
+            <!-- TOTAL REVENUE -->
+            <div class="col-lg-4 mb-4">
                 <a href="{{ route('admin.orders') }}" class="text-decoration-none text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-uppercase">Total Revenue</h6>
-                            <h2 class="mb-0">Rp. 100.000.000</h2>
+                    <div class="card stat-card gradient-green text-white rounded-4 h-100">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase fw-semibold mb-1">Total Revenue</h6>
+                                <h2 class="fw-bold mb-0">Rp. 100.000.000</h2>
+                            </div>
+                            <div class="icon-circle">
+                                <i class="fas fa-dollar-sign fa-lg"></i>
+                            </div>
                         </div>
-                        <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
                     </div>
-                </div>
-            </a>
+                </a>
             </div>
-        </div>
 
-        <div class="col-lg-4 mb-4">
-            <div class="card bg-info text-white">
+            <!-- TOTAL PRODUCTS -->
+            <div class="col-lg-4 mb-4">
                 <a href="{{ route('admin.products') }}" class="text-decoration-none text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-uppercase">Total Products</h6>
-                            <h2 class="mb-0">{{ $stats['total_products'] }}</h2>
+                    <div class="card stat-card gradient-cyan text-white rounded-4 h-100">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase fw-semibold mb-1">Total Products</h6>
+                                <h2 class="fw-bold mb-0">{{ $stats['total_products'] }}</h2>
+                            </div>
+                            <div class="icon-circle">
+                                <i class="fas fa-box-open fa-lg"></i>
+                            </div>
                         </div>
-                        <i class="fas fa-box-open fa-2x opacity-50"></i>
                     </div>
-                </div>
+                </a>
             </div>
-        </a>
-        </div>
+
 {{--
         <div class="col-md-3 mb-4">
             <div class="card bg-warning text-dark">
@@ -152,4 +156,29 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<style>
+    
+    .gradient-blue {
+        background: linear-gradient(135deg, #1E90FF, #4682B4);
+    }
+    .gradient-green {
+        background: linear-gradient(135deg, #28a745, #218838);
+    }
+    .gradient-cyan {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+    }
+    .icon-circle {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        padding: 15px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        transition: transform 0.3s ease;
+    }
+
+    
+</style>
+@endpush
+
 @endsection
