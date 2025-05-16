@@ -2,6 +2,9 @@
     .text-footer{
         color: #052659;
     }
+    .img-payment{      
+      height: 45px;
+    }
 </style>
 
 <footer class="text-white w-100" style="background-color: #C1E8FF;">
@@ -24,7 +27,13 @@
             </li>
           </ul>
         </div>
-        
+        <div class="">
+          <h5 class=" fw-semibold text-center" style="letter-spacing: 2px; color: #052659;">Payment Accepted</h5>
+          <div class="text-center mt-0">
+              <img src="/assets/payments.png" class="img-payment">
+          </div>
+          
+        </div>
         
       </div>
     </div>
