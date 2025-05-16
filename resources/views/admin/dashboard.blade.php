@@ -33,7 +33,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-uppercase">Total Revenue</h6>
-                            <h2 class="mb-0">${{ number_format($stats['total_revenue'], 2) }}</h2>
+                            <h2 class="mb-0">Rp. 100.000.000</h2>
                         </div>
                         <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
                     </div>
@@ -94,21 +94,21 @@
                                     <td>CHILE-2025-1003</td>
                                     <td>2025-05-12</td>
                                     <td>Robert Johnson</td>
-                                    <td>$64.98</td>
+                                    <td>Rp. 35.000</td>
                                     <td><span class="badge bg-warning">Processing</span></td>
                                 </tr>
                                 <tr>
                                     <td>CHILE-2025-1002</td>
                                     <td>2025-05-11</td>
                                     <td>Jane Smith</td>
-                                    <td>$124.95</td>
+                                    <td>Rp. 50.000</td>
                                     <td><span class="badge bg-info">Shipped</span></td>
                                 </tr>
                                 <tr>
                                     <td>CHILE-2025-1001</td>
                                     <td>2025-05-10</td>
                                     <td>John Doe</td>
-                                    <td>$89.97</td>
+                                    <td>Rp. 55.000</td>
                                     <td><span class="badge bg-success">Delivered</span></td>
                                 </tr>
                             </tbody>

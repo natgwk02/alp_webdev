@@ -109,7 +109,7 @@ class AuthController extends Controller
         // Simulasi list email "terdaftar"
         $allowedEmails = [
             'alice@mail.com',
-            'admin@chilemart.com',
+            'admin@chillemart.com',
         ];
 
         if (in_array($request->email, $allowedEmails)) {
