@@ -1,123 +1,167 @@
 @extends('layouts.app')
-
 @section('title', 'Checkout - Chile Mart')
 
 @section('content')
 <div class="container py-4">
     <div class="row">
         <div class="col-md-8">
-            <div class="card shadow-sm mb-4" style="background-color: white;">
-                <div class="card-header bg-white">
-                    <h4 class="mb-0">Shipping Information</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="firstName" value="John" required>
+            <form action="{{ route('checkout.store') }}" method="POST">
+                @csrf
+                
+                <div class="card shadow-sm mb-4" style="background-color: white;">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Shipping Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name *</label>
+                                <input type="text" class="form-control @error('firstName') is-invalid @enderror" 
+                                       id="firstName" name="firstName" value="{{ old('firstName', $defaultData['firstName']) }}" required>
+                                @error('firstName')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control @error('lastName') is-invalid @enderror" 
+                                       id="lastName" name="lastName" value="{{ old('lastName', $defaultData['lastName']) }}" required>
+                                @error('lastName')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" value="Doe" required>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                                   id="email" name="email" value="{{ old('email', $defaultData['email']) }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" value="john.doe@example.com" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" id="phone" value="+56912345678" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Shipping Address</label>
-                        <textarea class="form-control" id="address" rows="3" required>123 Main St, Santiago, Chile</textarea>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="city" class="form-label">City</label>
-                            <input type="text" class="form-control" id="city" value="Santiago" required>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control @error('phone') is-invalid @enderror" 
+                                   id="phone" name="phone" value="{{ old('phone', $defaultData['phone']) }}" required>
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="zip" class="form-label">ZIP Code</label>
-                            <input type="text" class="form-control" id="zip" value="8320000" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="country" class="form-label">Country</label>
-                            <select class="form-select" id="country" required>
-                                <option selected>Chile</option>
-                                <option>Argentina</option>
-                                <option>Peru</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="saveAddress" checked>
-                        <label class="form-check-label" for="saveAddress">
-                            Save this address for future use
-                        </label>
-                    </div>
-                </div>
-            </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Shipping Address *</label>
+                            <textarea class="form-control @error('address') is-invalid @enderror" 
+                                      id="address" name="address" rows="3" required>{{ old('address', $defaultData['address']) }}</textarea>
+                            @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-            <div class="card shadow-sm" style="background-color: white;">
-                <div class="card-header bg-white">
-                    <h4 class="mb-0">Payment Method</h4>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
-                            <label class="form-check-label" for="creditCard">
-                                <i class="fab fa-cc-visa me-2"></i>Credit Card
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="city" class="form-label">City *</label>
+                                <input type="text" class="form-control @error('city') is-invalid @enderror" 
+                                       id="city" name="city" value="{{ old('city', $defaultData['city']) }}" required>
+                                @error('city')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="zip" class="form-label">ZIP Code *</label>
+                                <input type="text" class="form-control @error('zip') is-invalid @enderror" 
+                                       id="zip" name="zip" value="{{ old('zip', $defaultData['zip']) }}" required>
+                                @error('zip')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="country" class="form-label">Country *</label>
+                                <select class="form-select @error('country') is-invalid @enderror" id="country" name="country" required>
+                                    <option value="Chile" {{ old('country', $defaultData['country']) == 'Chile' ? 'selected' : '' }}>Chile</option>
+                                    <option value="Argentina" {{ old('country', $defaultData['country']) == 'Argentina' ? 'selected' : '' }}>Argentina</option>
+                                    <option value="Peru" {{ old('country', $defaultData['country']) == 'Peru' ? 'selected' : '' }}>Peru</option>
+                                </select>
+                                @error('country')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        @auth
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="saveAddress" name="saveAddress" checked>
+                            <label class="form-check-label" for="saveAddress">
+                                Save this address for future use
                             </label>
                         </div>
-                        <div id="creditCardForm" class="mt-3">
-                            <div class="row">
-                                <div class="col-12 mb-3">
-                                    <label for="cardNumber" class="form-label">Card Number</label>
-                                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="expiryDate" class="form-label">Expiry Date</label>
-                                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="cvv" class="form-label">CVV</label>
-                                    <input type="text" class="form-control" id="cvv" placeholder="123">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label for="cardName" class="form-label">Name on Card</label>
-                                    <input type="text" class="form-control" id="cardName" placeholder="John Doe">
+                        @endauth
+                    </div>
+                </div>
+
+                <div class="card shadow-sm" style="background-color: white;">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Payment Method *</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input @error('paymentMethod') is-invalid @enderror" 
+                                       type="radio" name="paymentMethod" id="creditCard" value="creditCard" 
+                                       {{ old('paymentMethod', 'creditCard') == 'creditCard' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="creditCard">
+                                    <i class="fab fa-cc-visa me-2"></i>Credit Card
+                                </label>
+                            </div>
+                            <div id="creditCardForm" class="mt-3 {{ old('paymentMethod', 'creditCard') != 'creditCard' ? 'd-none' : '' }}">
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label for="cardNumber" class="form-label">Card Number</label>
+                                        <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                                        <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="cvv" class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="cvv" placeholder="123">
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label for="cardName" class="form-label">Name on Card</label>
+                                        <input type="text" class="form-control" id="cardName" placeholder="John Doe">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
-                            <label class="form-check-label" for="paypal">
-                                <i class="fab fa-paypal me-2"></i>PayPal
-                            </label>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input @error('paymentMethod') is-invalid @enderror" 
+                                       type="radio" name="paymentMethod" id="paypal" value="paypal"
+                                       {{ old('paymentMethod') == 'paypal' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="paypal">
+                                    <i class="fab fa-paypal me-2"></i>PayPal
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransfer">
-                            <label class="form-check-label" for="bankTransfer">
-                                <i class="fas fa-university me-2"></i>Bank Transfer
-                            </label>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input @error('paymentMethod') is-invalid @enderror" 
+                                       type="radio" name="paymentMethod" id="bankTransfer" value="bankTransfer"
+                                       {{ old('paymentMethod') == 'bankTransfer' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="bankTransfer">
+                                    <i class="fas fa-university me-2"></i>Bank Transfer
+                                </label>
+                            </div>
                         </div>
+                        @error('paymentMethod')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
-            </div>
         </div>
 
         <div class="col-md-4">
@@ -133,7 +177,7 @@
                                 {{ $item['name'] }}
                                 <span class="text-muted">x{{ $item['quantity'] }}</span>
                             </div>
-                            <div>Rp{{ number_format($item['price'] * $item['quantity'], 2) }}</div>
+                            <div>Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</div>
                         </div>
                         @endforeach
                     </div>
@@ -143,35 +187,64 @@
                     <div class="order-totals mb-3">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Subtotal:</span>
-                            <span>Rp{{ number_format($subtotal, 2) }}</span>
+                            <span>Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Shipping:</span>
-                            <span>Rp{{ number_format($shippingFee, 2) }}</span>
+                            <span>Rp{{ number_format($shippingFee, 0, ',', '.') }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span>Tax:</span>
-                            <span>Rp{{ number_format($tax, 2) }}</span>
+                            <span>Tax (10%):</span>
+                            <span>Rp{{ number_format($tax, 0, ',', '.') }}</span>
                         </div>
+                        @if($voucherDiscount > 0)
+                        <div class="d-flex justify-content-between mb-2 text-success">
+                            <span>Voucher Discount:</span>
+                            <span>- Rp{{ number_format($voucherDiscount, 0, ',', '.') }}</span>
+                        </div>
+                        @endif
                         <div class="d-flex justify-content-between fw-bold">
                             <span>Total:</span>
-                            <span>Rp{{ number_format($total, 2) }}</span>
+                            <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
                         </div>
                     </div>
 
                     <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="termsAgreement" required>
+                        <input class="form-check-input @error('termsAgreement') is-invalid @enderror" 
+                               type="checkbox" id="termsAgreement" name="termsAgreement" value="1"
+                               {{ old('termsAgreement') ? 'checked' : '' }}>
                         <label class="form-check-label" for="termsAgreement">
-                            I agree to the <a href="#">Terms and Conditions</a>
+                            I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a> *
                         </label>
+                        @error('termsAgreement')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    <button class="btn btn-primary w-100 py-3" onclick="window.location.href='/orders/1001'">
+                    <button type="submit" class="btn btn-primary w-100 py-3">
                         Place Order
                     </button>
                 </div>
             </div>
+            </form>
         </div>
     </div>
 </div>
+
+
+@section('scripts')
+<script>
+    // Show/hide credit card form based on payment method selection
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const creditCardForm = document.getElementById('creditCardForm');
+            if (this.value === 'creditCard') {
+                creditCardForm.classList.remove('d-none');
+            } else {
+                creditCardForm.classList.add('d-none');
+            }
+        });
+    });
+</script>
+@endsection
 @endsection

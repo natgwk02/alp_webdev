@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
@@ -50,7 +51,24 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     Route::get('/checkoutform', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
+    Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
+    Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::post('/cart/proceed-to-checkout', [CartController::class, 'proceedToCheckout'])->name('cart.proceed-to-checkout');
+    // routes/web.php
 
+    Route::get('/order/confirmation/{orderId}', function ($orderId) {
+    $orders = session('orders', []);
+    
+    if (!array_key_exists($orderId, $orders)) {
+        return redirect()->route('cart.index')->with('error', 'Order tidak ditemukan.');
+    }
+    
+    return view('customer.order_confirmation', [
+        'order' => $orders[$orderId]
+    ]);
+    })->name('order.confirmation');
 // //});
 
 // Admin Routes
@@ -66,7 +84,10 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     // Order Management
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-    Route::post('/admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    
+
+
 //});
 
 // Home Route

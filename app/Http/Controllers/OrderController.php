@@ -59,45 +59,45 @@ class OrderController extends Controller
     }
 
     public function show($id)
-    {
-        // Hardcoded order details based on $id
-        $order = [
-            'id' => $id,
-            'order_number' => 'CHILE-2025-' . $id,
-            'order_date' => '2025-05-10 14:30:00',
-            'status' => 'Processing',
-            'payment_method' => 'Credit Card',
-            'payment_status' => 'Paid',
-            'shipping_address' => '123 Main St, Santiago, Chile',
-            'subtotal' => 89.97,
-            'shipping_fee' => 5.00,
-            'tax' => 8.99,
-            'total_amount' => 103.96,
-            'items' => [
-                [
-                    'product_id' => 1,
-                    'product_name' => 'Chilean Sea Bass Fillet',
-                    'quantity' => 2,
-                    'price' => 24.99,
-                    'total' => 49.98
-                ],
-                [
-                    'product_id' => 2,
-                    'product_name' => 'Argentinian Red Shrimp',
-                    'quantity' => 1,
-                    'price' => 18.99,
-                    'total' => 18.99
-                ]
-            ],
-            'tracking_info' => [
-                'carrier' => 'ChilePost',
-                'tracking_number' => 'CP123456789CL',
-                'estimated_delivery' => '2025-05-15'
-            ]
-        ];
+{
+    $orders = session('orders', []);
+    $order = collect($orders)->firstWhere('id', $id);
 
-        return view('customer.order_details', compact('order'));
+    if (!$order) {
+        return redirect()->route('customer.orders')->with('error', 'Order not found.');
     }
+
+    // Set default values supaya aman di view
+    $order['customer_name'] = $order['customer_name'] ?? 'Unknown Customer';
+    $order['customer_email'] = $order['customer_email'] ?? null;
+    $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
+    $order['payment_status'] = $order['payment_status'] ?? 'Unpaid';
+    $order['shipping_address'] = $order['shipping_address'] ?? '-';
+    $order['billing_address'] = $order['billing_address'] ?? '-';
+    $order['subtotal'] = $order['subtotal'] ?? 0;
+    $order['shipping_fee'] = $order['shipping_fee'] ?? 0;
+    $order['tax'] = $order['tax'] ?? 0;
+    $order['total_amount'] = $order['total_amount'] ?? 0;
+    $order['status'] = $order['status'] ?? 'Pending';
+    $order['order_date'] = $order['order_date'] ?? now()->format('Y-m-d H:i:s');
+    $order['items'] = $order['items'] ?? [];
+
+    // Ambil data produk supaya bisa tambah image di setiap item
+    $productController = new \App\Http\Controllers\ProductController;
+    $products = $productController->products();
+    $productsById = collect($products)->keyBy('id');
+
+    foreach ($order['items'] as &$item) {
+        $item['image'] = $productsById[$item['product_id']]['image'] ?? 'no-image.png';
+        $item['product_name'] = $productsById[$item['product_id']]['name'] ?? ($item['product_name'] ?? 'Unknown Product');
+        $item['price'] = $item['price'] ?? 0;
+        $item['quantity'] = $item['quantity'] ?? 0;
+        $item['total'] = $item['price'] * $item['quantity'];
+    }
+
+    return view('customer.order_details', compact('order'));
+}
+    
     public function showCheckoutForm()
 {
     $cartItems = session('cart', []);

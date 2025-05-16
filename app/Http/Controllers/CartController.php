@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
@@ -19,29 +20,74 @@ class CartController extends Controller
     ];
 
     // 🛒 Show Cart Page
-    public function index(Request $request)
-    {
-        $cartItems = session('cart', []);
+   public function index(Request $request)
+{
+    $cartItems = session('cart', []);
+    $subtotal = 0;
 
-        $subtotal = 0;
-        foreach ($cartItems as &$item) {
-            // Tambahkan quantity jika belum ada
-            if (!isset($item['quantity'])) {
-                $item['quantity'] = 1;
-            }
-
-            $subtotal += $item['price'] * $item['quantity'];
+    foreach ($cartItems as &$item) {
+        if (!isset($item['quantity'])) {
+            $item['quantity'] = 1;
         }
-
-        // Simpan kembali cart yang sudah diberi quantity (jika sebelumnya belum ada)
-        session(['cart' => $cartItems]);
-
-        $shippingFee = 5000;
-        $tax = round($subtotal * 0.1);
-        $total = $subtotal + $shippingFee + $tax;
-
-        return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total'));
+        $subtotal += $item['price'] * $item['quantity'];
     }
+
+    session(['cart' => $cartItems]);
+
+    $shippingFee = 5000;
+    $tax = round($subtotal * 0.1);
+    
+    // Calculate total without voucher first
+    $totalWithoutVoucher = $subtotal + $shippingFee + $tax;
+    
+    // Apply voucher discount only if voucher is active
+    $voucherDiscount = session('voucher_discount', 0);
+    $total = $totalWithoutVoucher - $voucherDiscount;
+
+    return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
+}
+
+// app/Http/Controllers/CartController.php
+
+public function applyVoucher(Request $request)
+{
+    $validVouchers = [
+        'CHILLBRO' => ['min' => 200000, 'discount' => 50000],
+        'COOLMAN' => ['discount' => 20000],
+        'GOODDAY' => ['discount' => 10000]
+    ];
+
+    $code = strtoupper($request->input('voucher_code'));
+    $subtotal = $this->calculateSubtotal();
+
+    if (!array_key_exists($code, $validVouchers)) {
+        return back()->with('voucher_error', 'Invalid voucher code.');
+    }
+
+    $voucher = $validVouchers[$code];
+
+    if (isset($voucher['min']) && $subtotal < $voucher['min']) {
+        return back()->with('voucher_error', 'CHILLBRO voucher requires minimum purchase of Rp200,000');
+    }
+
+    session([
+        'voucher_code' => $code,
+        'voucher_discount' => $voucher['discount']
+    ]);
+
+    return back()->with('voucher_success', 'Voucher applied successfully!');
+}
+
+
+
+
+
+
+public function removeVoucher()
+{
+    Session::forget(['voucher_code', 'voucher_discount']);
+    return back()->with('voucher_success', 'Voucher removed successfully');
+}
 
     // ➕ Add Item to Cart
     public function addToCart(Request $request)
@@ -89,4 +135,41 @@ class CartController extends Controller
 
         return redirect()->route('cart.index')->with('success', 'Product quantity updated.');
     }
+
+
+
+
+
+    private function calculateSubtotal()
+{
+    $cartItems = session('cart', []);
+    return array_reduce($cartItems, function($carry, $item) {
+        return $carry + ($item['price'] * $item['quantity']);
+    }, 0);
+}
+
+// CartController.php
+
+public function proceedToCheckout(Request $request)
+{
+    $cartItems = session('cart', []);
+    
+    if (empty($cartItems)) {
+        return redirect()->route('cart.index')->with('error', 'Keranjang Anda kosong.');
+    }
+
+    // Simpan semua data yang diperlukan untuk checkout di session
+    $checkoutData = [
+        'items' => $cartItems,
+        'subtotal' => $this->calculateSubtotal(),
+        'shipping' => 5000,
+        'tax' => round($this->calculateSubtotal() * 0.1),
+        'voucher_discount' => session('voucher_discount', 0),
+        'created_at' => now()->toDateTimeString()
+    ];
+    
+    session(['checkout_data' => $checkoutData]);
+    
+    return redirect()->route('checkout');
+}
 }
