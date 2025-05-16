@@ -34,10 +34,11 @@
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <img src="{{ asset('images/products-img/' . $item['image']) }}"
-                                                             alt="{{ $item['name'] }}"
-                                                             class="img-thumbnail me-3"
-                                                             style="width: 80px; height: 80px; object-fit: cover;">
+                                                        <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'default.jpg')) }}"
+                                                            alt="{{ $item['name'] ?? 'Product Image' }}"
+                                                            class="img-thumbnail me-3"
+                                                            style="width: 80px; height: 80px; object-fit: cover;">
+
                                                         <div>
                                                             <h5 class="mb-1">{{ $item['name'] }}</h5>
                                                         </div>
@@ -61,7 +62,7 @@
                                                     <span class="price-column" id="item-total-{{ $index }}">Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
                                                 </td>
                                                 <td>
-                                                    <form action="{{ route('cart.remove', ['productId' => $item['id']]) }}" method="POST">
+                                                     <form action="{{ route('cart.remove', ['productId' => $item['id'] ?? 0]) }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="btn btn-sm btn-outline-danger">
                                                             <i class="fas fa-trash"></i>
@@ -76,7 +77,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Summary Column -->
                     <div class="col-md-4">
                         <div class="card">

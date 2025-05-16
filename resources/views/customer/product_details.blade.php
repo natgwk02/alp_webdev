@@ -5,95 +5,103 @@
 @push('styles')
 <style>
     .product-section {
-        padding: 40px 0;
-    }
-
-    .product-card {
-        background: #fff;
-        border-radius: 16px;
-        padding: 30px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        padding: 60px 0;
+        background: linear-gradient(to bottom, #f9fcff, #ffffff);
     }
 
     .product-image-wrapper {
         width: 100%;
-        max-width: 450px;
-        aspect-ratio: 4 / 5;
-        border-radius: 12px;
+        aspect-ratio: 1 / 1;
+        border-radius: 20px;
         overflow: hidden;
-        margin: auto;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        background-color: #fff;
     }
 
     .product-image-wrapper img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        transition: 0.3s ease-in-out;
+        object-fit: contain;
+        transition: transform 0.3s ease-in-out;
     }
 
     .product-image-wrapper img:hover {
-        transform: scale(1.03);
+        transform: scale(1.04);
     }
 
     .product-details h1 {
         font-size: 2rem;
-        font-weight: bold;
-        margin-bottom: 0.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #052659;
     }
 
-    .product-details .category {
-        font-size: 0.9rem;
-        color: #6c757d;
-        margin-bottom: 0.8rem;
+    .product-details .category-badge {
+        font-size: 0.75rem;
+        background-color: #e0f0ff;
+        color: #0077cc;
+        padding: 4px 10px;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        display: inline-block;
+    }
+
+    .rating-stars i {
+        font-size: 1rem;
+        color: #ffc107;
+        margin-right: 2px;
     }
 
     .product-details .price {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         font-weight: 700;
         color: #0d6efd;
-        margin-bottom: 1rem;
+        margin: 1rem 0;
     }
 
     .product-details .desc {
         font-size: 1rem;
+        color: #444;
         margin-bottom: 1.5rem;
-        color: #333;
     }
 
-    .product-details .form-label {
+    .form-label {
         font-weight: 500;
         font-size: 0.9rem;
     }
 
-    .product-details input[type="number"] {
+    .form-control {
         max-width: 100px;
-        padding: 6px 10px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
     }
 
     .btn-add-to-cart {
-        margin-top: 10px;
+        margin-top: 1rem;
         padding: 10px 24px;
-        border-radius: 8px;
+        border-radius: 10px;
         font-weight: 600;
         font-size: 0.95rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
         background-color: #198754;
         color: white;
         border: none;
-        transition: background 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.3s ease, transform 0.2s ease;
     }
 
     .btn-add-to-cart:hover {
         background-color: #157347;
+        transform: scale(1.02);
     }
 
     @media (max-width: 768px) {
-        .product-card {
-            padding: 20px;
+        .product-details h1 {
+            font-size: 1.5rem;
+        }
+
+        .product-details .price {
+            font-size: 1.3rem;
         }
     }
 </style>
@@ -101,36 +109,62 @@
 
 @section('content')
 <div class="container product-section">
-    <div class="row justify-content-center g-5">
-        <div class="col-md-5">
+    <div class="row justify-content-center align-items-center g-5">
+        <div class="col-lg-5 col-md-6">
             <div class="product-image-wrapper">
                 <img src="{{ asset('images/products-img/' . $product['image']) }}" 
                      alt="{{ $product['name'] }}">
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="product-card">
-                <div class="product-details">
-                    <h1>{{ $product['name'] }}</h1>
-                    <div class="category">{{ $product['category'] }}</div>
-                    <div class="price">Rp {{ number_format($product['price'], 0, ',', '.') }}</div>
+        <div class="col-lg-6 col-md-6">
+            <div class="product-details">
+                <h1>{{ $product['name'] }}</h1>
+                <div class="category-badge">{{ $product['category'] }}</div>
 
-                    <p class="desc">
-                        Delicious and fresh, our {{ strtolower($product['name']) }} is a customer favorite sourced from high-quality suppliers.
-                    </p>
+                @if(isset($product['rating']))
+                <div class="rating-stars mb-2">
+                    @php
+                        $rating = $product['rating'];
+                        $fullStars = floor($rating);
+                        $halfStar = ($rating - $fullStars) >= 0.5;
+                        $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                    @endphp
 
-                    <form action="" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="quantity" class="form-label">Quantity</label>
-                            <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control">
-                        </div>
-                        <button type="submit" class="btn-add-to-cart">
-                            <i class="bi bi-cart-plus"></i> Add to Cart
-                        </button>
-                    </form>
+                    @for ($i = 0; $i < $fullStars; $i++)
+                        <i class="bi bi-star-fill"></i>
+                    @endfor
+
+                    @if ($halfStar)
+                        <i class="bi bi-star-half"></i>
+                    @endif
+
+                    @for ($i = 0; $i < $emptyStars; $i++)
+                        <i class="bi bi-star"></i>
+                    @endfor
                 </div>
+                @endif
+
+                <div class="price">Rp {{ number_format($product['price'], 0, ',', '.') }}</div>
+
+                <p class="desc">
+                    Delicious and fresh, our {{ strtolower($product['name']) }} is a customer favorite sourced from high-quality suppliers.
+                </p>
+
+                  <form action="{{ route('cart.add', ['productId' => $product['id']]) }}" method="POST">
+                    @csrf
+                    {{-- Optional: Quantity kalau mau simpan ke cart --}}
+                    <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+
+                    <div class="mb-2">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+
+
+
             </div>
         </div>
     </div>
