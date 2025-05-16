@@ -87,10 +87,13 @@
             </a>
         </li> --}}
     </ul>
-    <div class="position-absolute bottom-0 start-0 w-100 mb-3">
-        <a href="{{ route('logout') }}" class="nav-link text-danger">
+    <div class="position-absolute bottom-0 start-0 w-100 mb-3 ps-4">
+    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+        @csrf
+        <button type="submit" class="nav-link text-danger btn btn-link p-0 m-0 text-start">
             <i class="bi bi-box-arrow-left"></i>
             <span>Logout</span>
-        </a>
-    </div>
+        </button>
+    </form>
+</div>
 </div>
