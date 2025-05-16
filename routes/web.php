@@ -28,8 +28,11 @@ Route::POST('/logout', function () {
 
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register'); // untuk tampilkan form
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
-Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name('password.update');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+
+Route::get('/reset-password', [AuthController::class, 'showResetForm'])->name('password.reset.form');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 
 // // Customer Routes

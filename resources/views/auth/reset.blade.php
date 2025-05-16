@@ -1,5 +1,4 @@
 @extends('base.base')
-
 @section('content')
 <style>
     body {
@@ -88,10 +87,8 @@
 
 <div class="forgot-wrapper">
     <div class="forgot-card">
-        <img src="{{ asset('assets/forget-imagee.png') }}" alt="Reset Password Image">
-
-        <h2>Forgot your password?</h2>
-        <p>Enter your registered email to receive a reset link.</p>
+        <h2>Reset your password</h2>
+        <p>Enter your new password below.</p>
 
         @if (session('status'))
             <div class="alert alert-success">{{ session('status') }}</div>
@@ -99,18 +96,28 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        <form method="POST" action="{{ route('password.email') }}">
+        <form method="POST" action="{{ route('password.update') }}">
             @csrf
 
             <div class="mb-3 text-start">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" name="email" class="form-control" required>
+                <label for="password" class="form-label">New Password</label>
+                <input type="password" id="password" name="password"
+                       class="form-control @error('password') is-invalid @enderror" required>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
-            <button type="submit" class="btn btn-blue">Send Reset Link</button>
+            <div class="mb-3 text-start">
+                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation"
+                       class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-blue">Reset Password</button>
         </form>
 
         <a href="{{ route('login.show') }}" class="back-link">← Back to Login</a>
     </div>
-</div>@endsection
-
+</div>
+@endsection
