@@ -21,7 +21,7 @@
 @endif
 
 <div class="container">
-    <!-- Cart Section -->
+    {{-- <!-- Cart Section -->
     <div class="cart-section mb-4">
         <h2>Your Cart</h2>
         @if(count($cart) > 0)
@@ -37,7 +37,7 @@
         @else
             <p>Your cart is empty.</p>
         @endif
-    </div>
+    </div> --}}
 
     <!-- Product Listing Section -->
     <div class="row mb-4 mt-4"> 
