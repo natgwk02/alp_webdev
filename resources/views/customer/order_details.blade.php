@@ -62,7 +62,6 @@
                     <p><strong>Payment Status:</strong> {{ $order['payment_status'] }}</p>
 
                     <hr>
-
                     <div>
                         <div class="d-flex justify-content-between">
                             <span>Subtotal:</span>

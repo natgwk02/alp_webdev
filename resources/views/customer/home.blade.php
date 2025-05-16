@@ -22,6 +22,9 @@
 </script>
 
 @section('content')
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+
     <style>
         body {
             color: #052659;
@@ -428,7 +431,7 @@
             <div class="row">
                 <!-- Product 1 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
-                <div class="card product-card h-100 position-relative">
+                <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
                     <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
                     <img src="{{ asset('images/products-img/kanzler-nugget.jpg') }}" class="card-img-top" alt="Product 1">
                     <div class="card-body d-flex flex-column h-100">
@@ -453,7 +456,7 @@
 
                             <!-- Product 2 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
-                    <div class="card product-card h-100 position-relative">
+                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
                         <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top" alt="Product 2">
                         <div class="card-body d-flex flex-column h-100">
                             <h5 class="card-title">Ready Meal Fiesta Beef Bulgogi With Rice</h5>
@@ -474,7 +477,7 @@
 
                 <!-- Product 3 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
-                    <div class="card product-card h-100 position-relative">
+                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
                         <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
                         <img src="{{ asset('images/products-img/fish-grilled-salmon.jpg') }}" class="card-img-top" alt="Product 3">
                         <div class="card-body d-flex flex-column h-100">
@@ -496,7 +499,7 @@
 
                 <!-- Product 4 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
-                    <div class="card product-card h-100 position-relative">
+                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
                     <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpg') }}"
                         class="card-img-top pt-2" alt="Product 4">
                         <div class="card-body d-flex flex-column h-100">
@@ -515,7 +518,6 @@
                         </div>
                     </div>
                 </div>
-
                 </div>
                 <div class="text-center mt-4">
                     <a href="{{ route('products') }}" class="btn text-white btn-best-product">
