@@ -26,6 +26,7 @@
     .sidebar .nav-link i {
         margin-right: 10px;
     }
+
 </style>
 
 <div class="sidebar">
@@ -90,7 +91,7 @@
     <div class="position-absolute bottom-0 start-0 w-100 mb-3 ps-4">
     <form action="{{ route('logout') }}" method="POST" class="d-inline">
         @csrf
-        <button type="submit" class="nav-link text-danger btn btn-link p-0 m-0 text-start">
+        <button type="submit" class="btn btn-outline-danger px-1 m-0 text-start text-decoration-none">
             <i class="bi bi-box-arrow-left"></i>
             <span>Sign Out</span>
         </button>
