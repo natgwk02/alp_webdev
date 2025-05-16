@@ -104,7 +104,7 @@
                         <i class="fas fa-cart-shopping fs-5"></i>
                     </a>
                 </li>
-
+            
                 {{-- Profile --}}
                 <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
