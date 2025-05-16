@@ -65,6 +65,7 @@ class AdminOrderController extends Controller
                     'product_id' => 1,
                     'product_name' => 'Chilean Sea Bass Fillet',
                     'quantity' => 2,
+                    'image' => 'sea-bass.jpg',
                     'price' => 24.99,
                     'total' => 49.98
                 ],
@@ -72,13 +73,15 @@ class AdminOrderController extends Controller
                     'product_id' => 2,
                     'product_name' => 'Argentinian Red Shrimp',
                     'quantity' => 1,
+                    'image' => 'red-shrimp.jpg',
                     'price' => 18.99,
                     'total' => 18.99
                 ],
                 [
                     'product_id' => 3,
-                    'product_name' => 'Alaskan King Crab Legs',
+                    'product_name' => 'Salmon Belly Fillet',
                     'quantity' => 1,
+                   'image' => 'salmon-fillet.jpg',
                     'price' => 39.99,
                     'total' => 39.99
                 ]

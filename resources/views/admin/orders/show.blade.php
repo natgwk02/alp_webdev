@@ -52,11 +52,12 @@
                                 @foreach($order['items'] as $item)
                                 <tr>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ asset('images/products/product-' . $item['product_id'] . '.jpg') }}" 
-                                                 class="img-thumbnail me-3" 
-                                                 width="60" 
-                                                 alt="{{ $item['product_name'] }}">
+                                        <img src="{{ asset('images/products-img/' . $item['image']) }}" 
+                                            class="img-thumbnail me-3" 
+                                            width="60" 
+                                            alt="{{ $item['product_name'] }}">
+
+
                                             <div>
                                                 <h6 class="mb-0">{{ $item['product_name'] }}</h6>
                                                 <small class="text-muted">SKU: CM-{{ $item['product_id'] }}</small>
@@ -73,17 +74,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="card shadow-sm mt-4">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Order Notes</h5>
-                </div>
-                <div class="card-body">
-                    <textarea class="form-control" rows="3" placeholder="Add private notes about this order..."></textarea>
-                    <button class="btn btn-primary mt-2">Save Notes</button>
-                </div>
-            </div>
-        </div>
 
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">

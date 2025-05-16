@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
@@ -46,7 +47,24 @@ Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name(
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
+    Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
+    Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::post('/cart/proceed-to-checkout', [CartController::class, 'proceedToCheckout'])->name('cart.proceed-to-checkout');
+    // routes/web.php
 
+    Route::get('/order/confirmation/{orderId}', function ($orderId) {
+    $orders = session('orders', []);
+    
+    if (!array_key_exists($orderId, $orders)) {
+        return redirect()->route('cart.index')->with('error', 'Order tidak ditemukan.');
+    }
+    
+    return view('customer.order_confirmation', [
+        'order' => $orders[$orderId]
+    ]);
+    })->name('order.confirmation');
 // //});
 
 // Admin Routes
