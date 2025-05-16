@@ -7,31 +7,30 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     public function index()
-    {
-        $productController = new \App\Http\Controllers\ProductController;
-        $products = $productController->products();
+{
+    $productController = new \App\Http\Controllers\ProductController;
+    $products = $productController->products();
 
-        $productsById = [];
-        foreach ($products as $product) {
-            $productsById[$product['id']] = $product;
-        }
-
-        $sessionOrders = session('orders', []);
-
-        // Tambahkan 'image' ke setiap item dari data produk
-        foreach ($sessionOrders as &$order) {
-            foreach ($order['items'] as &$item) {
-                $pid = $item['product_id'];
-                if (isset($productsById[$pid])) {
-                    $item['image'] = $productsById[$pid]['image'];
-                } else {
-                    $item['image'] = 'no-image.png'; 
-                }
-            }
-        }
-
-        return view('customer.orders', ['orders' => $sessionOrders]);
+    $productsById = [];
+    foreach ($products as $product) {
+        $productsById[$product['id']] = $product;
     }
+
+    $sessionOrders = session('orders', []);
+
+    // Tambahkan 'image' ke setiap item dan hitung item_count
+    foreach ($sessionOrders as &$order) {
+        $itemCount = 0;
+        foreach ($order['items'] as &$item) {
+            $itemCount += $item['quantity']; // jumlah total item
+            $pid = $item['product_id'];
+            $item['image'] = $productsById[$pid]['image'] ?? 'no-image.png';
+        }
+        $order['item_count'] = $itemCount; // tambahkan ke array order
+    }
+
+    return view('customer.orders', ['orders' => $sessionOrders]);
+}
 
     public function markAsReceived($id)
     {
