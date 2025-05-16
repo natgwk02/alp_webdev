@@ -47,7 +47,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
-    Route::get('/checkout', [OrderController::class, 'showCheckoutFomr'])->name('checkout.form');
+    Route::get('/checkoutform', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
 

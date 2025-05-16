@@ -8,17 +8,14 @@ class OrderController extends Controller
 {
     public function index()
     {
-        // Ambil data produk dari ProductController
         $productController = new \App\Http\Controllers\ProductController;
         $products = $productController->products();
 
-        // Buat array keyed by product_id agar gampang cari
         $productsById = [];
         foreach ($products as $product) {
             $productsById[$product['id']] = $product;
         }
 
-        // Ambil orders dari session
         $sessionOrders = session('orders', []);
 
         // Tambahkan 'image' ke setiap item dari data produk
@@ -28,11 +25,11 @@ class OrderController extends Controller
                 if (isset($productsById[$pid])) {
                     $item['image'] = $productsById[$pid]['image'];
                 } else {
-                    $item['image'] = 'no-image.png'; // default image kalau produk gak ketemu
+                    $item['image'] = 'no-image.png'; 
                 }
             }
         }
-        
+
         return view('customer.orders', ['orders' => $sessionOrders]);
     }
 
@@ -102,56 +99,80 @@ class OrderController extends Controller
 
         return view('customer.order_details', compact('order'));
     }
+    public function showCheckoutForm()
+{
+    $cartItems = session('cart', []);
+    if (empty($cartItems)) {
+        return redirect()->route('cart.index')->with('error', 'Cart is empty.');
+    }
 
-    public function checkout(Request $request)
-    {
-        $cartItems = session('cart', []);
-        if (empty($cartItems)) {
-            return redirect()->route('cart.index')->with('error', 'Cart is empty');
-        }
+    $subtotal = array_sum(array_map(function ($item) {
+        return $item['price'] * $item['quantity'];
+    }, $cartItems));
 
-        $subtotal = 0;
-        foreach ($cartItems as $item) {
-            $subtotal += $item['price'] * $item['quantity'];
-        }
+    $shippingFee = 5000;
+    $tax = round($subtotal * 0.1);
+    $total = $subtotal + $shippingFee + $tax;
 
-        $shippingFee = 5000;
-        $tax = round($subtotal * 0.1);
-        $total = $subtotal + $shippingFee + $tax;
+    return view('customer.checkout', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total'));
+}
 
-        // Ambil pesanan dari session atau inisialisasi array
-        $orders = session('orders', []);
+  public function checkout(Request $request)
+{
+    $cartItems = session('cart', []);
+    if (empty($cartItems)) {
+        return redirect()->route('cart.index')->with('error', 'Cart is empty');
+    }
 
-        // Buat ID dan nomor order unik
-        $orderId = count($orders) + 1001;
-        $orderNumber = 'CHILE-2025-' . $orderId;
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'address' => 'required|string',
+        'payment_method' => 'required|string',
+    ]);
 
-        $order = [
-            'id' => $orderId,
-            'order_number' => $orderNumber,
-            'order_date' => now()->format('Y-m-d'),
-            'status' => 'Processing',
-            'total_amount' => $total,
-            'item_count' => count($cartItems),
-            'items' => [],
-        ];
+    $subtotal = array_sum(array_map(function ($item) {
+        return $item['price'] * $item['quantity'];
+    }, $cartItems));
 
-        foreach ($cartItems as $item) {
-            $order['items'][] = [
+    $shippingFee = 5000;
+    $tax = round($subtotal * 0.1);
+    $total = $subtotal + $shippingFee + $tax;
+
+    $orders = session('orders', []);
+    $orderId = count($orders) + 1001;
+    $orderNumber = 'CHILE-2025-' . $orderId;
+
+    $order = [
+        'id' => $orderId,
+        'order_number' => $orderNumber,
+        'customer_name' => $validated['name'],
+        'customer_email' => $validated['email'],
+        'order_date' => now()->format('Y-m-d'),
+        'status' => 'Processing',
+        'payment_method' => $validated['payment_method'],
+        'payment_status' => 'Paid', // Simulasi
+        'shipping_address' => $validated['address'],
+        'billing_address' => $validated['address'],
+        'subtotal' => $subtotal,
+        'shipping_fee' => $shippingFee,
+        'tax' => $tax,
+        'total_amount' => $total,
+        'items' => array_map(function ($item) {
+            return [
                 'product_id' => $item['id'],
                 'product_name' => $item['name'],
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
                 'total' => $item['price'] * $item['quantity'],
             ];
-        }
+        }, $cartItems),
+    ];
 
-        $orders[] = $order;
-        session(['orders' => $orders]);
+    $orders[] = $order;
+    session(['orders' => $orders]);
+    session()->forget('cart');
 
-        // Hapus cart setelah checkout
-        session()->forget('cart');
-
-        return redirect()->route('products')->with('success', 'Checkout completed! Order placed.');
-    }
+    return redirect()->route('products')->with('success', 'Checkout completed! Order placed.');
+}
 }
