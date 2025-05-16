@@ -20,14 +20,16 @@ class CartController extends Controller
     ];
 
     // 🛒 Show Cart Page
-   public function index(Request $request)
+public function index(Request $request)
 {
     $cartItems = session('cart', []);
     $subtotal = 0;
 
-    foreach ($cartItems as &$item) {
-        if (!isset($item['quantity'])) {
-            $item['quantity'] = 1;
+    // Hapus item yang tidak memiliki data lengkap
+    foreach ($cartItems as $key => $item) {
+        if (!isset($item['id'], $item['name'], $item['price'], $item['image'], $item['quantity'])) {
+            unset($cartItems[$key]);
+            continue;
         }
         $subtotal += $item['price'] * $item['quantity'];
     }
@@ -36,13 +38,8 @@ class CartController extends Controller
 
     $shippingFee = 5000;
     $tax = round($subtotal * 0.1);
-    
-    // Calculate total without voucher first
-    $totalWithoutVoucher = $subtotal + $shippingFee + $tax;
-    
-    // Apply voucher discount only if voucher is active
     $voucherDiscount = session('voucher_discount', 0);
-    $total = $totalWithoutVoucher - $voucherDiscount;
+    $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
 
     return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
 }
@@ -86,32 +83,36 @@ public function removeVoucher()
 
     // ➕ Add Item to Cart
     public function addToCart(Request $request)
-    {
-        $productId = $request->input('product_id');
-        $cart = session('cart', []);
+{
+    $productId = $request->input('product_id');
+    $quantity = max(1, (int) $request->input('quantity', 1)); // Ambil dari form, minimal 1
+    $cart = session('cart', []);
 
-        $product = collect($this->products)->firstWhere('id', (int)$productId);
+    $product = collect($this->products)->firstWhere('id', (int)$productId);
 
-        if (!$product) {
-            return redirect()->back()->with('error', 'Product not found.');
-        }
-
-        if (isset($cart[$productId])) {
-            $cart[$productId]['quantity'] = ($cart[$productId]['quantity'] ?? 1) + 1;
-        } else {
-            $cart[$productId] = [
-                'id' => $product['id'],
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'image' => $product['image'],
-                'quantity' => 1,
-            ];
-        }
-
-        session(['cart' => $cart]);
-
-        return redirect()->back()->with('success', 'Item added to cart!');
+    if (!$product) {
+        return redirect()->back()->with('error', 'Product not found.');
     }
+
+    if (isset($cart[$productId])) {
+        // Tambahkan quantity jika produk sudah ada di cart
+        $cart[$productId]['quantity'] += $quantity;
+    } else {
+        // Masukkan produk baru
+        $cart[$productId] = [
+            'id' => $product['id'],
+            'name' => $product['name'],
+            'price' => $product['price'],
+            'image' => $product['image'],
+            'quantity' => $quantity,
+        ];
+    }
+
+    session(['cart' => $cart]);
+
+    return redirect()->route('cart.index')->with('success', 'Item added to cart!');
+}
+
 
     // ➖ Remove or Decrease Item from Cart
     public function removeFromCart(Request $request, $productId)
@@ -141,27 +142,5 @@ public function removeVoucher()
 }
 
 
-// public function proceedToCheckout(Request $request)
-// {
-//     $cartItems = session('cart', []);
-    
-//     if (empty($cartItems)) {
-//         return redirect()->route('cart.index')->with('error', 'Keranjang Anda kosong.');
-//     }
-
-//     // Simpan semua data yang diperlukan untuk checkout di session
-//     $checkoutData = [
-//         'items' => $cartItems,
-//         'subtotal' => $this->calculateSubtotal(),
-//         'shipping' => 5000,
-//         'tax' => round($this->calculateSubtotal() * 0.1),
-//         'voucher_discount' => session('voucher_discount', 0),
-//         'order_date' => now()->toDateTimeString()
-//     ];
-    
-//     session(['checkout_data' => $checkoutData]);
-    
-//     return redirect()->route('orders');
-// }
 
 }

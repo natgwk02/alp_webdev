@@ -277,5 +277,28 @@
             });
         });
     });
+
+    // Character counter for notes to seller
+    const notesTextarea = document.getElementById('sellerNotes');
+    const notesCounter = document.getElementById('notesCounter');
+    
+    if (notesTextarea && notesCounter) {
+        notesTextarea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            notesCounter.textContent = currentLength;
+            
+            if (currentLength > 200) {
+                notesCounter.classList.add('text-danger');
+            } else {
+                notesCounter.classList.remove('text-danger');
+            }
+        });
+        
+        // Initialize counter on page load
+        notesCounter.textContent = notesTextarea.value.length;
+        if (notesTextarea.value.length > 200) {
+            notesCounter.classList.add('text-danger');
+        }
+    }
 </script>
 @endsection
