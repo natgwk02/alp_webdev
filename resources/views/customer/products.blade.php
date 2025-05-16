@@ -21,24 +21,7 @@
 @endif
 
 <div class="container">
-    <!-- Cart Section -->
-    <div class="cart-section mb-4">
-        <h2>Your Cart</h2>
-        @if(count($cart) > 0)
-            <ul>
-                @foreach($cart as $productId => $product)
-                    <li>
-                        <img src="{{ asset('images/products-img/' . $product['image']) }}" alt="{{ $product['name'] }}" width="50">
-                        <strong>{{ $product['name'] }}</strong> - Rp {{ number_format($product['price'], 0, ',', '.') }}
-                    </li>
-                @endforeach
-            </ul>
-            <a href="{{ route('checkout') }}" class="btn btn-primary">Proceed to Checkout</a>
-        @else
-            <p>Your cart is empty.</p>
-        @endif
-    </div>
-
+     
     <!-- Product Listing Section -->
     <div class="row mb-4 mt-4"> 
         <div class="col-12">
@@ -55,7 +38,7 @@
                 <form action="{{ isset($wishlist[$product['id']]) ? route('wishlist.remove', $product['id']) : route('wishlist.add', $product['id']) }}" method="POST" class="position-absolute top-0 end-0 m-2">
                     @csrf
                     <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn" data-product-id="{{ $product['id'] }}">
-                        <i class="fas fa-heart {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }} heart-icon"></i>
+                        <i class="bi bi-bookmark-heart {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }} heart-icon"></i>
                     </button>
                 </form>
 
