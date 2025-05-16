@@ -13,8 +13,9 @@
 
     <div class="row">
         <!-- Stats Cards -->
-        <div class="col-md-3 mb-4">
+        <div class="col-lg-4 mb-4">
             <div class="card bg-primary text-white">
+                <a href="{{ route('admin.orders') }}" class="text-decoration-none text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -24,11 +25,13 @@
                         <i class="fas fa-shopping-bag fa-2x opacity-50"></i>
                     </div>
                 </div>
+            </a>
             </div>
         </div>
 
-        <div class="col-md-3 mb-4">
+        <div class="col-lg-4 mb-4">
             <div class="card bg-success text-white">
+                <a href="{{ route('admin.orders') }}" class="text-decoration-none text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -38,11 +41,13 @@
                         <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
                     </div>
                 </div>
+            </a>
             </div>
         </div>
 
-        <div class="col-md-3 mb-4">
+        <div class="col-lg-4 mb-4">
             <div class="card bg-info text-white">
+                <a href="{{ route('admin.products') }}" class="text-decoration-none text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -53,8 +58,9 @@
                     </div>
                 </div>
             </div>
+        </a>
         </div>
-
+{{--
         <div class="col-md-3 mb-4">
             <div class="card bg-warning text-dark">
                 <div class="card-body">
@@ -67,7 +73,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <div class="row">
