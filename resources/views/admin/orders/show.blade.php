@@ -129,10 +129,6 @@
                                 <span>Shipping:</span>
                                 <span>${{ number_format($order['shipping_fee'], 2) }}</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Tax:</span>
-                                <span>${{ number_format($order['tax'], 2) }}</span>
-                            </div>
                             <div class="d-flex justify-content-between fw-bold">
                                 <span>Total:</span>
                                 <span>${{ number_format($order['total_amount'], 2) }}</span>
