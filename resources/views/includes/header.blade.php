@@ -58,6 +58,11 @@
     .dropdown-toggle::after {
         display: none;
     }
+    .badge {
+    font-size: 0.7rem;
+    padding: 4px 7px;
+}
+
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-scroll shadow-0 bg-white">
@@ -102,10 +107,22 @@
 
                 {{-- Cart --}}
                 <li class="nav-item position-relative">
+                    @php
+                        // Hitung jumlah macam item (bukan total quantity)
+                        $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
+                    @endphp
+
                     <a class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
                         <i class="fas fa-cart-shopping fs-5"></i>
+
+                        @if ($cartCount > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ $cartCount }}
+                            </span>
+                        @endif
                     </a>
                 </li>
+
             
                 {{-- Profile --}}
                 <li class="nav-item dropdown">
