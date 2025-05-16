@@ -6,12 +6,33 @@ use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
-    public function index()
-    {
-        $orders = session('orders', []); // Ambil dari session
+   public function index(Request $request)
+{
+    $orders = session('orders', []);
 
-        return view('admin.orders.index', compact('orders'));
+    // Pastikan setiap order memiliki customer_name dan payment_method
+    foreach ($orders as &$order) {
+        $order['customer_name'] = $order['customer_name'] ?? 'Unknown Customer';
+        $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
     }
+
+    session(['orders' => $orders]);
+
+    // Pagination manual
+    $perPage = 10;
+    $currentPage = $request->get('page', 1);
+    $totalProducts = count($orders);
+    $totalPages = ceil($totalProducts / $perPage);
+    $pagedOrders = array_slice($orders, ($currentPage - 1) * $perPage, $perPage);
+
+    return view('admin.orders.index', [
+        'orders' => $pagedOrders,
+        'currentPage' => $currentPage,
+        'totalPages' => $totalPages,
+        'totalProducts' => $totalProducts,
+        'perPage' => $perPage,
+    ]);
+}
 
     public function show($id)
     {
@@ -21,6 +42,9 @@ class AdminOrderController extends Controller
         if (!$order) {
             return redirect()->route('admin.orders')->with('error', 'Order not found.');
         }
+
+        $order['customer_name'] = $order['customer_name'] ?? 'Unknown Customer';
+        $order['payment_method'] = $order['payment_method'] ?? 'Unknown'; // Tambahkan di detail juga
 
         // Tambahkan gambar dari product
         $productController = new \App\Http\Controllers\ProductController;

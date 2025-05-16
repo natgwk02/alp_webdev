@@ -71,14 +71,6 @@
                     </div>
                 </div>
 
-                <div class="card shadow-sm mt-4">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Order Notes</h5>
-                    </div>
-                    <div class="card-body">
-                        <textarea class="form-control" rows="3" placeholder="Notes about this order..." readonly></textarea>
-                    </div>
-                </div>
 
             </div>
 

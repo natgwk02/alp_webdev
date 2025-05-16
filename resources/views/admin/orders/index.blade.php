@@ -20,45 +20,33 @@
                         <i class="fas fa-filter me-1"></i> Filter Orders
                     </button>
                 </div>
-
             </div>
         </div>
 
-        {{-- Filter --}}
         <div class="collapse mb-4" id="filterCollapse">
             <div class="card">
                 <div class="card-body">
                     <form action="{{ route('admin.orders') }}" method="GET">
                         <div class="row">
-                            <!-- Order ID Search -->
                             <div class="col-md-6 mb-3">
                                 <label for="order_id" class="form-label">Order ID</label>
                                 <input type="text" class="form-control" id="order_id" name="order_id"
                                     placeholder="Search order number" value="{{ request('order_id') }}">
                             </div>
-
-                            <!-- Status -->
                             <div class="col-md-6 mb-3">
                                 <label for="status" class="form-label">Status</label>
                                 <select class="form-select" id="status" name="status">
                                     <option value="">All Statuses</option>
-                                    <option value="Delivered" {{ request('status') == 'Delivered' ? 'selected' : '' }}>
-                                        Delivered</option>
-                                    <option value="Processing" {{ request('status') == 'Processing' ? 'selected' : '' }}>
-                                        Processing</option>
-                                    <option value="Shipped" {{ request('status') == 'Shipped' ? 'selected' : '' }}>
-                                        Shipped
-                                    </option>
-                                    <option value="Cancelled" {{ request('status') == 'Cancelled' ? 'selected' : '' }}>
-                                        Cancelled</option>
-                                    <option value="Failed" {{ request('status') == 'Failed' ? 'selected' : '' }}>Failed
-                                    </option>
+                                    <option value="Delivered" {{ request('status') == 'Delivered' ? 'selected' : '' }}>Delivered</option>
+                                    <option value="Processing" {{ request('status') == 'Processing' ? 'selected' : '' }}>Processing</option>
+                                    <option value="Shipped" {{ request('status') == 'Shipped' ? 'selected' : '' }}>Shipped</option>
+                                    <option value="Cancelled" {{ request('status') == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    <option value="Failed" {{ request('status') == 'Failed' ? 'selected' : '' }}>Failed</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="row">
-                            <!-- Date Range -->
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">From Date</label>
                                 <input type="date" class="form-control" id="date_from" name="date_from"
@@ -69,29 +57,19 @@
                                 <input type="date" class="form-control" id="date_to" name="date_to"
                                     value="{{ request('date_to') }}">
                             </div>
-
-                            <!-- Payment Method -->
                             <div class="col-md-6 mb-3">
                                 <label for="payment_method" class="form-label">Payment Method</label>
                                 <select class="form-select" id="payment_method" name="payment_method">
                                     <option value="">All Payment Methods</option>
-                                    <option value="Credit Card"
-                                        {{ request('payment_method') == 'Credit Card' ? 'selected' : '' }}>Credit Card
-                                    </option>
-                                    <option value="Bank Transfer"
-                                        {{ request('payment_method') == 'Bank Transfer' ? 'selected' : '' }}>Bank Transfer
-                                    </option>
-                                    <option value="E-Wallet"
-                                        {{ request('payment_method') == 'E-Wallet' ? 'selected' : '' }}>E-Wallet</option>
-                                    <option value="Cash on Delivery"
-                                        {{ request('payment_method') == 'Cash on Delivery' ? 'selected' : '' }}>Cash on
-                                        Delivery</option>
+                                    <option value="Credit Card" {{ request('payment_method') == 'Credit Card' ? 'selected' : '' }}>Credit Card</option>
+                                    <option value="Bank Transfer" {{ request('payment_method') == 'Bank Transfer' ? 'selected' : '' }}>Bank Transfer</option>
+                                    <option value="E-Wallet" {{ request('payment_method') == 'E-Wallet' ? 'selected' : '' }}>E-Wallet</option>
+                                    <option value="Cash on Delivery" {{ request('payment_method') == 'Cash on Delivery' ? 'selected' : '' }}>Cash on Delivery</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="row">
-                            <!-- Total Amount Range -->
                             <div class="col-md-4 mb-3">
                                 <label for="amount_min" class="form-label">Minimum Amount (Rp)</label>
                                 <input type="number" class="form-control" id="amount_min" name="amount_min"
@@ -113,7 +91,6 @@
                             </div>
                         </div>
 
-                        <!-- Filter Actions -->
                         <div class="row mt-2">
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary">
@@ -155,12 +132,11 @@
                                             <td>Rp.{{ number_format($order['total_amount'], 2) }}</td>
                                             <td>{{ $order['payment_method'] }}</td>
                                             <td>
-                                                <span
-                                                    class="badge
-                                            @if ($order['status'] == 'Processing') bg-warning
-                                            @elseif($order['status'] == 'Shipped') bg-info
-                                            @elseif($order['status'] == 'Delivered') bg-success
-                                            @else bg-secondary @endif">
+                                                <span class="badge
+                                                    @if ($order['status'] == 'Processing') bg-warning
+                                                    @elseif($order['status'] == 'Shipped') bg-info
+                                                    @elseif($order['status'] == 'Delivered') bg-success
+                                                    @else bg-secondary @endif">
                                                     {{ $order['status'] }}
                                                 </span>
                                             </td>
@@ -180,8 +156,6 @@
             </div>
         </div>
 
-        {{-- pagenation --}}
-
         <div class="d-flex justify-content-between align-items-center my-4">
             <div>
                 <p class="mb-0">Showing {{ ($currentPage - 1) * $perPage + 1 }} to
@@ -191,7 +165,7 @@
                 <ul class="pagination mb-0">
                     <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
                         <a class="page-link"
-                            href="{{ $currentPage > 1 ? route('admin.products', ['page' => $currentPage - 1]) : '#' }}"
+                            href="{{ $currentPage > 1 ? route('admin.orders', ['page' => $currentPage - 1]) : '#' }}"
                             aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
@@ -199,12 +173,12 @@
                     @for ($i = 1; $i <= $totalPages; $i++)
                         <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
                             <a class="page-link"
-                                href="{{ route('admin.products', ['page' => $i]) }}">{{ $i }}</a>
+                                href="{{ route('admin.orders', ['page' => $i]) }}">{{ $i }}</a>
                         </li>
                     @endfor
                     <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
                         <a class="page-link"
-                            href="{{ $currentPage < $totalPages ? route('admin.products', ['page' => $currentPage + 1]) : '#' }}"
+                            href="{{ $currentPage < $totalPages ? route('admin.orders', ['page' => $currentPage + 1]) : '#' }}"
                             aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
@@ -213,6 +187,4 @@
             </nav>
         </div>
     </div>
-
-
 @endsection
