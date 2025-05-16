@@ -47,6 +47,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::get('/checkout', [OrderController::class, 'showCheckoutFomr'])->name('checkout.form');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
 
@@ -65,6 +66,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     // Order Management
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::post('/admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 //});
 
 // Home Route
