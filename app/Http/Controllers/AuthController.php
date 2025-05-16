@@ -23,14 +23,14 @@ class AuthController extends Controller
 
         // Hardcoded admin login
         if (
-    $request->email === 'admin@chillemart.com' &&
-    $request->password === session('admin_password', 'admin123') // default admin123
-    ) {
-    session([
-        'is_admin' => true,
-        'email' => $request->email,
-        'admin_password' => $request->password, // simpan password yg dipakai
-    ]);
+            $request->email === 'admin@chillemart.com' &&
+            $request->password === session('admin_password', 'admin123') // default admin123
+            ) {
+            session([
+                'is_admin' => true,
+                'email' => $request->email,
+                'admin_password' => $request->password, // simpan password yg dipakai
+            ]);
 
     return redirect()->route('admin.dashboard');
         }
