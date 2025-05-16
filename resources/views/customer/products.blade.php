@@ -22,7 +22,7 @@
 
 <div class="container">
     <!-- Cart Section -->
-    <div class="cart-section mb-4">
+    {{-- <div class="cart-section mb-4">
         <h2>Your Cart</h2>
         @if(count($cart) > 0)
             <ul>
@@ -37,10 +37,10 @@
         @else
             <p>Your cart is empty.</p>
         @endif
-    </div>
+    </div> --}}
 
     <!-- Product Listing Section -->
-    <div class="row mb-4 mt-4"> 
+    <div class="row mb-4 mt-4">
         <div class="col-12">
             <h1 class="fw-bold">Our Frozen Food Selection</h1>
             <p class="text-muted">Premium quality frozen foods from around the world</p>
