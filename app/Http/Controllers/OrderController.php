@@ -6,51 +6,51 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-   public function index()
-{
-    $productController = new \App\Http\Controllers\ProductController;
-    $products = $productController->products();
-    $productsById = collect($products)->keyBy('id');
+    public function index()
+    {
+        $productController = new \App\Http\Controllers\ProductController;
+        $products = $productController->products();
+        $productsById = collect($products)->keyBy('id');
 
-    $sessionOrders = session('orders', []);
+        $sessionOrders = session('orders', []);
 
-    $orders = [];
+        $orders = [];
 
-    foreach ($sessionOrders as $key => $order) {
-        if (!is_array($order) || !isset($order['items'])) {
-            continue;
-        }
-
-        $itemCount = 0;
-
-        // Reset item keys agar bisa di-loop di Blade
-        $items = array_values($order['items']);
-
-        foreach ($items as &$item) {
-            $itemCount += $item['quantity'] ?? 0;
-
-            $productId = $item['product_id'] ?? $item['id'] ?? null;
-
-            if ($productId && isset($productsById[$productId])) {
-                $product = $productsById[$productId];
-                $item['image'] = $product['image'] ?? 'no-image.png';
-                $item['product_name'] = $product['name'] ?? 'Unknown Product';
-            } else {
-                $item['image'] = 'no-image.png';
-                $item['product_name'] = 'Unknown Product';
+        foreach ($sessionOrders as $key => $order) {
+            if (!is_array($order) || !isset($order['items'])) {
+                continue;
             }
+
+            $itemCount = 0;
+
+            // Reset item keys agar bisa di-loop di Blade
+            $items = array_values($order['items']);
+
+            foreach ($items as &$item) {
+                $itemCount += $item['quantity'] ?? 0;
+
+                $productId = $item['product_id'] ?? $item['id'] ?? null;
+
+                if ($productId && isset($productsById[$productId])) {
+                    $product = $productsById[$productId];
+                    $item['image'] = $product['image'] ?? 'no-image.png';
+                    $item['product_name'] = $product['name'] ?? 'Unknown Product';
+                } else {
+                    $item['image'] = 'no-image.png';
+                    $item['product_name'] = 'Unknown Product';
+                }
+            }
+
+            $order['items'] = $items; // update with cleaned array
+            $order['item_count'] = $itemCount;
+            $order['order_date'] = $order['created_at'] ?? now();
+            $order['order_number'] = $order['order_number'] ?? (is_string($key) ? $key : null);
+
+            $orders[] = $order;
         }
 
-        $order['items'] = $items; // update with cleaned array
-        $order['item_count'] = $itemCount;
-        $order['order_date'] = $order['created_at'] ?? now();
-        $order['order_number'] = $order['order_number'] ?? (is_string($key) ? $key : null);
-
-        $orders[] = $order;
+        return view('customer.orders', ['orders' => $orders]);
     }
-
-    return view('customer.orders', ['orders' => $orders]);
-}
 
     public function markAsReceived($id)
     {
@@ -202,31 +202,31 @@ class OrderController extends Controller
 
 
         $order = [
-    'id' => uniqid('order_'), 
-    'order_number' => $orderNumber,
-    'customer' => [
-        'first_name' => $request->firstName,
-        'last_name' => $request->lastName,
-        'email' => $request->email,
-        'phone' => $request->phone,
-        'address' => $request->address,
-        'city' => $request->city,
-        'zip' => $request->zip,
-        'country' => $request->country,
-        'notes' => $request->sellerNotes,
-    ],
-    'customer_name' => $request->firstName . ' ' . $request->lastName, 
-    'payment_method' => $request->paymentMethod,
-    'items' => $cartItems,
-    'subtotal' => $subtotal,
-    'shipping_fee' => $shippingFee,
-    'tax' => $tax,
-    'voucher_discount' => $voucherDiscount,
-    'total' => $total,
-    'total_amount' => $total, 
-    'status' => 'Pending',
-    'created_at' => now()->toDateTimeString(),
-];
+            'id' => uniqid('order_'),
+            'order_number' => $orderNumber,
+            'customer' => [
+                'first_name' => $request->firstName,
+                'last_name' => $request->lastName,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'city' => $request->city,
+                'zip' => $request->zip,
+                'country' => $request->country,
+                'notes' => $request->sellerNotes,
+            ],
+            'customer_name' => $request->firstName . ' ' . $request->lastName,
+            'payment_method' => $request->paymentMethod,
+            'items' => $cartItems,
+            'subtotal' => $subtotal,
+            'shipping_fee' => $shippingFee,
+            'tax' => $tax,
+            'voucher_discount' => $voucherDiscount,
+            'total' => $total,
+            'total_amount' => $total,
+            'status' => 'Pending',
+            'created_at' => now()->toDateTimeString(),
+        ];
         // Simpan ke session
         $orders[] = $order;
         session(['orders' => $orders]);
@@ -234,10 +234,10 @@ class OrderController extends Controller
         session()->forget('cart');
         $voucherDiscount = 0; // Default tidak ada diskon
 
-// Cek hanya jika user klik tombol "apply voucher"
-if ($request->has('apply_voucher')) {
-    $voucherDiscount = session('voucher_discount', 0);
-}
+        // Cek hanya jika user klik tombol "apply voucher"
+        if ($request->has('apply_voucher')) {
+            $voucherDiscount = session('voucher_discount', 0);
+        }
 
         return redirect()->route('products')->with('success', 'Checkout completed! Order placed.');
     }
