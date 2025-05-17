@@ -728,8 +728,8 @@
 
 
         <!-- Customer Reviews Carousel -->
-        <section class="testimonial-carousel py-5 w-100" style="background-color: #ECF7FF;">
-            <div class="w-100 text-center px-4 px-md-5 mx-0">
+        <section class="testimonial-carousel py-5" style="background: linear-gradient(to bottom, #f6fbff, #d9ecfa);">
+             <div class="w-100 text-center px-4 px-md-5 mx-0">
                 <h2 class="fw-bold text-dark mb-5">What Our Customers Say</h2>
                 <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
                     <div class="carousel-inner">
