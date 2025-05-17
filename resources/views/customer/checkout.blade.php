@@ -100,7 +100,7 @@
                     </div>
                 </div>
 
-                <div class="card shadow-sm mb-4" style="background-color: #C1E8FF;">
+                <div class="card shadow-sm mb-4" style="background-color: white;">
                     <div class="card-header bg-white">
                         <h4 class="mb-0">Notes to Seller</h4>
                     </div>
