@@ -151,7 +151,7 @@
                                         <span id="total-display">Rp{{ number_format($total, 0, ',', '.') }}</span>
                                     </div>
                                    <form action="{{ route('checkout.form') }}" method="GET">
-                                    <button type="submit" class="btn btn-primary" {{ count($cartItems) == 0 ? 'disabled' : '' }}>
+                                    <button type="submit" class="btn btn-primary" style="margin-top: 7px;" {{ count($cartItems) == 0 ? 'disabled' : '' }}>
                                         Proceed to Checkout
                                     </button>
                                 </form>
@@ -167,7 +167,7 @@
 
 <style>
     .table th, .table td {
-        text-align: left; /* Align text to the left */  
+        text-align: left; /* Align text to the left */
         vertical-align: middle; /* Vertically center the content */
         padding: 10px; /* Add padding for better spacing */
     }
