@@ -82,36 +82,33 @@ public function removeVoucher()
 }
 
     // ➕ Add Item to Cart
-    public function addToCart(Request $request)
-{
-    $productId = $request->input('product_id');
-    $quantity = max(1, (int) $request->input('quantity', 1)); // Ambil dari form, minimal 1
-    $cart = session('cart', []);
+        public function addToCart(Request $request, $productId)
+        {
+            $quantity = max(1, (int) $request->input('quantity', 1));
+            $product = collect($this->products)->firstWhere('id', (int)$productId);
+            $cart = session('cart', []);
 
-    $product = collect($this->products)->firstWhere('id', (int)$productId);
+            if (!$product) {
+                return redirect()->back()->with('error', 'Product not found.');
+            }
 
-    if (!$product) {
-        return redirect()->back()->with('error', 'Product not found.');
-    }
+            if (isset($cart[$productId])) {
+                $cart[$productId]['quantity'] += $quantity;
+            } else {
+                $cart[$productId] = [
+                    'id' => $product['id'],
+                    'name' => $product['name'],
+                    'price' => $product['price'],
+                    'image' => $product['image'],
+                    'quantity' => $quantity,
+                ];
+            }
 
-    if (isset($cart[$productId])) {
-        // Tambahkan quantity jika produk sudah ada di cart
-        $cart[$productId]['quantity'] += $quantity;
-    } else {
-        // Masukkan produk baru
-        $cart[$productId] = [
-            'id' => $product['id'],
-            'name' => $product['name'],
-            'price' => $product['price'],
-            'image' => $product['image'],
-            'quantity' => $quantity,
-        ];
-    }
+            session(['cart' => $cart]);
 
-    session(['cart' => $cart]);
+            return redirect()->route('cart.index')->with('success', 'Item added to cart!');
+        }
 
-    return redirect()->route('products')->with('success', 'Item added to cart!');
-}
 
 
     // ➖ Remove or Decrease Item from Cart

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container py-5">
-    <h1 class="fw-bold mb-4 text-center text-primary">My Orders</h1>
+    <h1 class="fw-bold mb-4 text-center" style="color: #052659;">My Orders</h1>
 
     @if(count($orders) > 0)
         <div class="d-flex flex-column gap-4">

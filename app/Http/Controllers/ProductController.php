@@ -235,6 +235,13 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Product removed from wishlist');
     }
+
+    public function showHome()
+    {
+        $products = $this->products(); // ambil dari fungsi yang kamu buat
+        return view('customer.home', compact('products'));
+    }
+
 }
 
 
