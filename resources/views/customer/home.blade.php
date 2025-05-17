@@ -351,6 +351,37 @@
             text-align: center;
         }
 
+        .testimonial-bubble {
+            border-radius: 20px 20px 20px 0;
+            background: #fff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .testimonial-bubble:hover {
+            transform: translateY(-5px);
+        }
+
+        .text-purple {
+            color: #052659;
+        }
+
+        .testimonial-item {
+            min-height: 350px; /* atau atur sesuai kebutuhan */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .text-primary {
+            color: #052659 !important;
+        }
+
+        .bi-star-fill,
+        .bi-star-half,
+        .bi-star {
+            color: #052659 !important;
+        }
 
 
     </style>

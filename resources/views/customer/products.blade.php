@@ -35,7 +35,7 @@
             <div class="col-12">
                 <div class="card shadow-sm border-0 rounded-4">
                     <div class="card-body p-4">
-                        <form action="" method="GET" id="searchFilterForm">
+                        <form action="{{ route('products') }}" method="GET" id="searchFilterForm">
                             <div class="row">
                                 <!-- Search Bar - Expanded -->
                                 <div class="col-md-9 col-12 mb-md-0 mb-3">
