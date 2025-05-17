@@ -1,39 +1,69 @@
 @extends('layouts.app')
 
-@section('title', 'Terms and Conditions')
+@section('title', 'Terms and Conditions - Chille Mart')
 
 @section('content')
 <div class="container py-4">
     <h1 class="mb-4">Terms and Conditions</h1>
-    <div class="card shadow-sm mb-4" style="background-color: white;">
-        <div class="card-body">
-            <h4 class="mb-3">Hello ChillBros!</h4>
-            <p>Welcome to our website! By using our services, you agree to comply with and be bound by the following terms and conditions. Please read them carefully.</p>
+    <p><strong>Last Updated: [May 20th, 2025]</strong></p>
 
-            <h4 class="mt-4 mb-3">1. General Terms</h4>
-            <p>These terms apply to all visitors and users of our website. By accessing or using this website, you agree to comply with these terms and conditions. If you disagree with any part of these terms, you must not use our website.</p>
+    <p>Hello, <strong>ChillBros</strong>! Welcome to <strong>Chillé Mart</strong>. These Terms and Conditions govern your use of our website <a href="http://www.chillemart.com" target="_blank">[www.chillemart.com]</a> and any purchases made through it. By accessing or using our site, you agree to comply with these terms. If you disagree, please refrain from using our services.</p>
 
-            <h4 class="mt-4 mb-3">2. Account Registration</h4>
-            <p>To use certain features of our website, you may be required to create an account. You must provide accurate and complete information during the registration process.</p>
+    <h3>1. General Terms</h3>
+    <ul>
+        <li>You must be at least <strong>18 years old</strong> (or the legal age in your jurisdiction) to make a purchase.</li>
+        <li>All purchases are subject to product availability and our acceptance of your order.</li>
+        <li>We reserve the right to refuse service, terminate accounts, or cancel orders at our discretion.</li>
+    </ul>
 
-            <h4 class="mt-4 mb-3">3. Payment and Orders</h4>
-            <p>All orders placed through our website are subject to acceptance and availability. Payment must be made in full before the order is processed.</p>
+    <h3>2. Account Registration</h3>
+    <ul>
+        <li>You may need an account to place orders.</li>
+        <li>You are responsible for maintaining the confidentiality of your login details.</li>
+        <li>Notify us immediately of any unauthorized account activity.</li>
+    </ul>
 
-            <h4 class="mt-4 mb-3">4. Shipping and Delivery</h4>
-            <p>We offer various shipping options. Shipping fees and estimated delivery times are provided during the checkout process.</p>
+    <h3>3. Pricing & Payments</h3>
+    <ul>
+        <li>All prices are listed in <strong>USD</strong> and are subject to change without notice.</li>
+        <li>Additional charges (taxes and shipping fees) will be displayed at checkout.</li>
+        <li>We accept <strong>Payment Methods – e.g., Credit/Debit Cards, UPI, PayPal, etc.</strong>.</li>
+    </ul>
 
-            <h4 class="mt-4 mb-3">5. Refunds and Cancellations</h4>
-            <p>If you wish to cancel or return an order, please refer to our Return and Refund Policy for more information.</p>
+    <h3>4. Order Processing & Shipping</h3>
+    <ul>
+        <li>Orders are processed within <strong> 7 days</strong>.</li>
+        <li>Risk of loss transfers to you upon delivery.</li>
+    </ul>
 
-            <h4 class="mt-4 mb-3">6. Limitation of Liability</h4>
-            <p>We are not responsible for any damages or losses arising from the use of our website, products, or services, except as required by law.</p>
+    <h3>5. Intellectual Property</h3>
+    <ul>
+        <li>All content (logos, text, images) is owned by <strong>Chillé Mart</strong> and protected by copyright.</li>
+        <li>Unauthorized use, reproduction, or distribution is prohibited.</li>
+    </ul>
 
-            <h4 class="mt-4 mb-3">7. Changes to Terms</h4>
-            <p>We reserve the right to update or modify these terms at any time. Please check this page regularly for updates.</p>
-            
-            <h4 class="mt-4 mb-3">Contact Us</h4>
-            <p>If you have any questions about these terms, please contact us at chillemart@gmail.com.</p>
-        </div>
-    </div>
+    <h3>6. Limitation of Liability</h3>
+    <ul>
+        <li>Chillé Mart is not liable for indirect, incidental, or consequential damages.</li>
+        <li>Our maximum liability is limited to the purchase price of the product.</li>
+    </ul>
+
+    <h3>7. Governing Law</h3>
+    <ul>
+        <li>These terms are governed by the laws of <strong>Indonesia</strong>.</li>
+        <li>Any disputes will be resolved in the courts of <strong>Jurisdiction</strong>.</li>
+    </ul>
+
+    <h3>8. Changes to Terms</h3>
+    <p>We may update these terms at any time. Continued use constitutes acceptance.</p>
+
+    <h3>9. Contact Us</h3>
+    <p>For questions, contact:</p>
+    <ul>
+        <li><strong>Chillé Mart</strong></li>
+        <li>Email: <a href="mailto:chillemart@gmail.com">chillemart@gmail.com</a></li>
+        <li>Phone: <strong>+62 81234567890</strong></li>
+        <li>Address: <strong>Universitas Ciputra, Surabaya, Indonesia</strong></li>
+    </ul>
 </div>
 @endsection
