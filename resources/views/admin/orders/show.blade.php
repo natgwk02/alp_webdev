@@ -115,7 +115,7 @@
                         <div class="mb-3">
                             <h6>Customer Notes</h6>
                             <p class="mb-0">
-                                {{ $order['customer_notes'] ?? '-' }}
+                                {{ $order['customer']['notes'] ?? '-' }}
                             </p>
                         </div>
 
