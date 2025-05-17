@@ -24,7 +24,13 @@
 @section('content')
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-
+@if (session('success'))
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+        role="alert" style="min-width: 300px;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
     <style>
         body {
             color: #052659;
@@ -638,24 +644,46 @@
         </div>
     </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryCarousel = document.getElementById('categoryCarousel');
-            const carousel = new bootstrap.Carousel(categoryCarousel, {
-                interval: 5000,
-                pause: false
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Auto-hide success alert after 5 seconds
+    if ($('#successAlert').length) {
+        setTimeout(function() {
+            $('#successAlert').fadeOut('slow', function() {
+                $(this).remove();
             });
+        }, 5000);
+    }
 
-            const carouselControls = document.querySelectorAll(
-                '.carousel-control-prev, .carousel-control-next, .carousel-indicators button');
-            carouselControls.forEach(control => {
-                control.addEventListener('click', function() {
-                    carousel.pause();
-                    setTimeout(function() {
-                        carousel.cycle();
-                    }, 100);
-                });
+    if ($('#errorAlert').length) {
+        setTimeout(function() {
+            $('#errorAlert').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    }
+
+    // Carousel controls
+    const categoryCarousel = document.getElementById('categoryCarousel');
+    if (categoryCarousel) {
+        const carousel = new bootstrap.Carousel(categoryCarousel, {
+            interval: 5000,
+            pause: false
+        });
+
+        const carouselControls = document.querySelectorAll(
+            '.carousel-control-prev, .carousel-control-next, .carousel-indicators button');
+        carouselControls.forEach(control => {
+            control.addEventListener('click', function() {
+                carousel.pause();
+                setTimeout(function() {
+                    carousel.cycle();
+                }, 100);
             });
         });
-    </script>
+    }
+});
+</script>
+
 @endsection

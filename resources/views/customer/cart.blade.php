@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="container py-4">
+    
     <div class="row">
         <div class="col-12">
             <h1 class="fw-bold mb-4">Shopping Cart</h1>
@@ -242,7 +243,7 @@
             const qty = parseInt(input.value) || 0;
             const total = price * qty;
 
-            const itemTotalEl = document.getElementById(`item-total-${index}`);
+            const itemTotalEl = document.getElementById(item-total-${index});
             if (itemTotalEl) itemTotalEl.textContent = formatRupiah(total);
             subtotal += total;
         });
