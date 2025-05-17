@@ -257,6 +257,36 @@
             flex: 1 1 auto;
         }
 
+        /* yutub */
+        .py-5 {
+            padding-top: 60px;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: #052659;
+            margin-bottom: 30px;
+        }
+
+        iframe {
+            width: 80%;
+            height: 80%; 
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+
 
     </style>
 
@@ -529,6 +559,16 @@
                 </div>
             </div>
         </section>
+    {{-- YouTube Video Section --}}
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">Freshly Frozen, Ready to Cook!</h2>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/rfmXpfMec2s?si=OIPZoUcItuHp2Er5" 
+            title="YouTube video player" frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </section>
 
     {{-- why us --}}
     <section class="why-chille py-5">
