@@ -50,6 +50,7 @@ Route::get('/terms-and-conditions', function () {
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
+    Route::get('/wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist']);
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
     Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
