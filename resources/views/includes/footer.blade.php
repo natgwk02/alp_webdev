@@ -33,7 +33,7 @@
                             </ul>
                             <h5 class="mt-3 mb-2 fw-semibold" style="letter-spacing: 2px; color: #052659;">Address</h5>
                             <div class="">
-                                <h6 style="color: #4f4f4f;">Universitas Ciputra, Surabaya, IDN</h6>
+                                <h6 style="color: #4f4f4f;">Universitas Ciputra, Surabaya, Indonesia</h6>
                             </div>   
                         </div>
                     </div>
