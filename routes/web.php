@@ -55,8 +55,6 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     Route::get('/orders', [OrderController::class, 'index'])->name('customer.orders');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
     Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
-<<<<<<< Updated upstream
-=======
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
@@ -64,8 +62,8 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     // routes/web.php
 
     Route::get('/order/confirmation/{orderId}', function ($orderId) {
-    $orders = session('orders', []);
->>>>>>> Stashed changes
+    $orders = session('orders');
+});
     
 // //});
 

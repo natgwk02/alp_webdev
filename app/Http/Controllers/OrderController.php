@@ -49,11 +49,7 @@ class OrderController extends Controller
 
         $orders[] = $order;
     }
-<<<<<<< Updated upstream
-
-=======
      $orders = session('orders', []);  // Example using session data
->>>>>>> Stashed changes
     return view('customer.orders', ['orders' => $orders]);
 }
 
@@ -84,54 +80,6 @@ class OrderController extends Controller
     }
 
     public function show($id)
-<<<<<<< Updated upstream
-    {
-        $orders = session('orders', []);
-        $order = collect($orders)->firstWhere('id', $id);
-
-        if (!$order) {
-            return redirect()->route('orders')->with('error', 'Order not found.');
-        }
-
-        $order['customer_name'] = $order['customer']['first_name'] . ' ' . $order['customer']['last_name'] ?? 'Unknown Customer';
-        $order['customer_email'] = $order['customer']['email'] ?? null;
-        $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
-        $order['payment_status'] = $order['payment_status'] ?? 'Unpaid';
-        $order['shipping_address'] = $order['customer']['address'] ?? '-';
-        $order['billing_address'] = $order['customer']['address'] ?? '-';
-        $order['subtotal'] = $order['subtotal'] ?? 0;
-        $order['shipping_fee'] = $order['shipping_fee'] ?? 0;
-        $order['tax'] = $order['tax'] ?? 0;
-        $order['total_amount'] = $order['total'] ?? 0;
-        $order['status'] = $order['status'] ?? 'Pending';
-        $order['order_date'] = $order['created_at'] ?? now()->format('Y-m-d H:i:s');
-        $order['items'] = $order['items'] ?? [];
-
-        $productController = new \App\Http\Controllers\ProductController;
-        $products = $productController->products();
-        $productsById = collect($products)->keyBy('id');
-
-        foreach ($order['items'] as &$item) {
-            $productId = $item['product_id'] ?? $item['id'] ?? null;
-
-            if (!$productId) {
-                $item['image'] = 'no-image.png';
-                $item['product_name'] = $item['name'] ?? 'Unknown Product';
-            } else {
-                $product = $productsById[$productId] ?? null;
-                $item['image'] = $product['image'] ?? 'no-image.png';
-                $item['product_name'] = $product['name'] ?? $item['name'] ?? 'Unknown Product';
-            }
-
-            $item['price'] = $item['price'] ?? 0;
-            $item['quantity'] = $item['quantity'] ?? 0;
-            $item['total'] = $item['price'] * $item['quantity'];
-        }
-
-        return view('customer.order_details', compact('order'));
-    }
-
-=======
 {
     Log::info('Orders in session before retrieving order:', session('orders'));
 
@@ -142,7 +90,7 @@ class OrderController extends Controller
 
 
     if (!$order) {
-        return redirect()->route('customer.orders')->with('error', 'Order not found.');
+        return redirect(route('customer.orders'))->with('error', 'Order not found.');
     }
 
     // Check if the order number is missing and log a warning
@@ -181,7 +129,6 @@ class OrderController extends Controller
     return view('customer.order_details', compact('order'));
 }
     
->>>>>>> Stashed changes
     public function showCheckoutForm()
     {
         $cartItems = session('cart', []);
