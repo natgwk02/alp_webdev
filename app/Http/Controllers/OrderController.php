@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -48,7 +49,11 @@ class OrderController extends Controller
 
         $orders[] = $order;
     }
+<<<<<<< Updated upstream
 
+=======
+     $orders = session('orders', []);  // Example using session data
+>>>>>>> Stashed changes
     return view('customer.orders', ['orders' => $orders]);
 }
 
@@ -79,6 +84,7 @@ class OrderController extends Controller
     }
 
     public function show($id)
+<<<<<<< Updated upstream
     {
         $orders = session('orders', []);
         $order = collect($orders)->firstWhere('id', $id);
@@ -125,6 +131,57 @@ class OrderController extends Controller
         return view('customer.order_details', compact('order'));
     }
 
+=======
+{
+    Log::info('Orders in session before retrieving order:', session('orders'));
+
+    $orders = session('orders', []);
+    $order = collect($orders)->firstWhere('id', $id);
+
+    Log::info('Retrieved order:', $order);  // Log the retrieved order data
+
+
+    if (!$order) {
+        return redirect()->route('customer.orders')->with('error', 'Order not found.');
+    }
+
+    // Check if the order number is missing and log a warning
+    if (!isset($order['order_number'])) {
+        Log::warning('Order number is missing for order:', $order);
+    }
+
+    // Set default values supaya aman di view
+    $order['customer_name'] = $order['customer_name'] ?? 'Unknown Customer';
+    $order['customer_email'] = $order['customer_email'] ?? null;
+    $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
+    $order['payment_status'] = $order['payment_status'] ?? 'Unpaid';
+    $order['shipping_address'] = $order['shipping_address'] ?? '-';
+    $order['billing_address'] = $order['billing_address'] ?? '-';
+    $order['subtotal'] = $order['subtotal'] ?? 0;
+    $order['shipping_fee'] = $order['shipping_fee'] ?? 0;
+    $order['tax'] = $order['tax'] ?? 0;
+    $order['total_amount'] = $order['total_amount'] ?? 0;
+    $order['status'] = $order['status'] ?? 'Pending';
+    $order['order_date'] = $order['order_date'] ?? now()->format('Y-m-d H:i:s');
+    $order['items'] = $order['items'] ?? [];
+
+    // Ambil data produk supaya bisa tambah image di setiap item
+    $productController = new \App\Http\Controllers\ProductController;
+    $products = $productController->products();
+    $productsById = collect($products)->keyBy('id');
+
+    foreach ($order['items'] as &$item) {
+        $item['image'] = $productsById[$item['id']]['image'] ?? 'no-image.png';
+        $item['product_name'] = $productsById[$item['id']]['name'] ?? ($item['product_name'] ?? 'Unknown Product');
+        $item['price'] = $item['price'] ?? 0;
+        $item['quantity'] = $item['quantity'] ?? 0;
+        $item['total'] = $item['price'] * $item['quantity'];
+    }
+
+    return view('customer.order_details', compact('order'));
+}
+    
+>>>>>>> Stashed changes
     public function showCheckoutForm()
     {
         $cartItems = session('cart', []);

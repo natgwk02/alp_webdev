@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
@@ -81,24 +82,36 @@ public function removeVoucher()
     return back()->with('voucher_success', 'Voucher removed successfully');
 }
 
-    // ➕ Add Item to Cart
-    public function addToCart(Request $request)
+
+public function addToCart(Request $request)
 {
+    // Check if the user is logged in
+    if (!Auth::check()) {
+        // If not logged in, redirect to the login page with a message
+        return redirect()->route('login.show')->with('message', 'Please login to add items to the cart.');
+    }
+
+    // Get product ID and quantity from the request
     $productId = $request->input('product_id');
-    $quantity = max(1, (int) $request->input('quantity', 1)); // Ambil dari form, minimal 1
+    $quantity = max(1, (int) $request->input('quantity', 1)); // Ensure the quantity is at least 1
+
+    // Get the cart from the session or initialize it as an empty array
     $cart = session('cart', []);
 
+    // Find the product in your list of products (assuming $this->products is defined)
     $product = collect($this->products)->firstWhere('id', (int)$productId);
 
+    // If product not found, return with error message
     if (!$product) {
         return redirect()->back()->with('error', 'Product not found.');
     }
 
+    // Check if the product is already in the cart
     if (isset($cart[$productId])) {
-        // Tambahkan quantity jika produk sudah ada di cart
+        // If the product is already in the cart, increase the quantity
         $cart[$productId]['quantity'] += $quantity;
     } else {
-        // Masukkan produk baru
+        // If the product is not in the cart, add it as a new entry
         $cart[$productId] = [
             'id' => $product['id'],
             'name' => $product['name'],
@@ -108,10 +121,13 @@ public function removeVoucher()
         ];
     }
 
+    // Store the updated cart in the session
     session(['cart' => $cart]);
 
+    // Redirect back to the products page with success message
     return redirect()->route('products')->with('success', 'Item added to cart!');
 }
+
 
 
     // ➖ Remove or Decrease Item from Cart

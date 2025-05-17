@@ -167,7 +167,7 @@
 
 <style>
     .table th, .table td {
-        text-align: left; /* Align text to the left */
+        text-align: left; /* Align text to the left */  
         vertical-align: middle; /* Vertically center the content */
         padding: 10px; /* Add padding for better spacing */
     }

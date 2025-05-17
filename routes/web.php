@@ -52,25 +52,37 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
     // Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
+    Route::get('/orders', [OrderController::class, 'index'])->name('customer.orders');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
     Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
+<<<<<<< Updated upstream
+=======
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+    Route::post('/cart/proceed-to-checkout', [CartController::class, 'proceedToCheckout'])->name('cart.proceed-to-checkout');
+    // routes/web.php
+
+    Route::get('/order/confirmation/{orderId}', function ($orderId) {
+    $orders = session('orders', []);
+>>>>>>> Stashed changes
     
 // //});
 
 // Admin Routes
 //Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+//     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-  //  Product Management
-    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
-    Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-    Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-    Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+//   //  Product Management
+//     Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+//     Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+//     Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+//     Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 
-    // Order Management
-    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+//     // Order Management
+//     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+//     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+//     Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
     
 
 
@@ -80,7 +92,6 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
 Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
 
 
 Route::get('/about', function () {
