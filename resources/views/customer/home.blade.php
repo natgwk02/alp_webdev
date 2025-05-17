@@ -608,7 +608,7 @@
                     <div class="card border-0 h-100 bg-transparent">
                         <div class="card-body text-center">
                             <i class="bi bi-snow fs-1 mb-3 feature-icon"></i>
-                            <h4>Flash-Frozen at Peak Freshness</h4>
+                            <h4 class="mt-3">Flash-Frozen at Peak Freshness</h4>
                             <p>Our foods are frozen at the peak of freshness to lock in nutrients and flavor that last
                                 longer than fresh alternatives.</p>
                         </div>
@@ -618,7 +618,7 @@
                     <div class="card border-0 h-100 bg-transparent">
                         <div class="card-body text-center">
                             <i class="bi bi-clock-history fs-1 mb-3 feature-icon"></i>
-                            <h4>Convenience & Time-Saving</h4>
+                            <h4 class="mt-3">Convenience & Time-Saving</h4>
                             <p>Ready-to-cook meals and ingredients that save you time in the kitchen without sacrificing
                                 quality or taste.</p>
                         </div>
@@ -628,7 +628,7 @@
                     <div class="card border-0 h-100 bg-transparent">
                         <div class="card-body text-center">
                             <i class="bi bi-trash fs-1 mb-3 feature-icon"></i>
-                            <h4>Reduce Food Waste</h4>
+                            <h4 class="mt-3">Reduce Food Waste</h4>
                             <p>Use only what you need and keep the rest frozen, helping to reduce household food waste and
                                 save money.</p>
                         </div>
