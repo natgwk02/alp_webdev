@@ -1,5 +1,20 @@
 @extends('layouts.app')
+    <style>
 
+        .text-navy {
+        color: #052659 !important;
+    }
+
+    .value-box {
+        transition: all 0.3s ease;
+    }
+    img:hover {
+        transform: scale(1.02);
+        transition: transform 0.4s ease;
+    }
+
+
+    </style>
 @section('content')
 <!-- About Hero -->
 <section class="py-5" style="background-color: #C1E8FF;">
@@ -10,56 +25,83 @@
 </section>
 
 <!-- Our Story -->
-<section class="py-5">
-    <div class="container">
-        <div class="row align-items-center">
+<section class="py-5" style="background: linear-gradient(to bottom right, #e6f4ff, #ffffff);">
+   <div class="container">
+        <div class="row align-items-center g-5">
+            <!-- Left: Image -->
             <div class="col-md-6">
-                <img src="/images/category-img/ready-meals.jpg" alt="Our Story" class="img-fluid rounded shadow">
+                <img src="/images/category-img/ready-meals.jpg" alt="Chillé Mart Story" class="img-fluid rounded-4 shadow-sm">
             </div>
+
+            <!-- Right: Text Content -->
             <div class="col-md-6">
-                <h2 class="mb-4" style="color: #052659;">Our Story</h2>
-                <p>Founded in 2025, Chille Mart began with a simple mission: to provide high quality frozen foods with convenience. What started as a small local business has grown into a trusted name in frozen food e-commerce.</p>
-                <p>We carefully select our products to ensure they meet the highest standards of quality and freshness.</p>
+                <h2 class="mb-3" style="color: #052659;">The Story Behind Chillé Mart</h2>
+                <p class="text-secondary fs-6 mb-3">
+                    Since <strong>2025</strong>, Chillé Mart has been on a mission to deliver <strong>convenient</strong>, <strong>high-quality</strong> frozen meals that fit modern lifestyles.
+                </p>
+                <p class="text-secondary fs-6 mb-3">
+                    What began as a small local business has grown into a trusted platform for premium frozen products — from quick ready-to-eat meals to cooking essentials for your kitchen.
+                </p>
+                <p class="text-secondary fs-6 mb-4">
+                    We believe frozen food should be more than just practical — it should also be <span class="fw-semibold text-dark">fresh, flavorful, and reliable</span> every time.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Our Values -->
 <section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5" style="color: #052659;">Our Values</h2>
-        <div class="row text-center">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0">
-                    <div class="card-body">
-                        <i class="fas fa-star fa-3x mb-3" style="color: #052659;"></i>
-                        <h5>Quality</h5>
-                        <p>We source only the best frozen products with strict quality control.</p>
-                    </div>
+    <div class="container text-center">
+        <h2 class="text-navy mb-5">Our Values</h2>
+
+        <!-- Baris pertama (3 kotak) -->
+        <div class="row justify-content-center g-4 mb-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100 value-box">
+                    <i class="bi bi-star-fill fs-1 text-navy mb-3 d-block"></i>
+                    <h5 class="fw-bold">Quality</h5>
+                    <p class="small text-muted mb-0">Only the best frozen products with strict quality control.</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0">
-                    <div class="card-body">
-                        <i class="fas fa-truck fa-3x mb-3" style="color: #052659;"></i>
-                        <h5>Convenience</h5>
-                        <p>Fast delivery and easy ordering process for your convenience.</p>
-                    </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100 value-box">
+                    <i class="bi bi-truck-front-fill fs-1 text-navy mb-3 d-block"></i>
+                    <h5 class="fw-bold">Convenience</h5>
+                    <p class="small text-muted mb-0">Fast delivery and easy ordering process for your convenience.</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0">
-                    <div class="card-body">
-                        <i class="fas fa-heart fa-3x mb-3" style="color: #052659;"></i>
-                        <h5>Customer Care</h5>
-                        <p>24/7 support to ensure your complete satisfaction.</p>
-                    </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100 value-box">
+                    <i class="bi bi-heart-fill fs-1 text-navy mb-3 d-block"></i>
+                    <h5 class="fw-bold">Customer Care</h5>
+                    <p class="small text-muted mb-0">24/7 support to ensure your complete satisfaction.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Baris kedua (2 kotak) -->
+        <div class="row justify-content-center g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100 value-box">
+                    <i class="bi bi-shield-shaded fs-1 text-navy mb-3 d-block"></i>
+                    <h5 class="fw-bold">Safety</h5>
+                    <p class="small text-muted mb-0">All items handled with high hygiene standards and care.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100 value-box">
+                    <i class="bi bi-globe-americas fs-1 text-navy mb-3 d-block"></i>
+                    <h5 class="fw-bold">Sustainability</h5>
+                    <p class="small text-muted mb-0">Committed to eco-friendly sourcing and packaging.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 
 <!-- Team Section -->
 <section class="py-5">
@@ -89,4 +131,6 @@
         </div>
     </div>
 </section>
+
+
 @endsection
