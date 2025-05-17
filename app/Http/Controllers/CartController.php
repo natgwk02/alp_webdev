@@ -24,6 +24,7 @@ class CartController extends Controller
 public function index(Request $request)
 {
     $cartItems = session('cart', []);
+    $selectedItems = $request->input('selected_items', []); // Get selected items
     $subtotal = 0;
 
     // Hapus item yang tidak memiliki data lengkap
@@ -32,7 +33,11 @@ public function index(Request $request)
             unset($cartItems[$key]);
             continue;
         }
-        $subtotal += $item['price'] * $item['quantity'];
+
+        // If the item is selected, calculate the total
+        if (in_array($item['id'], $selectedItems) || empty($selectedItems)) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
     }
 
     session(['cart' => $cartItems]);
@@ -44,6 +49,7 @@ public function index(Request $request)
 
     return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
 }
+
 
 
 public function applyVoucher(Request $request)
