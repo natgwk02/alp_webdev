@@ -8,7 +8,8 @@ class HomeController extends Controller
 {
     public function showHome()
     {
-        return view('customer.home');
+        $products = (new \App\Http\Controllers\ProductController)->products(); // ambil dari ProductController
+        return view('customer.home', compact('products'));
     }
 }
 

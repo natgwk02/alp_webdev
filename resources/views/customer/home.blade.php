@@ -481,32 +481,45 @@
                                 <i class="bi bi-star-half text-warning"></i>
                             </div>
                         </div>
-                        <button class="btn btn-outline-primary w-100 mt-auto">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-
-
-                            <!-- Product 2 -->
-                <div class="col-lg-3 col-md-4 col-6 mb-4">
-                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
-                        <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top" alt="Product 2">
-                        <div class="card-body d-flex flex-column h-100">
-                            <h5 class="card-title">Ready Meal Fiesta Beef Bulgogi With Rice</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp 26.999</p>
-                                <div>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-half text-warning"></i>
+                        <form action="{{ route('cart.add', ['productId' => 1]) }}" method="POST" class="mt-auto">
+                            @csrf
+                            <input type="hidden" name="product_id" value="3">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
+                                <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                            </button>
+                        </form>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-primary w-100 mt-auto">Add to Cart</button>
                         </div>
-                    </div>
-                </div>
+                            <!-- Product 2 -->
+                        <div class="col-lg-3 col-md-4 col-6 mb-4">
+                            <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
+                                <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top" alt="Product 2">
+                                <div class="card-body d-flex flex-column h-100">
+                                    <h5 class="card-title">Ready Meal Fiesta Beef Bulgogi With Rice</h5>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <p class="card-text mb-0">Rp 26.999</p>
+                                        <div>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-half text-warning"></i>
+                                        </div>
+                                    </div>
+                                    <form action="{{ route('cart.add', ['productId' => 2]) }}" method="POST" class="mt-auto">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="3">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
+                                        <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                                    </button>
+                                </form>
+
+                                </div>
+                            </div>
+                        </div>
 
                 <!-- Product 3 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
@@ -525,7 +538,15 @@
                                     <i class="bi bi-star-fill text-warning"></i>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-primary w-100 mt-auto">Add to Cart</button>
+                            <form action="{{ route('cart.add', ['productId' => 3]) }}" method="POST" class="mt-auto">
+                                @csrf
+                                <input type="hidden" name="product_id" value="3">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
+                                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                                </button>
+                            </form>
+
                         </div>
                     </div>
                 </div>
@@ -547,7 +568,15 @@
                                     <i class="bi bi-star text-warning"></i>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-primary w-100 mt-auto">Add to Cart</button>
+                            <form action="{{ route('cart.add', ['productId' => 4]) }}" method="POST" class="mt-auto">
+                                @csrf
+                                <input type="hidden" name="product_id" value="3">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
+                                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                                </button>
+                            </form>
+
                         </div>
                     </div>
                 </div>
@@ -579,7 +608,7 @@
                     <div class="card border-0 h-100 bg-transparent">
                         <div class="card-body text-center">
                             <i class="bi bi-snow fs-1 mb-3 feature-icon"></i>
-                            <h4>Flash-Frozen at Peak Freshness</h4>
+                            <h4 class="mt-3">Flash-Frozen at Peak Freshness</h4>
                             <p>Our foods are frozen at the peak of freshness to lock in nutrients and flavor that last
                                 longer than fresh alternatives.</p>
                         </div>
@@ -589,7 +618,7 @@
                     <div class="card border-0 h-100 bg-transparent">
                         <div class="card-body text-center">
                             <i class="bi bi-clock-history fs-1 mb-3 feature-icon"></i>
-                            <h4>Convenience & Time-Saving</h4>
+                            <h4 class="mt-3">Convenience & Time-Saving</h4>
                             <p>Ready-to-cook meals and ingredients that save you time in the kitchen without sacrificing
                                 quality or taste.</p>
                         </div>
@@ -599,7 +628,7 @@
                     <div class="card border-0 h-100 bg-transparent">
                         <div class="card-body text-center">
                             <i class="bi bi-trash fs-1 mb-3 feature-icon"></i>
-                            <h4>Reduce Food Waste</h4>
+                            <h4 class="mt-3">Reduce Food Waste</h4>
                             <p>Use only what you need and keep the rest frozen, helping to reduce household food waste and
                                 save money.</p>
                         </div>
