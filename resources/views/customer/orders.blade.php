@@ -12,11 +12,15 @@
                 <div class="border rounded shadow-sm p-4 bg-white">
                     {{-- Header --}}
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold text-secondary">Order #{{ $order['order_number'] ?? $order['id'] }}</span>
+                        <span class="fw-semibold text-secondary">Order ID{{ $order['order_number'] ?? $order['id'] }}</span>
                         @php
                             $statusClass = match($order['status']) {
                                 'Delivered' => 'badge bg-success',
-                                'Processing' => 'badge bg-warning text-dark',
+                                'Processing' => 'badge bg-warning text-white',
+                                'Cancelled' => 'badge bg-danger',
+                                'Shipped' => 'badge bg-info',
+                                'Pending' => 'badge bg-secondary',
+                                'Completed' => 'badge bg-success',
                                 default => 'badge bg-secondary'
                             };
                         @endphp

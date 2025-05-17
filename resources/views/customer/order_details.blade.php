@@ -1,11 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Order #' . ($order['order_number'] ?? $order['id']))
+
+@section('title', 'Order #' . $order['order_number'])
 
 @section('content')
 <div class="container py-4">
-    <h1 class="fw-bold">Order #{{ $order['order_number'] ?? $order['id'] }}</h1>
-    <p class="text-muted">Placed on {{ isset($order['order_date']) ? \Carbon\Carbon::parse($order['order_date'])->format('d M Y H:i') : '-' }}</p>
+    <h1 class="fw-bold">Order #{{ $order['order_number'] ?? 'Unknown Order' }}</h1>
+    {{-- <h1 class="fw-bold">Order #{{ $order['order_number'] }}</h1> --}}
+    <p class="text-muted">Placed on {{ $order['order_date'] }}</p>
 
     <div class="row mb-4">
         <!-- Kiri: Tabel item dengan gambar -->

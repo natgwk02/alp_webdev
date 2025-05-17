@@ -367,12 +367,33 @@
         localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
 
         $.ajax({
-            url: '/wishlist/toggle/' + productId,
-            type: 'GET',
-            success: function(response) {
-                console.log("Wishlist updated");
-            }
-        });
+    url: '/wishlist/toggle/' + productId,
+    type: 'GET',
+    success: function(response) {
+        // Remove alert lama kalau ada
+        $('#successAlert').remove();
+
+        // Tambahkan alert baru ke body atau ke container tertentu di halaman kamu
+        var alertHtml = '<div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" 
+            role="alert" style="min-width: 300px; z-index: 1055;">
+            ${response.message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        '</div>';
+
+        // Contoh append ke atas konten produk (ganti selector sesuai layout kamu)
+        $('body').prepend(alertHtml);
+
+        // Auto hide alert setelah 5 detik
+        setTimeout(function() {
+            $('#successAlert').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    },
+    error: function() {
+        alert('Failed to update wishlist.');
+    }
+});
     });
 
     // Price range input validation
@@ -383,28 +404,20 @@
     });
 });
 
-            function updateActiveFiltersBadge() {
+
+        function updateActiveFiltersBadge() {
     let count = 0;
 
-    // Check if search has value
-    if ($('#searchInput').val().trim() !== '') {
-        count++;
-    }
+    const search = $('#searchInput').val().trim();
+    const category = $('#categoryFilter').val();
+    const minPrice = $('#minPrice').val().trim();
+    const maxPrice = $('#maxPrice').val().trim();
 
-    // Check if category filter is applied
-    if ($('#categoryFilter').val() !== '') {
-        count++;
-    }
+    if (search) count++;
+    if (category) count++;
+    if (minPrice) count++;
+    if (maxPrice) count++;
 
-    // Check if price range is applied
-    const minPrice = $('#minPrice').val();
-    const maxPrice = $('#maxPrice').val();
-
-    if (minPrice !== '' || maxPrice !== '') {
-        count++;
-    }
-
-    // Show or hide badge
     if (count > 0) {
         $('#activeFiltersBadge').text(count).show();
     } else {
@@ -413,13 +426,9 @@
 }
 
 // Run on page load
-$(document).ready(function () {
+$(document).ready(function() {
     updateActiveFiltersBadge();
-
-    // Also run when form elements change
-    $('#searchInput, #categoryFilter, #minPrice, #maxPrice').on('input change', function () {
-        updateActiveFiltersBadge();
-    });
 });
+
     </script>
 @endsection

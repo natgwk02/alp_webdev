@@ -101,7 +101,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-3">
                         <button id="filterBtn" class="btn btn-primary flex-grow-1">
                             <i class="fas fa-filter me-1"></i>Filter Products
                         </button>

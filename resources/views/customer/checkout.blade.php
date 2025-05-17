@@ -100,7 +100,7 @@
                     </div>
                 </div>
 
-                <div class="card shadow-sm mb-4" style="background-color: #C1E8FF;">
+                <div class="card shadow-sm mb-4" style="background-color: white;">
                     <div class="card-header bg-white">
                         <h4 class="mb-0">Notes to Seller</h4>
                     </div>
@@ -123,6 +123,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="card shadow-sm" style="background-color: white;">
                     <div class="card-header bg-white">
                         <h4 class="mb-0">Payment Method *</h4>
@@ -236,7 +237,7 @@
                type="checkbox" id="termsAgreement" name="termsAgreement" value="1"
                {{ old('termsAgreement') ? 'checked' : '' }}>
         <label class="form-check-label" for="termsAgreement">
-            I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a> *
+            I agree to the <a href="{{ route('terms') }}" target="_blank">Terms and Conditions</a> *
         </label>
         @error('termsAgreement')
             <div class="invalid-feedback d-block">{{ $message }}</div>
