@@ -31,16 +31,75 @@
         }
 
         .hero-section {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+        }
+
+        .bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        /* .hero-section {
             background-color: #C1E8FF;
             padding: 80px 0;
             color: #052659;
+        } */
+
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
         }
 
+        .hero-text h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .hero-text p {
+            font-size: 1.25rem;
+            margin-bottom: 25px;
+        }
+
+        .hero-section .container {
+                position: relative;
+                z-index: 2;
+        }
+            .hero-section .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.45);
+            z-index: 1;
+        }
         .btn-lets-chill {
-            background-color: #052659;
+            background-color: #ffffff;
+            color:#052659; 
             border-radius: 12px;
             padding: 12px 24px;
             font-weight: 600;
+        }
+
+.btn-lets-chill:hover {
+    background-color: #f0f0f0; /* soft hover */
+    color: #052659;
+    border: 2px solid #052659; /* optional hover border */
+}
+
         }
 
         .btn-lets-chill:hover {
@@ -290,26 +349,29 @@
 
     </style>
 
+    {{-- Hero Section with Local Video --}}
+            <section class="hero-section">
+        <!-- Background Video -->
+        <video autoplay muted loop playsinline class="bg-video">
+            <source src="{{ asset('videos/chille video.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
 
-    {{-- atas   --}}
-    <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-12 text-center mb-4">
-                    <img src="{{ asset('images/logo-chille.png') }}" alt="Chille-mart" class="img-fluid rounded-circle"
-                        style="width: 30%; margin-bottom: 10px; margin-top: -30px;">
-                </div>
-                <div class="col-lg-12 text-center" style="margin-top: -20px;">
-                    <h1 class="display-4 fw-bold mb-2">Keep it cool, keep it Chillé!</h1>
-                    <p class="lead mb-4">Deliciously frozen, always ready. Discover your next favorite meal today!</p>
-                    <a href="#shop-category" class="btn btn-lets-chill btn-lg text-white border-0"
-                        onclick="scrollWithOffset(event)">
-                        Let's Chill
-                    </a>
-                </div>
-            </div>
+        <!-- Dark overlay -->
+        <div class="overlay"></div>
+
+        <!-- Centered text -->
+        <div class="hero-text">
+            <h1>Keep it cool, keep it Chillé!</h1>
+            <p>Deliciously frozen, always ready. Discover your next favorite meal today!</p>
+            <a href="#shop-category" class="btn btn-lets-chill btn-lg border-0"
+                onclick="scrollWithOffset(event)">
+                Let's Chill
+            </a>
+
         </div>
     </section>
+
 
     {{-- category --}}
 
@@ -588,16 +650,6 @@
                 </div>
             </div>
         </section>
-    {{-- YouTube Video Section --}}
-    <section class="py-5">
-        <div class="container text-center">
-            <h2 class="mb-4">Freshly Frozen, Ready to Cook!</h2>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/rfmXpfMec2s?si=OIPZoUcItuHp2Er5" 
-            title="YouTube video player" frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-    </section>
 
     {{-- why us --}}
     <section class="why-chille py-5">

@@ -88,7 +88,7 @@
                                                     <div class="small text-muted">to</div>
                                                     <div class="input-group input-group-sm">
                                                         <span class="input-group-text bg-white">Rp</span>
-                                                        <input type="number" class="form-control" name="max_price"
+                                               x         <input type="number" class="form-control" name="max_price"
                                                             id="maxPrice" placeholder="Max" min="0"
                                                             value="{{ request('max_price') }}">
                                                     </div>
