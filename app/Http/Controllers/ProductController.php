@@ -184,7 +184,8 @@ class ProductController extends Controller
     {
         $products = $this->products();
         $wishlist = session('wishlist', []);
-        return view('customer.products', compact('products', 'wishlist'));
+        $categories = ['Ready Meals', 'Frozen Vegetables', 'Frozen Dimsum', 'Frozen Meat', 'Frozen Nugget', 'Frozen Fruit', 'Frozen Seafood', 'Dessert'];
+        return view('customer.products', compact('products', 'wishlist', 'categories'));
     }
 
     public function show($id)
