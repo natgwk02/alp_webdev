@@ -1,6 +1,6 @@
-{{-- @extends('base.base')
+@extends('base.base')
 
-@section('content') --}}
+@section('content')
 
 <head>
     <meta charset="UTF-8">
@@ -11,11 +11,6 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @stack('styles')
-    <!-- Bootstrap CSS -->
-
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
 </head>
 
 @if (session('success'))
@@ -31,6 +26,7 @@
 @endif
 
 <style>
+    /* Custom styles for the login page */
     body {
         background: url('/images/background.jpg') no-repeat center center fixed;
         background-size: cover;
@@ -107,8 +103,23 @@
     .text-link:hover {
         text-decoration: underline;
     }
-</style>
 
+    .guest-login {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .guest-login a {
+        font-size: 0.9rem;
+        color: #052659;
+        text-decoration: none;
+    }
+
+    .guest-login a:hover {
+        text-decoration: underline;
+    }
+</style>
 
 <body>
 
@@ -124,15 +135,13 @@
                 </div>
             @endif
 
-
             <form method="POST" action="{{ route('login.auth') }}">
                 @csrf
 
                 <input type="text" name="email" class="form-control" placeholder="Email Address" required>
 
                 <div class="position-relative">
-                    <input type="password" name="password" id="password" class="form-control pe-5"
-                        placeholder="Password" required>
+                    <input type="password" name="password" id="password" class="form-control pe-5" placeholder="Password" required>
 
                     <span onclick="togglePassword('password', this)"
                         class="position-absolute end-0 top-50 translate-middle-y me-3"
@@ -153,15 +162,17 @@
             </form>
 
             <div class="text-center mt-3">
-                <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-link">Sign
-                        Up</a></span>
+                <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-link">Sign Up</a></span>
+            </div>
+
+            <div class="guest-login">
+                <span class="text-muted">Or </span>
+                <a href="{{ url('/home') }}" class="text-link">Sign In as Guest</a>
             </div>
 
         </div>
     </div>
 </body>
-{{-- @endsection --}}
-
 
 <script>
     function togglePassword(fieldId, el) {
@@ -179,3 +190,5 @@
         }
     }
 </script>
+
+@endsection
