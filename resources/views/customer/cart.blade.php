@@ -151,7 +151,7 @@
                                         <span id="total-display">Rp{{ number_format($total, 0, ',', '.') }}</span>
                                     </div>
                                    <form action="{{ route('checkout.form') }}" method="GET">
-                                    <button type="submit" class="btn btn-primary" {{ count($cartItems) == 0 ? 'disabled' : '' }}>
+                                    <button type="submit" class="btn btn-primary" style="margin-top: 7px;" {{ count($cartItems) == 0 ? 'disabled' : '' }}>
                                         Proceed to Checkout
                                     </button>
                                 </form>
