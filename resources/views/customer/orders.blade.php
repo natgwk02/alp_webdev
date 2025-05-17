@@ -66,7 +66,7 @@
                             @if(isset($order['status']) && $order['status'] === 'Delivered')
                                 <form action="{{ route('order.received', ['id' => $order['id']]) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-success btn-sm px-4">
+                                    <button type="submit" class="btn btn-primary btn-sm px-4">
                                         Order Received
                                     </button>
                                 </form>

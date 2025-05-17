@@ -54,7 +54,10 @@ class AdminOrderController extends Controller
         $order['customer_email'] = $order['customer_email'] ?? null;
         $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
         $order['payment_status'] = $order['payment_status'] ?? 'Unpaid';
-        $order['shipping_address'] = $order['shipping_address'] ?? '-';
+        $order['shipping_address'] = $order['shipping_address'] ?? 
+    (isset($order['customer']) 
+        ? ($order['customer']['address'] . ', ' . $order['customer']['city'] . ', ' . $order['customer']['zip'] . ', ' . $order['customer']['country']) 
+        : '-');
         $order['billing_address'] = $order['billing_address'] ?? '-';
         $order['subtotal'] = $order['subtotal'] ?? 0;
         $order['shipping_fee'] = $order['shipping_fee'] ?? 0;
