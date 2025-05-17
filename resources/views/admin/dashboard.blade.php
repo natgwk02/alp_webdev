@@ -124,7 +124,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <a href="{{-- route('admin.orders') --}}" class="btn btn-sm btn-outline-primary mt-2">View All Orders</a>
+                    <a href="{{ route('admin.orders') }}" class="btn btn-sm btn-outline-primary mt-2">View All Orders</a>
                 </div>
             </div>
         </div>

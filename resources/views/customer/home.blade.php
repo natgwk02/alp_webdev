@@ -481,7 +481,7 @@
                                 <i class="bi bi-star-half text-warning"></i>
                             </div>
                         </div>
-                        <form action="{{ route('cart.add', ['productId' => 1]) }}" method="POST" class="mt-auto">
+                        <form action="{{ route('cart.add', ['productId' => 3]) }}" method="POST" class="mt-auto">
                             @csrf
                             <input type="hidden" name="product_id" value="3">
                             <input type="hidden" name="quantity" value="1">
@@ -508,7 +508,7 @@
                                             <i class="bi bi-star-half text-warning"></i>
                                         </div>
                                     </div>
-                                    <form action="{{ route('cart.add', ['productId' => 2]) }}" method="POST" class="mt-auto">
+                                    <form action="{{ route('cart.add', ['productId' => 4]) }}" method="POST" class="mt-auto">
                                     @csrf
                                     <input type="hidden" name="product_id" value="3">
                                     <input type="hidden" name="quantity" value="1">
@@ -538,7 +538,7 @@
                                     <i class="bi bi-star-fill text-warning"></i>
                                 </div>
                             </div>
-                            <form action="{{ route('cart.add', ['productId' => 3]) }}" method="POST" class="mt-auto">
+                            <form action="{{ route('cart.add', ['productId' => 5]) }}" method="POST" class="mt-auto">
                                 @csrf
                                 <input type="hidden" name="product_id" value="3">
                                 <input type="hidden" name="quantity" value="1">
@@ -568,7 +568,7 @@
                                     <i class="bi bi-star text-warning"></i>
                                 </div>
                             </div>
-                            <form action="{{ route('cart.add', ['productId' => 4]) }}" method="POST" class="mt-auto">
+                            <form action="{{ route('cart.add', ['productId' => 6]) }}" method="POST" class="mt-auto">
                                 @csrf
                                 <input type="hidden" name="product_id" value="3">
                                 <input type="hidden" name="quantity" value="1">
