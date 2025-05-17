@@ -224,6 +224,7 @@ class ProductController extends Controller
         $wishlist = session()->get('wishlist', []);
         $wishlist[$productId] = true;
         session(['wishlist' => $wishlist]);
+        
 
         return redirect()->back()->with('success', 'Product added to wishlist');
     }
@@ -242,6 +243,20 @@ class ProductController extends Controller
         $products = $this->products(); // ambil dari fungsi yang kamu buat
         return view('customer.home', compact('products'));
     }
+public function toggleWishlist($productId)
+{
+    $wishlist = session()->get('wishlist', []);
+    if(isset($wishlist[$productId])){
+        unset($wishlist[$productId]);
+        $message = 'Product removed from wishlist';
+    } else {
+        $wishlist[$productId] = true;
+        $message = 'Product added to wishlist';
+    }
+    session(['wishlist' => $wishlist]);
+
+    return response()->json(['message' => $message]);
+}
 
 }
 

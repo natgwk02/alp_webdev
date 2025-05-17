@@ -5,20 +5,22 @@
 @section('content')
 
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-            role="alert" style="min-width: 300px;">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+        role="alert" style="min-width: 300px;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 
     @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-            role="alert" style="min-width: 300px;">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+    <div id="errorAlert" class="alert alert-danger alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+        role="alert" style="min-width: 300px;">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 
     <div class="container">
         <div class="row mb-4 mt-4">
@@ -88,7 +90,7 @@
                                                     <div class="small text-muted">to</div>
                                                     <div class="input-group input-group-sm">
                                                         <span class="input-group-text bg-white">Rp</span>
-                                               x         <input type="number" class="form-control" name="max_price"
+                                                       <input type="number" class="form-control" name="max_price"
                                                             id="maxPrice" placeholder="Max" min="0"
                                                             value="{{ request('max_price') }}">
                                                     </div>
@@ -195,7 +197,7 @@
                     <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
                     <h3 class="mt-3 text-muted">No products found</h3>
                     <p class="text-muted">Try adjusting your search or filter criteria</p>
-                    <a href="{{ route('products.index') }}" class="btn btn-outline-primary mt-2">
+                    <a href="{{ route('products') }}" class="btn btn-outline-primary mt-2">
                         View All Products
                     </a>
                 </div>
@@ -326,95 +328,107 @@
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Wishlist functionality
-            $(document).on('click', '.wishlist-btn', function(e) {
-                e.preventDefault();
-                var productId = $(this).data('product-id');
-                var icon = $(this).find('.heart-icon');
-
-                if (icon.hasClass('text-dark')) {
-                    icon.removeClass('text-dark').addClass('text-danger');
-                } else {
-                    icon.removeClass('text-danger').addClass('text-dark');
-                }
-
-                var currentWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-                if (currentWishlist.includes(productId)) {
-                    currentWishlist = currentWishlist.filter(item => item !== productId);
-                } else {
-                    currentWishlist.push(productId);
-                }
-                localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
-
-                $.ajax({
-                    url: '/wishlist/toggle/' + productId,
-                    type: 'GET',
-                    success: function(response) {
-                        console.log("Wishlist updated");
-                    }
-                });
+       $(document).ready(function() {
+    // Auto-hide success alert after 5 seconds
+    if ($('#successAlert').length) {
+        setTimeout(function() {
+            $('#successAlert').fadeOut('slow', function() {
+                $(this).remove();
             });
+        }, 5000);
+    }
 
-            // Price range input validation
-            $('#minPrice, #maxPrice').on('input', function() {
-                const minPriceVal = parseInt($('#minPrice').val()) || 0;
-                const maxPriceVal = parseInt($('#maxPrice').val()) || 1000000;
-
-                // Ensure min doesn't exceed max
-                if (minPriceVal > maxPriceVal) {
-                    if ($(this).attr('id') === 'minPrice') {
-                        $('#minPrice').val(maxPriceVal);
-                    } else {
-                        $('#maxPrice').val(minPriceVal);
-                    }
-                }
+    if ($('#errorAlert').length) {
+        setTimeout(function() {
+            $('#errorAlert').fadeOut('slow', function() {
+                $(this).remove();
             });
+        }, 5000);
+    }
 
-            // Update active filters badge
-            function updateActiveFiltersBadge() {
-                let activeFilters = 0;
+    // Wishlist functionality
+    $(document).on('click', '.wishlist-btn', function(e) {
+        e.preventDefault();
+        var productId = $(this).data('product-id');
+        var icon = $(this).find('.heart-icon');
 
-                // Check if category is selected
-                if ($('#categoryFilter').val()) {
-                    activeFilters++;
-                }
+        if (icon.hasClass('text-dark')) {
+            icon.removeClass('text-dark').addClass('text-danger');
+        } else {
+            icon.removeClass('text-danger').addClass('text-dark');
+        }
 
-                // Check if min price is set (not 0)
-                if (parseInt($('#minPrice').val()) > 0) {
-                    activeFilters++;
-                }
+        var currentWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+        if (currentWishlist.includes(productId)) {
+            currentWishlist = currentWishlist.filter(item => item !== productId);
+        } else {
+            currentWishlist.push(productId);
+        }
+        localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
 
-                // Check if max price is set (not default)
-                if (parseInt($('#maxPrice').val()) < 1000000) {
-                    activeFilters++;
-                }
+        $.ajax({
+    url: '/wishlist/toggle/' + productId,
+    type: 'GET',
+    success: function(response) {
+        // Remove alert lama kalau ada
+        $('#successAlert').remove();
 
-                // Update badge
-                if (activeFilters > 0) {
-                    $('#activeFiltersBadge').text(activeFilters).show();
-                } else {
-                    $('#activeFiltersBadge').hide();
-                }
-            }
+        // Tambahkan alert baru ke body atau ke container tertentu di halaman kamu
+        var alertHtml = '<div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" 
+            role="alert" style="min-width: 300px; z-index: 1055;">
+            ${response.message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        '</div>';
 
-            // Run on page load
-            updateActiveFiltersBadge();
+        // Contoh append ke atas konten produk (ganti selector sesuai layout kamu)
+        $('body').prepend(alertHtml);
 
-            // Listen for changes
-            $('#categoryFilter, #minPrice, #maxPrice').on('change input', function() {
-                updateActiveFiltersBadge();
+        // Auto hide alert setelah 5 detik
+        setTimeout(function() {
+            $('#successAlert').fadeOut('slow', function() {
+                $(this).remove();
             });
+        }, 5000);
+    },
+    error: function() {
+        alert('Failed to update wishlist.');
+    }
+});
+    });
 
-            // Prevent dropdown from closing when clicking inside it
-            $(document).on('click', '.filter-dropdown-menu', function(e) {
-                e.stopPropagation();
-            });
+    // Price range input validation
+    $('#minPrice, #maxPrice').on('input', function() {
+        const minPriceVal = parseInt($('#minPrice').val()) || 0;
+        const maxPriceVal = parseInt($('#maxPrice').val()) || 1000000;
+        // Validasi logika
+    });
+});
 
-            // Category filter change event
-            $('#categoryFilter').on('change', function() {
-                $('#searchFilterForm').submit();
-            });
-        });
+
+        function updateActiveFiltersBadge() {
+    let count = 0;
+
+    const search = $('#searchInput').val().trim();
+    const category = $('#categoryFilter').val();
+    const minPrice = $('#minPrice').val().trim();
+    const maxPrice = $('#maxPrice').val().trim();
+
+    if (search) count++;
+    if (category) count++;
+    if (minPrice) count++;
+    if (maxPrice) count++;
+
+    if (count > 0) {
+        $('#activeFiltersBadge').text(count).show();
+    } else {
+        $('#activeFiltersBadge').hide();
+    }
+}
+
+// Run on page load
+$(document).ready(function() {
+    updateActiveFiltersBadge();
+});
+
     </script>
 @endsection

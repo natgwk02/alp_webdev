@@ -24,7 +24,13 @@
 @section('content')
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-
+@if (session('success'))
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+        role="alert" style="min-width: 300px;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
     <style>
         body {
             color: #052659;
@@ -721,190 +727,46 @@
         </div>
     </section>
 
-    <!-- Customer Reviews Carousel -->
-        <section class="testimonial-carousel py-5 w-100" style="background-color: #ECF7FF;">
-            <div class="w-100 text-center px-4 px-md-5 mx-0">
-                <h2 class="fw-bold text-dark mb-5">What Our Customers Say</h2>
-                <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
-                    <div class="carousel-inner">
-                        <!-- Slide 1 -->
-                        <div class="carousel-item active">
-                            <div class="row justify-content-center g-4">
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Sarah Kiem</h5>
-                                            <small class="text-muted d-block mb-3">Verified Buyer</small>
-                                            <p class="text-secondary small fst-italic">“Kualitas ikannya segar banget! Saya suka banget yang sea bass—teksturnya lembut dan rasa alami.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-half"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Michael Tan</h5>
-                                            <small class="text-muted d-block mb-3">Home Cook</small>
-                                            <p class="text-secondary small fst-italic">“Dari kemasan sampai rasa, semuanya well-prepared. Produk lokal yang patut dibanggakan!”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Samantha R.</h5>
-                                            <small class="text-muted d-block mb-3">Busy Mom</small>
-                                            <p class="text-secondary small fst-italic">“Anak-anak saya suka nuggetnya. Gampang disiapkan dan rasanya enak banget!”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Andi Wibowo</h5>
-                                            <small class="text-muted d-block mb-3">Office Worker</small>
-                                            <p class="text-secondary small fst-italic">“Pesanannya cepat sampai dan langsung saya simpan di freezer. Praktis untuk makan malam setelah kerja.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star"></i>
-                                                <i class="bi bi-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Slide 2 -->
-                        <div class="carousel-item">
-                            <div class="row justify-content-center g-4">
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Livia Chen</h5>
-                                            <small class="text-muted d-block mb-3">Fitness Enthusiast</small>
-                                            <p class="text-secondary small fst-italic">“Pilihan sayuran beku di sini banyak dan segar. Cocok banget buat salad dan smoothie saya.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-half"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Rian Setiawan</h5>
-                                            <small class="text-muted d-block mb-3">Student</small>
-                                            <p class="text-secondary small fst-italic">“Hemat dan enak! Produk Chillé selalu ada di kulkas saya. Cocok buat anak kos.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Nina Hartono</h5>
-                                            <small class="text-muted d-block mb-3">Working Mom</small>
-                                            <p class="text-secondary small fst-italic">“Quick dinners made easy! The ready meals are life-savers.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Kevin Anggara</h5>
-                                            <small class="text-muted d-block mb-3">Chef</small>
-                                            <p class="text-secondary small fst-italic">“Daging dan seafood-nya kualitas bagus. Saya pakai untuk meal prep tiap minggu.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-half"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryCarousel = document.getElementById('categoryCarousel');
-            const carousel = new bootstrap.Carousel(categoryCarousel, {
-                interval: 5000,
-                pause: false
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Auto-hide success alert after 5 seconds
+    if ($('#successAlert').length) {
+        setTimeout(function() {
+            $('#successAlert').fadeOut('slow', function() {
+                $(this).remove();
             });
+        }, 5000);
+    }
 
-            const carouselControls = document.querySelectorAll(
-                '.carousel-control-prev, .carousel-control-next, .carousel-indicators button');
-            carouselControls.forEach(control => {
-                control.addEventListener('click', function() {
-                    carousel.pause();
-                    setTimeout(function() {
-                        carousel.cycle();
-                    }, 100);
-                });
+    if ($('#errorAlert').length) {
+        setTimeout(function() {
+            $('#errorAlert').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    }
+
+    // Carousel controls
+    const categoryCarousel = document.getElementById('categoryCarousel');
+    if (categoryCarousel) {
+        const carousel = new bootstrap.Carousel(categoryCarousel, {
+            interval: 5000,
+            pause: false
+        });
+
+        const carouselControls = document.querySelectorAll(
+            '.carousel-control-prev, .carousel-control-next, .carousel-indicators button');
+        carouselControls.forEach(control => {
+            control.addEventListener('click', function() {
+                carousel.pause();
+                setTimeout(function() {
+                    carousel.cycle();
+                }, 100);
             });
         });
-    </script>
+    }
+});
+</script>
+
 @endsection

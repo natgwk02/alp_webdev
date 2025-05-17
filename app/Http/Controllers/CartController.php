@@ -107,10 +107,8 @@ public function removeVoucher()
 
             session(['cart' => $cart]);
 
-            return redirect()->route('cart.index')->with('success', 'Item added to cart!');
+             return redirect()->back()->with('success', ' Item added to cart.');
         }
-
-
 
 
     // ➖ Remove or Decrease Item from Cart

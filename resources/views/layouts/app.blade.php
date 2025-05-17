@@ -26,6 +26,7 @@
     <!-- Main Content -->
     <main class="">
         @yield('content')
+        @yield('scripts')
     <!-- Footer -->
     @include('includes.footer')
 
