@@ -35,6 +35,10 @@ Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->
 Route::get('/reset-password', [AuthController::class, 'showResetForm'])->name('password.reset.form');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
+Route::get('/terms-and-conditions', function () {
+    return view('terms-and-conditions');
+})->name('terms');
+
 
 // Customer Routes
 // //Route::middleware(['auth', 'customer'])->group(function () {
