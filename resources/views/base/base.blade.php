@@ -13,12 +13,16 @@
 
 </head>
 <body>
-    @include('includes.header')
-    <div class="container-fluid" style="min-width:100%; margin:0 auto;" >
-        @yield('content')
-        {{-- ngambil view" ke sini --}}
-    </div>
-    @include('includes.footer')
+    @if (!Request::is('login') && !Request::is('register') && !Request::is('forgot-password'))
+        @include('includes.header')
+    @endif
+
+    @yield('content')
+
+    @if (!Request::is('login') && !Request::is('register') && !Request::is('forgot-password'))
+        @include('includes.footer')
+    @endif
+
 
 </body>
 </html>
