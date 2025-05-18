@@ -55,7 +55,7 @@
                                                 <td class="align-middle">
                                                     <span class="price-column">Rp{{ number_format($item['price'], 0, ',', '.') }}</span>
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="text-center align-middle">
                                                     <input type="number" 
                                                            class="form-control quantity-input" 
                                                            value="{{ $item['quantity'] }}" 
