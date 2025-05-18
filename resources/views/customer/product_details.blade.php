@@ -108,6 +108,13 @@
 @endpush
 
 @section('content')
+@if (session('success'))
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+        role="alert" style="min-width: 300px;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 <div class="container product-section">
     <div class="row justify-content-center align-items-center g-5">
         <div class="col-lg-5 col-md-6">
@@ -163,10 +170,26 @@
                     <button type="submit" class="btn btn-primary">Add to Cart</button>
                 </form>
 
-
-
             </div>
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+<script>
+    setTimeout(function () {
+        const alert = document.getElementById('successAlert');
+        if (alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+        }
+    }, 4000);
+
+    window.addEventListener('pageshow', function (event) {
+        const alert = document.getElementById('successAlert');
+        if (event.persisted && alert) {
+            alert.remove();
+        }
+    });
+</script>
 @endsection

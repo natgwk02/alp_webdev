@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container py-4">
-    
     <div class="row">
         <div class="col-12">
             <h1 class="fw-bold mb-4">Shopping Cart</h1>
@@ -23,6 +22,11 @@
                                     <table class="table mb-0">
                                         <thead class="bg-light">
                                             <tr>
+                                                <th>
+                                                    <!-- Select All Checkbox -->
+                                                    <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
+                                                    <label for="select-all" class="ms-2">Select All</label>
+                                                </th>
                                                 <th>Product</th>
                                                 <th class="text-left">Price</th>
                                                 <th class="text-center">Quantity</th>
@@ -34,12 +38,15 @@
                                             @foreach($cartItems as $index => $item)
                                             <tr>
                                                 <td>
+                                                    <!-- Individual Product Checkbox -->
+                                                    <input type="checkbox" class="select-product" name="selected_items[]" value="{{ $item['id'] }}" data-index="{{ $index }}" onclick="updateSelection()">
+                                                </td>
+                                                <td>
                                                     <div class="d-flex align-items-center">
                                                         <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'default.jpg')) }}"
                                                             alt="{{ $item['name'] ?? 'Product Image' }}"
                                                             class="img-thumbnail me-3"
                                                             style="width: 80px; height: 80px; object-fit: cover;">
-
                                                         <div>
                                                             <h5 class="mb-1">{{ $item['name'] }}</h5>
                                                         </div>
@@ -48,16 +55,14 @@
                                                 <td class="align-middle">
                                                     <span class="price-column">Rp{{ number_format($item['price'], 0, ',', '.') }}</span>
                                                 </td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center align-items-center">
-                                                        <input type="number" 
-                                                               class="form-control quantity-input" 
-                                                               value="{{ $item['quantity'] }}" 
-                                                               min="1" 
-                                                               data-index="{{ $index }}"
-                                                               data-price="{{ $item['price'] }}" 
-                                                               style="width: 80px;">
-                                                    </div>
+                                                <td class="text-center align-middle">
+                                                    <input type="number" 
+                                                           class="form-control quantity-input" 
+                                                           value="{{ $item['quantity'] }}" 
+                                                           min="1" 
+                                                           data-index="{{ $index }}" 
+                                                           data-price="{{ $item['price'] }}" 
+                                                           style="width: 80px;">
                                                 </td>
                                                 <td class="align-middle">
                                                     <span class="price-column" id="item-total-{{ $index }}">Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
@@ -78,6 +83,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Summary Column -->
                     <div class="col-md-4">
                         <div class="card">
@@ -99,16 +105,13 @@
                                                 {{ session('voucher_code') ? 'Update' : 'Apply' }}
                                             </button>
                                         </div>
-                                        
+                                      
                                         @if(session('voucher_error'))
                                             <div class="alert alert-danger p-2 mb-2">
                                                 {{ session('voucher_error') }}
-                                                @if(strpos(session('voucher_error'), 'CHILLBRO') !== false)
-                                                    <div class="mt-1">Add more products to reach Rp200,000</div>
-                                                @endif
                                             </div>
                                         @endif
-                                        
+                                      
                                         @if(session('voucher_success'))
                                             <div class="alert alert-success p-2 mb-2 d-flex justify-content-between align-items-center">
                                                 <div>
@@ -151,11 +154,11 @@
                                         <span>Total:</span>
                                         <span id="total-display">Rp{{ number_format($total, 0, ',', '.') }}</span>
                                     </div>
-                                   <form action="{{ route('checkout.form') }}" method="GET">
-                                    <button type="submit" class="btn btn-primary" style="margin-top: 7px;" {{ count($cartItems) == 0 ? 'disabled' : '' }}>
-                                        Proceed to Checkout
-                                    </button>
-                                </form>
+                                    <form action="{{ route('checkout.form') }}" method="GET">
+                                        <button type="submit" class="btn btn-primary" style="margin-top: 7px;" id="checkout-button" disabled>
+                                            Proceed to Checkout
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -166,65 +169,28 @@
     </div>
 </div>
 
-<style>
-    .table th, .table td {
-        text-align: left; /* Align text to the left */
-        vertical-align: middle; /* Vertically center the content */
-        padding: 10px; /* Add padding for better spacing */
-    }
-
-    /* Adjust price column to align left */
-    .price-column {
-        font-variant-numeric: tabular-nums;
-        white-space: nowrap;
-        text-align: left; /* Align price to the left */
-    }
-
-    /* Ensure quantity input is centered within the cell */
-    .quantity-input {
-        width: 60px;
-        height: 40px;
-        text-align: center; /* Center text inside the input box */
-        padding: 5px;
-    }
-
-    /* Adjust buttons inside the table for left alignment */
-    .table td .btn {
-        text-align: center; /* Center-align buttons */
-        padding: 5px; /* Add padding for the button */
-        margin: 0 auto; /* Center the button horizontally */
-        display: block; /* Make the button a block element so it centers */
-    }
-
-    /* Adjust the width of input and buttons to make sure they fit well */
-    .input-group input, .input-group button {
-        height: 40px;
-        width: auto;
-    }
-
-    /* Card styling for general look */
-    .card {
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    /* Styling for the table responsive layout */
-    .table-responsive {
-        overflow-x: auto;
-    }
-
-    .table thead tr th:first-child {
-        border-top-left-radius: 10px;
-    }
-
-    .table thead tr th:last-child {
-        border-top-right-radius: 10px;
-    }
-</style>
-
-
 <script>
+    // Toggle "Select All" checkbox and update all product selections
+    function toggleSelectAll(selectAllCheckbox) {
+        const checkboxes = document.querySelectorAll('.select-product');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+        updateSelection();
+    }
+
+    // Update the "Proceed to Checkout" button based on the selected items
+    function updateSelection() {
+        let selectedItems = 0;
+        const selectedCheckboxes = document.querySelectorAll('.select-product:checked');
+        selectedItems = selectedCheckboxes.length;
+
+        const checkoutButton = document.getElementById('checkout-button');
+        checkoutButton.disabled = selectedItems === 0;
+        updateCart();
+    }
+
+    // Update cart totals when quantity or selection changes
     document.querySelectorAll('.quantity-input').forEach(input => {
         input.addEventListener('input', updateCart);
     });
@@ -237,13 +203,12 @@
         let subtotal = 0;
         const shipping = 5000;
 
-        document.querySelectorAll('.quantity-input').forEach(input => {
-            const index = input.getAttribute('data-index');
-            const price = parseInt(input.getAttribute('data-price')) || 0;
-            const qty = parseInt(input.value) || 0;
+        document.querySelectorAll('.select-product:checked').forEach((checkbox, index) => {
+            const price = parseInt(checkbox.closest('tr').querySelector('.quantity-input').getAttribute('data-price')) || 0;
+            const qty = parseInt(checkbox.closest('tr').querySelector('.quantity-input').value) || 0;
             const total = price * qty;
 
-            const itemTotalEl = document.getElementById(item-total-${index});
+            const itemTotalEl = document.getElementById('item-total-' + index);
             if (itemTotalEl) itemTotalEl.textContent = formatRupiah(total);
             subtotal += total;
         });
@@ -267,4 +232,5 @@
 
     updateCart();
 </script>
+
 @endsection

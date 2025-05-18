@@ -24,6 +24,7 @@ class CartController extends Controller
 public function index(Request $request)
 {
     $cartItems = session('cart', []);
+    $selectedItems = $request->input('selected_items', []); // Get selected items
     $subtotal = 0;
 
     // Hapus item yang tidak memiliki data lengkap
@@ -32,7 +33,11 @@ public function index(Request $request)
             unset($cartItems[$key]);
             continue;
         }
-        $subtotal += $item['price'] * $item['quantity'];
+
+        // If the item is selected, calculate the total
+        if (in_array($item['id'], $selectedItems) || empty($selectedItems)) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
     }
 
     session(['cart' => $cartItems]);
@@ -44,6 +49,7 @@ public function index(Request $request)
 
     return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
 }
+
 
 
 public function applyVoucher(Request $request)
@@ -82,8 +88,7 @@ public function removeVoucher()
     return back()->with('voucher_success', 'Voucher removed successfully');
 }
 
-    // ➕ Add Item to Cart
-        public function addToCart(Request $request, $productId)
+public function addToCart(Request $request, $productId)
         {
             $quantity = max(1, (int) $request->input('quantity', 1));
             $product = collect($this->products)->firstWhere('id', (int)$productId);
@@ -110,24 +115,19 @@ public function removeVoucher()
              return redirect()->back()->with('success', ' Item added to cart.');
         }
 
+        
 
-    // ➖ Remove or Decrease Item from Cart
-    public function removeFromCart(Request $request, $productId)
-    {
-        $cart = session('cart', []);
+public function removeFromCart(Request $request, $productId)
+{
+    $cart = session('cart', []);
 
-        if (isset($cart[$productId])) {
-            $cart[$productId]['quantity'] = ($cart[$productId]['quantity'] ?? 1) - 1;
-
-            if ($cart[$productId]['quantity'] <= 0) {
-                unset($cart[$productId]);
-            }
-
-            session(['cart' => $cart]);
-        }
-
-        return redirect()->route('cart.index')->with('success', 'Product quantity updated.');
+    if (isset($cart[$productId])) {
+        unset($cart[$productId]);
     }
+    session(['cart' => $cart]);
+    return redirect()->route('cart.index')->with('success', 'Product removed from cart.');
+}
+
 
 
     private function calculateSubtotal()

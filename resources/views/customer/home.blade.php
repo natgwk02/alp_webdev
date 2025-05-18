@@ -742,7 +742,7 @@
                                             <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
                                             <h5 class="fw-bold text-primary mb-1">Sarah Kiem</h5>
                                             <small class="text-muted d-block mb-3">Verified Buyer</small>
-                                            <p class="text-secondary small fst-italic">“Kualitas ikannya segar banget! Saya suka banget yang sea bass—teksturnya lembut dan rasa alami.”</p>
+                                            <p class="text-secondary small fst-italic">“Kualitas ikannya segar banget! Saya suka banget yang sea bass, teksturnya lembut dan rasa alami.”</p>
                                             <div class="text-primary fs-5">
                                                 <i class="bi bi-star-fill"></i>
                                                 <i class="bi bi-star-fill"></i>

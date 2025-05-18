@@ -11,17 +11,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
-
-
-    @if (session('error'))
-    <div id="errorAlert" class="alert alert-danger alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-        role="alert" style="min-width: 300px;">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-
-
     <div class="container">
         <div class="row mb-4 mt-4">
             <div class="col-12 text-center">
@@ -374,11 +363,11 @@
         $('#successAlert').remove();
 
         // Tambahkan alert baru ke body atau ke container tertentu di halaman kamu
-        var alertHtml = '<div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" 
+        var alertHtml = `<div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" 
             role="alert" style="min-width: 300px; z-index: 1055;">
             ${response.message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        '</div>';
+        </div>`;
 
         // Contoh append ke atas konten produk (ganti selector sesuai layout kamu)
         $('body').prepend(alertHtml);
