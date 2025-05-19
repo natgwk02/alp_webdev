@@ -104,29 +104,45 @@
 
 
 <!-- Team Section -->
-<section class="py-5">
+<section class="py-5" style="background: linear-gradient(to bottom, #f0f8ff, #ffffff);">
     <div class="container">
-        <h2 class="text-center mb-5" style="color: #052659;">Meet Our Team</h2>
-        <div class="row">
-            <div class="col-md-4 mb-4 text-center">
-                <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Amanda Michelle Darwis</h5>
+        <h2 class="text-center mb-5" style="color: #052659; font-size: 2.5rem;">Meet Our Team</h2>
+
+        <!-- Row 1: 3 Members -->
+        <div class="row justify-content-center mb-4 gy-4">
+            <div class="col-12 col-sm-6 col-md-4 text-center">
+                <div class="team-member">
+                    <img src="/images/aboutus/ameena.jpg" alt="Amanda" class="rounded-circle team-img mb-3">
+                    <h6 class="fw-semibold">Amanda Michelle Darwis</h6>
+                </div>
             </div>
-            <div class="col-md-4 mb-4 text-center">
-                <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Anne Tantan</h5>
+            <div class="col-12 col-sm-6 col-md-4 text-center">
+                <div class="team-member">
+                    <img src="/images/aboutus/kamari.jpg" alt="Anne" class="rounded-circle team-img mb-3">
+                    <h6 class="fw-semibold">Anne Tantan</h6>
+                </div>
             </div>
-            <div class="col-md-4 mb-4 text-center">
-                <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Jessica Laurentia Tedja</h5>
+            <div class="col-12 col-sm-6 col-md-4 text-center">
+                <div class="team-member">
+                    <img src="/images/aboutus/cipung.jpg" alt="Jessica" class="rounded-circle team-img mb-3">
+                    <h6 class="fw-semibold">Jessica Laurentia Tedja</h6>
+                </div>
             </div>
-             <div class="col-md-6 mb-4 text-center">
-                <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Natalie Grace Widjaja Kuswanto</h5>
+        </div>
+
+        <!-- Row 2: 2 Members Centered -->
+        <div class="row justify-content-center gy-4">
+            <div class="col-12 col-sm-6 col-md-4 text-center">
+                <div class="team-member">
+                    <img src="/images/aboutus/Abe Cekut.jpg" alt="Natalie" class="rounded-circle team-img mb-3">
+                    <h6 class="fw-semibold">Natalie Grace Widjaja Kuswanto</h6>
+                </div>
             </div>
-            <div class="col-md-6 mb-4 text-center">
-                <img src="/assets/team1.jpg" alt="Team Member" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5>Sharon Tan</h5>
+            <div class="col-12 col-sm-6 col-md-4 text-center">
+                <div class="team-member">
+                    <img src="/images/aboutus/el.jpg" alt="Sharon" class="rounded-circle team-img mb-3">
+                    <h6 class="fw-semibold">Sharon Tan</h6>
+                </div>
             </div>
         </div>
     </div>
@@ -134,3 +150,31 @@
 
 
 @endsection
+
+<style>
+        .team-img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .team-img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .team-member h6 {
+        font-size: 1rem;
+        margin-top: 10px;
+        color: #052659;
+    }
+
+    @media (max-width: 576px) {
+        .team-img {
+            width: 120px;
+            height: 120px;
+        }
+    }
+</style>
