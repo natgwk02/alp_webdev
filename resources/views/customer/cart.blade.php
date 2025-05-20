@@ -37,7 +37,7 @@
                                         <tbody>
     @foreach($cartItems as $index => $item)
     <tr>
-        <td class="text-center align-middle">
+        <td class="align-middle">
             <!-- Individual Product Checkbox -->
             <input type="checkbox" class="select-product" name="selected_items[]" 
                    value="{{ $item['id'] }}" 
@@ -62,7 +62,7 @@
         Rp{{ number_format($item['price'], 0, ',', '.') }}
     </span>
 </td>
-                                                <td class="text-center">
+                                                <td class="text-center align-middle">
     <form action="{{ route('cart.update', ['productId' => $item['id']]) }}" method="POST">
         @csrf
         <input type="number" 
@@ -76,10 +76,10 @@
                onchange="this.form.submit()">
     </form>
 </td>
-                                                <td class="align-middle">
+                                                <td class="align-middle text-center">
                                                     <span class="price-column" id="item-total-{{ $index }}">Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
                                                 </td>
-                                                <td>
+                                                <td class="align-middle text-center">
                                                      <form action="{{ route('cart.remove', ['productId' => $item['id'] ?? 0]) }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -139,60 +139,18 @@
                                     </form>
                                     <small class="text-muted">Available vouchers: CHILLBRO (min Rp200,000), COOLMAN, GOODDAY</small>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Summary Column -->
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Order Summary</h5>
-                                    <div class="mb-4">
-                                        <h6 class="mb-2">Apply Voucher</h6>
-                                        <form id="voucher-form" method="POST" action="{{ route('cart.applyVoucher') }}">
-                                            @csrf
-                                            <div class="input-group mb-2">
-                                                <input type="text" class="form-control" name="voucher_code" placeholder="Enter voucher code" value="{{ session('voucher_code', '') }}">
-                                                <button class="btn btn-primary" type="submit">{{ session('voucher_code') ? 'Update' : 'Apply' }}</button>
-                                            </div>
-                                        </form>
-                                        <small class="text-muted">Available vouchers: CHILLBRO (min Rp200,000), COOLMAN, GOODDAY</small>
+                                
+                                <!-- Order Summary -->
+                                <div class="border-top pt-3">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Subtotal:</span>
+                                        <span id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                                     </div>
-
-                                    <div class="border-top pt-3">
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>Subtotal:</span>
-                                            <span id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
-                                        </div>
-
-                                        @if (session('voucher_discount'))
-                                            <div class="d-flex justify-content-between mb-2 text-success">
-                                                <span>Voucher Discount:</span>
-                                                <span id="voucher-display">-Rp{{ number_format(session('voucher_discount'), 0, ',', '.') }}</span>
-                                            </div>
-                                        @endif
-
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>Shipping:</span>
-                                            <span id="shipping-display">Rp{{ number_format($shippingFee, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>Tax:</span>
-                                            <span id="tax-display">Rp{{ number_format($tax, 0, ',', '.') }}</span>
-                                        </div>
-                                        <hr>
-                                        <div class="d-flex justify-content-between fw-bold fs-5">
-                                            <span>Total:</span>
-                                            <span id="total-display">Rp{{ number_format($total, 0, ',', '.') }}</span>
-                                        </div>
-
-                                        <!-- Checkout Form -->
-                                        <form id="checkout-form" action="{{ route('checkout.form') }}" method="GET">
-                                            <input type="hidden" name="selected_items" id="selected-items-input">
-                                            <button type="submit" class="btn btn-primary" style="margin-top: 7px;" id="checkout-button" disabled>
-                                                Proceed to Checkout
-                                            </button>
-                                        </form>
+                                    
+                                    @if(session('voucher_discount'))
+                                    <div class="d-flex justify-content-between mb-2 text-success">
+                                        <span>Voucher Discount:</span>
+                                        <span id="voucher-display">-Rp{{ number_format(session('voucher_discount'), 0, ',', '.') }}</span>
                                     </div>
                                     @endif
                                     
@@ -220,10 +178,11 @@
                             </div>
                         </div>
                     </div>
-                @endif
-            </div>
+                </div>
+            @endif
         </div>
     </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
