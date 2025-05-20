@@ -1,22 +1,21 @@
 @extends('layouts.app')
 
-
-@section('title', 'Order #' . $order['order_number'])
+@section('title', 'Order #' . ($order['order_number'] ?? 'Unknown Order'))
 
 @section('content')
 <div class="container py-4">
     <h1 class="fw-bold">Order #{{ $order['order_number'] ?? 'Unknown Order' }}</h1>
-    {{-- <h1 class="fw-bold">Order #{{ $order['order_number'] }}</h1> --}}
-    <p class="text-muted">Placed on {{ $order['order_date'] }}</p>
+    <p class="text-muted">Placed on {{ $order['created_at'] }}</p>
 
     <div class="row mb-4">
-        <!-- Kiri: Tabel item dengan gambar -->
+        <!-- Left: Order Items with images -->
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5>Order Items</h5>
                 </div>
                 <div class="card-body">
+                    @if (!empty($order['items']))
                     <table class="table align-middle">
                         <thead>
                             <tr>
@@ -30,8 +29,10 @@
                             @foreach($order['items'] as $item)
                             <tr>
                                 <td class="d-flex align-items-center gap-3">
-                                    <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}" alt="{{ $item['product_name'] ?? 'Unknown Product' }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
-                                    <span>{{ $item['product_name'] ?? 'Unknown Product' }}</span>
+                                    <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}" 
+                                         alt="{{ $item['name'] ?? 'Unknown Product' }}" 
+                                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
+                                    <span>{{ $item['name'] ?? 'Unknown Product' }}</span>
                                 </td>
                                 <td>Rp {{ number_format($item['price'] ?? 0, 0, ',', '.') }}</td>
                                 <td>{{ $item['quantity'] ?? 0 }}</td>
@@ -40,24 +41,14 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @else
+                    <p>No items found in this order.</p>
+                    @endif
                 </div>
             </div>
-
-            @if(isset($order['tracking_info']))
-            <div class="card mt-4 shadow-sm">
-                <div class="card-header">
-                    <h5>Shipping Information</h5>
-                </div>
-                <div class="card-body">
-                    <p><strong>Carrier:</strong> {{ $order['tracking_info']['carrier'] }}</p>
-                    <p><strong>Tracking Number:</strong> {{ $order['tracking_info']['tracking_number'] }}</p>
-                    <p><strong>Estimated Delivery:</strong> {{ $order['tracking_info']['estimated_delivery'] }}</p>
-                </div>
-            </div>
-            @endif
         </div>
 
-        <!-- Kanan: Summary -->
+        <!-- Right: Order Summary -->
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header">
@@ -65,18 +56,14 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Shipping Address:</strong><br>
-                    @if(isset($order['customer']))
-                        {{ $order['customer']['first_name'] ?? '' }} {{ $order['customer']['last_name'] ?? '' }}<br>
-                        {{ $order['customer']['address'] ?? '' }}<br>
-                        {{ $order['customer']['city'] ?? '' }}, {{ $order['customer']['zip'] ?? '' }}<br>
-                        {{ $order['customer']['country'] ?? '' }}<br>
-                        Phone: {{ $order['customer']['phone'] ?? '-' }}
-                    @else
-                        {{ $order['shipping_address'] ?? '-' }}
-                    @endif
+                        {{ $order['customer']['first_name'] ?? 'Unknown' }} {{ $order['customer']['last_name'] ?? '' }}<br>
+                        {{ $order['customer']['address'] ?? 'Unknown Address' }}<br>
+                        {{ $order['customer']['city'] ?? 'Unknown City' }}, {{ $order['customer']['zip'] ?? '00000' }}<br>
+                        {{ $order['customer']['country'] ?? 'Unknown Country' }}<br>
+                        Phone: {{ $order['customer']['phone'] ?? 'Unknown Phone' }}
                     </p>
-                    <p><strong>Payment Method:</strong> {{ $order['payment_method'] ?? '-' }}</p>
-                    <p><strong>Payment Status:</strong> {{ $order['payment_status'] ?? '-' }}</p>
+                    <p><strong>Payment Method:</strong> {{ ucfirst($order['payment_method'] ?? 'Unknown') }}</p>
+                    <p><strong>Payment Status:</strong> {{ ucfirst($order['payment_status'] ?? 'Unpaid') }}</p>
 
                     <hr>
                     <div>
@@ -103,12 +90,10 @@
                             <span>Rp {{ number_format($order['total'] ?? 0, 0, ',', '.') }}</span>
                         </div>
                     </div>
-
                     <hr>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @endsection

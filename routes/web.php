@@ -48,13 +48,13 @@ Route::get('/terms-and-conditions', function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/cart/update/{productId}', [CartController::class, 'updateQuantity'])->name('cart.update');
     Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::get('/wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist']);
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
-    Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
-    // Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
+    Route::post('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');

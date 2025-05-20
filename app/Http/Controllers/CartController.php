@@ -24,18 +24,22 @@ class CartController extends Controller
 public function index(Request $request)
 {
     $cartItems = session('cart', []);
-    $selectedItems = $request->input('selected_items', []); // Get selected items
+    $selectedItems = $request->input('selected_items', []); // Ambil item terpilih
     $subtotal = 0;
 
-    // Hapus item yang tidak memiliki data lengkap
+    // Jika tidak ada item terpilih, hitung semua item
+    if (empty($selectedItems)) {
+        $selectedItems = array_keys($cartItems);
+    }
+
     foreach ($cartItems as $key => $item) {
         if (!isset($item['id'], $item['name'], $item['price'], $item['image'], $item['quantity'])) {
             unset($cartItems[$key]);
             continue;
         }
 
-        // If the item is selected, calculate the total
-        if (in_array($item['id'], $selectedItems) || empty($selectedItems)) {
+        // Hanya hitung subtotal jika item terpilih
+        if (in_array($item['id'], $selectedItems)) {
             $subtotal += $item['price'] * $item['quantity'];
         }
     }
@@ -49,7 +53,6 @@ public function index(Request $request)
 
     return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
 }
-
 
 
 public function applyVoucher(Request $request)
@@ -77,6 +80,8 @@ public function applyVoucher(Request $request)
         'voucher_code' => $code,
         'voucher_discount' => $voucher['discount']
     ]);
+    $selectedItems = explode(',', $request->input('selected_items', ''));
+    session(['selected_items' => $selectedItems]);
 
     return back()->with('voucher_success', 'Voucher applied successfully!');
 }
@@ -138,6 +143,31 @@ public function removeFromCart(Request $request, $productId)
     }, 0);
 }
 
+public function updateQuantity(Request $request, $productId)
+{
+    $quantity = max(1, (int) $request->input('quantity', 1));
+    $cart = session('cart', []);
 
+    if (isset($cart[$productId])) {
+        // Perbarui kuantitas pada sesi
+        $cart[$productId]['quantity'] = $quantity;
+        session(['cart' => $cart]);
+    }
 
+    // Hitung ulang subtotal, shipping, tax, dan total
+    $subtotal = $this->calculateSubtotal();
+    $shippingFee = 5000;
+    $tax = round($subtotal * 0.1);
+    $voucherDiscount = session('voucher_discount', 0);
+    $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+
+    // Kembali ke halaman cart dengan data terbaru
+    return redirect()->route('cart.index')->with([
+        'subtotal' => $subtotal,
+        'shippingFee' => $shippingFee,
+        'tax' => $tax,
+        'total' => $total,
+        'voucherDiscount' => $voucherDiscount,
+    ]);
+}
 }

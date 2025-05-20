@@ -12,7 +12,7 @@
                 <div class="border rounded shadow-sm p-4 bg-white">
                     {{-- Header --}}
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold text-secondary">Order ID{{ $order['order_number'] ?? $order['id'] }}</span>
+                        <span class="fw-semibold text-secondary">Order ID: {{ $order['order_number'] ?? $order['id'] }}</span>
                         @php
                             $statusClass = match($order['status']) {
                                 'Delivered' => 'badge bg-success',
@@ -30,33 +30,35 @@
                     {{-- Tanggal & item count --}}
                     <div class="mb-3 text-muted small">
                         <i class="fas fa-calendar-alt me-1"></i>
-                        {{ isset($order['order_date']) ? \Carbon\Carbon::parse($order['order_date'])->format('d M Y') : 'Tanggal tidak tersedia' }}
+                        {{ isset($order['created_at']) ? \Carbon\Carbon::parse($order['created_at'])->format('d M Y') : 'Tanggal tidak tersedia' }}
                         &nbsp; | &nbsp;
                         <i class="fas fa-boxes me-1"></i>
-                        {{ $order['item_count'] ?? count($order['items']) }} item{{ ($order['item_count'] ?? count($order['items'])) > 1 ? 's' : '' }}
+                        {{ count($order['items']) }} item{{ count($order['items']) > 1 ? 's' : '' }}
                     </div>
 
                     {{-- Gambar + Nama Produk --}}
-                    @php
-                        $firstItem = $order['items'][0] ?? null;
-                        $firstImage = $firstItem['image'] ?? 'no-image.png';
-                        $firstName = $firstItem['product_name'] ?? 'Unknown Product';
-                    @endphp
-                    <div class="d-flex gap-4 align-items-center mb-4">
-                        <img src="{{ asset('images/products-img/' . $firstImage) }}"
-                             alt="{{ $firstName }}"
-                             class="rounded border"
-                             style="width: 100px; height: 100px; object-fit: cover;">
+                    @foreach($order['items'] as $item)
+                        <div class="d-flex gap-4 align-items-center mb-3">
+                            <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}"
+                                 alt="{{ $item['product_name'] ?? 'Unknown Product' }}"
+                                 class="rounded border"
+                                 style="width: 80px; height: 80px; object-fit: cover;">
 
-                        <div class="flex-grow-1">
-                            <div class="fw-semibold fs-6">{{ \Illuminate\Support\Str::limit($firstName, 50) }}</div>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold fs-6">{{ \Illuminate\Support\Str::limit($item['name'], 50) }}</div>
+                                <div class="text-muted">Qty: {{ $item['quantity'] }}</div>
+                                <div class="text-muted">Price: Rp{{ number_format($item['price'], 0, ',', '.') }}</div>
+                            </div>
+                            <div class="fw-bold text-dark">
+                                Total: Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
 
                     {{-- Total + Actions --}}
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap mt-3">
                         <div class="fw-bold fs-5 text-dark">
-                            Total: Rp {{ isset($order['total']) ? number_format($order['total'], 0, ',', '.') : '0' }}
+                            Order Total: Rp {{ isset($order['total']) ? number_format($order['total'], 0, ',', '.') : '0' }}
                         </div>
                         <div class="mt-2 mt-md-0 d-flex gap-2">
                             <a href="{{ route('order.detail', ['id' => $order['id']]) }}"

@@ -129,7 +129,7 @@
                                             <td>{{ $order['order_number'] }}</td>
                                             <td>{{ $order['customer_name'] }}</td>
                                             <td>{{ $order['order_date'] }}</td>
-                                            <td>Rp.{{ number_format($order['total_amount'], 2) }}</td>
+                                            <td>Rp.{{ number_format($order['total'], 2) }}</td>
                                             <td>{{ $order['payment_method'] }}</td>
                                             <td>
                                                 <span class="badge

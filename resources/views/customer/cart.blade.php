@@ -35,35 +35,47 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($cartItems as $index => $item)
-                                            <tr>
-                                                <td>
-                                                    <!-- Individual Product Checkbox -->
-                                                    <input type="checkbox" class="select-product" name="selected_items[]" value="{{ $item['id'] }}" data-index="{{ $index }}" onclick="updateSelection()">
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'default.jpg')) }}"
-                                                            alt="{{ $item['name'] ?? 'Product Image' }}"
-                                                            class="img-thumbnail me-3"
-                                                            style="width: 80px; height: 80px; object-fit: cover;">
-                                                        <div>
-                                                            <h5 class="mb-1">{{ $item['name'] }}</h5>
-                                                        </div>
-                                                    </div>
-                                                </td>
+    @foreach($cartItems as $index => $item)
+    <tr>
+        <td class="text-center align-middle">
+            <!-- Individual Product Checkbox -->
+            <input type="checkbox" class="select-product" name="selected_items[]" 
+                   value="{{ $item['id'] }}" 
+                   data-price="{{ $item['price'] }}" 
+                   data-quantity="{{ $item['quantity'] }}" 
+                   data-index="{{ $index }}" 
+                   onclick="updateSelection()">
+        </td>
+        <td>
+            <div class="d-flex align-items-center">
+                <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'default.jpg')) }}"
+                    alt="{{ $item['name'] ?? 'Product Image' }}"
+                    class="img-thumbnail me-3"
+                    style="width: 80px; height: 80px; object-fit: cover;">
+                <div>
+                    <h5 class="mb-1">{{ $item['name'] }}</h5>
+                </div>
+            </div>
+        </td>
                                                 <td class="align-middle">
-                                                    <span class="price-column">Rp{{ number_format($item['price'], 0, ',', '.') }}</span>
-                                                </td>
+    <span class="price-column" data-price="{{ $item['price'] }}">
+        Rp{{ number_format($item['price'], 0, ',', '.') }}
+    </span>
+</td>
                                                 <td class="text-center">
-                                                    <input type="number" 
-                                                           class="form-control quantity-input" 
-                                                           value="{{ $item['quantity'] }}" 
-                                                           min="1" 
-                                                           data-index="{{ $index }}" 
-                                                           data-price="{{ $item['price'] }}" 
-                                                           style="width: 80px;">
-                                                </td>
+    <form action="{{ route('cart.update', ['productId' => $item['id']]) }}" method="POST">
+        @csrf
+        <input type="number" 
+               name="quantity"
+               class="form-control quantity-input" 
+               value="{{ $item['quantity'] }}" 
+               min="1" 
+               data-index="{{ $index }}" 
+               data-price="{{ $item['price'] }}" 
+               style="width: 80px;"
+               onchange="this.form.submit()">
+    </form>
+</td>
                                                 <td class="align-middle">
                                                     <span class="price-column" id="item-total-{{ $index }}">Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
                                                 </td>
@@ -95,6 +107,7 @@
                                     <h6 class="mb-2">Apply Voucher</h6>
                                     <form id="voucher-form" method="POST" action="{{ route('cart.applyVoucher') }}">
                                         @csrf
+                                        <input type="hidden" name="selected_items" id="selected-items-voucher">
                                         <div class="input-group mb-2">
                                             <input type="text" 
                                                    class="form-control" 
@@ -154,11 +167,13 @@
                                         <span>Total:</span>
                                         <span id="total-display">Rp{{ number_format($total, 0, ',', '.') }}</span>
                                     </div>
-                                    <form action="{{ route('checkout.form') }}" method="GET">
-                                        <button type="submit" class="btn btn-primary" style="margin-top: 7px;" id="checkout-button" disabled>
-                                            Proceed to Checkout
-                                        </button>
-                                    </form>
+                                    <form id="checkout-form" action="{{ route('checkout.form') }}" method="POST">
+    @csrf
+    <input type="hidden" name="selected_items" id="selected-items" value="{{ implode(',', session('selected_items', [])) }}">
+    <button type="submit" class="btn btn-primary" style="margin-top: 7px;" id="checkout-button" disabled>
+        Proceed to Checkout
+    </button>
+</form>
                                 </div>
                             </div>
                         </div>
@@ -170,67 +185,107 @@
 </div>
 
 <script>
-    // Toggle "Select All" checkbox and update all product selections
-    function toggleSelectAll(selectAllCheckbox) {
-        const checkboxes = document.querySelectorAll('.select-product');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = selectAllCheckbox.checked;
-        });
-        updateSelection();
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = document.querySelectorAll('.select-product');
+    const selectAllCheckbox = document.getElementById('select-all');
+    const checkoutButton = document.getElementById('checkout-button');
+    const checkoutForm = document.getElementById('checkout-form');
+    const voucherForm = document.getElementById('voucher-form');
+    const selectedItemsInput = document.getElementById('selected-items');
+    const selectedItemsVoucherInput = document.getElementById('selected-items-voucher');
 
-    // Update the "Proceed to Checkout" button based on the selected items
-    function updateSelection() {
-        let selectedItems = 0;
+    const selectedFromSession = {!! json_encode(session('selected_items', [])) !!};
+
+    function updateSummary() {
         const selectedCheckboxes = document.querySelectorAll('.select-product:checked');
-        selectedItems = selectedCheckboxes.length;
+        let subtotal = 0;
 
-        const checkoutButton = document.getElementById('checkout-button');
-        checkoutButton.disabled = selectedItems === 0;
-        updateCart();
+        selectedCheckboxes.forEach(checkbox => {
+            const price = parseFloat(checkbox.getAttribute('data-price'));
+            const quantity = parseInt(checkbox.getAttribute('data-quantity'));
+            subtotal += price * quantity;
+        });
+
+        const shippingFee = 5000;
+        const tax = Math.round(subtotal * 0.1);
+        const voucherDisplay = document.getElementById('voucher-display');
+        const voucherDiscount = voucherDisplay ? parseFloat(voucherDisplay.textContent.replace(/[^\d]/g, '')) || 0 : 0;
+        const total = subtotal + shippingFee + tax - voucherDiscount;
+
+        document.getElementById('subtotal-display').textContent = 'Rp' + subtotal.toLocaleString('id-ID');
+        document.getElementById('tax-display').textContent = 'Rp' + tax.toLocaleString('id-ID');
+        document.getElementById('total-display').textContent = 'Rp' + total.toLocaleString('id-ID');
     }
 
-    // Update cart totals when quantity or selection changes
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('input', updateCart);
+    function updateSelectedItems() {
+        const selected = Array.from(checkboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        selectedItemsInput.value = selected.join(',');
+        if (selectedItemsVoucherInput) {
+            selectedItemsVoucherInput.value = selected.join(',');
+        }
+        console.log("Selected items updated:", selected);
+    }
+
+    function updateCheckoutButton() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        checkoutButton.disabled = !anyChecked;
+    }
+
+    function applySessionSelections() {
+        checkboxes.forEach(cb => {
+            if (selectedFromSession.includes(cb.value)) {
+                cb.checked = true;
+            }
+        });
+
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        selectAllCheckbox.checked = allChecked;
+    }
+
+    function updateAll() {
+        updateSelectedItems();
+        updateSummary();
+        updateCheckoutButton();
+    }
+
+    // Checkbox logic
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            selectAllCheckbox.checked = allChecked;
+            updateAll();
+        });
     });
 
-    function formatRupiah(angka) {
-        return 'Rp' + angka.toLocaleString('id-ID');
-    }
+    selectAllCheckbox.addEventListener('change', function () {
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        updateAll();
+    });
 
-    function updateCart() {
-        let subtotal = 0;
-        const shipping = 5000;
-
-        document.querySelectorAll('.select-product:checked').forEach((checkbox, index) => {
-            const price = parseInt(checkbox.closest('tr').querySelector('.quantity-input').getAttribute('data-price')) || 0;
-            const qty = parseInt(checkbox.closest('tr').querySelector('.quantity-input').value) || 0;
-            const total = price * qty;
-
-            const itemTotalEl = document.getElementById('item-total-' + index);
-            if (itemTotalEl) itemTotalEl.textContent = formatRupiah(total);
-            subtotal += total;
+    // Voucher submission
+    if (voucherForm) {
+        voucherForm.addEventListener('submit', function () {
+            updateSelectedItems();
         });
-
-        const tax = Math.round(subtotal * 0.1);
-        const voucherDiscount = {{ is_numeric(session('voucher_discount')) ? session('voucher_discount') : 0 }};
-        const grandTotal = subtotal + tax + shipping - voucherDiscount;
-
-        document.getElementById('subtotal-display').textContent = formatRupiah(subtotal);
-        document.getElementById('shipping-display').textContent = formatRupiah(shipping);
-        document.getElementById('tax-display').textContent = formatRupiah(tax);
-        document.getElementById('total-display').textContent = formatRupiah(grandTotal);
-        
-        if (voucherDiscount > 0) {
-            const voucherDisplay = document.getElementById('voucher-display');
-            if (voucherDisplay) {
-                voucherDisplay.textContent = '-Rp' + voucherDiscount.toLocaleString('id-ID');
-            }
-        }
     }
 
-    updateCart();
+    // Checkout form
+    checkoutForm.addEventListener('submit', function (e) {
+        updateSelectedItems();
+        if (!selectedItemsInput.value) {
+            e.preventDefault();
+            alert('Please select at least one item to proceed to checkout.');
+        }
+    });
+
+    // INIT on page load
+    applySessionSelections();
+    updateAll();
+});
 </script>
+
 
 @endsection
