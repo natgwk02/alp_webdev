@@ -24,7 +24,8 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('category')->findOrFail($id);
+
         return view('customer.product_details', compact('product'));
     }
     public function wishlist()
@@ -66,7 +67,16 @@ class ProductController extends Controller
     }
     public function toggleWishlist($productId)
     {
-        $wishlist = Wishlist::where('user_id', Auth::id())->where('product_id', $productId)->first();
+        if (!Auth::check()) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $product = Product::find($productId);
+    if (!$product) {
+        return response()->json(['message' => 'Product not found'], 404);
+    }
+
+    $wishlist = Wishlist::where('user_id', Auth::id())->where('product_id', $productId)->first();
 
     if ($wishlist) {
         $wishlist->delete();

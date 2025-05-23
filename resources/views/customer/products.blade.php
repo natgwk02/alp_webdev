@@ -106,9 +106,11 @@
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div
                             class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden product-card transition-transform position-relative">
-
+                            
                             <form
-                                action="{{ in_array($product->id, $wishlistProductIds) ? route('wishlist.remove', ['productId' => $product->id]) : route('wishlist.add', ['productId' => $product->id]) }}"
+                                action="{{ in_array($product->id ?? $product['id'], $wishlistProductIds) 
+                                ? route('wishlist.remove', ['productId' => $product->id ?? $product['id']]) 
+                                : route('wishlist.add', ['productId' => $product->products_id ?? $product['id']]) }}"
                                 method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                                 @csrf
                                 <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn"
@@ -154,7 +156,7 @@
 
                                 <p class="text-secondary small mb-1">{{ $product->product_category }}</p>
                                 <h5 class="text-primary fw-semibold mb-4">Rp
-                                    {{ number_format($product->unit_price, 0, ',', '.') }}</h5>
+                                    {{ number_format($product->orders_price, 0, ',', '.') }}</h5>
 
                                 <form action="{{ route('cart.add', ['productId' => $product['id']]) }}" method="POST"
                                     class="mt-auto">
@@ -162,7 +164,7 @@
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
 
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{{ route('product.detail', $product['id']) }}"
+                                        <a href="{{ route('product.detail', $product->products_id) }}"
                                             class="btn btn-outline-primary rounded-pill">View Details</a>
                                         <button type="submit" class="btn btn-success rounded-pill">
                                             <i class="bi bi-cart-plus-fill"></i> Add

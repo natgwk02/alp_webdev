@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function showHome()
     {
-        $products = Product::latest()->take(4)->get();
+        $products = Product::whereBetween('products_id', [2, 5])->get();
         return view('customer.home', compact('products'));
     }
 }

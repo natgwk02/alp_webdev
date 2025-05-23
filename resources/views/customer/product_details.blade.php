@@ -120,14 +120,16 @@
         <div class="row justify-content-center align-items-center g-5">
             <div class="col-lg-5 col-md-6">
                 <div class="product-image-wrapper">
-                    <img src="{{ asset('images/products-img/' . $product['image']) }}" alt="{{ $product['name'] }}">
+                    <img src="{{ asset('images/products-img/' . $product->products_image) }}" alt="{{ $product->products_name }}">
                 </div>
             </div>
 
             <div class="col-lg-6 col-md-6">
                 <div class="product-details">
-                    <h1>{{ $product['name'] }}</h1>
-                    <div class="category-badge">{{ $product['category'] }}</div>
+                    <h1>{{ $product->products_name }}</h1>
+                    @if ($product->category)
+                 <div class="category-badge">{{ $product->category->categories_name }}</div>
+                    @endif
 
                     @if (isset($product['rating']))
                         <div class="rating-stars mb-2">
@@ -152,16 +154,15 @@
                         </div>
                     @endif
 
-                    <div class="price">Rp {{ number_format($product['price'], 0, ',', '.') }}</div>
+                    <div class="price">Rp {{ number_format($product->orders_price, 0, ',', '.') }}</div>
 
                     <p class="desc">
-                        Delicious and fresh, our {{ strtolower($product['name']) }} is a customer favorite sourced from
-                        high-quality suppliers.
+                        {{ $product->products_description }}
                     </p>
 
-                    <form action="{{ route('cart.add', ['productId' => $product['id']]) }}" method="POST">
+                    <form action="{{ route('cart.add') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+                        <input type="hidden" name="product_id" value="{{ $product->products_id }}">
 
                         <div class="mb-2">
                             <label for="quantity" class="form-label">Quantity</label>

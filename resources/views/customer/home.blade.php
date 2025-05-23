@@ -23,16 +23,6 @@
 
 @section('content')
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-    @if (session('success'))
-        <div id="successAlert"
-            class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-            role="alert" style="min-width: 300px;">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
     @if (session('success'))
         <div id="successAlert"
             class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
@@ -118,10 +108,6 @@
     color: #052659;
     border: 2px solid #052659; /* optional hover border */
 }
-
-
-        
-
         .btn-lets-chill:hover {
             background-color: #326fcb;
         }
@@ -324,16 +310,22 @@
 
 
         .product-card {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
-        .product-card .card-body {
-            display: flex;
-            flex-direction: column;
-            flex: 1 1 auto;
-        }
+.product-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.product-card img {
+    height: 200px;
+    object-fit: contain;
+}
 
         /* yutub */
         .py-5 {
@@ -586,8 +578,8 @@
                                     @endfor
                                 </div>
                             </div>
-                            <form action="{{ route('cart.add', ['productId' => $product->id]) }}" method="POST" class="mt-auto">
-                                @csrf
+                            <form action="{{ route('cart.add') }}" method="POST">
+                            @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <input type="hidden" name="quantity" value="1">
                                 <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
