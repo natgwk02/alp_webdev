@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,9 +24,9 @@ class Product extends Model
     ];
 
     // Relationship to the Category model (each product belongs to one category)
-    public function product_category(): BelongsTo
+    public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class, 'categories_id', 'categories_id');
     }
 
     // Optional: Relationship to CartItems (if each product can appear in many cart items)

@@ -7,14 +7,16 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage; // Added for image handling
 
 class AdminController extends Controller
 {
+
     public function dashboard()
     {
+
         $stats = [
             'total_orders' => Order::count(),
             'total_revenue' => Order::sum('orders_total_price'),
@@ -22,96 +24,80 @@ class AdminController extends Controller
         ];
 
         return view('admin.dashboard', compact('stats'));
-
-        if (!session('is_admin') && Auth::check()) {
-            return redirect()->route('login.show');
-        }
-
-        return view('admin.dashboard');
     }
 
-    public function products()
+    public function products(Request $request)
     {
 
-        $products = Product::orderBy('updated_at', 'desc')->get();
-        $categories = Category::pluck('categories_name', 'categories_id')->toArray();
+        $query = Product::with('category')
+                        ->where(function ($q) {
+                            $q->where('status_del', 0)
+                              ->orWhereNull('status_del');
+                        })
+                        ->orderBy('products_id');
 
+        if ($request->filled('search')) {
+            $query->where('products_name', 'like', '%' . $request->search . '%');
+        }
 
-        $totalProducts = count($products);
-        $currentPage = 1;
-        $perPage = 10;
-        $totalPages = ceil($totalProducts / $perPage);
+        if ($request->filled('category') && $request->category !== 'All Categories') {
+            $query->where('categories_id', $request->category);
+        }
 
-        return view('admin.products.index', compact('products', 'categories', 'totalProducts', 'currentPage', 'perPage', 'totalPages'));
+        $products = $query->paginate(10);
+
+        $categories = Category::pluck('categories_name', 'categories_id')->all();
+
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function createProduct()
     {
-        $categories = Category::pluck('categories_name', 'categories_id')->toArray();
-        $product = null;
-        return view('admin.products.index', compact('categories'));
+        $categories = Category::pluck('categories_name', 'categories_id')->all();
+        return view('admin.products.create', compact('categories'));
     }
+
 
     public function editProduct($id)
     {
-        $product = Product::findOrFail($id);
-        $categories = Category::pluck('categories_name', 'categories_id')->toArray();
+        $product = Product::with('category')->findOrFail($id);
+        $categories = Category::pluck('categories_name', 'categories_id')->all();
 
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    public function insertProduct(Request $request, Product $product)
+
+    public function insertProduct(Request $request)
     {
-        $request->validate([
+
+        $validatedData = $request->validate([
             'products_name' => 'required|string|max:50',
             'unit_price' => 'required|integer|min:0',
             'products_stock' => 'required|integer|min:0',
             'products_description' => 'nullable|string',
             'categories_id' => 'required|exists:categories,categories_id',
-            'products_image' => 'nullable|string|max:100',
+            'products_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'hover_image' => 'nullable|string|max:255',
-            'orders_price' => 'nullable|integer|min:0',
-            'rating' => 'nullable|numeric|min:0|max:5',
             'status_del' => 'nullable|boolean',
-        ], [
-            'products_name.required' => 'Product name is required.',
-            'products_name.max' => 'Product name may not be greater than 50 characters.',
-
-            'unit_price.required' => 'Price is required.',
-            'unit_price.integer' => 'Price must be a whole number.',
-            'unit_price.min' => 'Price cannot be negative.',
-
-            'products_stock.required' => 'Stock is required.',
-            'products_stock.integer' => 'Stock must be a whole number.',
-            'products_stock.min' => 'Stock cannot be negative.',
-
-            'categories_id.required' => 'Product category is required.',
-
-            'products_image.max' => 'Image URL may not be greater than 100 characters.',
-            'hover_image.max' => 'Hover image URL may not be greater than 255 characters.',
-
-            'orders_price.integer' => 'Order price must be a number.',
-            'orders_price.min' => 'Order price cannot be negative.',
-
-            'rating.numeric' => 'Rating must be a number.',
-            'rating.min' => 'Rating cannot be less than 0.',
-            'rating.max' => 'Rating cannot be more than 5.',
-
-            'status_del.boolean' => 'Invalid status format.',
         ]);
 
         $product = new Product();
+        $product->products_name = $validatedData['products_name'];
+        $product->unit_price = $validatedData['unit_price'];
+        $product->products_stock = $validatedData['products_stock'];
+        $product->products_description = $validatedData['products_description'] ?? null;
+        $product->categories_id = $validatedData['categories_id'];
+        $product->hover_image = $validatedData['hover_image'] ?? null;
+        $product->status_del = $validatedData['status_del'] ?? 0; // Default to 0 (not deleted)
 
-        $product->name = $request->name;
-        $product->unit_price = $request->unit_price;
-        $product->stock = $request->stock;
-        $product->description = $request->description;
-        $product->category_id = $request->category_id;
-        $product->image = $request->image;
-        $product->hover_image = $request->hover_image;
-        $product->orders_price = $request->orders_price;
-        $product->rating = $request->rating;
-        $product->status_del = $request->status_del;
+        // Handle Image Upload
+        if ($request->hasFile('products_image')) {
+            $path = $request->file('products_image')->store('products', 'public');
+            $product->products_image = basename($path); // Store only filename if using asset() like in view
+        }
+
+        // Add logic for 'status' (In Stock, Low Stock etc.) if you have that column
+        // e.g., $product->status = $this->determineStatus($validatedData['products_stock']);
 
         $product->save();
 
@@ -119,58 +105,40 @@ class AdminController extends Controller
             ->with('success', 'Product added successfully!');
     }
 
+
     public function updateProduct(Request $request, Product $product)
     {
-        $request->validate([
+        // Validation - ensure names match form
+        $validatedData = $request->validate([
             'products_name' => 'required|string|max:50',
             'unit_price' => 'required|integer|min:0',
             'products_stock' => 'required|integer|min:0',
             'products_description' => 'nullable|string',
             'categories_id' => 'required|exists:categories,categories_id',
-            'products_image' => 'nullable|string|max:100',
+            'products_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Allow update
             'hover_image' => 'nullable|string|max:255',
-            'orders_price' => 'nullable|integer|min:0',
-            'rating' => 'nullable|numeric|min:0|max:5',
             'status_del' => 'nullable|boolean',
-        ], [
-            'products_name.required' => 'Product name is required.',
-            'products_name.max' => 'Product name may not be greater than 50 characters.',
-
-            'unit_price.required' => 'Price is required.',
-            'unit_price.integer' => 'Price must be a whole number.',
-            'unit_price.min' => 'Price cannot be negative.',
-
-            'products_stock.required' => 'Stock is required.',
-            'products_stock.integer' => 'Stock must be a whole number.',
-            'products_stock.min' => 'Stock cannot be negative.',
-
-            'categories_id.required' => 'Product category is required.',
-
-            'products_image.max' => 'Image URL may not be greater than 100 characters.',
-            'hover_image.max' => 'Hover image URL may not be greater than 255 characters.',
-
-            'orders_price.integer' => 'Order price must be a number.',
-            'orders_price.min' => 'Order price cannot be negative.',
-
-            'rating.numeric' => 'Rating must be a number.',
-            'rating.min' => 'Rating cannot be less than 0.',
-            'rating.max' => 'Rating cannot be more than 5.',
-
-            'status_del.boolean' => 'Invalid status format.',
+            // Add other fields like 'weight', 'product_id' if needed
         ]);
 
-        $product = new Product();
+        // **FIXED**: Update the *injected* $product, DO NOT create a new one.
+        $product->products_name = $validatedData['products_name'];
+        $product->unit_price = $validatedData['unit_price'];
+        $product->products_stock = $validatedData['products_stock'];
+        $product->products_description = $validatedData['products_description'] ?? null;
+        $product->categories_id = $validatedData['categories_id'];
+        $product->hover_image = $validatedData['hover_image'] ?? null;
+        $product->status_del = $validatedData['status_del'] ?? $product->status_del;
 
-        $product->name = $request->name;
-        $product->unit_price = $request->unit_price;
-        $product->stock = $request->stock;
-        $product->description = $request->description;
-        $product->category_id = $request->category_id;
-        $product->image = $request->image;
-        $product->hover_image = $request->hover_image;
-        $product->orders_price = $request->orders_price;
-        $product->rating = $request->rating;
-        $product->status_del = $request->status_del;
+        // Handle Image Upload (Optional Update)
+        if ($request->hasFile('products_image')) {
+            // Optional: Delete old image
+            // if ($product->products_image) {
+            //     Storage::disk('public')->delete('products/' . $product->products_image);
+            // }
+            $path = $request->file('products_image')->store('products', 'public');
+            $product->products_image = basename($path);
+        }
 
         $product->save();
 
@@ -178,21 +146,23 @@ class AdminController extends Controller
             ->with('success', 'Product updated successfully!');
     }
 
-    public function deleteProduct(Request $request, Product $product)
+    public function deleteProduct(Product $product)
     {
-        // $request->validate([
-        //     'id' => 'required|exists:products,products_id',
-        // ], [
-        //     'id.required' => 'Product ID is required.',
-        //     'id.exists' => 'Product not found.',
-        // ]);
+        try {
+            // Set kolom status_del menjadi 1
+            $product->status_del = 1;
 
-        // Soft delete the product
-        {
-            // Product::findOrFail($id)->delete();
+            // Simpan perubahan ke database
+            $product->save();
 
+            // Berikan pesan sukses yang sesuai
             return redirect(route('admin.products'))
                 ->with('success', 'Product deleted successfully!');
+
+        } catch (\Exception $e) {
+            // Tangani jika ada error saat menyimpan
+            return redirect(route('admin.products'))
+                ->with('error', 'Could not delete product.' . $e->getMessage());
         }
     }
 }
