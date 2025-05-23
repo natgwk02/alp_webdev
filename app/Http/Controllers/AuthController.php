@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+=======
+use Illuminate\Support\Facades\Validator;
+>>>>>>> Stashed changes
 
 class AuthController extends Controller
 {
@@ -59,6 +63,7 @@ class AuthController extends Controller
     {
         return view('auth.forgot_password');
     }
+<<<<<<< Updated upstream
 
     public function sendResetLinkEmail(Request $request)
     {
@@ -164,3 +169,7 @@ class AuthController extends Controller
 
     
 }
+=======
+     
+}
+>>>>>>> Stashed changes

@@ -23,11 +23,13 @@
     <main class="">
         @yield('content')
         @yield('scripts')
-        @include('includes.footer')
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         @stack('scripts')
+    </main>
 
+    <!-- Footer -->
+    @include('includes.footer')
 
 </body>
 
