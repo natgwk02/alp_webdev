@@ -37,7 +37,7 @@
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="text-uppercase fw-semibold mb-1">Total Revenue</h6>
-                                <h2 class="fw-bold mb-0">Rp. 100.000.000</h2>
+                                <h2 class="fw-bold mb-0">Rp {{ $stats['total_revenue'] }}</h2>
                             </div>
                             <div class="icon-circle">
                                 <i class="fas fa-dollar-sign fa-lg"></i>
@@ -159,7 +159,7 @@
 
 @push('styles')
 <style>
-    
+
     .gradient-blue {
         background: linear-gradient(135deg, #1E90FF, #4682B4);
     }
@@ -177,7 +177,7 @@
         transition: transform 0.3s ease;
     }
 
-    
+
 </style>
 @endpush
 

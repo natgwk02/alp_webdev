@@ -26,7 +26,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = auth()->user();
-        
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$user->id,
@@ -41,7 +41,7 @@ class ProfileController extends Controller
             if ($user->profile_photo) {
                 Storage::delete($user->profile_photo);
             }
-            
+
             $path = $request->file('profile_photo')->store('profile-photos');
             $validated['profile_photo'] = $path;
         }
