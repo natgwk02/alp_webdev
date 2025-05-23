@@ -13,6 +13,7 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
+<<<<<<< Updated upstream
 Route::get('/login', [AuthController::class, "show"])
 ->name('login.show');
 
@@ -39,6 +40,12 @@ Route::get('/terms-and-conditions', function () {
     return view('terms-and-conditions');
 })->name('terms');
 
+=======
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
+Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
+>>>>>>> Stashed changes
 
 // Customer Routes
 // //Route::middleware(['auth', 'customer'])->group(function () {
