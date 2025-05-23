@@ -72,45 +72,63 @@
         @endif
 
         {{-- search n filter --}}
-        <div class="search-container mb-4">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" id="searchInput" class="form-control border-start-0"
-                            placeholder="Search products...">
+        <form action="{{ route('admin.products') }}" method="GET">
+            <div class="search-container mb-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            {{-- Add name="search" and set value --}}
+                            <input type="text" id="searchInput" name="search" class="form-control border-start-0"
+                                placeholder="Search products..." value="{{ $current_search ?? '' }}">
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <select id="categorySelect" class="form-select">
-                        <option selected>All Categories</option>
-                        @foreach ($categories as $id => $name)
-                            <option value="{{ $id }}" {{ old('categories_id') == $id ? 'selected' : '' }}>
-                                {{ $name }}
+                    <div class="col-md-3">
+                        {{-- Add name="category" and set selected --}}
+                        <select id="categorySelect" name="category" class="form-select">
+                            {{-- Change value to empty for 'All Categories' --}}
+                            <option value="">All Categories</option>
+                            @foreach ($categories as $id => $name)
+                                {{-- Check against $current_category --}}
+                                <option value="{{ $id }}"
+                                    {{ isset($current_category) && $current_category == $id ? 'selected' : '' }}>
+                                    {{ $name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        {{-- Add name="status" and set selected --}}
+                        <select id="statusSelect" name="status" class="form-select">
+                            <option value="">All Status</option>
+                            {{-- Use specific values and check against $current_status --}}
+                            <option value="In Stock"
+                                {{ isset($current_status) && $current_status == 'In Stock' ? 'selected' : '' }}>In Stock
                             </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <select id="statusSelect" class="form-select">
-                        <option selected>All Status</option>
-                        <option>In Stock</option>
-                        <option>Low Stock</option>
-                        <option>Out of Stock</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <div class="d-flex gap-3">
-                        <button id="filterBtn" class="btn btn-primary flex-grow-1">
-                            <i class="fas fa-filter me-1"></i>Filter Products
-                        </button>
-                        <button id="resetBtn" class="btn btn-outline-secondary">Reset</button>
+                            <option value="Low Stock"
+                                {{ isset($current_status) && $current_status == 'Low Stock' ? 'selected' : '' }}>Low Stock
+                            </option>
+                            <option value="Out of Stock"
+                                {{ isset($current_status) && $current_status == 'Out of Stock' ? 'selected' : '' }}>Out of
+                                Stock</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex gap-3">
+                            {{-- Change Filter button to type="submit" --}}
+                            <button id="filterBtn" type="submit" class="btn btn-primary flex-grow-1">
+                                <i class="fas fa-filter me-1"></i>Filter Products
+                            </button>
+                            {{-- Reset button should be a link to the base route --}}
+                            <a href="{{ route('admin.products') }}" id="resetBtn"
+                                class="btn btn-outline-secondary">Reset</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
 
         {{-- table --}}
         <div class="table-responsive mb-4">
@@ -187,8 +205,8 @@
                                 </button>
                                 {{-- Pastikan ini men-trigger modal dan JS Anda set action form --}}
                                 <form id="deleteProductForm_{{ $product->products_id }}"
-                                    action="{{ route('admin.products.delete', ['product' => $product->products_id]) }}" method="POST"
-                                    style="display: inline;">
+                                    action="{{ route('admin.products.delete', ['product' => $product->products_id]) }}"
+                                    method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="button" class="btn btn-sm btn-outline-danger action-btn"
@@ -264,85 +282,99 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+
+                        {{-- Display Validation Errors Here --}}
+                        @if ($errors->any() && old('form_type') === 'add_product')
+                            <div class="alert alert-danger">
+                                <strong>Whoops! Please fix these errors:</strong>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        {{-- UPDATE THE FORM TAG --}}
                         <form id="addProductForm" action="{{ route('admin.products.create') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
+                            {{-- Hidden field to identify form on validation error --}}
+                            <input type="hidden" name="form_type" value="add_product">
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="productName" class="form-label">Product Name*</label>
-                                    <input type="text" class="form-control" id="productName" name="name" required>
+                                    <label for="add_products_name" class="form-label">Product Name*</label>
+                                    {{-- Change name, add old() --}}
+                                    <input type="text"
+                                        class="form-control @error('products_name') is-invalid @enderror"
+                                        id="add_products_name" name="products_name" value="{{ old('products_name') }}"
+                                        required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="productCategory" class="form-label">Category*</label>
-                                    <select class="form-select" id="productCategory" name="category" required>
+                                    <label for="add_categories_id" class="form-label">Category*</label>
+                                    {{-- Change name, use ID as value, add old() --}}
+                                    <select class="form-select @error('categories_id') is-invalid @enderror"
+                                        id="add_categories_id" name="categories_id" required>
                                         <option value="" selected disabled>Select category</option>
-                                        @foreach ($categories as $category)
-                                            <option>{{ $category }}</option>
+                                        @foreach ($categories as $id => $name)
+                                            <option value="{{ $id }}"
+                                                {{ old('categories_id') == $id ? 'selected' : '' }}>{{ $name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="productPrice" class="form-label">Price (Rp)*</label>
-                                    <input type="number" class="form-control" id="productPrice" name="price"
-                                        step="1" min="0" required>
+                                    <label for="add_unit_price" class="form-label">Price (Rp)*</label>
+                                    {{-- Change name, add old() --}}
+                                    <input type="number" class="form-control @error('unit_price') is-invalid @enderror"
+                                        id="add_unit_price" name="unit_price" step="1" min="0"
+                                        value="{{ old('unit_price') }}" required>
                                 </div>
+
                                 <div class="col-md-6">
-                                    <label for="productStock" class="form-label">Stock Quantity*</label>
-                                    <input type="number" class="form-control" id="productStock" name="stock"
-                                        min="0" required>
+                                    <label for="add_orders_price" class="form-label">Orders Price (Rp)*</label>
+                                    <input type="number" class="form-control @error('orders_price') is-invalid @enderror"
+                                        id="add_orders_price" name="orders_price" step="1" min="0"
+                                        value="{{ old('orders_price') }}">
                                 </div>
+
                             </div>
+
+                            <div class="col-md-6">
+                                <label for="add_products_stock" class="form-label">Stock Quantity*</label>
+                                {{-- Change name, add old() --}}
+                                <input type="number" class="form-control @error('products_stock') is-invalid @enderror"
+                                    id="add_products_stock" name="products_stock" min="0"
+                                    value="{{ old('products_stock') }}" required>
+                            </div>
+
                             <div class="mb-3">
-                                <label for="productDescription" class="form-label">Description</label>
-                                <textarea class="form-control" id="productDescription" name="description" rows="3"></textarea>
+                                <label for="add_products_description" class="form-label">Description</label>
+                                {{-- Change name, add old() --}}
+                                <textarea class="form-control @error('products_description') is-invalid @enderror" id="add_products_description"
+                                    name="products_description" rows="3">{{ old('products_description') }}</textarea>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="productWeight" class="form-label">Weight/Size*</label>
-                                    <input type="text" class="form-control" id="productWeight" name="weight"
-                                        placeholder="e.g., 500g, 1kg" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="productID" class="form-label">ID*</label>
-                                    <input type="text" class="form-control" id="productID" name="product_id"
-                                        required>
-                                </div>
-                            </div>
+
                             <div class="mb-3">
-                                <label for="productImage" class="form-label">Product Image*</label>
-                                <input class="form-control" type="file" id="productImage" name="image" required>
+                                <label for="add_products_image" class="form-label">Product Image*</label>
+                                <input class="form-control @error('products_image') is-invalid @enderror" type="file"
+                                    id="add_products_image" name="products_image" required>
                             </div>
+
                             <div class="mb-3">
-                                <label class="form-label">Storage Temperature*</label>
-                                <div class="d-flex gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="storage_temp"
-                                            value="freezer" id="freezer" checked>
-                                        <label class="form-check-label" for="freezer">
-                                            Deep Freeze (-18°C or below)
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="storage_temp"
-                                            value="refrigerator" id="refrigerator">
-                                        <label class="form-check-label" for="refrigerator">
-                                            Refrigerator (0°C to 5°C)
-                                        </label>
-                                    </div>
-                                </div>
+                                <label for="add_products_image" class="form-label">Hover Image*</label>
+                                <input class="form-control @error('products_image') is-invalid @enderror" type="file"
+                                    id="add_hover_image" name="hover_image" required>
                             </div>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" id="featuredProduct" name="featured">
-                                <label class="form-check-label" for="featuredProduct">
-                                    Featured Product (Tasty Picks)
-                                </label>
-                            </div>
+
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        {{-- Ensure this submits the correct form --}}
                         <button type="submit" form="addProductForm" class="btn btn-primary">Add Product</button>
                     </div>
                 </div>

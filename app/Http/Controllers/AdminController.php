@@ -44,28 +44,31 @@ class AdminController extends Controller
             $query->where('categories_id', $request->category);
         }
 
+        if ($request->filled('status')) {
+            $status = $request->status;
+            $lowStockThreshold = 10; // Match the threshold in your accessor
+
+            if ($status === 'In Stock') {
+                $query->where('products_stock', '>', $lowStockThreshold);
+            } elseif ($status === 'Low Stock') {
+                $query->whereBetween('products_stock', [1, $lowStockThreshold]);
+            } elseif ($status === 'Out of Stock') {
+                $query->where('products_stock', '<=', 0);
+            }
+        }
+
         $products = $query->paginate(10);
 
         $categories = Category::pluck('categories_name', 'categories_id')->all();
 
-        return view('admin.products.index', compact('products', 'categories'));
+        return view('admin.products.index', [
+            'products' => $products,
+            'categories' => $categories,
+            'current_search' => $request->search,
+            'current_category' => $request->category,
+            'current_status' => $request->status,
+        ]);
     }
-
-    public function createProduct()
-    {
-        $categories = Category::pluck('categories_name', 'categories_id')->all();
-        return view('admin.products.create', compact('categories'));
-    }
-
-
-    public function editProduct($id)
-    {
-        $product = Product::with('category')->findOrFail($id);
-        $categories = Category::pluck('categories_name', 'categories_id')->all();
-
-        return view('admin.products.edit', compact('product', 'categories'));
-    }
-
 
     public function insertProduct(Request $request)
     {
@@ -79,16 +82,18 @@ class AdminController extends Controller
             'products_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'hover_image' => 'nullable|string|max:255',
             'status_del' => 'nullable|boolean',
+            'orders_price' => 'required|integer|min:0'
         ]);
 
         $product = new Product();
         $product->products_name = $validatedData['products_name'];
         $product->unit_price = $validatedData['unit_price'];
         $product->products_stock = $validatedData['products_stock'];
-        $product->products_description = $validatedData['products_description'] ?? null;
+        $product->products_description = $validatedData['products_description'] ?? '';
         $product->categories_id = $validatedData['categories_id'];
-        $product->hover_image = $validatedData['hover_image'] ?? null;
-        $product->status_del = $validatedData['status_del'] ?? 0; // Default to 0 (not deleted)
+        $product->hover_image = $validatedData['hover_image'] ?? '';
+        $product->orders_price = $validatedData['orders_price'];
+        $product->status_del = 0;
 
         // Handle Image Upload
         if ($request->hasFile('products_image')) {

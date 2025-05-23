@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
 {
+    use HasFactory;
     // Define the fillable attributes
     //
+    protected $primaryKey = 'products_id';
+
     protected $fillable = [
         'categories_id',
         'products_name',
@@ -21,6 +26,7 @@ class Product extends Model
         'orders_price',
         'rating',
         'status_del',
+        'orders_price',
     ];
 
     // Relationship to the Category model (each product belongs to one category)
@@ -40,4 +46,26 @@ class Product extends Model
     {
         return $this->stock > 0;
     }
+
+    /**
+     * Get the product's status based on stock.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function status(): Attribute // Use the new Attribute class
+    {
+        return Attribute::make(
+            get: function ($value) { // We ignore $value, we calculate based on stock
+                $stock = $this->products_stock; // Access the stock attribute
+                if ($stock <= 0) {
+                    return 'Out of Stock';
+                } elseif ($stock <= 20) { // Set your 'Low Stock' threshold here
+                    return 'Low Stock';
+                } else {
+                    return 'In Stock';
+                }
+            }
+        );
+    }
+
 }
