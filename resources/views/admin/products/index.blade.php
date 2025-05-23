@@ -64,7 +64,6 @@
             </div>
         </div>
 
-
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -182,7 +181,7 @@
             </table>
         </div>
 
-        <!-- Pagenation -->
+        <!-- Pagination -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <p class="mb-0">Showing {{ ($currentPage - 1) * $perPage + 1 }} to
@@ -215,7 +214,7 @@
         </div>
     </div>
 
-    {{-- modal --}}
+    {{-- modals --}}
 
     <!-- Add Product - Modal -->
     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
@@ -321,8 +320,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editProductForm" action="{{ route('admin.products.update', $product->id) }}"
-                        method="POST" enctype="multipart/form-data">
+                    <!-- Form action will be set dynamically by JavaScript -->
+                    <form id="editProductForm" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row mb-3">
@@ -399,7 +398,7 @@
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="editFeaturedProduct" name="featured">
                             <label class="form-check-label" for="editFeaturedProduct">
-                                Featured Product
+                                Featured Product (Tasty Picks)
                             </label>
                         </div>
                     </form>
@@ -427,9 +426,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteProductForm" action="{{ route('admin.products.delete', $product->id) }}"
-                        method="POST">
+                    <!-- Form action will be set dynamically by JavaScript -->
+                    <form id="deleteProductForm" method="POST" style="display: inline;">
                         @csrf
+                        @method('DELETE')
                         <button type="submit" class="btn btn-danger">Delete Product</button>
                     </form>
                 </div>
@@ -454,10 +454,12 @@
             const button = event.relatedTarget;
             const productId = button.getAttribute('data-product-id');
 
-            // Set the form action URL
+            // Set the form action URL dynamically
             const form = document.getElementById('editProductForm');
-            form.action = `/product/update/${productId}`;
+            form.action = `/admin/products/update/${productId}`;
 
+            // You would typically fetch product data via AJAX here
+            // For now, using placeholder data
             document.getElementById('editProductName').value = 'Gourmet Frozen Pizza';
             document.getElementById('editProductCategory').value = 'Ready Meals';
             document.getElementById('editProductPrice').value = '25000';
@@ -482,23 +484,23 @@
             // Set the product name in the confirmation message
             document.getElementById('deleteProductName').textContent = productName;
 
+            // Set the form action URL dynamically
             const form = document.getElementById('deleteProductForm');
-            form.action = `/product/delete/${productId}`;
+            form.action = `/admin/products/delete/${productId}`;
         });
 
+        // Search and filter functionality
         const searchInput = document.getElementById('searchInput');
         const categorySelect = document.getElementById('categorySelect');
         const statusSelect = document.getElementById('statusSelect');
         const resetBtn = document.getElementById('resetBtn');
         const filterBtn = document.getElementById('filterBtn');
-        const currentFilter = document.getElementById('currentFilter');
 
         // Reset button
         resetBtn.addEventListener('click', function() {
             searchInput.value = '';
             categorySelect.selectedIndex = 0;
             statusSelect.selectedIndex = 0;
-            currentFilter.textContent = 'None';
         });
     </script>
 @endsection
