@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+=======
+use Illuminate\Support\Facades\Validator;
+>>>>>>> Stashed changes
 
 class AuthController extends Controller
 {
@@ -21,7 +25,6 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Hardcoded admin login
         if (
             $request->email === 'admin@chillemart.com' &&
             $request->password === session('admin_password', 'admin123') // default admin123
@@ -29,13 +32,12 @@ class AuthController extends Controller
             session([
                 'is_admin' => true,
                 'email' => $request->email,
-                'admin_password' => $request->password, // simpan password yg dipakai
+                'admin_password' => $request->password, // nyimpen password yg dipakai
             ]);
 
     return redirect()->route('admin.dashboard');
         }
 
-        // Login via database
         if (Auth::attempt([
             'users_email' => $request->email,
             'password' => $request->password,
@@ -61,6 +63,7 @@ class AuthController extends Controller
     {
         return view('auth.forgot_password');
     }
+<<<<<<< Updated upstream
 
     public function sendResetLinkEmail(Request $request)
     {
@@ -166,3 +169,7 @@ class AuthController extends Controller
 
     
 }
+=======
+     
+}
+>>>>>>> Stashed changes

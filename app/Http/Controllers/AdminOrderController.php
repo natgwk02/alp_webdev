@@ -10,19 +10,18 @@ class AdminOrderController extends Controller
     {
         $orders = session('orders', []);
 
-        // Pastikan setiap order memiliki field dasar agar tidak error di tampilan
         foreach ($orders as &$order) {
-            $order['customer_name'] = $order['customer_name'] ?? 'Unknown Customer';
-            $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
-            $order['status'] = $order['status'] ?? 'Pending';
+            $order['customer_name'] = $order['customer_name'] ??
+                (($order['customer']['first_name'] ?? 'Unknown') . ' ' . ($order['customer']['last_name'] ?? 'Customer'));
+            $order['payment_method'] = ucfirst($order['payment_method'] ?? 'Unknown');
+            $order['status'] = ucfirst($order['status'] ?? 'Pending');
             $order['order_date'] = $order['order_date'] ?? now();
-            $order['total_amount'] = $order['total_amount'] ?? 0;
-            $order['order_number'] = $order['order_number'] ?? 'ORD-' . str_pad($order['id'], 6, '0', STR_PAD_LEFT);
+            $order['total'] = $order['total'] ?? 0;
+            $order['order_number'] = $order['order_number'] ?? 'ORD-' . str_pad($order['id'] ?? '0000', 6, '0', STR_PAD_LEFT);
         }
 
-        session(['orders' => $orders]); // simpan ulang untuk memastikan
+        session(['orders' => $orders]); // nyimpen ulang untuk memastikan
 
-        // Manual pagination
         $perPage = 10;
         $currentPage = $request->get('page', 1);
         $totalProducts = count($orders);
@@ -38,6 +37,7 @@ class AdminOrderController extends Controller
         ]);
     }
 
+
     public function show($id)
     {
         $orders = session('orders', []);
@@ -47,70 +47,31 @@ class AdminOrderController extends Controller
             return redirect()->route('admin.orders')->with('error', 'Order not found.');
         }
 
-        // Set default values
         $order['customer_name'] = $order['customer_name']
-            ?? ($order['customer']['first_name'] ?? '') . ' ' . ($order['customer']['last_name'] ?? '')
-            ?? 'Unknown Customer';
-        $order['customer_email'] = $order['customer_email'] ?? null;
-        $order['payment_method'] = $order['payment_method'] ?? 'Unknown';
-        $order['payment_status'] = $order['payment_status'] ?? 'Unpaid';
-        $order['shipping_address'] = $order['shipping_address'] ?? 
-    (isset($order['customer']) 
-        ? ($order['customer']['address'] . ', ' . $order['customer']['city'] . ', ' . $order['customer']['zip'] . ', ' . $order['customer']['country']) 
-        : '-');
-        $order['billing_address'] = $order['billing_address'] ?? '-';
+            ?? (($order['customer']['first_name'] ?? 'Unknown') . ' ' . ($order['customer']['last_name'] ?? 'Customer'));
+        $order['customer_email'] = $order['customer']['email'] ?? 'Unknown';
+        $order['payment_method'] = ucfirst($order['payment_method'] ?? 'Unknown');
+        $order['payment_status'] = ucfirst($order['payment_status'] ?? 'Unpaid');
+        $order['shipping_address'] = $order['customer']['address'] ?? 'N/A';
+        $order['billing_address'] = $order['billing_address'] ?? $order['shipping_address'];
         $order['subtotal'] = $order['subtotal'] ?? 0;
         $order['shipping_fee'] = $order['shipping_fee'] ?? 0;
-        $order['total_amount'] = $order['total_amount']
-            ?? $order['total']
-            ?? (($order['subtotal'] ?? 0) + ($order['shipping_fee'] ?? 0) + ($order['tax'] ?? 0) - ($order['voucher_discount'] ?? 0));
-        $order['status'] = $order['status'] ?? 'Pending';
-        $order['order_date'] = $order['order_date'] ?? now();
+        $order['tax'] = $order['tax'] ?? 0;
+        $order['voucher_discount'] = $order['voucher_discount'] ?? 0;
+        $order['total'] = $order['total'] ?? ($order['subtotal'] + $order['shipping_fee'] + $order['tax'] - $order['voucher_discount']);
+        $order['status'] = ucfirst($order['status'] ?? 'Pending');
+        $order['order_date'] = $order['order_date'] ?? now()->format('Y-m-d H:i:s');
         $order['items'] = $order['items'] ?? [];
 
-        $order['customer']['notes'] = $order['customer']['notes'] ?? null;
-
-        // Ambil data produk dari controller ProductController
-        $productController = new \App\Http\Controllers\ProductController;
-        $products = $productController->products();
-        $productsById = collect($products)->keyBy('id');
-
         foreach ($order['items'] as &$item) {
-            $item['image'] = $productsById[$item['product_id']]['image'] ?? 'no-image.png';
-            $item['product_name'] = $productsById[$item['product_id']]['name'] ?? 'Unknown Product';
+            $item['product_id'] = $item['product_id'] ?? 'Unknown';
+            $item['product_name'] = $item['product_name'] ?? 'Unknown Product';
             $item['price'] = $item['price'] ?? 0;
-            $item['quantity'] = $item['quantity'] ?? 0;
+            $item['quantity'] = $item['quantity'] ?? 1;
+            $item['image'] = $item['image'] ?? 'no-image.png';
             $item['total'] = $item['price'] * $item['quantity'];
         }
 
         return view('admin.orders.show', compact('order'));
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        $orders = session('orders', []);
-        $updatedOrders = [];
-        $found = false;
-
-        foreach ($orders as $order) {
-            if ($order['id'] == $id) {
-                $found = true;
-                if ($request->input('status') !== 'Cancelled') {
-                    $order['status'] = $request->input('status');
-                    $updatedOrders[] = $order;
-                }
-                // Jika status Cancelled, order dihapus (tidak dimasukkan ke updatedOrders)
-            } else {
-                $updatedOrders[] = $order;
-            }
-        }
-
-        if (!$found) {
-            return redirect()->back()->with('error', 'Order not found.');
-        }
-
-        session(['orders' => $updatedOrders]);
-
-        return redirect()->route('admin.orders')->with('success', 'Order status updated successfully');
     }
 }

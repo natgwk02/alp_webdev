@@ -23,6 +23,7 @@ class User extends Authenticatable
         'users_phone',
         'users_address',
         'status_del',
+        'role',
     ];
 
     /**
@@ -56,4 +57,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'status_del' => 'boolean',
     ];
+
+    
 }

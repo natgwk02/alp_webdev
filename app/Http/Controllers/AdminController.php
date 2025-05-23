@@ -2,104 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Hardcoded stats for dashboard
         $stats = [
-            'total_orders' => 42,
-            'total_revenue' => 1250.75,
-            'total_products' => 15,
-            'new_customers' => 8
+            'total_orders' => Order::count(),
+            'total_revenue' => Order::sum('orders_total_price'),
+            'total_products' => Product::count(),
         ];
 
         return view('admin.dashboard', compact('stats'));
 
         if (!session('is_admin') && Auth::check()) {
-        return redirect()->route('login.show');
-    }
+            return redirect()->route('login.show');
+        }
 
         return view('admin.dashboard');
     }
 
     public function products()
     {
-        // Sample products data matching your view structure
-        $products = [
-            [
-                'id' => 'PRD001',
-                'name' => 'Gourmet Frozen Pizza',
-                'image' => 'gourmet-pizza.jpg',
-                'category' => 'Ready Meals',
-                'price' => 25000,
-                'stock' => 125,
-                'status' => 'In Stock',
-                'updated_at' => '2025-05-10'
-            ],
-            [
-                'id' => 'PRD002',
-                'name' => 'Organic Mixed Vegetables',
-                'image' => 'organic-veg.jpg',
-                'category' => 'Frozen Vegetables',
-                'price' => 36000,
-                'stock' => 210,
-                'status' => 'In Stock',
-                'updated_at' => '2025-05-12'
-            ],
-            [
-                'id' => 'PRD003',
-                'name' => 'Premium Vanilla Ice Cream',
-                'image' => 'vanilla-icecream.jpg',
-                'category' => 'Ice Cream & Desserts',
-                'price' => 43000,
-                'stock' => 78,
-                'status' => 'In Stock',
-                'updated_at' => '2025-05-11'
-            ],
-            [
-                'id' => 'PRD004',
-                'name' => 'Chicken Alfredo Meal',
-                'image' => 'chicken-alfredo.jpg',
-                'category' => 'Ready Meals',
-                'price' => 39000,
-                'stock' => 15,
-                'status' => 'Low Stock',
-                'updated_at' => '2025-05-09'
-            ],
-            [
-                'id' => 'PRD005',
-                'name' => 'Frozen Salmon Fillets',
-                'image' => 'salmon-fillet.jpg',
-                'category' => 'Frozen Meat & Fish',
-                'price' => 74999,
-                'stock' => 0,
-                'status' => 'Out of Stock',
-                'updated_at' => '2025-05-08'
-            ],
-            [
-                'id' => 'PRD006',
-                'name' => 'Chocolate Chip Cookie Dough',
-                'image' => 'chocolate-cookie-dough.jpg',
-                'category' => 'Ice Cream & Desserts',
-                'price' => 24999,
-                'stock' => 89,
-                'status' => 'In Stock',
-                'updated_at' => '2025-05-07'
-            ]
-        ];
 
-        // Get unique categories for the filter dropdown
-        $categories = ['Ready Meals', 'Frozen Vegetables', 'Frozen Dimsum', 'Frozen Meat', 'Frozen Nugget', 'Frozen Fruit', 'Frozen Seafood', 'Dessert'];
+        $products = Product::orderBy('updated_at', 'desc')->get();
+        $categories = Category::pluck('category_name', 'categories_id')->toArray();
 
-        // For pagination information
         $totalProducts = count($products);
         $currentPage = 1;
-        $perPage = 6;
+        $perPage = 10;
         $totalPages = ceil($totalProducts / $perPage);
 
         return view('admin.products.index', compact('products', 'categories', 'totalProducts', 'currentPage', 'perPage', 'totalPages'));
@@ -107,48 +46,67 @@ class AdminController extends Controller
 
     public function createProduct()
     {
-        $categories = ['Ready Meals', 'Frozen Vegetables', 'Frozen Dimsum', 'Frozen Meat', 'Frozen Nugget', 'Frozen Fruit', 'Frozen Seafood', 'Dessert'];
+        $categories = Product::select('category')->distinct()->pluck('category')->toArray();
         return view('admin.products.index', compact('categories'));
     }
 
     public function editProduct($id)
     {
-        // Find the product by ID
+        $product = Product::findOrFail($id);
+        $categories = Product::select('category')->distinct()->pluck('category')->toArray();
 
-        $product = [
-            'id' => $id,
-            'name' => 'Gourmet Frozen Pizza',
-            'price' => 25000,
-            'stock' => 125,
-            'description' => 'Delicious gourmet pizza with premium toppings, ready to bake from frozen.',
-            'weight' => '400g',
-            'category' => 'Ready Meals',
-            'image' => 'https://via.placeholder.com/100',
-            'storage_temp' => 'freezer',
-            'featured' => true,
-            'status' => 'In Stock'
-        ];
-
-        $categories = ['Ready Meals', 'Frozen Vegetables', 'Frozen Dimsum', 'Frozen Meat', 'Frozen Nugget', 'Frozen Fruit', 'Frozen Seafood', 'Dessert'];
-
-        return view('admin.products.index', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
     public function insertProduct(Request $request)
     {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'description' => 'nullable|string',
+            'weight' => 'nullable|string',
+            'category' => 'required|string',
+            'image' => 'nullable|string',
+            'storage_temp' => 'nullable|string',
+            'featured' => 'boolean',
+            'status' => 'required|string',
+        ]);
+
+        Product::create($validated);
+
         return redirect(route('admin.products'))
-        ->with('success', 'Product added successfully!');
+            ->with('success', 'Product added successfully!');
     }
 
     public function updateProduct(Request $request, $id)
     {
+        $product = Product::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'description' => 'nullable|string',
+            'weight' => 'nullable|string',
+            'category' => 'required|string',
+            'image' => 'nullable|string',
+            'storage_temp' => 'nullable|string',
+            'featured' => 'boolean',
+            'status' => 'required|string',
+        ]);
+
+        $product->update($validated);
+
         return redirect(route('admin.products'))
-        ->with('success', 'Product updated successfully!');
+            ->with('success', 'Product updated successfully!');
     }
 
     public function deleteProduct($id)
     {
+        Product::findOrFail($id)->delete();
+
         return redirect(route('admin.products'))
-        ->with('success', 'Product deleted successfully!');
+            ->with('success', 'Product deleted successfully!');
     }
 }

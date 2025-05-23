@@ -61,17 +61,19 @@
                                          alt="Profile Preview">
                                 </div>
                             </div>
-                            <div class="col-md-9 d-flex align-items-end">
-                                <div class="w-100">
-                                    <input type="file" 
-                                           class="form-control" 
-                                           id="profile_photo" 
-                                           name="profile_photo"
-                                           accept="image/*">
-                                    <div class="form-text">Max 2MB (JPG, PNG)</div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" value=""
+                                        required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" value=""
+                                        required>
                                 </div>
                             </div>
-                        </div>
 
                         <!-- Personal Information -->
                         <div class="row mb-3">
@@ -127,7 +129,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- JavaScript for Profile Photo Preview -->
 <script>

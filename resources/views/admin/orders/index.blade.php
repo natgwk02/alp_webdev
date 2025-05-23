@@ -15,8 +15,8 @@
                 </nav>
                 <div class="d-flex justify-content-between align-items-center">
                     <h1 class="fw-bold">Order Management</h1>
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
-                        aria-expanded="false" aria-controls="filterCollapse">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
                         <i class="fas fa-filter me-1"></i> Filter Orders
                     </button>
                 </div>
@@ -37,11 +37,16 @@
                                 <label for="status" class="form-label">Status</label>
                                 <select class="form-select" id="status" name="status">
                                     <option value="">All Statuses</option>
-                                    <option value="Delivered" {{ request('status') == 'Delivered' ? 'selected' : '' }}>Delivered</option>
-                                    <option value="Processing" {{ request('status') == 'Processing' ? 'selected' : '' }}>Processing</option>
-                                    <option value="Shipped" {{ request('status') == 'Shipped' ? 'selected' : '' }}>Shipped</option>
-                                    <option value="Cancelled" {{ request('status') == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                    <option value="Failed" {{ request('status') == 'Failed' ? 'selected' : '' }}>Failed</option>
+                                    <option value="Delivered" {{ request('status') == 'Delivered' ? 'selected' : '' }}>
+                                        Delivered</option>
+                                    <option value="Processing" {{ request('status') == 'Processing' ? 'selected' : '' }}>
+                                        Processing</option>
+                                    <option value="Shipped" {{ request('status') == 'Shipped' ? 'selected' : '' }}>Shipped
+                                    </option>
+                                    <option value="Cancelled" {{ request('status') == 'Cancelled' ? 'selected' : '' }}>
+                                        Cancelled</option>
+                                    <option value="Failed" {{ request('status') == 'Failed' ? 'selected' : '' }}>Failed
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -61,10 +66,17 @@
                                 <label for="payment_method" class="form-label">Payment Method</label>
                                 <select class="form-select" id="payment_method" name="payment_method">
                                     <option value="">All Payment Methods</option>
-                                    <option value="Credit Card" {{ request('payment_method') == 'Credit Card' ? 'selected' : '' }}>Credit Card</option>
-                                    <option value="Bank Transfer" {{ request('payment_method') == 'Bank Transfer' ? 'selected' : '' }}>Bank Transfer</option>
-                                    <option value="E-Wallet" {{ request('payment_method') == 'E-Wallet' ? 'selected' : '' }}>E-Wallet</option>
-                                    <option value="Cash on Delivery" {{ request('payment_method') == 'Cash on Delivery' ? 'selected' : '' }}>Cash on Delivery</option>
+                                    <option value="Credit Card"
+                                        {{ request('payment_method') == 'Credit Card' ? 'selected' : '' }}>Credit Card
+                                    </option>
+                                    <option value="Bank Transfer"
+                                        {{ request('payment_method') == 'Bank Transfer' ? 'selected' : '' }}>Bank Transfer
+                                    </option>
+                                    <option value="E-Wallet"
+                                        {{ request('payment_method') == 'E-Wallet' ? 'selected' : '' }}>E-Wallet</option>
+                                    <option value="Cash on Delivery"
+                                        {{ request('payment_method') == 'Cash on Delivery' ? 'selected' : '' }}>Cash on
+                                        Delivery</option>
                                 </select>
                             </div>
                         </div>
@@ -129,10 +141,11 @@
                                             <td>{{ $order['order_number'] }}</td>
                                             <td>{{ $order['customer_name'] }}</td>
                                             <td>{{ $order['order_date'] }}</td>
-                                            <td>Rp.{{ number_format($order['total_amount'], 2) }}</td>
+                                            <td>Rp.{{ number_format($order['total'], 2) }}</td>
                                             <td>{{ $order['payment_method'] }}</td>
                                             <td>
-                                                <span class="badge
+                                                <span
+                                                    class="badge
                                                     @if ($order['status'] == 'Processing') bg-warning
                                                     @elseif($order['status'] == 'Shipped') bg-info
                                                     @elseif($order['status'] == 'Delivered') bg-success

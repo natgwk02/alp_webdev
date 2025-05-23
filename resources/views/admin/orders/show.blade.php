@@ -66,20 +66,23 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('images/products-img/' . $item['image']) }}"
+                                                    <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}"
                                                         class="img-thumbnail me-3" width="60"
-                                                        alt="{{ $item['product_name'] }}">
+                                                        alt="{{ $item['name'] ?? 'Unknown Product' }}">
                                                     <div>
-                                                        <h6 class="mb-0">{{ $item['product_name'] }}</h6>
-                                                        <small class="text-muted">SKU: CM-{{ $item['product_id'] }}</small>
+                                                        <h6 class="mb-0">{{ $item['name'] ?? 'Unknown Product' }}</h6>
+                                                        <small class="text-muted">SKU:
+                                                            CM-{{ $item['id'] ?? 'Unknown' }}</small>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>Rp.{{ number_format($item['price'], 2, ',', '.') }}</td>
-                                            <td>{{ $item['quantity'] }}</td>
-                                            <td>Rp.{{ number_format($item['total'], 2, ',', '.') }}</td>
+                                            <td>Rp.{{ number_format($item['price'] ?? 0, 2, ',', '.') }}</td>
+                                            <td>{{ $item['quantity'] ?? 1 }}</td>
+                                            <td>Rp.{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 2, ',', '.') }}
+                                            </td>
                                         </tr>
                                     @endforeach
+
                                 </tbody>
                             </table>
                         </div>
@@ -173,7 +176,7 @@
                             @endif
                             <div class="d-flex justify-content-between fw-bold">
                                 <span>Total:</span>
-                                <span>Rp {{ number_format($order['total_amount'] ?? 0, 2) }}</span>
+                                <span>Rp {{ number_format($order['total'] ?? 0, 2) }}</span>
                             </div>
                         </div>
                     </div>

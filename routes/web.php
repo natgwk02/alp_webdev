@@ -14,10 +14,10 @@ use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, "show"])
-->name('login.show');
+    ->name('login.show');
 
 Route::post('/login_auth', [AuthController::class, "login_auth"])
-->name('login.auth');
+    ->name('login.auth');
 
 Route::POST('/logout', function () {
     Auth::logout();
@@ -65,20 +65,18 @@ Route::get('/terms-and-conditions', function () {
 
 // Admin Routes
 //Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-  //  Product Management
-    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
-    Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-    Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-    Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+//  Product Management
+Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 
-    // Order Management
-    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-    
-
+// Order Management
+Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
 //});
 
