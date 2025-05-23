@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login_auth'])->name('login.auth');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
@@ -78,6 +79,13 @@ Route::get('/about', function () {
 Route::get('/profile', function () {
     return view('customer.profile');
 })->name('profile');
+
+Route::POST('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout');
 
 // Profile Routes
 // Route::middleware(['auth'])->group(function () {
