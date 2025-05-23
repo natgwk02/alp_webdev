@@ -8,9 +8,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     // Define the fillable attributes
+    //
     protected $fillable = [
-        'name', 'price', 'stock', 'description', 'weight', 'category',
-        'image', 'storage_temp', 'featured', 'status', 'category_id'
+        'categories_id',
+        'products_name',
+        'products_description',
+        'products_stock',
+        'products_image',
+        'hover_image',
+        'unit_price',
+        'orders_price',
+        'rating',
+        'status_del',
     ];
 
     // Relationship to the Category model (each product belongs to one category)

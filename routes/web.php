@@ -19,6 +19,13 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
 
+Route::POST('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout');
+
 // Customer Routes
 // //Route::middleware(['auth', 'customer'])->group(function () {
     Route::get( '/', [HomeController::class, 'showHome'])->name('home');
