@@ -109,7 +109,7 @@
                 </li>
                 <li class="nav-item">
                         <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
-                            href="{{ route('orders') }}">My Orders</a>
+                            href="{{ route('orders.index') }}">My Orders</a>
                 </li>
             </ul>
 
@@ -118,7 +118,7 @@
 
                 {{-- Wishlist --}}
                 <li class="nav-item">
-                    <a class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
+                    <a class="nav-link custom-wishlist-color" href="{{ route('wishlist.index') }}">
                         <i class="bi bi-bookmark-heart-fill fs-5"></i>
                     </a>
                 </li>

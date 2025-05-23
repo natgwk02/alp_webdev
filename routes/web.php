@@ -48,7 +48,8 @@ Route::get('/terms-and-conditions', function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
+    Route::get('/wishlist', [ProductController::class, 'wishlist'])->middleware('auth')->name('wishlist');
+    
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::get('/wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist']);
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
@@ -84,8 +85,14 @@ Route::get('/terms-and-conditions', function () {
 // Home Route
 Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
-Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+// Route::get('/orders', [OrderController::class, 'index'])->name('orders');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/wishlist', [ProductController::class, 'index'])->name('wishlist.index');
+});
 
 
 Route::get('/about', function () {
