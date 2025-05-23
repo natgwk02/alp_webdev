@@ -58,5 +58,9 @@ class User extends Authenticatable
         'status_del' => 'boolean',
     ];
 
-    
+    public function wishlists()
+{
+    return $this->hasMany(Wishlist::class);
+}
+
 }

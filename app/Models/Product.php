@@ -8,9 +8,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Product extends Model
 {
     //
+    protected $table = 'products';
+
+    protected $primaryKey = 'products_id';
+
     protected $fillable = [
-        'name', 'price', 'stock', 'description', 'weight', 'category',
-        'image', 'storage_temp', 'featured', 'status'
+        'categories_id',
+        'products_name',
+        'products_description',
+        'products_stock',
+        'products_image',
+        'hover_image',
+        'unit_price',
+        'orders_price',
+        'rating',
+        'calories',
+        'protein',
+        'fat',
+        'status_del'
     ];
 
     public function product_category():BelongsTo

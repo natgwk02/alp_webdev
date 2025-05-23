@@ -108,32 +108,31 @@
                             class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden product-card transition-transform position-relative">
 
                             <form
-                                action="{{ isset($wishlist[$product['id']]) ? route('wishlist.remove', $product['id']) : route('wishlist.add', $product['id']) }}"
+                                action="{{ in_array($product->id, $wishlistProductIds) ? route('wishlist.remove', ['productId' => $product->id]) : route('wishlist.add', ['productId' => $product->id]) }}"
                                 method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                                 @csrf
                                 <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn"
-                                    data-product-id="{{ $product['id'] }}">
-                                    <i
-                                        class="bi bi-bookmark-heart-fill {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
+                                    data-product-id="{{ $product->id }}">
+                                    <i class="bi bi-bookmark-heart-fill {{ in_array($product->id, $wishlistProductIds) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
                                 </button>
                             </form>
 
                             <div class="text-center p-4 bg-white position-relative product-img-container">
-                                <img src="{{ asset('images/products-img/' . $product['image']) }}"
-                                    alt="{{ $product['name'] }}" class="img-fluid main-img" />
+                                <img src="{{ asset('images/products-img/' .$product->products_image) }}"
+                                    alt="{{ $product->products_name}}" class="img-fluid main-img" />
 
                                 @if (!empty($product['hover_image']))
-                                    <img src="{{ asset('images/hoverproducts-img/' . $product['hover_image']) }}"
-                                        alt="{{ $product['name'] }} Hover" class="img-fluid hover-img" />
+                                    <img src="{{ asset('images/hoverproducts-img/' .$product->hover_image) }}"
+                                        alt="{{ $product->products_name }} Hover" class="img-fluid hover-img" />
                                 @endif
                             </div>
 
                             <div class="card-body px-4 pb-4 d-flex flex-column">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h5 class="card-title fw-bold text-dark mb-0">{{ $product['name'] }}</h5>
+                                    <h5 class="card-title fw-bold text-dark mb-0">{{ $product->products_name }}</h5>
                                     <div class="rating-stars d-flex">
                                         @php
-                                            $rating = $product['rating'] ?? 0;
+                                            $rating = $product->rating ?? 0;
                                             $fullStars = floor($rating);
                                             $halfStar = $rating - $fullStars >= 0.5;
                                             $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
@@ -153,14 +152,14 @@
                                     </div>
                                 </div>
 
-                                <p class="text-secondary small mb-1">{{ $product['category'] }}</p>
+                                <p class="text-secondary small mb-1">{{ $product->product_category }}</p>
                                 <h5 class="text-primary fw-semibold mb-4">Rp
-                                    {{ number_format($product['price'], 0, ',', '.') }}</h5>
+                                    {{ number_format($product->unit_price, 0, ',', '.') }}</h5>
 
                                 <form action="{{ route('cart.add', ['productId' => $product['id']]) }}" method="POST"
                                     class="mt-auto">
                                     @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
 
                                     <div class="d-flex justify-content-between align-items-center">
                                         <a href="{{ route('product.detail', $product['id']) }}"
