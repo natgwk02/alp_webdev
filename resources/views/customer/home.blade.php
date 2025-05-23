@@ -106,7 +106,6 @@
     border: 2px solid #052659; /* optional hover border */
 }
 
-        }
 
         .btn-lets-chill:hover {
             background-color: #326fcb;
