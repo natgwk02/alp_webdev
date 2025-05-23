@@ -34,7 +34,8 @@ class AdminController extends Controller
     {
 
         $products = Product::orderBy('updated_at', 'desc')->get();
-        $categories = Category::pluck('category_name', 'categories_id')->toArray();
+        $categories = Category::pluck('categories_name', 'categories_id')->toArray();
+
 
         $totalProducts = count($products);
         $currentPage = 1;
@@ -46,14 +47,15 @@ class AdminController extends Controller
 
     public function createProduct()
     {
-        $categories = Product::select('category')->distinct()->pluck('category')->toArray();
+        $categories = Category::pluck('categories_name', 'categories_id')->toArray();
+        $product = null;
         return view('admin.products.index', compact('categories'));
     }
 
     public function editProduct($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Product::select('category')->distinct()->pluck('category')->toArray();
+        $categories = Category::pluck('categories_name', 'categories_id')->toArray();
 
         return view('admin.products.edit', compact('product', 'categories'));
     }
@@ -79,11 +81,9 @@ class AdminController extends Controller
             ->with('success', 'Product added successfully!');
     }
 
-    public function updateProduct(Request $request, $id)
+    public function updateProduct(Request $request, Product $product)
     {
-        $product = Product::findOrFail($id);
-
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
@@ -96,7 +96,11 @@ class AdminController extends Controller
             'status' => 'required|string',
         ]);
 
-        $product->update($validated);
+        $product->name = $request->name;
+        $product->details = $request->details;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->category_id = $request->product_category;
 
         return redirect(route('admin.products'))
             ->with('success', 'Product updated successfully!');

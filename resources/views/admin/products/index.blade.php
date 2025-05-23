@@ -87,8 +87,10 @@
                 <div class="col-md-3">
                     <select id="categorySelect" class="form-select">
                         <option selected>All Categories</option>
-                        @foreach ($categories as $category)
-                            <option>{{ $category }}</option>
+                        @foreach ($categories as $id => $name)
+                            <option value="{{ $id }}" {{ old('categories_id') == $id ? 'selected' : '' }}>
+                                {{ $name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -225,7 +227,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addProductForm" action="{{ route('admin.products.create', $product['id']) }}"
+                    <form id="addProductForm" action="{{ route('admin.products.create') }}"
                         method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
@@ -319,7 +321,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editProductForm" action="{{ route('admin.products.update', $product['id']) }}"
+                    <form id="editProductForm" action="{{ route('admin.products.update', $product->id) }}"
                         method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -425,7 +427,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteProductForm" action="{{ route('admin.products.delete', $product['id']) }}"
+                    <form id="deleteProductForm" action="{{ route('admin.products.delete', $product->id) }}"
                         method="POST">
                         @csrf
                         <button type="submit" class="btn btn-danger">Delete Product</button>

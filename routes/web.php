@@ -13,32 +13,10 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
-Route::get('/login', [AuthController::class, "show"])
-    ->name('login.show');
-
-Route::post('/login_auth', [AuthController::class, "login_auth"])
-    ->name('login.auth');
-
-Route::POST('/logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/login');
-})->name('logout');
-
-
-Route::get('/register', [AuthController::class, 'registerForm'])->name('register'); // untuk tampilkan form
-Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
-Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
-
-Route::get('/reset-password', [AuthController::class, 'showResetForm'])->name('password.reset.form');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
-
-Route::get('/terms-and-conditions', function () {
-    return view('terms-and-conditions');
-})->name('terms');
-
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
+Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
 
 // Customer Routes
 // //Route::middleware(['auth', 'customer'])->group(function () {
@@ -49,7 +27,7 @@ Route::get('/terms-and-conditions', function () {
     Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/wishlist', [ProductController::class, 'wishlist'])->middleware('auth')->name('wishlist');
-    
+
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::get('/wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist']);
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
@@ -60,7 +38,7 @@ Route::get('/terms-and-conditions', function () {
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
     Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
-    
+
 // //});
 
 // Admin Routes
