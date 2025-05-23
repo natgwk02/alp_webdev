@@ -10,7 +10,6 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Hardcoded stats for dashboard
         $stats = [
             'total_orders' => 42,
             'total_revenue' => 1250.75,
@@ -21,15 +20,14 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('stats'));
 
         if (!session('is_admin') && Auth::check()) {
-        return redirect()->route('login.show');
-    }
+            return redirect()->route('login.show');
+        }
 
         return view('admin.dashboard');
     }
 
     public function products()
     {
-        // Sample products data matching your view structure
         $products = [
             [
                 'id' => 'PRD001',
@@ -93,10 +91,8 @@ class AdminController extends Controller
             ]
         ];
 
-        // Get unique categories for the filter dropdown
         $categories = ['Ready Meals', 'Frozen Vegetables', 'Frozen Dimsum', 'Frozen Meat', 'Frozen Nugget', 'Frozen Fruit', 'Frozen Seafood', 'Dessert'];
 
-        // For pagination information
         $totalProducts = count($products);
         $currentPage = 1;
         $perPage = 6;
@@ -113,8 +109,6 @@ class AdminController extends Controller
 
     public function editProduct($id)
     {
-        // Find the product by ID
-
         $product = [
             'id' => $id,
             'name' => 'Gourmet Frozen Pizza',
@@ -137,18 +131,18 @@ class AdminController extends Controller
     public function insertProduct(Request $request)
     {
         return redirect(route('admin.products'))
-        ->with('success', 'Product added successfully!');
+            ->with('success', 'Product added successfully!');
     }
 
     public function updateProduct(Request $request, $id)
     {
         return redirect(route('admin.products'))
-        ->with('success', 'Product updated successfully!');
+            ->with('success', 'Product updated successfully!');
     }
 
     public function deleteProduct($id)
     {
         return redirect(route('admin.products'))
-        ->with('success', 'Product deleted successfully!');
+            ->with('success', 'Product deleted successfully!');
     }
 }

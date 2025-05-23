@@ -1,116 +1,116 @@
 @extends('base.base')
 
 @section('content')
-<style>
-    body {
-        background: url('/images/background.jpg') no-repeat center center fixed;
-        background-size: cover;
-        font-family: 'Segoe UI', sans-serif;
-        margin: 0;
-        padding: 0;
-    }
+    <style>
+        body {
+            background: url('/images/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-    .forgot-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
+        .forgot-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-    .forgot-card {
-        background-color: rgba(240, 240, 240, 0.85);
-        padding: 40px;
-        border-radius: 18px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 420px;
-        text-align: center;
-    }
+        .forgot-card {
+            background-color: rgba(240, 240, 240, 0.85);
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
 
-    .forgot-card img {
-        width: 50%;
-        max-width: 150px;
-        margin-bottom: 0px;
-    }
+        .forgot-card img {
+            width: 50%;
+            max-width: 150px;
+            margin-bottom: 0px;
+        }
 
-    .forgot-card h2 {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        color: #224488;
-    }
+        .forgot-card h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color: #224488;
+        }
 
-    .forgot-card p {
-        font-size: 0.9rem;
-        color: #444;
-        margin-bottom: 25px;
-    }
+        .forgot-card p {
+            font-size: 0.9rem;
+            color: #444;
+            margin-bottom: 25px;
+        }
 
-    .form-control {
-        width: 100%;
-        padding: 12px 15px;
-        border-radius: 10px;
-        border: 1px solid #ccddee;
-        background-color: #f8fbff;
-        margin-bottom: 20px;
-        font-size: 0.95rem;
-    }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #ccddee;
+            background-color: #f8fbff;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
 
-    .btn-blue {
-        background-color: #224488;
-        color: white;
-        padding: 12px;
-        width: 100%;
-        border: none;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: 0.3s;
-    }
+        .btn-blue {
+            background-color: #224488;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
 
-    .btn-blue:hover {
-        background-color: #C1E8FF;
-        color: #224488;
-    }
+        .btn-blue:hover {
+            background-color: #C1E8FF;
+            color: #224488;
+        }
 
-    .back-link {
-        display: block;
-        margin-top: 20px;
-        color: #224488;
-        font-size: 0.9rem;
-        text-decoration: none;
-    }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #224488;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
 
-    .back-link:hover {
-        text-decoration: underline;
-    }
-</style>
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 
-<div class="forgot-wrapper">
-    <div class="forgot-card">
-        <img src="{{ asset('assets/forget-imagee.png') }}" alt="Reset Password Image">
+    <div class="forgot-wrapper">
+        <div class="forgot-card">
+            <img src="{{ asset('assets/forget-imagee.png') }}" alt="Reset Password Image">
 
-        <h2>Forgot your password?</h2>
-        <p>Enter your registered email to receive a reset link.</p>
+            <h2>Forgot your password?</h2>
+            <p>Enter your registered email to receive a reset link.</p>
 
-        @if (session('status'))
-            <div class="alert alert-success">{{ session('status') }}</div>
-        @elseif (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
+            @if (session('status'))
+                <div class="alert alert-success">{{ session('status') }}</div>
+            @elseif (session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
 
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
+            <form method="POST" action="{{ route('password.email') }}">
+                @csrf
 
-            <div class="mb-3 text-start">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" name="email" class="form-control" required>
-            </div>
+                <div class="mb-3 text-start">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
 
-            <button type="submit" class="btn btn-blue">Send Reset Link</button>
-        </form>
+                <button type="submit" class="btn btn-blue">Send Reset Link</button>
+            </form>
 
-        <a href="{{ route('login.show') }}" class="back-link">← Back to Login</a>
+            <a href="{{ route('login.show') }}" class="back-link">← Back to Login</a>
+        </div>
     </div>
-</div>@endsection
-
+@endsection

@@ -5,8 +5,8 @@
     <div class="container py-4">
         <form id="checkout-form" action="{{ route('checkout') }}" method="POST">
             @csrf
-        <div class="row">
-            <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-8">
                     <div class="card shadow-sm mb-4" style="background-color: white;">
                         <div class="card-header bg-white">
                             <h4 class="mb-0">Shipping Information</h4>
@@ -201,9 +201,9 @@
                             @enderror
                         </div>
                     </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm" style="background-color: white;">
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm" style="background-color: white;">
                         <div class="card-header bg-white">
                             <h4 class="mb-0">Order Summary</h4>
                         </div>
@@ -263,10 +263,10 @@
                                 Place Order
                             </button>
                         </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
     @endsection
     @section('scripts')
         <script>
@@ -274,24 +274,19 @@
                 const checkoutForm = document.getElementById('checkout-form');
                 const hiddenInput = document.getElementById('selected-items');
 
-                // Set the selected items directly - these are the items already filtered by the controller
                 const selectedProductIds = {!! json_encode(array_column($filteredItems, 'id')) !!};
                 hiddenInput.value = JSON.stringify(selectedProductIds);
                 console.log("Selected items initialized: ", hiddenInput.value);
 
-                // Event listener for terms agreement
                 const termsCheckbox = document.getElementById('termsAgreement');
 
-                // Event listener for submit form
                 checkoutForm.addEventListener('submit', function(event) {
-                    // Check terms agreement
                     if (!termsCheckbox.checked) {
                         event.preventDefault();
                         alert('You must agree to the Terms and Conditions to proceed.');
                         return;
                     }
 
-                    // Check if we have selected items
                     if (!hiddenInput.value || hiddenInput.value === '[]') {
                         event.preventDefault();
                         alert('Please select at least one item to proceed to checkout.');
@@ -300,7 +295,6 @@
                     }
                 });
 
-                // Notes counter for seller notes
                 const notesTextarea = document.getElementById('sellerNotes');
                 const notesCounter = document.getElementById('notesCounter');
 
@@ -316,11 +310,9 @@
                         }
                     });
 
-                    // Initialize counter on page load
                     notesCounter.textContent = notesTextarea.value.length;
                 }
 
-                // Toggle payment method forms
                 const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
                 const creditCardForm = document.getElementById('creditCardForm');
 

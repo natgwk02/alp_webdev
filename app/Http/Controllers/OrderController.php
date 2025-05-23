@@ -50,7 +50,7 @@ class OrderController extends Controller
                 'shipping_fee' => $order['shipping_fee'],
                 'tax' => $order['tax'],
                 'voucher_discount' => $order['voucher_discount'],
-                'total' => $order['total']?? 0,
+                'total' => $order['total'] ?? 0,
                 'status' => 'Pending',
                 'created_at' => now()->format('Y-m-d H:i:s'),
                 'customer' => [
@@ -82,11 +82,9 @@ class OrderController extends Controller
             return redirect()->route('orders')->with('error', 'Order not found.');
         }
 
-        // Ensure the payment method and status are properly formatted
         $order['payment_method'] = ucfirst($order['payment_method'] ?? 'Unknown');
         $order['payment_status'] = ucfirst($order['payment_status'] ?? 'Unpaid');
 
-        // Ensure customer details are present
         if (!isset($order['customer'])) {
             Log::warning('Order missing customer details', ['order_id' => $id]);
             $order['customer'] = [
@@ -151,77 +149,75 @@ class OrderController extends Controller
         return view('customer.checkout', compact('filteredItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount', 'defaultData'));
     }
 
- public function processCheckout(Request $request)
-{
-    $selectedItems = $request->input('selected_items', '');
+    public function processCheckout(Request $request)
+    {
+        $selectedItems = $request->input('selected_items', '');
 
-    if (is_string($selectedItems)) {
-        $selectedItems = json_decode($selectedItems, true) ?? explode(',', $selectedItems);
-    }
-
-    if (!is_array($selectedItems) || empty($selectedItems)) {
-        return redirect()->route('cart.index')->with('error', 'No items selected for checkout.');
-    }
-
-    $cartItems = session('cart', []);
-
-    // ✅ Pisahkan item yang dipilih dan yang tidak dipilih
-    $checkoutItems = [];
-    $remainingItems = [];
-
-    foreach ($cartItems as $item) {
-        if (in_array($item['id'], $selectedItems)) {
-            $checkoutItems[] = $item;
-        } else {
-            $remainingItems[$item['id']] = $item;
+        if (is_string($selectedItems)) {
+            $selectedItems = json_decode($selectedItems, true) ?? explode(',', $selectedItems);
         }
+
+        if (!is_array($selectedItems) || empty($selectedItems)) {
+            return redirect()->route('cart.index')->with('error', 'No items selected for checkout.');
+        }
+
+        $cartItems = session('cart', []);
+
+        $checkoutItems = [];
+        $remainingItems = [];
+
+        foreach ($cartItems as $item) {
+            if (in_array($item['id'], $selectedItems)) {
+                $checkoutItems[] = $item;
+            } else {
+                $remainingItems[$item['id']] = $item;
+            }
+        }
+
+        $subtotal = collect($checkoutItems)->sum(fn($item) => $item['price'] * $item['quantity']);
+        $shippingFee = 20000;
+        $tax = $subtotal * 0.1;
+        $voucherDiscount = session('voucher_discount', 0);
+        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+
+        $orders = session('orders', []);
+        $orderNumber = "CHILE-" . now()->year . "-" . (count($orders) + 1001);
+
+        $order = [
+            'id' => uniqid('order_'),
+            'order_number' => $orderNumber,
+            'customer' => [
+                'first_name' => $request->input('firstName'),
+                'last_name' => $request->input('lastName'),
+                'email' => $request->input('email'),
+                'phone' => $request->input('phone'),
+                'address' => $request->input('address'),
+                'city' => $request->input('city'),
+                'zip' => $request->input('zip'),
+                'country' => $request->input('country'),
+                'notes' => $request->input('sellerNotes'),
+            ],
+            'payment_method' => ucfirst($request->input('paymentMethod') ?? 'Unknown'),
+            'payment_status' => 'Paid',
+            'items' => array_values($checkoutItems),
+            'subtotal' => $subtotal,
+            'shipping_fee' => $shippingFee,
+            'tax' => $tax,
+            'voucher_discount' => $voucherDiscount,
+            'total' => $total,
+            'status' => 'Pending',
+            'created_at' => now()->format('Y-m-d H:i:s'),
+        ];
+
+        $orders[] = $order;
+        session([
+            'orders' => $orders,
+            'cart' => $remainingItems
+        ]);
+
+
+        session()->forget(['voucher_code', 'voucher_discount', 'selected_items']);
+
+        return redirect()->route('orders')->with('success', 'Checkout completed! Your order has been placed.');
     }
-
-    $subtotal = collect($checkoutItems)->sum(fn($item) => $item['price'] * $item['quantity']);
-    $shippingFee = 20000;
-    $tax = $subtotal * 0.1;
-    $voucherDiscount = session('voucher_discount', 0);
-    $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
-
-    $orders = session('orders', []);
-    $orderNumber = "CHILE-" . now()->year . "-" . (count($orders) + 1001);
-
-    $order = [
-        'id' => uniqid('order_'),
-        'order_number' => $orderNumber,
-        'customer' => [
-            'first_name' => $request->input('firstName'),
-            'last_name' => $request->input('lastName'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'address' => $request->input('address'),
-            'city' => $request->input('city'),
-            'zip' => $request->input('zip'),
-            'country' => $request->input('country'),
-            'notes' => $request->input('sellerNotes'),
-        ],
-        'payment_method' => ucfirst($request->input('paymentMethod') ?? 'Unknown'),
-        'payment_status' => 'Paid',
-        'items' => array_values($checkoutItems),
-        'subtotal' => $subtotal,
-        'shipping_fee' => $shippingFee,
-        'tax' => $tax,
-        'voucher_discount' => $voucherDiscount,
-        'total' => $total,
-        'status' => 'Pending',
-        'created_at' => now()->format('Y-m-d H:i:s'),
-    ];
-
-    $orders[] = $order;
-    session([
-        'orders' => $orders,
-        'cart' => $remainingItems
-    ]);
-
-
-    session()->forget(['voucher_code', 'voucher_discount', 'selected_items']);
-
-    return redirect()->route('orders')->with('success', 'Checkout completed! Your order has been placed.');
-}
-
 }
