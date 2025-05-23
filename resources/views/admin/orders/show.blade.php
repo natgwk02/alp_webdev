@@ -63,23 +63,25 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($order['items'] as $item)
-    <tr>
-        <td>
-            <div class="d-flex align-items-center">
-                <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}"
-                    class="img-thumbnail me-3" width="60"
-                    alt="{{ $item['name'] ?? 'Unknown Product' }}">
-                <div>
-                    <h6 class="mb-0">{{ $item['name'] ?? 'Unknown Product' }}</h6>
-                    <small class="text-muted">SKU: CM-{{ $item['id'] ?? 'Unknown' }}</small>
-                </div>
-            </div>
-        </td>
-        <td>Rp.{{ number_format($item['price'] ?? 0, 2, ',', '.') }}</td>
-        <td>{{ $item['quantity'] ?? 1 }}</td>
-        <td>Rp.{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 2, ',', '.') }}</td>
-    </tr>
-@endforeach
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}"
+                                                        class="img-thumbnail me-3" width="60"
+                                                        alt="{{ $item['name'] ?? 'Unknown Product' }}">
+                                                    <div>
+                                                        <h6 class="mb-0">{{ $item['name'] ?? 'Unknown Product' }}</h6>
+                                                        <small class="text-muted">SKU:
+                                                            CM-{{ $item['id'] ?? 'Unknown' }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Rp.{{ number_format($item['price'] ?? 0, 2, ',', '.') }}</td>
+                                            <td>{{ $item['quantity'] ?? 1 }}</td>
+                                            <td>Rp.{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 2, ',', '.') }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
 
                                 </tbody>
                             </table>

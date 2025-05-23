@@ -14,10 +14,10 @@ use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, "show"])
-->name('login.show');
+    ->name('login.show');
 
 Route::post('/login_auth', [AuthController::class, "login_auth"])
-->name('login.auth');
+    ->name('login.auth');
 
 Route::POST('/logout', function () {
     Auth::logout();
@@ -48,13 +48,14 @@ Route::get('/terms-and-conditions', function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::post('/cart/update/{productId}', [CartController::class, 'updateQuantity'])->name('cart.update');
-    Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
+    Route::get('/wishlist', [ProductController::class, 'wishlist'])->middleware('auth')->name('wishlist');
+    
     Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::get('/wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist']);
     Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
-    Route::post('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
+    Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
+    // Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
@@ -64,28 +65,32 @@ Route::get('/terms-and-conditions', function () {
 
 // Admin Routes
 //Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-  //  Product Management
-    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
-    Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-    Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-    Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+//  Product Management
+Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 
-    // Order Management
-    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-    
-
+// Order Management
+Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
 //});
 
 // Home Route
 Route::get('/home', [HomeController::class, 'showHome'])
 ->name('home');
-Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+// Route::get('/orders', [OrderController::class, 'index'])->name('orders');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/wishlist', [ProductController::class, 'index'])->name('wishlist.index');
+});
 
 
 Route::get('/about', function () {

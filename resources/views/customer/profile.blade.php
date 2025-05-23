@@ -7,28 +7,34 @@
         <div class="col-md-3 mb-4">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <img src="{{'/assets/profile.png' }}" 
+                    <img src="{{ auth()->user()->profile_photo ? Storage::url(auth()->user()->profile_photo) : asset('/assets/profile.png') }}" 
                          class="rounded-circle mb-3" 
                          width="120" 
                          height="120"
                          alt="Profile Photo">
-                    <h5 class="card-title">Hi! Alice</h5>
-                    <p class="text-muted small">Member since 2025</p>
+                    <h5 class="card-title">Hi! {{ auth()->user()->name }}</h5>
+                    <p class="text-muted small">Member since {{ auth()->user()->created_at->format('Y') }}</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <i class="fas fa-user me-2"></i> My Profile
                     </li>                   
                     <li class="list-group-item">
-                        <a href="" class="text-decoration-none text-dark">
+                        <a href="#" class="text-decoration-none text-dark">
                             <i class="fas fa-calendar me-2"></i> Birth Date
                         </a>
                     </li>                   
                 </ul>
-                
             </div>
+
             <a class="w-100 btn text-white mt-3 fw-bold" style="background-color: #052659" href="#"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fas fa-sign-out me-2" style="color: white"></i> Sign Out</a>
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="fas fa-sign-out me-2" style="color: white"></i> Sign Out
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
         </div>
 
         <!-- Main Profile Content -->
@@ -38,7 +44,7 @@
                     <h4 class="mb-0">Profile Information</h4>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -47,25 +53,27 @@
                             <div class="col-md-3">
                                 <label class="form-label">Profile Photo</label>
                                 <div class="profile-photo-container">
-                                    {{-- <img id="profile-photo-preview" 
-                                          
+                                    <img id="profile-photo-preview" 
+                                         src="{{ auth()->user()->profile_photo ? Storage::url(auth()->user()->profile_photo) : asset('/assets/profile.png') }}"
                                          class="rounded-circle" 
                                          width="120" 
                                          height="120"
-                                         alt="Profile Preview"> --}}
+                                         alt="Profile Preview">
                                 </div>
                             </div>
-                            <div class="col-md-9 d-flex align-items-end">
-                                <div class="w-100">
-                                    <input type="file" 
-                                           class="form-control" 
-                                           id="profile_photo" 
-                                           name="profile_photo"
-                                           accept="image/*">
-                                    <div class="form-text">Max 2MB (JPG, PNG)</div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" value=""
+                                        required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" value=""
+                                        required>
                                 </div>
                             </div>
-                        </div>
 
                         <!-- Personal Information -->
                         <div class="row mb-3">
@@ -75,7 +83,7 @@
                                        class="form-control" 
                                        id="name" 
                                        name="name"
-                                       value=""
+                                       value="{{ old('name', auth()->user()->name) }}"
                                        required>
                             </div>
                             <div class="col-md-6">
@@ -84,7 +92,7 @@
                                        class="form-control" 
                                        id="email" 
                                        name="email"
-                                       value=""
+                                       value="{{ old('email', auth()->user()->email) }}"
                                        required>
                             </div>
                         </div>
@@ -97,16 +105,16 @@
                                        class="form-control" 
                                        id="phone" 
                                        name="phone"
-                                       value=""
+                                       value="{{ old('phone', auth()->user()->phone) }}"
                                        placeholder="+62 812-3456-7890">
                             </div>
                             <div class="col-md-6">
-                                <label for="birthdate" class="form-label">Address</label>
-                                <input type="input" 
+                                <label for="birthdate" class="form-label">Birth Date</label>
+                                <input type="date" 
                                        class="form-control" 
                                        id="birthdate" 
                                        name="birthdate"
-                                       value="">
+                                       value="{{ old('birthdate', auth()->user()->birthdate) }}">
                             </div>
                         </div>
 
@@ -119,11 +127,8 @@
                     </form>
                 </div>
             </div>
-
-           
         </div>
     </div>
-</div>
 
 <!-- JavaScript for Profile Photo Preview -->
 <script>
@@ -131,12 +136,14 @@
         const preview = document.getElementById('profile-photo-preview');
         const file = e.target.files[0];
         const reader = new FileReader();
-        
+
         reader.onload = function(e) {
             preview.src = e.target.result;
         }
-        
-        reader.readAsDataURL(file);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     });
 </script>
 @endsection

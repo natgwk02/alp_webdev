@@ -198,25 +198,23 @@ class ProductController extends Controller
 
         return view('customer.product_details', compact('product'));
     }
-  public function wishlist()
-{
-    $wishlist = session('wishlist', []); // pastikan default array kosong
-    $allProducts = $this->products();
+    public function wishlist()
+    {
+        $wishlist = session('wishlist', []); // pastikan default array kosong
+        $allProducts = $this->products();
 
-    // Filter produk yang ada di wishlist
-    $wishlistItems = array_filter($allProducts, function($product) use ($wishlist) {
-        return isset($wishlist[$product['id']]);
-    });
+        $wishlistItems = array_filter($allProducts, function ($product) use ($wishlist) {
+            return isset($wishlist[$product['id']]);
+        });
 
-    // Contoh tambahkan 'in_stock' dan 'product_name' agar sesuai view (kalau belum ada)
-    $wishlistItems = array_map(function($product) {
-        $product['product_name'] = $product['name'];
-        $product['in_stock'] = true; // bisa disesuaikan logika stoknya
-        return $product;
-    }, $wishlistItems);
+        $wishlistItems = array_map(function ($product) {
+            $product['product_name'] = $product['name'];
+            $product['in_stock'] = true; 
+            return $product;
+        }, $wishlistItems);
 
-    return view('customer.wishlist', compact('wishlistItems'));
-}
+        return view('customer.wishlist', compact('wishlistItems'));
+    }
 
 
     public function addToWishlist(Request $request, $productId)
@@ -224,7 +222,7 @@ class ProductController extends Controller
         $wishlist = session()->get('wishlist', []);
         $wishlist[$productId] = true;
         session(['wishlist' => $wishlist]);
-        
+
 
         return redirect()->back()->with('success', 'Product added to wishlist');
     }
@@ -240,24 +238,21 @@ class ProductController extends Controller
 
     public function showHome()
     {
-        $products = $this->products(); // ambil dari fungsi yang kamu buat
+        $products = $this->products(); 
         return view('customer.home', compact('products'));
     }
-public function toggleWishlist($productId)
-{
-    $wishlist = session()->get('wishlist', []);
-    if(isset($wishlist[$productId])){
-        unset($wishlist[$productId]);
-        $message = 'Product removed from wishlist';
-    } else {
-        $wishlist[$productId] = true;
-        $message = 'Product added to wishlist';
+    public function toggleWishlist($productId)
+    {
+        $wishlist = session()->get('wishlist', []);
+        if (isset($wishlist[$productId])) {
+            unset($wishlist[$productId]);
+            $message = 'Product removed from wishlist';
+        } else {
+            $wishlist[$productId] = true;
+            $message = 'Product added to wishlist';
+        }
+        session(['wishlist' => $wishlist]);
+
+        return response()->json(['message' => $message]);
     }
-    session(['wishlist' => $wishlist]);
-
-    return response()->json(['message' => $message]);
 }
-
-}
-
-

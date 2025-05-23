@@ -20,154 +20,148 @@ class CartController extends Controller
         ['id' => 9, 'name' => 'Fiesta Siomay', 'price' => 34000, 'image' => 'fiesta-siomay.jpg', 'stock' => 50, 'category' => 'Frozen Dim Sum', 'description' => 'Delicious and ready-to-steam chicken siomay, perfect for snacks or side dishes.'],
     ];
 
-    // 🛒 Show Cart Page
-public function index(Request $request)
-{
-    $cartItems = session('cart', []);
-    $selectedItems = $request->input('selected_items', []); // Ambil item terpilih
-    $subtotal = 0;
+    public function index(Request $request)
+    {
+        $cartItems = session('cart', []);
+        $selectedItems = $request->input('selected_items', []); 
+        $subtotal = 0;
 
-    // Jika tidak ada item terpilih, hitung semua item
-    if (empty($selectedItems)) {
-        $selectedItems = array_keys($cartItems);
-    }
-
-    foreach ($cartItems as $key => $item) {
-        if (!isset($item['id'], $item['name'], $item['price'], $item['image'], $item['quantity'])) {
-            unset($cartItems[$key]);
-            continue;
+        if (empty($selectedItems)) {
+            $selectedItems = array_keys($cartItems);
         }
 
-        // Hanya hitung subtotal jika item terpilih
-        if (in_array($item['id'], $selectedItems)) {
-            $subtotal += $item['price'] * $item['quantity'];
-        }
-    }
-
-    session(['cart' => $cartItems]);
-
-    $shippingFee = 5000;
-    $tax = round($subtotal * 0.1);
-    $voucherDiscount = session('voucher_discount', 0);
-    $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
-
-    return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
-}
-
-
-public function applyVoucher(Request $request)
-{
-    $validVouchers = [
-        'CHILLBRO' => ['min' => 200000, 'discount' => 50000],
-        'COOLMAN' => ['discount' => 20000],
-        'GOODDAY' => ['discount' => 10000]
-    ];
-
-    $code = strtoupper($request->input('voucher_code'));
-    $subtotal = $this->calculateSubtotal();
-
-    if (!array_key_exists($code, $validVouchers)) {
-        return back()->with('voucher_error', 'Invalid voucher code.');
-    }
-
-    $voucher = $validVouchers[$code];
-
-    if (isset($voucher['min']) && $subtotal < $voucher['min']) {
-        return back()->with('voucher_error', 'CHILLBRO voucher requires minimum purchase of Rp200,000');
-    }
-
-    session([
-        'voucher_code' => $code,
-        'voucher_discount' => $voucher['discount']
-    ]);
-    $selectedItems = explode(',', $request->input('selected_items', ''));
-    session(['selected_items' => $selectedItems]);
-
-    return back()->with('voucher_success', 'Voucher applied successfully!');
-}
-
-
-public function removeVoucher()
-{
-    Session::forget(['voucher_code', 'voucher_discount']);
-    return back()->with('voucher_success', 'Voucher removed successfully');
-}
-
-public function addToCart(Request $request, $productId)
-        {
-            $quantity = max(1, (int) $request->input('quantity', 1));
-            $product = collect($this->products)->firstWhere('id', (int)$productId);
-            $cart = session('cart', []);
-
-            if (!$product) {
-                return redirect()->back()->with('error', 'Product not found.');
+        foreach ($cartItems as $key => $item) {
+            if (!isset($item['id'], $item['name'], $item['price'], $item['image'], $item['quantity'])) {
+                unset($cartItems[$key]);
+                continue;
             }
 
-            if (isset($cart[$productId])) {
-                $cart[$productId]['quantity'] += $quantity;
-            } else {
-                $cart[$productId] = [
-                    'id' => $product['id'],
-                    'name' => $product['name'],
-                    'price' => $product['price'],
-                    'image' => $product['image'],
-                    'quantity' => $quantity,
-                ];
+            if (in_array($item['id'], $selectedItems)) {
+                $subtotal += $item['price'] * $item['quantity'];
             }
-
-            session(['cart' => $cart]);
-
-             return redirect()->back()->with('success', ' Item added to cart.');
         }
 
-        
+        session(['cart' => $cartItems]);
 
-public function removeFromCart(Request $request, $productId)
-{
-    $cart = session('cart', []);
+        $shippingFee = 5000;
+        $tax = round($subtotal * 0.1);
+        $voucherDiscount = session('voucher_discount', 0);
+        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
 
-    if (isset($cart[$productId])) {
-        unset($cart[$productId]);
+        return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
     }
-    session(['cart' => $cart]);
-    return redirect()->route('cart.index')->with('success', 'Product removed from cart.');
-}
+
+
+    public function applyVoucher(Request $request)
+    {
+        $validVouchers = [
+            'CHILLBRO' => ['min' => 200000, 'discount' => 50000],
+            'COOLMAN' => ['discount' => 20000],
+            'GOODDAY' => ['discount' => 10000]
+        ];
+
+        $code = strtoupper($request->input('voucher_code'));
+        $subtotal = $this->calculateSubtotal();
+
+        if (!array_key_exists($code, $validVouchers)) {
+            return back()->with('voucher_error', 'Invalid voucher code.');
+        }
+
+        $voucher = $validVouchers[$code];
+
+        if (isset($voucher['min']) && $subtotal < $voucher['min']) {
+            return back()->with('voucher_error', 'CHILLBRO voucher requires minimum purchase of Rp200,000');
+        }
+
+        session([
+            'voucher_code' => $code,
+            'voucher_discount' => $voucher['discount']
+        ]);
+        $selectedItems = explode(',', $request->input('selected_items', ''));
+        session(['selected_items' => $selectedItems]);
+
+        return back()->with('voucher_success', 'Voucher applied successfully!');
+    }
+
+
+    public function removeVoucher()
+    {
+        Session::forget(['voucher_code', 'voucher_discount']);
+        return back()->with('voucher_success', 'Voucher removed successfully');
+    }
+
+    public function addToCart(Request $request, $productId)
+    {
+        $quantity = max(1, (int) $request->input('quantity', 1));
+        $product = collect($this->products)->firstWhere('id', (int)$productId);
+        $cart = session('cart', []);
+
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity'] += $quantity;
+        } else {
+            $cart[$productId] = [
+                'id' => $product['id'],
+                'name' => $product['name'],
+                'price' => $product['price'],
+                'image' => $product['image'],
+                'quantity' => $quantity,
+            ];
+        }
+
+        session(['cart' => $cart]);
+
+        return redirect()->back()->with('success', ' Item added to cart.');
+    }
+
+
+
+    public function removeFromCart(Request $request, $productId)
+    {
+        $cart = session('cart', []);
+
+        if (isset($cart[$productId])) {
+            unset($cart[$productId]);
+        }
+        session(['cart' => $cart]);
+        return redirect()->route('cart.index')->with('success', 'Product removed from cart.');
+    }
 
 
 
     private function calculateSubtotal()
-{
-    $cartItems = session('cart', []);
-    return array_reduce($cartItems, function($carry, $item) {
-        return $carry + ($item['price'] * $item['quantity']);
-    }, 0);
-}
-
-public function updateQuantity(Request $request, $productId)
-{
-    $quantity = max(1, (int) $request->input('quantity', 1));
-    $cart = session('cart', []);
-
-    if (isset($cart[$productId])) {
-        // Perbarui kuantitas pada sesi
-        $cart[$productId]['quantity'] = $quantity;
-        session(['cart' => $cart]);
+    {
+        $cartItems = session('cart', []);
+        return array_reduce($cartItems, function ($carry, $item) {
+            return $carry + ($item['price'] * $item['quantity']);
+        }, 0);
     }
 
-    // Hitung ulang subtotal, shipping, tax, dan total
-    $subtotal = $this->calculateSubtotal();
-    $shippingFee = 5000;
-    $tax = round($subtotal * 0.1);
-    $voucherDiscount = session('voucher_discount', 0);
-    $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+    public function updateQuantity(Request $request, $productId)
+    {
+        $quantity = max(1, (int) $request->input('quantity', 1));
+        $cart = session('cart', []);
 
-    // Kembali ke halaman cart dengan data terbaru
-    return redirect()->route('cart.index')->with([
-        'subtotal' => $subtotal,
-        'shippingFee' => $shippingFee,
-        'tax' => $tax,
-        'total' => $total,
-        'voucherDiscount' => $voucherDiscount,
-    ]);
-}
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity'] = $quantity;
+            session(['cart' => $cart]);
+        }
+
+        $subtotal = $this->calculateSubtotal();
+        $shippingFee = 5000;
+        $tax = round($subtotal * 0.1);
+        $voucherDiscount = session('voucher_discount', 0);
+        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+
+        return redirect()->route('cart.index')->with([
+            'subtotal' => $subtotal,
+            'shippingFee' => $shippingFee,
+            'tax' => $tax,
+            'total' => $total,
+            'voucherDiscount' => $voucherDiscount,
+        ]);
+    }
 }
