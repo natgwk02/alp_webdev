@@ -365,7 +365,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="add_products_image" class="form-label">Hover Image*</label>
+                                <label for="add_hover_image" class="form-label">Hover Image*</label>
                                 <input class="form-control @error('products_image') is-invalid @enderror" type="file"
                                     id="add_hover_image" name="hover_image" required>
                             </div>
@@ -391,21 +391,26 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Form action will be set dynamically by JavaScript -->
+                        {{-- Display Validation Errors (Optional, needs more setup for AJAX/Modals) --}}
+
+                        {{-- Form action will be set by JS --}}
                         <form id="editProductForm" method="POST" enctype="multipart/form-data">
                             @csrf
-                            @method('PUT')
+                            @method('PUT') {{-- Tells Laravel to treat this as a PUT request --}}
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="editProductName" class="form-label">Product Name*</label>
-                                    <input type="text" class="form-control" id="editProductName" name="name"
-                                        value="" required>
+                                    <input type="text" class="form-control" id="editProductName" name="products_name"
+                                        required>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="editProductCategory" class="form-label">Category*</label>
-                                    <select class="form-select" id="editProductCategory" name="category" required>
-                                        @foreach ($categories as $category)
-                                            <option>{{ $category }}</option>
+                                    <select class="form-select" id="editProductCategory" name="categories_id" required>
+                                        <option value="" disabled>Select category</option>
+                                        {{-- Use $categories passed to the index view --}}
+                                        @foreach ($categories as $id => $name)
+                                            <option value="{{ $id }}">{{ $name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -413,66 +418,55 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="editProductPrice" class="form-label">Price (Rp)*</label>
-                                    <input type="number" class="form-control" id="editProductPrice" name="price"
-                                        step="1" min="0" value="" required>
+                                    <input type="number" class="form-control" id="editProductPrice" name="unit_price"
+                                        step="1" min="0" required>
                                 </div>
                                 <div class="col-md-6">
+                                    <label for="editOrdersPrice" class="form-label">Orders Price (Rp)*</label>
+                                    <input type="number" class="form-control" id="editOrdersPrice" name="orders_price"
+                                        step="1" min="0">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
                                     <label for="editProductStock" class="form-label">Stock Quantity*</label>
-                                    <input type="number" class="form-control" id="editProductStock" name="stock"
-                                        min="0" value="" required>
+                                    <input type="number" class="form-control" id="editProductStock"
+                                        name="products_stock" min="0" required>
+                                </div>
+                                <div class="col-md-6">
+                                    {{-- Add other fields like Weight if needed --}}
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="editProductDescription" class="form-label">Description</label>
-                                <textarea class="form-control" id="editProductDescription" name="description" rows="3"></textarea>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="editProductWeight" class="form-label">Weight/Size*</label>
-                                    <input type="text" class="form-control" id="editProductWeight" name="weight"
-                                        required value="">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editProductID" class="form-label">ID*</label>
-                                    <input type="text" class="form-control" id="editProductID" name="product_id"
-                                        value="" required>
-                                </div>
+                                <textarea class="form-control" id="editProductDescription" name="products_description" rows="3"></textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="editProductImage" class="form-label">Product Image*</label>
+                                <label for="editProductImage" class="form-label">Product Image (Upload new to
+                                    replace)</label>
                                 <div class="d-flex align-items-center mb-2">
-                                    <img src="" id="currentProductImage" alt="Current product image"
-                                        class="me-3 rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                                    <img src="https://via.placeholder.com/100" id="currentProductImage"
+                                        alt="Current product image" class="me-3 rounded"
+                                        style="width: 100px; height: 100px; object-fit: cover;">
                                     <span class="text-muted">Current image</span>
                                 </div>
-                                <input class="form-control" type="file" id="editProductImage" name="image">
+                                {{-- Image input is NOT required for edit --}}
+                                <input class="form-control" type="file" id="editProductImage" name="products_image">
                             </div>
+
                             <div class="mb-3">
-                                <label class="form-label">Storage Temperature*</label>
-                                <div class="d-flex gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="storage_temp"
-                                            value="freezer" id="editFreezer">
-                                        <label class="form-check-label" for="editFreezer">
-                                            Deep Freeze (-18°C or below)
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="storage_temp"
-                                            value="refrigerator" id="editRefrigerator">
-                                        <label class="form-check-label" for="editRefrigerator">
-                                            Refrigerator (0°C to 5°C)
-                                        </label>
-                                    </div>
+                                <label for="editHoverImage" class="form-label">Hover Image (Upload new to
+                                    replace)</label>
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="https://via.placeholder.com/100" id="currentProductImage"
+                                        alt="Current product image" class="me-3 rounded"
+                                        style="width: 100px; height: 100px; object-fit: cover;">
+                                    <span class="text-muted">Current image</span>
                                 </div>
+                                {{-- Image input is NOT required for edit --}}
+                                <input class="form-control" type="file" id="editHoverImage" name="hover_image">
                             </div>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" id="editFeaturedProduct"
-                                    name="featured">
-                                <label class="form-check-label" for="editFeaturedProduct">
-                                    Featured Product (Tasty Picks)
-                                </label>
-                            </div>
+
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -521,29 +515,61 @@
             });
 
             // Handle edit product modal
-            const editProductModal = document.getElementById('editProductModal');
-            editProductModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const productId = button.getAttribute('data-product-id');
+            document.addEventListener('DOMContentLoaded', function() {
+                const editProductModal = document.getElementById('editProductModal');
+                if (editProductModal) {
+                    editProductModal.addEventListener('show.bs.modal', async function(event) {
+                        const button = event.relatedTarget; // Button that triggered the modal
+                        const productId = button.getAttribute('data-product-id');
 
-                // Set the form action URL dynamically
-                const form = document.getElementById('editProductForm');
-                form.action = `/admin/products/update/${productId}`;
+                        const form = document.getElementById('editProductForm');
+                        // Construct URLs - Ensure these match your routes!
+                        const updateUrl = `/admin/products/${productId}/update`;
+                        const getDataUrl = `/admin/products/${productId}/edit-data`;
 
-                // You would typically fetch product data via AJAX here
-                // For now, using placeholder data
-                document.getElementById('editProductName').value = 'Gourmet Frozen Pizza';
-                document.getElementById('editProductCategory').value = 'Ready Meals';
-                document.getElementById('editProductPrice').value = '25000';
-                document.getElementById('editProductStock').value = '125';
-                document.getElementById('editProductDescription').value =
-                    'Delicious gourmet pizza with premium toppings, ready to bake from frozen.';
-                document.getElementById('editProductWeight').value = '400g';
-                document.getElementById('editProductID').value = productId;
-                document.getElementById('currentProductImage').src =
-                    '{{ asset('images/products-img/gourmet-pizza.jpg') }}';
-                document.getElementById('editFreezer').checked = true;
-                document.getElementById('editFeaturedProduct').checked = true;
+                        // Set the form action
+                        form.action = updateUrl;
+
+                        // Clear previous data / set loading state (optional)
+                        form.reset(); // Simple way to clear
+                        document.getElementById('currentProductImage').src =
+                            'https://via.placeholder.com/100';
+
+
+                        // Fetch product data
+                        try {
+                            const response = await fetch(getDataUrl);
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            const product = await response.json();
+
+                            // Populate form fields
+                            document.getElementById('editProductName').value = product.products_name || '';
+                            document.getElementById('editProductCategory').value = product.categories_id ||'';
+                            document.getElementById('editProductPrice').value = product.unit_price || '';
+                            document.getElementById('editOrdersPrice').value = product.orders_price || '';
+                            document.getElementById('editProductStock').value = product.products_stock ||'';
+                            document.getElementById('editProductDescription').value = product.products_description || '';
+
+
+                            // Set current image
+                            if (product.products_image) {
+                                document.getElementById('currentProductImage').src =
+                                    `/storage/products/${product.products_image}`;
+                            } else {
+                                document.getElementById('currentProductImage').src =
+                                    'https://via.placeholder.com/100';
+                            }
+
+                        } catch (error) {
+                            console.error('Error fetching product data:', error);
+                            alert('Could not load product data. Please try again.');
+                        }
+                    });
+                }
             });
 
             // Handle delete product modal

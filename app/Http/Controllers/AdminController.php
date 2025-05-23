@@ -30,11 +30,11 @@ class AdminController extends Controller
     {
 
         $query = Product::with('category')
-                        ->where(function ($q) {
-                            $q->where('status_del', 0)
-                              ->orWhereNull('status_del');
-                        })
-                        ->orderBy('products_id');
+            ->where(function ($q) {
+                $q->where('status_del', 0)
+                    ->orWhereNull('status_del');
+            })
+            ->orderBy('products_id');
 
         if ($request->filled('search')) {
             $query->where('products_name', 'like', '%' . $request->search . '%');
@@ -113,27 +113,26 @@ class AdminController extends Controller
 
     public function updateProduct(Request $request, Product $product)
     {
-        // Validation - ensure names match form
         $validatedData = $request->validate([
             'products_name' => 'required|string|max:50',
             'unit_price' => 'required|integer|min:0',
             'products_stock' => 'required|integer|min:0',
             'products_description' => 'nullable|string',
             'categories_id' => 'required|exists:categories,categories_id',
-            'products_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Allow update
+            'products_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'hover_image' => 'nullable|string|max:255',
             'status_del' => 'nullable|boolean',
-            // Add other fields like 'weight', 'product_id' if needed
+            'orders_price' => 'required|integer|min:0'
         ]);
 
-        // **FIXED**: Update the *injected* $product, DO NOT create a new one.
         $product->products_name = $validatedData['products_name'];
         $product->unit_price = $validatedData['unit_price'];
         $product->products_stock = $validatedData['products_stock'];
-        $product->products_description = $validatedData['products_description'] ?? null;
+        $product->products_description = $validatedData['products_description'] ?? '';
         $product->categories_id = $validatedData['categories_id'];
-        $product->hover_image = $validatedData['hover_image'] ?? null;
-        $product->status_del = $validatedData['status_del'] ?? $product->status_del;
+        $product->hover_image = $validatedData['hover_image'] ?? $product->hover_image;
+        $product->orders_price = $validatedData['orders_price'] ?? $product->orders_price;
+        $product->status_del = 0;
 
         // Handle Image Upload (Optional Update)
         if ($request->hasFile('products_image')) {
@@ -151,6 +150,19 @@ class AdminController extends Controller
             ->with('success', 'Product updated successfully!');
     }
 
+    /**
+     * Fetch product data for AJAX editing.
+     *
+     * @param  \App\Models\Product $product
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProductData(Product $product)
+    {
+        // You can load relationships if needed, but usually just the model is enough
+        // $product->load('category');
+        return response()->json($product);
+    }
+
     public function deleteProduct(Product $product)
     {
         try {
@@ -163,7 +175,6 @@ class AdminController extends Controller
             // Berikan pesan sukses yang sesuai
             return redirect(route('admin.products'))
                 ->with('success', 'Product deleted successfully!');
-
         } catch (\Exception $e) {
             // Tangani jika ada error saat menyimpan
             return redirect(route('admin.products'))
