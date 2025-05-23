@@ -22,24 +22,25 @@
 </script>
 
 @section('content')
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-@if (session('success'))
-    <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-        role="alert" style="min-width: 300px;">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
+    @if (session('success'))
+        <div id="successAlert"
+            class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+            role="alert" style="min-width: 300px;">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <style>
         body {
             color: #052659;
         }
 
         .hero-section {
-        position: relative;
-        height: 100vh;
-        overflow: hidden;
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .bg-video {
@@ -51,11 +52,12 @@
             object-fit: cover;
             z-index: 0;
         }
+
         /* .hero-section {
-            background-color: #C1E8FF;
-            padding: 80px 0;
-            color: #052659;
-        } */
+                background-color: #C1E8FF;
+                padding: 80px 0;
+                color: #052659;
+            } */
 
         .hero-text {
             position: absolute;
@@ -80,10 +82,11 @@
         }
 
         .hero-section .container {
-                position: relative;
-                z-index: 2;
+            position: relative;
+            z-index: 2;
         }
-            .hero-section .overlay {
+
+        .hero-section .overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -92,19 +95,22 @@
             background-color: rgba(0, 0, 0, 0.45);
             z-index: 1;
         }
+
         .btn-lets-chill {
             background-color: #ffffff;
-            color:#052659; 
+            color: #052659;
             border-radius: 12px;
             padding: 12px 24px;
             font-weight: 600;
         }
 
-.btn-lets-chill:hover {
-    background-color: #f0f0f0; /* soft hover */
-    color: #052659;
-    border: 2px solid #052659; /* optional hover border */
-}
+        .btn-lets-chill:hover {
+            background-color: #f0f0f0;
+            /* soft hover */
+            color: #052659;
+            border: 2px solid #052659;
+            /* optional hover border */
+        }
 
         }
 
@@ -309,7 +315,7 @@
 
         }
 
-        
+
         .product-card {
             display: flex;
             flex-direction: column;
@@ -341,7 +347,7 @@
 
         iframe {
             width: 80%;
-            height: 80%; 
+            height: 80%;
             border: none;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -367,7 +373,8 @@
         }
 
         .testimonial-item {
-            min-height: 350px; /* atau atur sesuai kebutuhan */
+            min-height: 350px;
+            /* atau atur sesuai kebutuhan */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -382,12 +389,10 @@
         .bi-star {
             color: #052659 !important;
         }
-
-
     </style>
 
     {{-- Hero Section with Local Video --}}
-            <section class="hero-section">
+    <section class="hero-section">
         <!-- Background Video -->
         <video autoplay muted loop playsinline class="bg-video">
             <source src="{{ asset('videos/chille video.mp4') }}" type="video/mp4">
@@ -401,8 +406,7 @@
         <div class="hero-text">
             <h1>Keep it cool, keep it Chillé!</h1>
             <p>Deliciously frozen, always ready. Discover your next favorite meal today!</p>
-            <a href="#shop-category" class="btn btn-lets-chill btn-lg border-0"
-                onclick="scrollWithOffset(event)">
+            <a href="#shop-category" class="btn btn-lets-chill btn-lg border-0" onclick="scrollWithOffset(event)">
                 Let's Chill
             </a>
 
@@ -542,13 +546,14 @@
             <!-- Konten -->
             <div
                 class="voucher-content p-4 p-md-5 d-flex flex-column justify-content-center text-center text-md-start bg-white">
-                
+
                 <h2 class="text-blue fw-bold mb-2">🎉 Welcome to Chillé – Get Rp50.000 Off! 🎉</h2>
-                
+
                 <p class="mb-3 text-dark fs-5">Enjoy all your favorite frozen food with a minimum spend of Rp200.000</p>
-                
-                <p class="mb-4 text-muted">Use code <span class="text-warning fw-bold">CHILLBRO</span> at checkout for your first order</p>
-                
+
+                <p class="mb-4 text-muted">Use code <span class="text-warning fw-bold">CHILLBRO</span> at checkout for
+                    your first order</p>
+
                 <a href="{{ route('products') }}"
                     class="btn btn-warning px-4 py-2 fw-semibold rounded-pill shadow-sm text-dark">Shop Now</a>
             </div>
@@ -563,68 +568,71 @@
             <div class="row">
                 <!-- Product 1 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
-                <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
-                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
-                    <img src="{{ asset('images/products-img/kanzler-nugget.jpg') }}" class="card-img-top" alt="Product 1">
-                    <div class="card-body d-flex flex-column h-100">
-                        <h5 class="card-title">Kanzler Nugget Crispy</h5>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <p class="card-text mb-0">
-                                Rp 40.999 <small class="text-decoration-line-through text-muted">Rp 50.000</small>
-                            </p>
-                            <div>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-half text-warning"></i>
-                            </div>
-                        </div>
-                        <form action="{{ route('cart.add', ['productId' => 3]) }}" method="POST" class="mt-auto">
-                            @csrf
-                            <input type="hidden" name="product_id" value="3">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
-                                <i class="bi bi-cart-plus-fill"></i> Add to Cart
-                            </button>
-                        </form>
+                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
+                        <img src="{{ asset('images/products-img/kanzler-nugget.jpg') }}" class="card-img-top"
+                            alt="Product 1">
+                        <div class="card-body d-flex flex-column h-100">
+                            <h5 class="card-title">Kanzler Nugget Crispy</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <p class="card-text mb-0">
+                                    Rp 40.999 <small class="text-decoration-line-through text-muted">Rp 50.000</small>
+                                </p>
+                                <div>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-half text-warning"></i>
                                 </div>
                             </div>
+                            <form action="{{ route('cart.add', ['productId' => 3]) }}" method="POST" class="mt-auto">
+                                @csrf
+                                <input type="hidden" name="product_id" value="3">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
+                                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                                </button>
+                            </form>
                         </div>
-                            <!-- Product 2 -->
-                        <div class="col-lg-3 col-md-4 col-6 mb-4">
-                            <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
-                                <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top" alt="Product 2">
-                                <div class="card-body d-flex flex-column h-100">
-                                    <h5 class="card-title">Ready Meal Fiesta Beef Bulgogi With Rice</h5>
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <p class="card-text mb-0">Rp 26.999</p>
-                                        <div>
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <i class="bi bi-star-half text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <form action="{{ route('cart.add', ['productId' => 4]) }}" method="POST" class="mt-auto">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="3">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
-                                        <i class="bi bi-cart-plus-fill"></i> Add to Cart
-                                    </button>
-                                </form>
+                    </div>
+                </div>
+                <!-- Product 2 -->
+                <div class="col-lg-3 col-md-4 col-6 mb-4">
+                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
+                        <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top"
+                            alt="Product 2">
+                        <div class="card-body d-flex flex-column h-100">
+                            <h5 class="card-title">Ready Meal Fiesta Beef Bulgogi With Rice</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <p class="card-text mb-0">Rp 26.999</p>
+                                <div>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-half text-warning"></i>
+                                </div>
+                            </div>
+                            <form action="{{ route('cart.add', ['productId' => 4]) }}" method="POST" class="mt-auto">
+                                @csrf
+                                <input type="hidden" name="product_id" value="3">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
+                                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                                </button>
+                            </form>
 
-                                </div>
-                            </div>
                         </div>
+                    </div>
+                </div>
 
                 <!-- Product 3 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
                     <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
                         <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
-                        <img src="{{ asset('images/products-img/fish-grilled-salmon.jpg') }}" class="card-img-top" alt="Product 3">
+                        <img src="{{ asset('images/products-img/fish-grilled-salmon.jpg') }}" class="card-img-top"
+                            alt="Product 3">
                         <div class="card-body d-flex flex-column h-100">
                             <h5 class="card-title">Gorton's Classic Grilled Salmon</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -653,8 +661,8 @@
                 <!-- Product 4 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
                     <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
-                    <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpg') }}"
-                        class="card-img-top pt-2" alt="Product 4">
+                        <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpg') }}" class="card-img-top pt-2"
+                            alt="Product 4">
                         <div class="card-body d-flex flex-column h-100">
                             <h5 class="card-title">Fiesta Chicken Karage 500gr</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -679,14 +687,14 @@
                         </div>
                     </div>
                 </div>
-                </div>
-                <div class="text-center mt-4">
-                    <a href="{{ route('products') }}" class="btn text-white btn-best-product">
-                        View All Products
-                    </a>
-                </div>
             </div>
-        </section>
+            <div class="text-center mt-4">
+                <a href="{{ route('products') }}" class="btn text-white btn-best-product">
+                    View All Products
+                </a>
+            </div>
+        </div>
+    </section>
 
     {{-- why us --}}
     <section class="why-chille py-5">
@@ -725,162 +733,169 @@
                 </div>
             </div>
         </div>
+    </section>
 
-
-        <!-- Customer Reviews Carousel -->
-        <section class="testimonial-carousel py-5" style="background: linear-gradient(to bottom, #f6fbff, #d9ecfa);">
-             <div class="w-100 text-center px-4 px-md-5 mx-0">
-                <h2 class="text-center mb-5">What Our Customers Say</h2>
-                <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
-                    <div class="carousel-inner">
-                        <!-- Slide 1 -->
-                        <div class="carousel-item active">
-                            <div class="row justify-content-center g-4">
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Sarah Kiem</h5>
-                                            <small class="text-muted d-block mb-3">Verified Buyer</small>
-                                            <p class="text-secondary small fst-italic">“Kualitas ikannya segar banget! Saya suka banget yang sea bass, teksturnya lembut dan rasa alami.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-half"></i>
-                                            </div>
+    <!-- Customer Reviews Carousel -->
+    <section class="testimonial-carousel py-5" style="background: linear-gradient(to bottom, #f6fbff, #d9ecfa);">
+        <div class="w-100 text-center px-4 px-md-5 mx-0">
+            <h2 class="text-center mb-5">What Our Customers Say</h2>
+            <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+                <div class="carousel-inner">
+                    <!-- Slide 1 -->
+                    <div class="carousel-item active">
+                        <div class="row justify-content-center g-4">
+                            <div class="col-md-6 col-lg-3">
+                                <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                    <div class="text-center">
+                                        <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
+                                        <h5 class="fw-bold text-primary mb-1">Sarah Kiem</h5>
+                                        <small class="text-muted d-block mb-3">Verified Buyer</small>
+                                        <p class="text-secondary small fst-italic">“Kualitas ikannya segar banget! Saya
+                                            suka banget yang sea bass, teksturnya lembut dan rasa alami.”</p>
+                                        <div class="text-primary fs-5">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-half"></i>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Michael Tan</h5>
-                                            <small class="text-muted d-block mb-3">Home Cook</small>
-                                            <p class="text-secondary small fst-italic">“Dari kemasan sampai rasa, semuanya well-prepared. Produk lokal yang patut dibanggakan!”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                    <div class="text-center">
+                                        <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
+                                        <h5 class="fw-bold text-primary mb-1">Michael Tan</h5>
+                                        <small class="text-muted d-block mb-3">Home Cook</small>
+                                        <p class="text-secondary small fst-italic">“Dari kemasan sampai rasa, semuanya
+                                            well-prepared. Produk lokal yang patut dibanggakan!”</p>
+                                        <div class="text-primary fs-5">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Samantha R.</h5>
-                                            <small class="text-muted d-block mb-3">Busy Mom</small>
-                                            <p class="text-secondary small fst-italic">“Anak-anak saya suka nuggetnya. Gampang disiapkan dan rasanya enak banget!”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star"></i>
-                                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                    <div class="text-center">
+                                        <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
+                                        <h5 class="fw-bold text-primary mb-1">Samantha R.</h5>
+                                        <small class="text-muted d-block mb-3">Busy Mom</small>
+                                        <p class="text-secondary small fst-italic">“Anak-anak saya suka nuggetnya. Gampang
+                                            disiapkan dan rasanya enak banget!”</p>
+                                        <div class="text-primary fs-5">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star"></i>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Andi Wibowo</h5>
-                                            <small class="text-muted d-block mb-3">Office Worker</small>
-                                            <p class="text-secondary small fst-italic">“Pesanannya cepat sampai dan langsung saya simpan di freezer. Praktis untuk makan malam setelah kerja.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star"></i>
-                                                <i class="bi bi-star"></i>
-                                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                    <div class="text-center">
+                                        <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
+                                        <h5 class="fw-bold text-primary mb-1">Andi Wibowo</h5>
+                                        <small class="text-muted d-block mb-3">Office Worker</small>
+                                        <p class="text-secondary small fst-italic">“Pesanannya cepat sampai dan langsung
+                                            saya simpan di freezer. Praktis untuk makan malam setelah kerja.”</p>
+                                        <div class="text-primary fs-5">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star"></i>
+                                            <i class="bi bi-star"></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Slide 2 -->
-                        <div class="carousel-item">
-                            <div class="row justify-content-center g-4">
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Livia Chen</h5>
-                                            <small class="text-muted d-block mb-3">Fitness Enthusiast</small>
-                                            <p class="text-secondary small fst-italic">“Pilihan sayuran beku di sini banyak dan segar. Cocok banget buat salad dan smoothie saya.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-half"></i>
-                                            </div>
+                    <!-- Slide 2 -->
+                    <div class="carousel-item">
+                        <div class="row justify-content-center g-4">
+                            <div class="col-md-6 col-lg-3">
+                                <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                    <div class="text-center">
+                                        <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
+                                        <h5 class="fw-bold text-primary mb-1">Livia Chen</h5>
+                                        <small class="text-muted d-block mb-3">Fitness Enthusiast</small>
+                                        <p class="text-secondary small fst-italic">“Pilihan sayuran beku di sini banyak dan
+                                            segar. Cocok banget buat salad dan smoothie saya.”</p>
+                                        <div class="text-primary fs-5">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-half"></i>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Rian Setiawan</h5>
-                                            <small class="text-muted d-block mb-3">Student</small>
-                                            <p class="text-secondary small fst-italic">“Hemat dan enak! Produk Chillé selalu ada di kulkas saya. Cocok buat anak kos.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star"></i>
-                                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                    <div class="text-center">
+                                        <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
+                                        <h5 class="fw-bold text-primary mb-1">Rian Setiawan</h5>
+                                        <small class="text-muted d-block mb-3">Student</small>
+                                        <p class="text-secondary small fst-italic">“Hemat dan enak! Produk Chillé selalu
+                                            ada di kulkas saya. Cocok buat anak kos.”</p>
+                                        <div class="text-primary fs-5">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star"></i>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Nina Hartono</h5>
-                                            <small class="text-muted d-block mb-3">Working Mom</small>
-                                            <p class="text-secondary small fst-italic">“Quick dinners made easy! The ready meals are life-savers.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                    <div class="text-center">
+                                        <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
+                                        <h5 class="fw-bold text-primary mb-1">Nina Hartono</h5>
+                                        <small class="text-muted d-block mb-3">Working Mom</small>
+                                        <p class="text-secondary small fst-italic">“Quick dinners made easy! The ready
+                                            meals are life-savers.”</p>
+                                        <div class="text-primary fs-5">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                        <div class="text-center">
-                                            <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
-                                            <h5 class="fw-bold text-primary mb-1">Kevin Anggara</h5>
-                                            <small class="text-muted d-block mb-3">Chef</small>
-                                            <p class="text-secondary small fst-italic">“Daging dan seafood-nya kualitas bagus. Saya pakai untuk meal prep tiap minggu.”</p>
-                                            <div class="text-primary fs-5">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-half"></i>
-                                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+                                    <div class="text-center">
+                                        <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
+                                        <h5 class="fw-bold text-primary mb-1">Kevin Anggara</h5>
+                                        <small class="text-muted d-block mb-3">Chef</small>
+                                        <p class="text-secondary small fst-italic">“Daging dan seafood-nya kualitas bagus.
+                                            Saya pakai untuk meal prep tiap minggu.”</p>
+                                        <div class="text-primary fs-5">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-half"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -889,49 +904,49 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     </section>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    // Auto-hide success alert after 5 seconds
-    if ($('#successAlert').length) {
-        setTimeout(function() {
-            $('#successAlert').fadeOut('slow', function() {
-                $(this).remove();
-            });
-        }, 5000);
-    }
-
-    if ($('#errorAlert').length) {
-        setTimeout(function() {
-            $('#errorAlert').fadeOut('slow', function() {
-                $(this).remove();
-            });
-        }, 5000);
-    }
-
-    // Carousel controls
-    const categoryCarousel = document.getElementById('categoryCarousel');
-    if (categoryCarousel) {
-        const carousel = new bootstrap.Carousel(categoryCarousel, {
-            interval: 5000,
-            pause: false
-        });
-
-        const carouselControls = document.querySelectorAll(
-            '.carousel-control-prev, .carousel-control-next, .carousel-indicators button');
-        carouselControls.forEach(control => {
-            control.addEventListener('click', function() {
-                carousel.pause();
+    <script>
+        $(document).ready(function() {
+            // Auto-hide success alert after 5 seconds
+            if ($('#successAlert').length) {
                 setTimeout(function() {
-                    carousel.cycle();
-                }, 100);
-            });
+                    $('#successAlert').fadeOut('slow', function() {
+                        $(this).remove();
+                    });
+                }, 5000);
+            }
+
+            if ($('#errorAlert').length) {
+                setTimeout(function() {
+                    $('#errorAlert').fadeOut('slow', function() {
+                        $(this).remove();
+                    });
+                }, 5000);
+            }
+
+            // Carousel controls
+            const categoryCarousel = document.getElementById('categoryCarousel');
+            if (categoryCarousel) {
+                const carousel = new bootstrap.Carousel(categoryCarousel, {
+                    interval: 5000,
+                    pause: false
+                });
+
+                const carouselControls = document.querySelectorAll(
+                    '.carousel-control-prev, .carousel-control-next, .carousel-indicators button');
+                carouselControls.forEach(control => {
+                    control.addEventListener('click', function() {
+                        carousel.pause();
+                        setTimeout(function() {
+                            carousel.cycle();
+                        }, 100);
+                    });
+                });
+            }
         });
-    }
-});
-</script>
+    </script>
 
 @endsection
