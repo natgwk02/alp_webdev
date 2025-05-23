@@ -14,7 +14,6 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Hardcoded stats for dashboard
         $stats = [
             'total_orders' => Order::count(),
             'total_revenue' => Order::sum('orders_total_price'),

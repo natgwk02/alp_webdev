@@ -23,7 +23,16 @@
 
 @section('content')
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
+    @if (session('success'))
+        <div id="successAlert"
+            class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+            role="alert" style="min-width: 300px;">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     @if (session('success'))
         <div id="successAlert"
             class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
@@ -112,7 +121,7 @@
             /* optional hover border */
         }
 
-        }
+        
 
         .btn-lets-chill:hover {
             background-color: #326fcb;
@@ -211,7 +220,6 @@
             background-color: white;
         }
 
-        /* cat carousel */
         .category-carousel .carousel-control-prev,
         .category-carousel .carousel-control-next {
             width: 40px;
@@ -399,10 +407,8 @@
             Your browser does not support the video tag.
         </video>
 
-        <!-- Dark overlay -->
         <div class="overlay"></div>
 
-        <!-- Centered text -->
         <div class="hero-text">
             <h1>Keep it cool, keep it Chillé!</h1>
             <p>Deliciously frozen, always ready. Discover your next favorite meal today!</p>
@@ -424,7 +430,6 @@
 
             <div id="categoryCarousel" class="carousel slide category-carousel" data-bs-ride="carousel"
                 data-bs-interval="4000" data-bs-pause="hover">
-                <!-- Carousel indicators -->
                 <div class="carousel-indicators">
                     <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="0" class="active"
                         aria-current="true" aria-label="Slide 1"></button>
@@ -433,7 +438,6 @@
                 </div>
 
                 <div class="carousel-inner">
-                    <!-- First slide -->
                     <div class="carousel-item active">
                         <div class="row">
                             <div class="col-md-3 col-6 mb-4">
@@ -475,7 +479,6 @@
                         </div>
                     </div>
 
-                    <!-- Second slide -->
                     <div class="carousel-item">
                         <div class="row">
                             <div class="col-md-3 col-6 mb-4">
@@ -518,7 +521,6 @@
                     </div>
                 </div>
 
-                <!-- Carousel controls -->
                 <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel"
                     data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -538,12 +540,10 @@
     <section class="voucher-hero d-flex align-items-center justify-content-center py-5 px-3">
         <div class="voucher-box shadow-lg rounded-4 d-flex flex-column flex-md-row overflow-hidden">
 
-            <!-- Gambar -->
             <div class="voucher-img bg-light">
                 <img src="/images/voucher1.png" alt="Voucher Banner" class="img-fluid w-100 h-100 object-fit-cover">
             </div>
 
-            <!-- Konten -->
             <div
                 class="voucher-content p-4 p-md-5 d-flex flex-column justify-content-center text-center text-md-start bg-white">
 
@@ -566,7 +566,6 @@
         <div class="container">
             <h2 class="text-center mb-5">Tasty Picks</h2>
             <div class="row">
-                <!-- Product 1 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
                     <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
                         <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
@@ -627,7 +626,6 @@
                     </div>
                 </div>
 
-                <!-- Product 3 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
                     <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
                         <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
@@ -658,7 +656,6 @@
                     </div>
                 </div>
 
-                <!-- Product 4 -->
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
                     <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
                         <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpg') }}" class="card-img-top pt-2"

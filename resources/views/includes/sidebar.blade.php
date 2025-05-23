@@ -1,4 +1,3 @@
-<!-- SIDEBAR CSS -->
 <style>
     .sidebar {
         width: 250px;
@@ -69,23 +68,21 @@
     }
 
     .logout-btn {
-    font-size: 0.85rem;
-    padding: 6px 10px;
-    border-radius: 6px;
-    transition: 0.2s ease;
-    color: #dc3545;
-    border: 1px solid #dc3545;
-    background-color: transparent;
-}
+        font-size: 0.85rem;
+        padding: 6px 10px;
+        border-radius: 6px;
+        transition: 0.2s ease;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+        background-color: transparent;
+    }
 
     .logout-btn:hover {
-    background-color: #dc3545;
-    color: #fff;
-}
-
+        background-color: #dc3545;
+        color: #fff;
+    }
 </style>
 
-<!-- SIDEBAR HTML -->
 <div class="sidebar">
     <div class="d-flex justify-content-start align-items-center mb-4 px-3 logo">
         <a href="{{ route('admin.dashboard') }}" class="text-decoration-none d-flex align-items-center">
@@ -96,26 +93,30 @@
 
     <ul class="nav flex-column px-2">
         <li class="nav-item">
-            <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <a href="{{ route('admin.dashboard') }}"
+                class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.products') }}" class="nav-link {{ request()->routeIs('admin.products') ? 'active' : '' }}">
+            <a href="{{ route('admin.products') }}"
+                class="nav-link {{ request()->routeIs('admin.products') ? 'active' : '' }}">
                 <i class="bi bi-box-seam"></i> Products
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.orders') }}" class="nav-link {{ request()->routeIs('admin.orders') ? 'active' : '' }}">
+            <a href="{{ route('admin.orders') }}"
+                class="nav-link {{ request()->routeIs('admin.orders') ? 'active' : '' }}">
                 <i class="bi bi-cart3"></i> Orders
             </a>
         </li>
     </ul>
 
-        <div class="position-absolute bottom-0 start-0 w-100 mb-3 px-3">
+    <div class="position-absolute bottom-0 start-0 w-100 mb-3 px-3">
         <form action="{{ route('logout') }}" method="POST" class="w-100">
             @csrf
-            <button type="submit" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 w-100 justify-content-center logout-btn">
+            <button type="submit"
+                class="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 w-100 justify-content-center logout-btn">
                 <i class="bi bi-box-arrow-left"></i>
                 <span>Sign Out</span>
             </button>

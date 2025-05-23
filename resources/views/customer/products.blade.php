@@ -5,12 +5,13 @@
 @section('content')
 
     @if (session('success'))
-    <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-        role="alert" style="min-width: 300px;">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
+        <div id="successAlert"
+            class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+            role="alert" style="min-width: 300px;">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <div class="container">
         <div class="row mb-4 mt-4">
             <div class="col-12 text-center">
@@ -19,14 +20,12 @@
             </div>
         </div>
 
-        <!-- Search and Filter Section -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card shadow-sm border-0 rounded-4">
                     <div class="card-body p-4">
                         <form action="{{ route('products') }}" method="GET" id="searchFilterForm">
                             <div class="row">
-                                <!-- Search Bar - Expanded -->
                                 <div class="col-md-9 col-12 mb-md-0 mb-3">
                                     <div class="input-group">
                                         <span class="input-group-text bg-white border-end-0">
@@ -41,7 +40,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Filter Dropdown Button -->
                                 <div class="col-md-3 col-12 d-flex justify-content-md-end">
                                     <div class="dropdown filter-dropdown w-100">
                                         <button class="btn btn-outline-primary dropdown-toggle w-100" type="button"
@@ -52,7 +50,6 @@
                                         </button>
                                         <div class="dropdown-menu p-3 filter-dropdown-menu shadow"
                                             aria-labelledby="filterDropdown">
-                                            <!-- Category Filter -->
                                             <div class="mb-3">
                                                 <label for="categoryFilter" class="form-label small">Category</label>
                                                 <select class="form-select" name="category" id="categoryFilter">
@@ -66,7 +63,6 @@
                                                 </select>
                                             </div>
 
-                                            <!-- Price Range Filter -->
                                             <div class="mb-3">
                                                 <label class="form-label small">Price Range</label>
                                                 <div class="d-flex align-items-center gap-2 price-range-inputs">
@@ -79,7 +75,7 @@
                                                     <div class="small text-muted">to</div>
                                                     <div class="input-group input-group-sm">
                                                         <span class="input-group-text bg-white">Rp</span>
-                                                       <input type="number" class="form-control" name="max_price"
+                                                        <input type="number" class="form-control" name="max_price"
                                                             id="maxPrice" placeholder="Max" min="0"
                                                             value="{{ request('max_price') }}">
                                                     </div>
@@ -111,7 +107,6 @@
                         <div
                             class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden product-card transition-transform position-relative">
 
-                            <!-- Wishlist Button -->
                             <form
                                 action="{{ isset($wishlist[$product['id']]) ? route('wishlist.remove', $product['id']) : route('wishlist.add', $product['id']) }}"
                                 method="POST" class="position-absolute top-0 end-0 m-2 z-3">
@@ -123,7 +118,6 @@
                                 </button>
                             </form>
 
-                            <!-- Product Image with Hover -->
                             <div class="text-center p-4 bg-white position-relative product-img-container">
                                 <img src="{{ asset('images/products-img/' . $product['image']) }}"
                                     alt="{{ $product['name'] }}" class="img-fluid main-img" />
@@ -134,7 +128,6 @@
                                 @endif
                             </div>
 
-                            <!-- Product Info -->
                             <div class="card-body px-4 pb-4 d-flex flex-column">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <h5 class="card-title fw-bold text-dark mb-0">{{ $product['name'] }}</h5>
@@ -194,7 +187,6 @@
         </div>
     </div>
 
-    <!-- Custom Styling -->
     <style>
         .product-card:hover {
             transform: translateY(-5px);
@@ -257,7 +249,6 @@
             line-height: 1.3;
         }
 
-        /* Filter dropdown styling */
         .filter-dropdown-menu {
             width: 320px;
             max-width: 100%;
@@ -277,7 +268,6 @@
             }
         }
 
-        /* Price range input styling */
         .price-range-inputs .input-group-text {
             border-right: 0;
         }
@@ -292,7 +282,6 @@
             margin: 0;
         }
 
-        /* Firefox */
         .price-range-inputs input[type=number] {
             -moz-appearance: textfield;
         }
@@ -309,7 +298,6 @@
         }
     </style>
 
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 @endsection
@@ -317,107 +305,98 @@
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-       $(document).ready(function() {
-    // Auto-hide success alert after 5 seconds
-    if ($('#successAlert').length) {
-        setTimeout(function() {
-            $('#successAlert').fadeOut('slow', function() {
-                $(this).remove();
-            });
-        }, 5000);
-    }
+        $(document).ready(function() {
+            if ($('#successAlert').length) {
+                setTimeout(function() {
+                    $('#successAlert').fadeOut('slow', function() {
+                        $(this).remove();
+                    });
+                }, 5000);
+            }
 
-    if ($('#errorAlert').length) {
-        setTimeout(function() {
-            $('#errorAlert').fadeOut('slow', function() {
-                $(this).remove();
-            });
-        }, 5000);
-    }
+            if ($('#errorAlert').length) {
+                setTimeout(function() {
+                    $('#errorAlert').fadeOut('slow', function() {
+                        $(this).remove();
+                    });
+                }, 5000);
+            }
 
-    // Wishlist functionality
-    $(document).on('click', '.wishlist-btn', function(e) {
-        e.preventDefault();
-        var productId = $(this).data('product-id');
-        var icon = $(this).find('.heart-icon');
+            $(document).on('click', '.wishlist-btn', function(e) {
+                e.preventDefault();
+                var productId = $(this).data('product-id');
+                var icon = $(this).find('.heart-icon');
 
-        if (icon.hasClass('text-dark')) {
-            icon.removeClass('text-dark').addClass('text-danger');
-        } else {
-            icon.removeClass('text-danger').addClass('text-dark');
-        }
+                if (icon.hasClass('text-dark')) {
+                    icon.removeClass('text-dark').addClass('text-danger');
+                } else {
+                    icon.removeClass('text-danger').addClass('text-dark');
+                }
 
-        var currentWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-        if (currentWishlist.includes(productId)) {
-            currentWishlist = currentWishlist.filter(item => item !== productId);
-        } else {
-            currentWishlist.push(productId);
-        }
-        localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
+                var currentWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+                if (currentWishlist.includes(productId)) {
+                    currentWishlist = currentWishlist.filter(item => item !== productId);
+                } else {
+                    currentWishlist.push(productId);
+                }
+                localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
 
-        $.ajax({
-    url: '/wishlist/toggle/' + productId,
-    type: 'GET',
-    success: function(response) {
-        // Remove alert lama kalau ada
-        $('#successAlert').remove();
+                $.ajax({
+                    url: '/wishlist/toggle/' + productId,
+                    type: 'GET',
+                    success: function(response) {
+                        // Remove alert lama kalau ada
+                        $('#successAlert').remove();
 
-        // Tambahkan alert baru ke body atau ke container tertentu di halaman kamu
-        var alertHtml = `<div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" 
+                        var alertHtml = `<div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" 
             role="alert" style="min-width: 300px; z-index: 1055;">
             ${response.message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
 
-        // Contoh append ke atas konten produk (ganti selector sesuai layout kamu)
-        $('body').prepend(alertHtml);
+                        $('body').prepend(alertHtml);
 
-        // Auto hide alert setelah 5 detik
-        setTimeout(function() {
-            $('#successAlert').fadeOut('slow', function() {
-                $(this).remove();
+                        setTimeout(function() {
+                            $('#successAlert').fadeOut('slow', function() {
+                                $(this).remove();
+                            });
+                        }, 5000);
+                    },
+                    error: function() {
+                        alert('Failed to update wishlist.');
+                    }
+                });
             });
-        }, 5000);
-    },
-    error: function() {
-        alert('Failed to update wishlist.');
-    }
-});
-    });
 
-    // Price range input validation
-    $('#minPrice, #maxPrice').on('input', function() {
-        const minPriceVal = parseInt($('#minPrice').val()) || 0;
-        const maxPriceVal = parseInt($('#maxPrice').val()) || 1000000;
-        // Validasi logika
-    });
-});
+            $('#minPrice, #maxPrice').on('input', function() {
+                const minPriceVal = parseInt($('#minPrice').val()) || 0;
+                const maxPriceVal = parseInt($('#maxPrice').val()) || 1000000;
+            });
+        });
 
 
         function updateActiveFiltersBadge() {
-    let count = 0;
+            let count = 0;
 
-    const search = $('#searchInput').val().trim();
-    const category = $('#categoryFilter').val();
-    const minPrice = $('#minPrice').val().trim();
-    const maxPrice = $('#maxPrice').val().trim();
+            const search = $('#searchInput').val().trim();
+            const category = $('#categoryFilter').val();
+            const minPrice = $('#minPrice').val().trim();
+            const maxPrice = $('#maxPrice').val().trim();
 
-    if (search) count++;
-    if (category) count++;
-    if (minPrice) count++;
-    if (maxPrice) count++;
+            if (search) count++;
+            if (category) count++;
+            if (minPrice) count++;
+            if (maxPrice) count++;
 
-    if (count > 0) {
-        $('#activeFiltersBadge').text(count).show();
-    } else {
-        $('#activeFiltersBadge').hide();
-    }
-}
+            if (count > 0) {
+                $('#activeFiltersBadge').text(count).show();
+            } else {
+                $('#activeFiltersBadge').hide();
+            }
+        }
 
-// Run on page load
-$(document).ready(function() {
-    updateActiveFiltersBadge();
-});
-
+        $(document).ready(function() {
+            updateActiveFiltersBadge();
+        });
     </script>
 @endsection
