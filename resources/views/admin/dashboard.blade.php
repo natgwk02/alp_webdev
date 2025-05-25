@@ -34,7 +34,7 @@
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="text-uppercase fw-semibold mb-1">Total Revenue</h6>
-                                <h2 class="fw-bold mb-0">Rp {{ $stats['total_revenue'] }}</h2>
+                                <h2 class="fw-bold mb-0">Rp {{ number_format($stats['total_revenue'] ?? 0, 0, ',', '.') }}</h2>
                             </div>
                             <div class="icon-circle">
                                 <i class="fas fa-dollar-sign fa-lg"></i>
@@ -72,7 +72,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Order #</th>
+                                        <th>Order ID</th>
                                         <th>Date</th>
                                         <th>Customer</th>
                                         <th>Amount</th>
@@ -80,27 +80,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>CHILE-2025-1003</td>
-                                        <td>2025-05-12</td>
-                                        <td>Robert Johnson</td>
-                                        <td>Rp. 35.000</td>
-                                        <td><span class="badge bg-warning">Processing</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>CHILE-2025-1002</td>
-                                        <td>2025-05-11</td>
-                                        <td>Jane Smith</td>
-                                        <td>Rp. 50.000</td>
-                                        <td><span class="badge bg-info">Shipped</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>CHILE-2025-1001</td>
-                                        <td>2025-05-10</td>
-                                        <td>John Doe</td>
-                                        <td>Rp. 55.000</td>
-                                        <td><span class="badge bg-success">Delivered</span></td>
-                                    </tr>
+                                    @forelse ($recentOrders as $order)
+                                        <tr>
+                                            <td>{{ $order->orders_id ?? 'N/A' }}</td>
+                                            <td>{{ $order->orders_date->format('Y-m-d') }}</td>
+                                            <td>{{ $order->user ? $order->user->users_name : 'N/A' }}</td>
+                                            <td>Rp. {{ number_format($order->orders_total_price ?? 0, 0, ',', '.') }}</td>
+                                            <td>
+                                                <span class="badge {{ $order->status_badge_class ?? 'bg-secondary' }}">
+                                                    {{ $order->orders_status ?? 'Unknown' }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center">No recent orders found.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -117,18 +113,18 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Chilean Sea Bass Fillet
-                                <span class="badge bg-danger">2 left</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Alaskan King Crab Legs
-                                <span class="badge bg-warning">5 left</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Patagonian Scallops
-                                <span class="badge bg-warning">3 left</span>
-                            </li>
+                            @forelse ($lowStockProducts as $product)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ $product->products_name }}
+                                    {{-- Use a warning badge, maybe danger if very low --}}
+                                    <span
+                                        class="badge {{ $product->products_stock <= 5 ? 'bg-danger' : 'bg-warning text-dark' }}">
+                                        {{ $product->products_stock }} left
+                                    </span>
+                                </li>
+                            @empty
+                                <li class="list-group-item text-center">No low stock products currently.</li>
+                            @endforelse
                         </ul>
                         <a href="{{ route('admin.products') }}" class="btn btn-sm btn-outline-primary mt-3">Manage
                             Products</a>
@@ -138,28 +134,28 @@
         </div>
     </div>
 
-@push('styles')
-<style>
+    @push('styles')
+        <style>
+            .gradient-blue {
+                background: linear-gradient(135deg, #1E90FF, #4682B4);
+            }
 
-    .gradient-blue {
-        background: linear-gradient(135deg, #1E90FF, #4682B4);
-    }
-    .gradient-green {
-        background: linear-gradient(135deg, #28a745, #218838);
-    }
-    .gradient-cyan {
-        background: linear-gradient(135deg, #17a2b8, #138496);
-    }
-    .icon-circle {
-        background-color: rgba(255, 255, 255, 0.15);
-        border-radius: 50%;
-        padding: 15px;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        transition: transform 0.3s ease;
-    }
+            .gradient-green {
+                background: linear-gradient(135deg, #28a745, #218838);
+            }
 
+            .gradient-cyan {
+                background: linear-gradient(135deg, #17a2b8, #138496);
+            }
 
-</style>
-@endpush
+            .icon-circle {
+                background-color: rgba(255, 255, 255, 0.15);
+                border-radius: 50%;
+                padding: 15px;
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+                transition: transform 0.3s ease;
+            }
+        </style>
+    @endpush
 
 @endsection

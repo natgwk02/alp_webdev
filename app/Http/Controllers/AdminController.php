@@ -16,14 +16,33 @@ class AdminController extends Controller
 
     public function dashboard()
     {
+        $lowStockThreshold = 20;
 
+        // Basic Stats (Ensure 'orders_total_price' is your revenue column)
         $stats = [
             'total_orders' => Order::count(),
             'total_revenue' => Order::sum('orders_total_price'),
-            'total_products' => Product::count(),
+            'total_products' => Product::where('status_del', 0)->count(),
+
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        // Fetch Recent Orders (e.g., last 5)
+        // **ASSUMPTION**: Your Order model has a 'user' relationship to get the customer name.
+        // **ASSUMPTION**: Your Order model uses 'created_at' for the date.
+        $recentOrders = Order::with('user')
+                             ->latest('orders_date')
+                             ->take(5)
+                             ->get();
+
+        // Fetch Low Stock Products (e.g., 5 lowest, but > 0)
+        $lowStockProducts = Product::where('status_del', 0)
+                                   ->where('products_stock', '>', 0)
+                                   ->where('products_stock', '<=', $lowStockThreshold)
+                                   ->orderBy('products_stock', 'asc')
+                                   ->take(5)
+                                   ->get();
+
+        return view('admin.dashboard', compact('stats', 'recentOrders', 'lowStockProducts'));
     }
 
     public function products(Request $request)
@@ -46,7 +65,7 @@ class AdminController extends Controller
 
         if ($request->filled('status')) {
             $status = $request->status;
-            $lowStockThreshold = 10; // Match the threshold in your accessor
+            $lowStockThreshold = 20; // Match the threshold in your accessor
 
             if ($status === 'In Stock') {
                 $query->where('products_stock', '>', $lowStockThreshold);
@@ -179,6 +198,38 @@ class AdminController extends Controller
             // Tangani jika ada error saat menyimpan
             return redirect(route('admin.products'))
                 ->with('error', 'Could not delete product.' . $e->getMessage());
+        }
+    }
+
+    public function trash(Request $request)
+    {
+        $query = Product::with('category')
+                        ->where('status_del', 1)
+                        ->orderBy('updated_at', 'desc');
+
+        $trashedProducts = $query->paginate(10)->withQueryString();
+        $categories = Category::pluck('categories_name', 'categories_id')->all();
+
+        return view('admin.products.trash', compact('trashedProducts', 'categories'));
+    }
+
+     public function restore(Product $product)
+    {
+        try {
+            // Set the status_del back to 0 (or null if you prefer)
+            $product->status_del = 0;
+
+            // Save the change
+            $product->save();
+
+            // Redirect back to the trash view with a success message
+            return redirect()->route('admin.products.trash')
+                         ->with('success', "Product '{$product->products_name}' has been restored successfully!");
+
+        } catch (\Exception $e) {
+            // Handle potential errors
+            return redirect()->route('admin.products.trash')
+                         ->with('error', 'Could not restore product. ' . $e->getMessage());
         }
     }
 }

@@ -138,25 +138,28 @@
                                 <tbody>
                                     @foreach ($orders as $order)
                                         <tr>
-                                            <td>{{ $order['order_number'] }}</td>
-                                            <td>{{ $order['customer_name'] }}</td>
-                                            <td>{{ $order['order_date'] }}</td>
-                                            <td>Rp.{{ number_format($order['total'], 2) }}</td>
-                                            <td>{{ $order['payment_method'] }}</td>
+                                            <td>{{ $order->orders_id }}</td>
                                             <td>
-                                                <span
-                                                    class="badge
-                                                    @if ($order['status'] == 'Processing') bg-warning
-                                                    @elseif($order['status'] == 'Shipped') bg-info
-                                                    @elseif($order['status'] == 'Delivered') bg-success
-                                                    @else bg-secondary @endif">
-                                                    {{ $order['status'] }}
+                                                @if ($order->user)
+                                                    {{ $order->user->users_name }}
+                                                @elseif ($order->first_name)
+                                                    {{ $order->first_name }} {{ $order->last_name }}
+                                                @else
+                                                    Guest or N/A
+                                                @endif
+                                            </td>
+                                            <td>{{ $order->orders_date->format('M d, Y') }}</td>
+                                            <td>Rp.{{ number_format($order->orders_total_price, 0, ',', '.') }}</td>
+                                            <td>{{ $order->payment_method ?? 'N/A' }}</td>
+                                            <td>
+                                                <span class="badge {{ $order->status_badge_class }}">
+                                                    {{ $order->orders_status }}
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.orders.show', $order['id']) }}"
+                                                <a href="{{ route('admin.orders.show', $order->orders_id) }}"
                                                     class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-eye"></i> View
+                                                    <i class="fas fa-eye"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -169,34 +172,18 @@
             </div>
         </div>
 
+        {{-- Pagination --}}
         <div class="d-flex justify-content-between align-items-center my-4">
             <div>
-                <p class="mb-0">Showing {{ ($currentPage - 1) * $perPage + 1 }} to
-                    {{ min($currentPage * $perPage, $totalProducts) }} of {{ $totalProducts }} entries</p>
+                @if ($orders->total() > 0)
+                    <p class="mb-0">Showing {{ $orders->firstItem() }} to
+                        {{ $orders->lastItem() }} of {{ $orders->total() }} entries</p>
+                @else
+                    <p class="mb-0">No entries found</p>
+                @endif
             </div>
             <nav aria-label="Page navigation">
-                <ul class="pagination mb-0">
-                    <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
-                        <a class="page-link"
-                            href="{{ $currentPage > 1 ? route('admin.orders', ['page' => $currentPage - 1]) : '#' }}"
-                            aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    @for ($i = 1; $i <= $totalPages; $i++)
-                        <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
-                            <a class="page-link"
-                                href="{{ route('admin.orders', ['page' => $i]) }}">{{ $i }}</a>
-                        </li>
-                    @endfor
-                    <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
-                        <a class="page-link"
-                            href="{{ $currentPage < $totalPages ? route('admin.orders', ['page' => $currentPage + 1]) : '#' }}"
-                            aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
+                {{ $orders->links() }}
             </nav>
         </div>
     </div>

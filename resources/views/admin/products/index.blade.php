@@ -31,14 +31,6 @@
             border-radius: 4px;
             margin-right: 5px;
         }
-
-        .search-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
     </style>
 
     <div class="container-fluid">
@@ -57,9 +49,14 @@
                         </nav>
                         <h1 class="fw-bold mb-2 mb-md-0">Products Management</h1>
                     </div>
-                    <button class="btn btn-primary mt-5" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                        <i class="bi bi-plus-lg"></i> Add New Product
-                    </button>
+                    <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
+                        <a href="{{ route('admin.products.trash') }}" class="btn btn-outline-secondary mt-5">
+                            <i class="fas fa-trash"></i> View Trash
+                        </a>
+                        <button class="btn btn-primary mt-5" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                            <i class="bi bi-plus-lg"></i> Add New Product
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -234,7 +231,7 @@
                 {{-- Pastikan ada produk sebelum menampilkan teks --}}
                 @if ($products->total() > 0)
                     <p class="mb-0">Showing {{ $products->firstItem() }} to
-                        {{ $products->lastItem() }} dari {{ $products->total() }} entry</p>
+                        {{ $products->lastItem() }} to {{ $products->total() }} entries</p>
                 @else
                     <p class="mb-0">No entry found</p>
                 @endif
@@ -548,11 +545,14 @@
 
                             // Populate form fields
                             document.getElementById('editProductName').value = product.products_name || '';
-                            document.getElementById('editProductCategory').value = product.categories_id ||'';
+                            document.getElementById('editProductCategory').value = product.categories_id ||
+                                '';
                             document.getElementById('editProductPrice').value = product.unit_price || '';
                             document.getElementById('editOrdersPrice').value = product.orders_price || '';
-                            document.getElementById('editProductStock').value = product.products_stock ||'';
-                            document.getElementById('editProductDescription').value = product.products_description || '';
+                            document.getElementById('editProductStock').value = product.products_stock ||
+                                '';
+                            document.getElementById('editProductDescription').value = product
+                                .products_description || '';
 
 
                             // Set current image
