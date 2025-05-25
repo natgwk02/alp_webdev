@@ -149,7 +149,7 @@
                                                 @endif
                                             </td>
                                             <td>{{ $order->orders_date->format('M d, Y') }}</td>
-                                            <td>Rp.{{ number_format($order->orders_total_price, 0, ',', '.') }}</td>
+                                            <td>Rp {{ number_format($order->orders_total_price, 0, ',', '.') }}</td>
                                             <td>{{ $order->payment_method ?? 'N/A' }}</td>
                                             <td>
                                                 <span class="badge {{ $order->status_badge_class }}">

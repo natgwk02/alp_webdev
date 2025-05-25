@@ -85,7 +85,7 @@
                                             <td>{{ $order->orders_id ?? 'N/A' }}</td>
                                             <td>{{ $order->orders_date->format('Y-m-d') }}</td>
                                             <td>{{ $order->user ? $order->user->users_name : 'N/A' }}</td>
-                                            <td>Rp. {{ number_format($order->orders_total_price ?? 0, 0, ',', '.') }}</td>
+                                            <td>Rp {{ number_format($order->orders_total_price ?? 0, 0, ',', '.') }}</td>
                                             <td>
                                                 <span class="badge {{ $order->status_badge_class ?? 'bg-secondary' }}">
                                                     {{ $order->orders_status ?? 'Unknown' }}
