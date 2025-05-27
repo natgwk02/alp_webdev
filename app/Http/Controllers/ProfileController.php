@@ -2,66 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-//     //
+    // Menampilkan halaman profil user
+    public function show()
+    {
+        // Hapus atau komentari baris di bawah ini jika ada
+        // if (!Auth::check()) {
+        //     return redirect()->route('login');
+        // }
 
-// namespace App\Http\Controllers;
+        return view('customer.profile');
+    }
 
-// use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Hash;
-// use Illuminate\Support\Facades\Storage;
-// use Illuminate\Validation\Rules\Password;
+    // Mengupdate informasi profil
+    public function update(Request $request)
+{
+    $user = Auth::user();
 
-// class ProfileController extends Controller
-// {
-//     public function show()
-//     {
-//         return view('profile');
-//     }
+    $validated = $request->validate([
+        'users_name'    => 'required|string|max:255',
+        'email'         => 'required|email|unique:users,users_email,' . $user->users_id . ',users_id',
+        'phone'         => 'nullable|string|max:20',
+        'birthdate'     => 'nullable|date',
+        'address'       => 'nullable|string|max:255',
+        'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-//     public function update(Request $request)
-//     {
-//         $user = auth()->user();
-        
-//         $validated = $request->validate([
-//             'name' => 'required|string|max:255',
-//             'email' => 'required|email|unique:users,email,'.$user->id,
-//             'phone' => 'nullable|string|max:20',
-//             'birthdate' => 'nullable|date',
-//             'profile_photo' => 'nullable|image|max:2048'
-//         ]);
+    // Jika ada file baru, upload dan simpan path-nya
+    if ($request->hasFile('profile_photo')) {
+        // Hapus foto lama jika ada
+        if ($user->profile_photo && Storage::exists($user->profile_photo)) {
+            Storage::delete($user->profile_photo);
+        }
 
-//         // Handle profile photo upload
-//         if ($request->hasFile('profile_photo')) {
-//             // Delete old photo if exists
-//             if ($user->profile_photo) {
-//                 Storage::delete($user->profile_photo);
-//             }
-            
-//             $path = $request->file('profile_photo')->store('profile-photos');
-//             $validated['profile_photo'] = $path;
-//         }
+        // Simpan foto baru
+        $path = $request->file('profile_photo')->store('profile_photos', 'public');
+        $validated['profile_photo'] = $path;
+    }
 
-//         $user->update($validated);
+    // Update user
+    $user->update($validated);
 
-//         return back()->with('success', 'Profile updated successfully!');
-//     }
+    return redirect()->route('profile')->with('success', 'Profile berhasil diperbarui.');
 
-//     public function updatePassword(Request $request)
-//     {
-//         $request->validate([
-//             'current_password' => 'required|current_password',
-//             'new_password' => ['required', 'confirmed', Password::defaults()],
-//         ]);
+    }
 
-//         auth()->user()->update([
-//             'password' => Hash::make($request->new_password)
-//         ]);
+    // Mengupdate password user
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required'],
+            'new_password' => ['required', 'min:8', 'confirmed'],
+        ]);
 
-//         return back()->with('success', 'Password updated successfully!');
-//     }
-// }
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user || !Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->back()->with('success', 'Password updated successfully!');
+    }
 }

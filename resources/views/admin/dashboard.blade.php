@@ -34,7 +34,8 @@
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="text-uppercase fw-semibold mb-1">Total Revenue</h6>
-                                <h2 class="fw-bold mb-0">Rp {{ number_format($stats['total_revenue'] ?? 0, 0, ',', '.') }}</h2>
+                                <h2 class="fw-bold mb-0">Rp {{ number_format($stats['total_revenue'] ?? 0, 0, ',', '.') }}
+                                </h2>
                             </div>
                             <div class="icon-circle">
                                 <i class="fas fa-dollar-sign fa-lg"></i>
@@ -109,17 +110,28 @@
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">
-                        <h5 class="mb-0">Low Stock Products</h5>
+                        <h5 class="mb-0">Stock Alert Products</h5>
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            @forelse ($lowStockProducts as $product)
+                            @forelse ($stockAlertProducts as $product)
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     {{ $product->products_name }}
-                                    {{-- Use a warning badge, maybe danger if very low --}}
-                                    <span
-                                        class="badge {{ $product->products_stock <= 5 ? 'bg-danger' : 'bg-warning text-dark' }}">
-                                        {{ $product->products_stock }} left
+                                    @php
+                                        $stock = $product->products_stock;
+                                        $badgeClass = '';
+
+                                        if ($stock <= 0) {
+                                            $badgeClass = 'bg-secondary';
+                                        }
+                                        elseif ($stock < 10) {
+                                            $badgeClass = 'bg-danger';
+                                        } elseif ($stock <= $lowStockThreshold) {
+                                            $badgeClass = 'bg-warning text-dark';
+                                        }
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }}">
+                                        {{ $stock }} left
                                     </span>
                                 </li>
                             @empty

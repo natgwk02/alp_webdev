@@ -8,13 +8,15 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/sign-in', [AuthController::class, 'login_auth'])->name('login.auth');
+
+Route::post('/login', [AuthController::class, 'login_auth'])->name('login.auth');
+Route::get('/login', [AuthController::class, 'show'])->name('login');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
@@ -78,17 +80,23 @@ Route::middleware('auth')->group(function () {
     Route::post('wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
     Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+
+
 
 
 Route::get('/about', function () {
     return view('customer.about');
 })->name('about');
 
-Route::get('/profile', function () {
-    return view('customer.profile');
-})->name('profile');
+// Route::get('/profile', function () {
+//     return view('customer.profile');
+// })->name('profile');
 
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 // Profile Routes
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
