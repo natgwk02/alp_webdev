@@ -9,65 +9,37 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function showLogin()
+    public function show()
     {
         return view('auth.login');
     }
 
 public function login_auth(Request $request)
 {
-    // --- Langkah 1: Validasi input hanya dilakukan SATU KALI di awal ---
-        $validatedData = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+    $validatedData = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
-        // ✨ Langkah 2: Cek khusus admin
-        // Catatan: Cara yang lebih baik untuk admin adalah membuat akun admin di database
-        // dan mengautentikasinya melalui sistem Auth Laravel standar,
-        // daripada hardcode email dan password di controller.
-        // Ini akan lebih aman dan konsisten.
-        if (
-            $validatedData['email'] === 'admin@chillemart.com' &&
-            $validatedData['password'] === 'admin123'
-        ) {
-            // Jika Anda ingin admin memiliki sesi Laravel yang sama,
-            // Anda bisa mencari user admin dari database dan login mereka.
-            // Contoh:
-            // $adminUser = User::where('users_email', 'admin@chillemart.com')->first();
-            // if ($adminUser) {
-            //     Auth::login($adminUser);
-            //     $request->session()->regenerate();
-            //     return redirect()->route('admin.dashboard');
-            // }
+    // Coba login menggunakan data dari database
+    if (Auth::attempt([
+        'users_email' => $validatedData['email'],
+        'password' => $validatedData['password'],
+    ])) {
+        $request->session()->regenerate();
 
-            // Untuk saat ini, as per code Anda, tetap mengarahkan tanpa sesi Auth Laravel
-            return redirect()->route('admin.dashboard')->with([
-                'admin_email' => $validatedData['email']
-            ]);
+        // Jika user yang login adalah admin
+        if (Auth::user()->users_email === 'admin@chillemart.com') {
+            return redirect()->route('admin.dashboard');
         }
 
-        // ✋ Langkah 3: Jika email adalah admin@chillemart.com tapi password salah
-        // (Ini hanya akan terpanggil jika password admin123 salah)
-        if ($validatedData['email'] === 'admin@chillemart.com') {
-            return back()->with('error', 'Incorrect email or password.');
-        }
-
-        // 👤 Langkah 4: Otentikasi User biasa
-        // Gunakan kredensial yang divalidasi.
-        // `Auth::attempt()` akan secara otomatis menggunakan `getAuthPassword()`
-        // dari model User Anda yang mengacu ke `users_password`.
-        if (Auth::attempt([
-            'users_email' => $validatedData['email'], // Memastikan Anda menggunakan kolom DB yang benar
-            'password' => $validatedData['password'], // Laravel akan menggunakan getAuthPassword()
-        ])) {
-            $request->session()->regenerate();
-            return redirect()->route('home'); // Ganti 'home' dengan rute yang sesuai (misal 'profile')
-        }
-
-        // Langkah 5: Jika otentikasi gagal untuk user biasa
-        return back()->with('error', 'Incorrect email or password.');
+        // Kalau bukan admin, arahkan ke halaman user
+        return redirect()->route('home');
     }
+
+    return back()->with('error', 'Email atau password salah.');
+}
+
 
     public function logout(Request $request)
     {

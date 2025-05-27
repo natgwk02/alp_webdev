@@ -14,8 +14,9 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
-Route::get('/login', [AuthController::class, "show"])
-    ->name('login');
+
+Route::post('/login', [AuthController::class, 'login_auth'])->name('login.auth');
+Route::get('/login', [AuthController::class, 'show'])->name('login');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
@@ -79,9 +80,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
     Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
+
 
 
 
