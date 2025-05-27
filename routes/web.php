@@ -27,8 +27,8 @@ Route::POST('/logout', function () {
 })->name('logout');
 
 // Customer Routes
-// //Route::middleware(['auth', 'customer'])->group(function () {
-    Route::get( '/', [HomeController::class, 'showHome'])->name('home');
+// Route::middleware(['auth', 'customer'])->group(function () {
+    Route::get('/', [HomeController::class, 'showHome'])->name('home');
     Route::get('/products', action: [ProductController::class, 'index'])->name('products');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -46,29 +46,30 @@ Route::POST('/logout', function () {
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
     Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
-
-// //});
+// });
 
 // Admin Routes
-//Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-//  Product Management
-Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
-Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+    //  Product Management
+    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+    Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 
-// Order Management
-Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-
-//});
+    // Order Management
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+});
 
 // Home Route
-Route::get('/home', [HomeController::class, 'showHome'])
-->name('home');
+Route::middleware('web')->group(function(){
+    Route::get('/home', [HomeController::class, 'showHome'])
+    ->name('home');
+});
+
 // Route::get('/orders', [OrderController::class, 'index'])->name('orders');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
 
@@ -87,12 +88,13 @@ Route::get('/profile', function () {
     return view('customer.profile');
 })->name('profile');
 
-Route::POST('/logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/login');
-})->name('logout');
+// Route::POST('/logout', function () {
+//     Auth::logout();
+//     request()->session()->invalidate();
+//     request()->session()->regenerateToken();
+//     return redirect('/login');
+// })->name('logout');
+// Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 // Profile Routes
 // Route::middleware(['auth'])->group(function () {

@@ -5,59 +5,51 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     public function showLogin()
     {
+        if (Auth::check()) {
+            return redirect()->intended('/home');
+        }
         return view('auth.login');
     }
 
     public function login_auth(Request $request)
     {
+        // Validate the input fields
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+            'users_email' => 'required|email',
+            'users_password' => 'required',
         ]);
 
-        if (
-            $request->email === 'admin@chillemart.com' &&
-            $request->password === session('admin_password', 'admin123') // default admin123
-            ) {
-            session([
-                'is_admin' => true,
-                'email' => $request->email,
-                'admin_password' => $request->password, // nyimpen password yg dipakai
-            ]);
+        // Find the user by email
+        $user = User::where('users_email', $request->users_email)->first();
 
-    return redirect()->route('admin.dashboard');
-        }
+        // Check if the user exists and the password is correct
+        if ($user && Hash::check($request->users_password, $user->users_password)) {
+            // Attempt to log the user in
+            Auth::login($user);
 
-        if (Auth::attempt([
-            'users_email' => $request->email,
-            'password' => $request->password,
-        ])) {
+            // Regenerate the session
             $request->session()->regenerate();
-
-            return redirect()->route('home');
+            // dd(Auth::user());
+            // Redirect to intended page or home
+            return redirect()->intended('/home');
+        } else {
+            // If credentials are incorrect, return error
+            return back()->withErrors(['users_email' => 'The provided credentials do not match our records.']); // Improve error message
         }
-
-        return back()->with('error', 'Incorrect email or password.');
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        Auth::logout();  // Log the user out
+        $request->session()->invalidate();  // Invalidate the session
+        $request->session()->regenerateToken();  // Regenerate CSRF token
 
-        return redirect('/logout');
+        return redirect('/login');  // Redirect to login page
     }
-
-    public function showForgotPassword()
-    {
-        return view('auth.forgot_password');
-    }
-
 }

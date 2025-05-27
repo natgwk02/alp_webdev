@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
@@ -9,6 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    public function __construct()
+    {
+      //   $this->middleware('auth');
+    }
     /**
      * Show the current user's cart.
      */
@@ -20,10 +25,10 @@ class CartController extends Controller
         }
 
         // Get the current user's cart, or create one if it doesn't exist
-        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
 
         // Fetch all items in the cart, including product details
-        $cartItems = $cart->items()->with('product')->get(); 
+        $cartItems = $cart->items()->with('product')->get();
 
         // Calculate the subtotal, tax, shipping, and total
         $subtotal = $cartItems->sum(function ($item) {
@@ -43,29 +48,19 @@ class CartController extends Controller
      */
     public function addToCart(Request $request, $productId)
     {
-        // Check if the user is logged in
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'You must be logged in to add items to the cart.');
-        }
-
-        // Get the product details from the database
-        $product = Product::find($productId);
-
-        if (!$product) {
-            return redirect()->back()->with('error', 'Product not found.');
-        }
-
-        // Get the current user's cart, or create one if it doesn't exist
+        $product = Product::findOrFail($productId);
+        //dd(Auth::id());
         $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
 
-        // Check if the product is already in the cart
-        $cartItem = CartItem::firstOrNew(['cart_id' => $cart->id, 'product_id' => $productId]);
+        $cartItem = CartItem::firstOrNew([
+            'cart_id' => $cart->id,
+            'product_id' => $productId
+        ]);
 
-        // Update the quantity
         $cartItem->quantity += (int) $request->input('quantity', 1);
         $cartItem->save();
 
-        return redirect()->back()->with('success', 'Item added to cart.');
+        return back()->with('success', 'Item added to cart.');
     }
 
     /**
@@ -79,7 +74,7 @@ class CartController extends Controller
         }
 
         // Get the current user's cart
-        $cart = Cart::where('user_id', Auth::id())->first();
+        $cart = Cart::where('users_id', Auth::id())->first();
 
         // Remove the product from the cart
         $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
@@ -104,7 +99,7 @@ class CartController extends Controller
         $quantity = max(1, (int) $request->input('quantity', 1));
 
         // Get the current user's cart
-        $cart = Cart::where('user_id', Auth::id())->first();
+        $cart = Cart::where('users_id', Auth::id())->first();
 
         // Update the quantity of the product in the cart
         $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
@@ -155,7 +150,7 @@ class CartController extends Controller
         ];
 
         $code = strtoupper($request->input('voucher_code'));
-        $cart = Cart::where('user_id', Auth::id())->first();
+        $cart = Cart::where('users_id', Auth::id())->first();
         $subtotal = $this->calculateSubtotal($cart);
 
         if (!array_key_exists($code, $validVouchers)) {

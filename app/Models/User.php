@@ -10,7 +10,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // Nama tabel (opsional jika kamu memang pakai tabel bernama 'users')
+    // Nama tabel (opsional jika memang pakai tabel bernama 'users')
     protected $table = 'users';
 
     /**
@@ -27,22 +27,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * Kolom login yang digunakan oleh Auth::attempt()
-     */
-    public function getAuthIdentifierName()
-    {
-        return 'users_email';
-    }
-
-    /**
-     * Kolom password yang digunakan oleh Auth
-     */
-    public function getAuthPassword()
-    {
-        return $this->users_password;
-    }
-
-    /**
      * Kolom yang tidak boleh ditampilkan (misal saat toArray atau JSON)
      */
     protected $hidden = [
@@ -51,12 +35,53 @@ class User extends Authenticatable
     ];
 
     /**
-     * Cast field ke tipe tertentu (optional)
+     * Cast field ke tipe tertentu
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'status_del' => 'boolean',
     ];
 
-    
+    /**
+     * Get the name of the unique identifier for the user.
+     * Untuk mengubah kolom identifier default (email) ke users_email
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'users_email';
+    }
+
+    /**
+     * Get the password for the user.
+     * Untuk mengubah kolom password default ke users_password
+     */
+    public function getAuthPassword()
+    {
+        return $this->users_password;
+    }
+
+    /**
+     * Accessor untuk kompatibilitas dengan sistem yang mengharapkan 'email'
+     */
+    public function getEmailAttribute()
+    {
+        return $this->users_email;
+    }
+
+    /**
+     * Accessor untuk kompatibilitas dengan sistem yang mengharapkan 'name'
+     */
+    public function getNameAttribute()
+    {
+        return $this->users_name;
+    }
+
+    // Di App\Models\User.php
+    public function getRedirectRoute()
+    {
+        return match ($this->role) {
+            'admin' => '/dashboard',
+            default => '/home',
+        };
+    }
 }
