@@ -8,13 +8,14 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, "show"])
-    ->name('login.show');
+    ->name('login');
 
 Route::post('/login_auth', [AuthController::class, "login_auth"])
     ->name('login.auth');
@@ -92,15 +93,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/wishlist', [ProductController::class, 'index'])->name('wishlist.index');
 });
 
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
+
+
 
 Route::get('/about', function () {
     return view('customer.about');
 })->name('about');
 
-Route::get('/profile', function () {
-    return view('customer.profile');
-})->name('profile');
+// Route::get('/profile', function () {
+//     return view('customer.profile');
+// })->name('profile');
 
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 // Profile Routes
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

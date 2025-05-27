@@ -4,12 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-=======
-use Illuminate\Support\Facades\Validator;
->>>>>>> Stashed changes
 
 class AuthController extends Controller
 {
@@ -18,35 +14,58 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login_auth(Request $request)
-    {
-        $credentials = $request->validate([
+public function login_auth(Request $request)
+{
+    // --- Langkah 1: Validasi input hanya dilakukan SATU KALI di awal ---
+        $validatedData = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
+        // ✨ Langkah 2: Cek khusus admin
+        // Catatan: Cara yang lebih baik untuk admin adalah membuat akun admin di database
+        // dan mengautentikasinya melalui sistem Auth Laravel standar,
+        // daripada hardcode email dan password di controller.
+        // Ini akan lebih aman dan konsisten.
         if (
-            $request->email === 'admin@chillemart.com' &&
-            $request->password === session('admin_password', 'admin123') // default admin123
-            ) {
-            session([
-                'is_admin' => true,
-                'email' => $request->email,
-                'admin_password' => $request->password, // nyimpen password yg dipakai
-            ]);
+            $validatedData['email'] === 'admin@chillemart.com' &&
+            $validatedData['password'] === 'admin123'
+        ) {
+            // Jika Anda ingin admin memiliki sesi Laravel yang sama,
+            // Anda bisa mencari user admin dari database dan login mereka.
+            // Contoh:
+            // $adminUser = User::where('users_email', 'admin@chillemart.com')->first();
+            // if ($adminUser) {
+            //     Auth::login($adminUser);
+            //     $request->session()->regenerate();
+            //     return redirect()->route('admin.dashboard');
+            // }
 
-    return redirect()->route('admin.dashboard');
+            // Untuk saat ini, as per code Anda, tetap mengarahkan tanpa sesi Auth Laravel
+            return redirect()->route('admin.dashboard')->with([
+                'admin_email' => $validatedData['email']
+            ]);
         }
 
+        // ✋ Langkah 3: Jika email adalah admin@chillemart.com tapi password salah
+        // (Ini hanya akan terpanggil jika password admin123 salah)
+        if ($validatedData['email'] === 'admin@chillemart.com') {
+            return back()->with('error', 'Incorrect email or password.');
+        }
+
+        // 👤 Langkah 4: Otentikasi User biasa
+        // Gunakan kredensial yang divalidasi.
+        // `Auth::attempt()` akan secara otomatis menggunakan `getAuthPassword()`
+        // dari model User Anda yang mengacu ke `users_password`.
         if (Auth::attempt([
-            'users_email' => $request->email,
-            'password' => $request->password,
+            'users_email' => $validatedData['email'], // Memastikan Anda menggunakan kolom DB yang benar
+            'password' => $validatedData['password'], // Laravel akan menggunakan getAuthPassword()
         ])) {
             $request->session()->regenerate();
-
-            return redirect()->route('home');
+            return redirect()->route('home'); // Ganti 'home' dengan rute yang sesuai (misal 'profile')
         }
 
+        // Langkah 5: Jika otentikasi gagal untuk user biasa
         return back()->with('error', 'Incorrect email or password.');
     }
 
@@ -63,16 +82,10 @@ class AuthController extends Controller
     {
         return view('auth.forgot_password');
     }
-<<<<<<< Updated upstream
 
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate(['email' => 'required|email']);
-        
-        if ($request->email === 'admin@chillemart.com') {
-        session(['reset_email' => 'admin@chillemart.com']);
-        return redirect()->route('password.reset.form')->with('status', 'Proceed to reset your password.');
-    }
 
         $user = User::where('users_email', $request->email)->first();
 
@@ -102,12 +115,6 @@ class AuthController extends Controller
 
         $email = session('reset_email');
 
-        if ($email === 'admin@chillemart.com') {
-        session(['admin_password' => $request->password]);
-        session()->forget('reset_email');
-        return redirect()->route('login.show')->with('status', 'Admin password has been updated.');
-    }
-
         if (!$email) {
             return redirect()->route('password.request')->with('error', 'Session expired. Please try again.');
         }
@@ -123,7 +130,7 @@ class AuthController extends Controller
 
         session()->forget('reset_email');
 
-        return redirect()->route('login.show')->with('status', 'Password has been reset. Please login.');
+        return redirect()->route('login')->with('status', 'Password has been reset. Please login.');
     }
 
     public function registerForm()
@@ -154,7 +161,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('login.show')->with('success', 'Registration successful! Please login.');
+        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
     }
 
     public function destroy(Request $request)
@@ -166,10 +173,4 @@ class AuthController extends Controller
 
         return redirect('/login');
     }
-
-    
 }
-=======
-     
-}
->>>>>>> Stashed changes
