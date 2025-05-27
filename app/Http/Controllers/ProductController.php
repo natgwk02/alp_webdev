@@ -21,7 +21,7 @@ class ProductController extends Controller
 
     return view('customer.products', compact('products', 'wishlistProductIds', 'categories'));
     }
-
+    
     public function show($id)
     {
         $product = Product::with('category')->findOrFail($id);
@@ -71,18 +71,20 @@ class ProductController extends Controller
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $product = Product::find($productId);
+    $product = \App\Models\Product::find($productId);
     if (!$product) {
         return response()->json(['message' => 'Product not found'], 404);
     }
 
-    $wishlist = Wishlist::where('user_id', Auth::id())->where('product_id', $productId)->first();
+    $wishlist = \App\Models\Wishlist::where('user_id', Auth::id())
+                ->where('product_id', $productId)
+                ->first();
 
     if ($wishlist) {
         $wishlist->delete();
         $message = 'Product removed from wishlist';
     } else {
-        Wishlist::create([
+        \App\Models\Wishlist::create([
             'user_id' => Auth::id(),
             'product_id' => $productId,
         ]);
@@ -93,3 +95,4 @@ class ProductController extends Controller
 
     }
 }
+

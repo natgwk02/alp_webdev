@@ -162,7 +162,6 @@
                                     class="mt-auto">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-
                                     <div class="d-flex justify-content-between align-items-center">
                                         <a href="{{ route('product.detail', $product->products_id) }}"
                                             class="btn btn-outline-primary rounded-pill">View Details</a>
@@ -305,99 +304,42 @@
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            if ($('#successAlert').length) {
-                setTimeout(function() {
-                    $('#successAlert').fadeOut('slow', function() {
-                        $(this).remove();
-                    });
-                }, 5000);
-            }
-
-            if ($('#errorAlert').length) {
-                setTimeout(function() {
-                    $('#errorAlert').fadeOut('slow', function() {
-                        $(this).remove();
-                    });
-                }, 5000);
-            }
-
-            $(document).on('click', '.wishlist-btn', function(e) {
-                e.preventDefault();
-                var productId = $(this).data('product-id');
-                var icon = $(this).find('.heart-icon');
-
-                if (icon.hasClass('text-dark')) {
-                    icon.removeClass('text-dark').addClass('text-danger');
-                } else {
-                    icon.removeClass('text-danger').addClass('text-dark');
-                }
-
-                var currentWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-                if (currentWishlist.includes(productId)) {
-                    currentWishlist = currentWishlist.filter(item => item !== productId);
-                } else {
-                    currentWishlist.push(productId);
-                }
-                localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
-
-                $.ajax({
-                    url: '/wishlist/toggle/' + productId,
-                    type: 'GET',
-                    success: function(response) {
-                        // Remove alert lama kalau ada
-                        $('#successAlert').remove();
-
-                        var alertHtml = `<div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" 
-            role="alert" style="min-width: 300px; z-index: 1055;">
-            ${response.message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`;
-
-                        $('body').prepend(alertHtml);
-
-                        setTimeout(function() {
-                            $('#successAlert').fadeOut('slow', function() {
-                                $(this).remove();
-                            });
-                        }, 5000);
-                    },
-                    error: function() {
-                        alert('Failed to update wishlist.');
-                    }
-                });
+<script>
+$(document).ready(function() {
+    if ($('#successAlert').length) {
+        setTimeout(function() {
+            $('#successAlert').fadeOut('slow', function() {
+                $(this).remove();
             });
+        }, 5000);
+    }
 
-            $('#minPrice, #maxPrice').on('input', function() {
-                const minPriceVal = parseInt($('#minPrice').val()) || 0;
-                const maxPriceVal = parseInt($('#maxPrice').val()) || 1000000;
-            });
-        });
+    $(document).on('click', '.wishlist-btn', function(e) {
+        e.preventDefault();
+        var productId = $(this).data('product-id');
+        var icon = $(this).find('.heart-icon');
 
+        icon.toggleClass('text-dark text-danger');
 
-        function updateActiveFiltersBadge() {
-            let count = 0;
-
-            const search = $('#searchInput').val().trim();
-            const category = $('#categoryFilter').val();
-            const minPrice = $('#minPrice').val().trim();
-            const maxPrice = $('#maxPrice').val().trim();
-
-            if (search) count++;
-            if (category) count++;
-            if (minPrice) count++;
-            if (maxPrice) count++;
-
-            if (count > 0) {
-                $('#activeFiltersBadge').text(count).show();
-            } else {
-                $('#activeFiltersBadge').hide();
+        $.ajax({
+            url: '/wishlist/toggle/' + productId,
+            type: 'GET',
+            success: function(response) {
+                const alertHtml = `
+                <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+                    role="alert" style="min-width: 300px; z-index: 1055;">
+                    ${response.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+                $('body').prepend(alertHtml);
+                setTimeout(() => $('#successAlert').fadeOut('slow', () => $(this).remove()), 5000);
+            },
+            error: function(xhr) {
+                alert('Failed to update wishlist.');
+                console.error(xhr.responseText);
             }
-        }
-
-        $(document).ready(function() {
-            updateActiveFiltersBadge();
         });
-    </script>
+    });   
+});
+</script>
 @endsection
