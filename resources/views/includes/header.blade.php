@@ -114,7 +114,7 @@
             <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
 
                 <li class="nav-item">
-                    <a class="nav-link custom-wishlist-color" href="{{ route('wishlist.index') }}">
+                    <a class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
                         <i class="bi bi-bookmark-heart-fill fs-5"></i>
                     </a>
                 </li>

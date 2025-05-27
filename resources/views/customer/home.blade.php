@@ -23,16 +23,6 @@
 
 @section('content')
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-    @if (session('success'))
-        <div id="successAlert"
-            class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-            role="alert" style="min-width: 300px;">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
     @if (session('success'))
         <div id="successAlert"
             class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
@@ -113,16 +103,11 @@
             font-weight: 600;
         }
 
-        .btn-lets-chill:hover {
-            background-color: #f0f0f0;
-            /* soft hover */
-            color: #052659;
-            border: 2px solid #052659;
-            /* optional hover border */
-        }
-
-        
-
+.btn-lets-chill:hover {
+    background-color: #f0f0f0; /* soft hover */
+    color: #052659;
+    border: 2px solid #052659; /* optional hover border */
+}
         .btn-lets-chill:hover {
             background-color: #326fcb;
         }
@@ -325,16 +310,22 @@
 
 
         .product-card {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
-        .product-card .card-body {
-            display: flex;
-            flex-direction: column;
-            flex: 1 1 auto;
-        }
+.product-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.product-card img {
+    height: 200px;
+    object-fit: contain;
+}
 
         /* yutub */
         .py-5 {
@@ -563,31 +554,33 @@
 
     {{-- Top seller --}}
     <section class="best-product py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Tasty Picks</h2>
-            <div class="row">
+    <div class="container">
+        <h2 class="text-center mb-5">Tasty Picks</h2>
+        <div class="row">
+            @foreach ($products as $product)
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
                     <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
-                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
-                        <img src="{{ asset('images/products-img/kanzler-nugget.jpg') }}" class="card-img-top"
-                            alt="Product 1">
+                        @if($product->is_on_sale)
+                            <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
+                        @elseif($product->is_new)
+                            <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
+                        @endif
+
+                        <img src="{{ asset('images/products-img/' . $product->products_image) }}" class="card-img-top" alt="{{ $product->products_name }}">
+                        
                         <div class="card-body d-flex flex-column h-100">
-                            <h5 class="card-title">Kanzler Nugget Crispy</h5>
+                            <h5 class="card-title">{{ $product->products_name }}</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">
-                                    Rp 40.999 <small class="text-decoration-line-through text-muted">Rp 50.000</small>
-                                </p>
+                                <p class="card-text mb-0">Rp {{ number_format($product->unit_price, 0, ',', '.') }}</p>
                                 <div>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-half text-warning"></i>
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <i class="bi {{ $i <= $product->rating ? 'bi-star-fill' : 'bi-star' }} text-warning"></i>
+                                    @endfor
                                 </div>
                             </div>
-                            <form action="{{ route('cart.add', ['productId' => 3]) }}" method="POST" class="mt-auto">
-                                @csrf
-                                <input type="hidden" name="product_id" value="3">
+                            <form action="{{ route('cart.add') }}" method="POST">
+                            @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <input type="hidden" name="quantity" value="1">
                                 <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
                                     <i class="bi bi-cart-plus-fill"></i> Add to Cart
@@ -596,102 +589,15 @@
                         </div>
                     </div>
                 </div>
-                <!-- Product 2 -->
-                <div class="col-lg-3 col-md-4 col-6 mb-4">
-                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
-                        <img src="{{ asset('images/products-img/rm-fiesta-bulgogi.jpg') }}" class="card-img-top"
-                            alt="Product 2">
-                        <div class="card-body d-flex flex-column h-100">
-                            <h5 class="card-title">Ready Meal Fiesta Beef Bulgogi With Rice</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp 26.999</p>
-                                <div>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-half text-warning"></i>
-                                </div>
-                            </div>
-                            <form action="{{ route('cart.add', ['productId' => 4]) }}" method="POST" class="mt-auto">
-                                @csrf
-                                <input type="hidden" name="product_id" value="3">
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
-                                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
-                                </button>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-4 col-6 mb-4">
-                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
-                        <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
-                        <img src="{{ asset('images/products-img/fish-grilled-salmon.jpg') }}" class="card-img-top"
-                            alt="Product 3">
-                        <div class="card-body d-flex flex-column h-100">
-                            <h5 class="card-title">Gorton's Classic Grilled Salmon</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp 56.000</p>
-                                <div>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                </div>
-                            </div>
-                            <form action="{{ route('cart.add', ['productId' => 5]) }}" method="POST" class="mt-auto">
-                                @csrf
-                                <input type="hidden" name="product_id" value="3">
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
-                                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
-                                </button>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-4 col-6 mb-4">
-                    <div class="card product-card h-100 position-relative" data-aos="zoom-in" data-aos-duration="700">
-                        <img src="{{ asset('images/products-img/chicken-fiesta-karage.jpg') }}" class="card-img-top pt-2"
-                            alt="Product 4">
-                        <div class="card-body d-flex flex-column h-100">
-                            <h5 class="card-title">Fiesta Chicken Karage 500gr</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp 51.000</p>
-                                <div>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-half text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                </div>
-                            </div>
-                            <form action="{{ route('cart.add', ['productId' => 6]) }}" method="POST" class="mt-auto">
-                                @csrf
-                                <input type="hidden" name="product_id" value="3">
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
-                                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
-                                </button>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <a href="{{ route('products') }}" class="btn text-white btn-best-product">
-                    View All Products
-                </a>
-            </div>
+            @endforeach
         </div>
-    </section>
+        <div class="text-center mt-4">
+            <a href="{{ route('products') }}" class="btn text-white btn-best-product">
+                View All Products
+            </a>
+        </div>
+    </div>
+</section>
 
     {{-- why us --}}
     <section class="why-chille py-5">

@@ -106,34 +106,35 @@
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div
                             class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden product-card transition-transform position-relative">
-
+                            
                             <form
-                                action="{{ isset($wishlist[$product['id']]) ? route('wishlist.remove', $product['id']) : route('wishlist.add', $product['id']) }}"
+                                action="{{ in_array($product->id ?? $product['id'], $wishlistProductIds) 
+                                ? route('wishlist.remove', ['productId' => $product->id ?? $product['id']]) 
+                                : route('wishlist.add', ['productId' => $product->products_id ?? $product['id']]) }}"
                                 method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                                 @csrf
                                 <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn"
-                                    data-product-id="{{ $product['id'] }}">
-                                    <i
-                                        class="bi bi-bookmark-heart-fill {{ isset($wishlist[$product['id']]) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
+                                    data-product-id="{{ $product->id }}">
+                                    <i class="bi bi-bookmark-heart-fill {{ in_array($product->id, $wishlistProductIds) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
                                 </button>
                             </form>
 
                             <div class="text-center p-4 bg-white position-relative product-img-container">
-                                <img src="{{ asset('images/products-img/' . $product['image']) }}"
-                                    alt="{{ $product['name'] }}" class="img-fluid main-img" />
+                                <img src="{{ asset('images/products-img/' .$product->products_image) }}"
+                                    alt="{{ $product->products_name}}" class="img-fluid main-img" />
 
                                 @if (!empty($product['hover_image']))
-                                    <img src="{{ asset('images/hoverproducts-img/' . $product['hover_image']) }}"
-                                        alt="{{ $product['name'] }} Hover" class="img-fluid hover-img" />
+                                    <img src="{{ asset('images/hoverproducts-img/' .$product->hover_image) }}"
+                                        alt="{{ $product->products_name }} Hover" class="img-fluid hover-img" />
                                 @endif
                             </div>
 
                             <div class="card-body px-4 pb-4 d-flex flex-column">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h5 class="card-title fw-bold text-dark mb-0">{{ $product['name'] }}</h5>
+                                    <h5 class="card-title fw-bold text-dark mb-0">{{ $product->products_name }}</h5>
                                     <div class="rating-stars d-flex">
                                         @php
-                                            $rating = $product['rating'] ?? 0;
+                                            $rating = $product->rating ?? 0;
                                             $fullStars = floor($rating);
                                             $halfStar = $rating - $fullStars >= 0.5;
                                             $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
@@ -153,17 +154,16 @@
                                     </div>
                                 </div>
 
-                                <p class="text-secondary small mb-1">{{ $product['category'] }}</p>
+                                <p class="text-secondary small mb-1">{{ $product->product_category }}</p>
                                 <h5 class="text-primary fw-semibold mb-4">Rp
-                                    {{ number_format($product['price'], 0, ',', '.') }}</h5>
+                                    {{ number_format($product->orders_price, 0, ',', '.') }}</h5>
 
                                 <form action="{{ route('cart.add', ['productId' => $product['id']]) }}" method="POST"
                                     class="mt-auto">
                                     @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product['id'] }}">
-
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{{ route('product.detail', $product['id']) }}"
+                                        <a href="{{ route('product.detail', $product->products_id) }}"
                                             class="btn btn-outline-primary rounded-pill">View Details</a>
                                         <button type="submit" class="btn btn-success rounded-pill">
                                             <i class="bi bi-cart-plus-fill"></i> Add
@@ -304,99 +304,42 @@
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            if ($('#successAlert').length) {
-                setTimeout(function() {
-                    $('#successAlert').fadeOut('slow', function() {
-                        $(this).remove();
-                    });
-                }, 5000);
-            }
-
-            if ($('#errorAlert').length) {
-                setTimeout(function() {
-                    $('#errorAlert').fadeOut('slow', function() {
-                        $(this).remove();
-                    });
-                }, 5000);
-            }
-
-            $(document).on('click', '.wishlist-btn', function(e) {
-                e.preventDefault();
-                var productId = $(this).data('product-id');
-                var icon = $(this).find('.heart-icon');
-
-                if (icon.hasClass('text-dark')) {
-                    icon.removeClass('text-dark').addClass('text-danger');
-                } else {
-                    icon.removeClass('text-danger').addClass('text-dark');
-                }
-
-                var currentWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-                if (currentWishlist.includes(productId)) {
-                    currentWishlist = currentWishlist.filter(item => item !== productId);
-                } else {
-                    currentWishlist.push(productId);
-                }
-                localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
-
-                $.ajax({
-                    url: '/wishlist/toggle/' + productId,
-                    type: 'GET',
-                    success: function(response) {
-                        // Remove alert lama kalau ada
-                        $('#successAlert').remove();
-
-                        var alertHtml = `<div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3" 
-            role="alert" style="min-width: 300px; z-index: 1055;">
-            ${response.message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`;
-
-                        $('body').prepend(alertHtml);
-
-                        setTimeout(function() {
-                            $('#successAlert').fadeOut('slow', function() {
-                                $(this).remove();
-                            });
-                        }, 5000);
-                    },
-                    error: function() {
-                        alert('Failed to update wishlist.');
-                    }
-                });
+<script>
+$(document).ready(function() {
+    if ($('#successAlert').length) {
+        setTimeout(function() {
+            $('#successAlert').fadeOut('slow', function() {
+                $(this).remove();
             });
+        }, 5000);
+    }
 
-            $('#minPrice, #maxPrice').on('input', function() {
-                const minPriceVal = parseInt($('#minPrice').val()) || 0;
-                const maxPriceVal = parseInt($('#maxPrice').val()) || 1000000;
-            });
-        });
+    $(document).on('click', '.wishlist-btn', function(e) {
+        e.preventDefault();
+        var productId = $(this).data('product-id');
+        var icon = $(this).find('.heart-icon');
 
+        icon.toggleClass('text-dark text-danger');
 
-        function updateActiveFiltersBadge() {
-            let count = 0;
-
-            const search = $('#searchInput').val().trim();
-            const category = $('#categoryFilter').val();
-            const minPrice = $('#minPrice').val().trim();
-            const maxPrice = $('#maxPrice').val().trim();
-
-            if (search) count++;
-            if (category) count++;
-            if (minPrice) count++;
-            if (maxPrice) count++;
-
-            if (count > 0) {
-                $('#activeFiltersBadge').text(count).show();
-            } else {
-                $('#activeFiltersBadge').hide();
+        $.ajax({
+            url: '/wishlist/toggle/' + productId,
+            type: 'GET',
+            success: function(response) {
+                const alertHtml = `
+                <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+                    role="alert" style="min-width: 300px; z-index: 1055;">
+                    ${response.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+                $('body').prepend(alertHtml);
+                setTimeout(() => $('#successAlert').fadeOut('slow', () => $(this).remove()), 5000);
+            },
+            error: function(xhr) {
+                alert('Failed to update wishlist.');
+                console.error(xhr.responseText);
             }
-        }
-
-        $(document).ready(function() {
-            updateActiveFiltersBadge();
         });
-    </script>
+    });   
+});
+</script>
 @endsection

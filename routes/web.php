@@ -17,8 +17,9 @@ use App\Http\Controllers\AdminOrderController;
 Route::get('/login', [AuthController::class, "show"])
     ->name('login');
 
-Route::post('/login_auth', [AuthController::class, "login_auth"])
-    ->name('login.auth');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
+Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
 
 Route::POST('/logout', function () {
     Auth::logout();
@@ -27,41 +28,17 @@ Route::POST('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
-
-Route::get('/register', [AuthController::class, 'registerForm'])->name('register'); // untuk tampilkan form
-Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
-Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
-
-Route::get('/reset-password', [AuthController::class, 'showResetForm'])->name('password.reset.form');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
-
-Route::get('/terms-and-conditions', function () {
-    return view('terms-and-conditions');
-})->name('terms');
-
-
 // Customer Routes
 // //Route::middleware(['auth', 'customer'])->group(function () {
     Route::get( '/', [HomeController::class, 'showHome'])->name('home');
     Route::get('/products', action: [ProductController::class, 'index'])->name('products');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::get('/wishlist', [ProductController::class, 'wishlist'])->middleware('auth')->name('wishlist');
-    
-    Route::post('/wishlist/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
-    Route::get('/wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist']);
-    Route::post('/wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
-    Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
-    Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     // Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
     Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
-    
+
 // //});
 
 // Admin Routes
@@ -70,9 +47,12 @@ Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.das
 
 //  Product Management
 Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
-Route::put('product/update/{product:id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-Route::post('/product/delete/{product:id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-Route::post('/product/create/{product:id}', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit_data');
+Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
+Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
 
 // Order Management
 Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
@@ -90,7 +70,15 @@ Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail
 
 Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/wishlist', [ProductController::class, 'index'])->name('wishlist.index');
+    Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
+    Route::post('wishlist/add/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
+    Route::post('wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
+    Route::get('wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist'])->name('wishlist.toggle');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
+    Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
 });
 
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
