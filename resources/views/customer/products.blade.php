@@ -158,10 +158,9 @@
                                 <h5 class="text-primary fw-semibold mb-4">Rp
                                     {{ number_format($product->orders_price, 0, ',', '.') }}</h5>
 
-                                <form action="{{ route('cart.add', ['productId' => $product['id']]) }}" method="POST"
-                                    class="mt-auto">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <form action="{{ route('cart.add') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->products_id }}">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <a href="{{ route('product.detail', $product->products_id) }}"
                                             class="btn btn-outline-primary rounded-pill">View Details</a>
@@ -314,32 +313,32 @@ $(document).ready(function() {
         }, 5000);
     }
 
-    $(document).on('click', '.wishlist-btn', function(e) {
-        e.preventDefault();
-        var productId = $(this).data('product-id');
-        var icon = $(this).find('.heart-icon');
+    // $(document).on('click', '.wishlist-btn', function(e) {
+    //     e.preventDefault();
+    //     var productId = $(this).data('product-id');
+    //     var icon = $(this).find('.heart-icon');
 
-        icon.toggleClass('text-dark text-danger');
+    //     icon.toggleClass('text-dark text-danger');
 
-        $.ajax({
-            url: '/wishlist/toggle/' + productId,
-            type: 'GET',
-            success: function(response) {
-                const alertHtml = `
-                <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-                    role="alert" style="min-width: 300px; z-index: 1055;">
-                    ${response.message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
-                $('body').prepend(alertHtml);
-                setTimeout(() => $('#successAlert').fadeOut('slow', () => $(this).remove()), 5000);
-            },
-            error: function(xhr) {
-                alert('Failed to update wishlist.');
-                console.error(xhr.responseText);
-            }
-        });
-    });   
+    //     $.ajax({
+    //         url: '/wishlist/toggle/' + productId,
+    //         type: 'GET',
+    //         success: function(response) {
+    //             const alertHtml = `
+    //             <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
+    //                 role="alert" style="min-width: 300px; z-index: 1055;">
+    //                 ${response.message}
+    //                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    //             </div>`;
+    //             $('body').prepend(alertHtml);
+    //             setTimeout(() => $('#successAlert').fadeOut('slow', () => $(this).remove()), 5000);
+    //         },
+    //         error: function(xhr) {
+    //             alert('Failed to update wishlist.');
+    //             console.error(xhr.responseText);
+    //         }
+    //     });
+    // });   
 });
 </script>
 @endsection

@@ -34,7 +34,13 @@ class ProductController extends Controller
         ->where('user_id', Auth::id())
         ->get()
         ->map(function ($item) {
-            return $item->product;
+            return [
+                'id' => $item->product->id,
+                'product_name' => $item->product->product_name,
+                'price' => $item->product->price,
+                'image' => $item->product->image,
+                'in_stock' => $item->product->stock > 0,
+            ];
         });
 
     return view('customer.wishlist', compact('wishlistItems'));

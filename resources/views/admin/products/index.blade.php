@@ -160,7 +160,7 @@
                                     {{-- Ganti path asset() sesuai lokasi gambar Anda --}}
                                     {{-- Jika di storage/app/public/products -> asset('storage/products/' . $product->products_image) --}}
                                     {{-- Jika di public/images/products-img/ -> asset('images/products-img/' . $product->products_image) --}}
-                                    <img src="{{ $product->products_image ? asset('storage/products/' . $product->products_image) : 'https://via.placeholder.com/60' }}"
+                                    <img src="{{ $product->products_image ? asset('images/products-img/' . $product->products_image) : 'https://via.placeholder.com/60' }}"
                                         alt="{{ $product->products_name }}" class="product-img me-3">
                                     <div>
                                         {{-- Gunakan $product->products_name --}}
