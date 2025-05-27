@@ -2,17 +2,18 @@
 
 @section('content')
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Chile Mart - @yield('title')</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        @stack('styles')
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chile Mart - @yield('title')</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @stack('styles')
+</head>
 
+<body>
     @if (session('success'))
         <script>
             Swal.fire({
@@ -24,6 +25,83 @@
             });
         </script>
     @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <div class="login-wrapper">
+        <div class="login-card">
+
+            <h4>Welcome Back!</h4>
+            <p>Sign in to your Account</p>
+
+            <form method="POST" action="{{ route('login.auth') }}">
+                @csrf
+
+                <!-- Email input -->
+                <input type="email" name="users_email" class="form-control" placeholder="Email Address" value="{{ old('users_email') }}" required>
+                @error('users_email')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+
+                <!-- Password input -->
+                <div class="position-relative">
+                    <input type="password" name="users_password" id="password" class="form-control pe-5" placeholder="Password" required>
+                    @error('users_password')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <span onclick="togglePassword('password', this)" class="position-absolute end-0 top-50 translate-middle-y me-3" style="cursor: pointer; z-index: 2;">
+                        <i class="fa fa-eye" id="toggleIcon"></i>
+                    </span>
+                </div>
+
+                <!-- Remember me checkbox -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                        <label class="form-check-label" for="remember">Remember Me</label>
+                    </div>
+                    <a href="forgot-password" class="text-link">Forgot Password?</a>
+                </div>
+
+                <!-- Sign In button -->
+                <button type="submit" class="btn btn-blue">Sign In</button>
+            </form>
+
+            <!-- Signup link -->
+            <div class="text-center mt-3">
+                <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-link">Sign Up</a></span>
+            </div>
+
+            <!-- Guest login link -->
+            <div class="guest-login">
+                <span class="text-muted">Or </span>
+                <a href="{{ url('/home') }}" class="text-link">Sign In as Guest</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle password visibility
+        function togglePassword(fieldId, el) {
+            const input = document.getElementById(fieldId);
+            const icon = el.querySelector('i');
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 
     <style>
         body {
@@ -120,75 +198,6 @@
         }
     </style>
 
-    <body>
+</body>
 
-        <div class="login-wrapper">
-            <div class="login-card">
-
-                <h4>Welcome Back!</h4>
-                <p>Sign in to your Account</p>
-
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('login.auth') }}">
-                    @csrf
-
-                    <input type="text" name="email" class="form-control" placeholder="Email Address" required>
-
-                    <div class="position-relative">
-                        <input type="password" name="password" id="password" class="form-control pe-5"
-                            placeholder="Password" required>
-
-                        <span onclick="togglePassword('password', this)"
-                            class="position-absolute end-0 top-50 translate-middle-y me-3"
-                            style="cursor: pointer; z-index: 2;">
-                            <i class="fa fa-eye" id="toggleIcon"></i>
-                        </span>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                            <label class="form-check-label" for="remember">Remember Me</label>
-                        </div>
-                        <a href="forgot-password" class="text-link">Forgot Password?</a>
-                    </div>
-
-                    <button type="submit" class="btn btn-blue">Sign In</button>
-                </form>
-
-                <div class="text-center mt-3">
-                    <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-link">Sign
-                            Up</a></span>
-                </div>
-
-                <div class="guest-login">
-                    <span class="text-muted">Or </span>
-                    <a href="{{ url('/home') }}" class="text-link">Sign In as Guest</a>
-                </div>
-
-            </div>
-        </div>
-    </body>
-
-    <script>
-        function togglePassword(fieldId, el) {
-            const input = document.getElementById(fieldId);
-            const icon = el.querySelector('i');
-
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-        }
-    </script>
 @endsection

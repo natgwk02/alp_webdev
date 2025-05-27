@@ -42,7 +42,7 @@ class Product extends Model
     // Optional: Relationship to CartItems (if each product can appear in many cart items)
     public function cartItems(): HasMany
     {
-        return $this->hasMany(CartItem::class, 'product_id');
+        return $this->hasMany(CartItem::class, 'products_id');
     }
 
     // Optional: Method to check if the product is in stock

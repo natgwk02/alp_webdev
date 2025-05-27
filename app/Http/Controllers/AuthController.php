@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function show()
+    public function showLogin()
     {
+        if (Auth::check()) {
+            return redirect()->intended('/home');
+        }
         return view('auth.login');
     }
 
@@ -43,11 +46,11 @@ public function login_auth(Request $request)
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        Auth::logout();  // Log the user out
+        $request->session()->invalidate();  // Invalidate the session
+        $request->session()->regenerateToken();  // Regenerate CSRF token
 
-        return redirect('/logout');
+        return redirect('/login');  // Redirect to login page
     }
 
     public function showForgotPassword()
