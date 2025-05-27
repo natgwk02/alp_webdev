@@ -15,7 +15,7 @@ use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, "show"])
-    ->name('login');
+->name('login');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');

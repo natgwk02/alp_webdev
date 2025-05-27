@@ -43,9 +43,9 @@ class User extends Authenticatable
     {
         return $this->users_password;
     }
+    
     public function wishlists()
-{
-    return $this->hasMany(Wishlist::class);
-}
-
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }
