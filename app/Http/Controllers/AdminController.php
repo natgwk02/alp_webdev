@@ -23,26 +23,20 @@ class AdminController extends Controller
             'total_orders' => Order::count(),
             'total_revenue' => Order::sum('orders_total_price'),
             'total_products' => Product::where('status_del', 0)->count(),
-
         ];
 
-        // Fetch Recent Orders (e.g., last 5)
-        // **ASSUMPTION**: Your Order model has a 'user' relationship to get the customer name.
-        // **ASSUMPTION**: Your Order model uses 'created_at' for the date.
         $recentOrders = Order::with('user')
                              ->latest('orders_date')
                              ->take(5)
                              ->get();
 
-        // Fetch Low Stock Products (e.g., 5 lowest, but > 0)
-        $lowStockProducts = Product::where('status_del', 0)
-                                   ->where('products_stock', '>', 0)
+        $stockAlertProducts = Product::where('status_del', 0)
                                    ->where('products_stock', '<=', $lowStockThreshold)
                                    ->orderBy('products_stock', 'asc')
                                    ->take(5)
                                    ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'lowStockProducts'));
+        return view('admin.dashboard', compact('stats', 'recentOrders', 'stockAlertProducts','lowStockThreshold'));
     }
 
     public function products(Request $request)
@@ -65,7 +59,7 @@ class AdminController extends Controller
 
         if ($request->filled('status')) {
             $status = $request->status;
-            $lowStockThreshold = 20; // Match the threshold in your accessor
+            $lowStockThreshold = 20;
 
             if ($status === 'In Stock') {
                 $query->where('products_stock', '>', $lowStockThreshold);
