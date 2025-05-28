@@ -109,7 +109,7 @@
 
                             <form
                                 action="{{ in_array($product->id ?? $product['id'], $wishlistProductIds)
-                                    ? route('wishlist.remove', ['productId' => $product->id ?? $product['id']])
+                                    ? route('wishlist.remove', ['productId' => $product->products_id ?? $product['id']])
                                     : route('wishlist.add', ['productId' => $product->products_id ?? $product['id']]) }}"
                                 method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                                 @csrf
@@ -159,7 +159,7 @@
                                 <h5 class="text-primary fw-semibold mb-4">Rp
                                     {{ number_format($product->orders_price, 0, ',', '.') }}</h5>
 
-                                <form action="{{ route('cart.add', ['productId' => $product['id']]) }}" method="POST"
+                                <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST"
                                     class="mt-auto">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">

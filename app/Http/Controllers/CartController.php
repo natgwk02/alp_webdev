@@ -94,7 +94,7 @@ class CartController extends Controller
     /**
      * Update the quantity of a product in the cart.
      */
-    public function updateQuantity(Request $request, $productId)
+    public function updateCart(Request $request, $productId)
     {
         // Check if the user is logged in
         if (!Auth::check()) {
