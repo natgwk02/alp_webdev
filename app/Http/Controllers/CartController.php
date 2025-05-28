@@ -54,7 +54,7 @@ class CartController extends Controller
         }
 
         // Get the current user's cart, or create one if it doesn't exist
-        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
 
         $cartItem = CartItem::firstOrNew([
             'cart_id' => $cart->id,
@@ -81,7 +81,7 @@ class CartController extends Controller
         $cart = Cart::where('users_id', Auth::id())->first();
 
         // Remove the product from the cart
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
         if ($cartItem) {
             $cartItem->delete();
         }

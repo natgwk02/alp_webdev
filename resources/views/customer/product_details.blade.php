@@ -160,7 +160,7 @@
                         {{ $product->products_description }}
                     </p>
 
-                    <form action="{{ route('cart.add') }}" method="POST">
+                    <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST">
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->products_id }}">
 

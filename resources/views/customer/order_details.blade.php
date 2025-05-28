@@ -28,15 +28,15 @@
                                     @foreach ($order['items'] as $item)
                                         <tr>
                                             <td class="d-flex align-items-center gap-3">
-                                                <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}"
-                                                    alt="{{ $item['name'] ?? 'Unknown Product' }}"
+                                                <img src="{{ asset('images/products-img/' . ($item['products_image'] ?? 'no-image.png')) }}"
+                                                    alt="{{ $item['products_name'] ?? 'Unknown Product' }}"
                                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
                                                 <span>{{ $item['name'] ?? 'Unknown Product' }}</span>
                                             </td>
-                                            <td>Rp {{ number_format($item['price'] ?? 0, 0, ',', '.') }}</td>
+                                            <td>Rp {{ number_format($item['orders_price'] ?? 0, 0, ',', '.') }}</td>
                                             <td>{{ $item['quantity'] ?? 0 }}</td>
                                             <td>Rp
-                                                {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
+                                                {{ number_format(($item['orders_price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
                                             </td>
                                         </tr>
                                     @endforeach

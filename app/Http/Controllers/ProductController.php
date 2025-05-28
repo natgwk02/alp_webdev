@@ -40,7 +40,8 @@ class ProductController extends Controller
                 'price' => $item->product->price,
                 'products_image' => $item->product->products_image,
                 'products_stock' => $item->product->products_stock > 0,
-                'orders_price' => $item->product->orders_price
+                'orders_price' => $item->product->orders_price, 
+                'categories_name'=> optional($item->product->category)->categories_name
             ];
         });
 
