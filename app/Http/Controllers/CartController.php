@@ -12,7 +12,7 @@ class CartController extends Controller
 {
     public function __construct()
     {
-      //   $this->middleware('auth');
+        //   $this->middleware('auth');
     }
     /**
      * Show the current user's cart.
@@ -46,13 +46,21 @@ class CartController extends Controller
     /**
      * Add a product to the cart.
      */
-    public function addToCart(Request $request)
+    public function addToCart(Request $request, $productId)
     {
         //dd(Auth::id());
-        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+
+        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+
+        // Check if cart exists
+        if (!$cart) {
+            return back()->with('error', 'Could not access your cart.');
+        }
 
         $cartItem = CartItem::firstOrNew([
             'cart_id' => $cart->id,
+            'products_id' => $productId
         ]);
 
         $cartItem->quantity += (int) $request->input('quantity', 1);

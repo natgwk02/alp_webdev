@@ -45,6 +45,8 @@ class Order extends Model
         'tax' => 'float',
         'voucher_discount' => 'float',
         'status_del' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
 

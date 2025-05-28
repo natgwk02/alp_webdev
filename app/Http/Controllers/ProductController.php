@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    
+
     public function index()
     {
     $products = Product::all();
@@ -21,7 +21,7 @@ class ProductController extends Controller
 
     return view('customer.products', compact('products', 'wishlistProductIds', 'categories'));
     }
-    
+
     public function show($id)
     {
         $product = Product::with('category')->findOrFail($id);
@@ -31,7 +31,7 @@ class ProductController extends Controller
     public function wishlist()
     {
          $wishlistItems = Wishlist::with('product')
-        ->where('user_id', Auth::id())
+        ->where('users_id', Auth::id())
         ->get()
         ->map(function ($item) {
             return [
@@ -50,7 +50,7 @@ class ProductController extends Controller
     public function addToWishlist(Request $request, $productId)
     {
         Wishlist::firstOrCreate([
-        'user_id' => Auth::id(),
+        'users_id' => Auth::id(),
         'product_id' => $productId,
     ]);
 
@@ -59,7 +59,7 @@ class ProductController extends Controller
 
     public function removeFromWishlist(Request $request, $productId)
     {
-         Wishlist::where('user_id', Auth::id())
+         Wishlist::where('users_id', Auth::id())
             ->where('product_id', $productId)
             ->delete();
 
@@ -91,7 +91,7 @@ class ProductController extends Controller
         $message = 'Product removed from wishlist';
     } else {
         \App\Models\Wishlist::create([
-            'user_id' => Auth::id(),
+            'users_id' => Auth::id(),
             'product_id' => $productId,
         ]);
         $message = 'Product added to wishlist';
