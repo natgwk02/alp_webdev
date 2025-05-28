@@ -156,22 +156,23 @@
                                 </div>
 
                                 <p class="text-secondary small mb-1">{{ $product->product_category }}</p>
-                                <h5 class="text-primary fw-semibold mb-4">Rp
-                                    {{ number_format($product->orders_price, 0, ',', '.') }}</h5>
+                                    <h5 class="text-primary fw-semibold mb-4">
+                                        Rp {{ number_format($product->orders_price, 0, ',', '.') }}
+                                    </h5>
 
-                                <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST"
-                                    class="mt-auto">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{{ route('product.detail', $product->products_id) }}"
-                                            class="btn btn-outline-primary rounded-pill">View Details</a>
-                                        <button type="submit" class="btn btn-success rounded-pill">
-                                            <i class="bi bi-cart-plus-fill"></i> Add
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                                    <form action="{{ route('cart.add', ['productId' => $product->id]) }}" method="POST" class="mt-auto">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="{{ route('product.detail', $product->products_id) }}" class="btn btn-outline-primary rounded-pill">
+                                                View Details
+                                            </a>
+                                            <button type="submit" class="btn btn-success rounded-pill">
+                                                <i class="bi bi-cart-plus-fill"></i> Add
+                                            </button>
+                                        </div>
+                                    </form>
                         </div>
                     </div>
                 @endforeach

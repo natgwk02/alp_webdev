@@ -578,7 +578,7 @@
                                     @endfor
                                 </div>
                             </div>
-                            <form action="{{ route('cart.add', ['productId' => $product->productId]) }}" method="POST">
+                            <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST">
                             @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <input type="hidden" name="quantity" value="1">
