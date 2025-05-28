@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
     $products = Product::all();
     $wishlistProductIds = Auth::check()
-    ? Wishlist::where('users_id', Auth::id())->pluck('product_id')->toArray()
+    ? Wishlist::where('users_id', Auth::id())->pluck('products_id')->toArray()
     : [];
     $categories = DB::table('categories')->pluck('categories_name', 'categories_id')->toArray();
 
@@ -35,11 +35,12 @@ class ProductController extends Controller
         ->get()
         ->map(function ($item) {
             return [
-                'id' => $item->product->id,
-                'product_name' => $item->product->product_name,
+                'products_id' => $item->product->products_id,
+                'products_name' => $item->product->product_name,
                 'price' => $item->product->price,
-                'image' => $item->product->image,
-                'in_stock' => $item->product->stock > 0,
+                'products_image' => $item->product->products_image,
+                'products_stock' => $item->product->products_stock > 0,
+                'orders_price' => $item->product->orders_price
             ];
         });
 
@@ -51,7 +52,7 @@ class ProductController extends Controller
     {
         Wishlist::firstOrCreate([
         'users_id' => Auth::id(),
-        'product_id' => $productId,
+        'products_id' => $productId,
     ]);
 
     return redirect()->back()->with('success', 'Product added to wishlist');
@@ -60,7 +61,7 @@ class ProductController extends Controller
     public function removeFromWishlist(Request $request, $productId)
     {
          Wishlist::where('users_id', Auth::id())
-            ->where('product_id', $productId)
+            ->where('products_id', $productId)
             ->delete();
 
     return redirect()->back()->with('success', 'Product removed from wishlist');
@@ -71,6 +72,7 @@ class ProductController extends Controller
         $products = Product::limit(8)->get();
         return view('customer.home', compact('products'));
     }
+
     public function toggleWishlist($productId)
     {
         if (!Auth::check()) {
@@ -82,8 +84,8 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product not found'], 404);
     }
 
-    $wishlist = \App\Models\Wishlist::where('user_id', Auth::id())
-                ->where('product_id', $productId)
+    $wishlist = \App\Models\Wishlist::where('users_id', Auth::id())
+                ->where('products_id', $productId)
                 ->first();
 
     if ($wishlist) {
@@ -92,7 +94,7 @@ class ProductController extends Controller
     } else {
         \App\Models\Wishlist::create([
             'users_id' => Auth::id(),
-            'product_id' => $productId,
+            'products_id' => $productId,
         ]);
         $message = 'Product added to wishlist';
     }
