@@ -160,6 +160,7 @@
 
                                 <form action="{{ route('cart.add') }}" method="POST">
                                 @csrf
+                                {{-- <input type="number" name="quantity" value="1"> --}}
                                 <input type="hidden" name="product_id" value="{{ $product->products_id }}">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <a href="{{ route('product.detail', $product->products_id) }}"

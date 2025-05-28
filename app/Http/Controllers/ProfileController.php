@@ -17,8 +17,9 @@ class ProfileController extends Controller
         // if (!Auth::check()) {
         //     return redirect()->route('login');
         // }
+        $user = Auth::user();
 
-        return view('customer.profile');
+        return view('customer.profile', compact('user'));
     }
 
     // Mengupdate informasi profil
@@ -28,7 +29,7 @@ class ProfileController extends Controller
 
     $validated = $request->validate([
         'users_name'    => 'required|string|max:255',
-        'email'         => 'required|email|unique:users,users_email,' . $user->users_id . ',users_id',
+        'users_email' => 'required|email|unique:users,users_email,' . $user->users_id . ',users_id',
         'phone'         => 'nullable|string|max:20',
         'birthdate'     => 'nullable|date',
         'address'       => 'nullable|string|max:255',
@@ -46,6 +47,8 @@ class ProfileController extends Controller
         $path = $request->file('profile_photo')->store('profile_photos', 'public');
         $validated['profile_photo'] = $path;
     }
+
+    $validated['users_email'] = $request->users_email;
 
     // Update user
     $user->update($validated);

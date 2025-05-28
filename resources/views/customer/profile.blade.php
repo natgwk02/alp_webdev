@@ -13,11 +13,14 @@
                         height="120"
                         alt="Profile Photo">
                     <h5 class="card-title">
-                    @if(Auth::check())
-                        {{ Auth::user()->users_name }}
-                    @else
-                        Guest
-                    @endif
+                    @if (Auth::check())
+    @php
+        $firstName = explode(' ', Auth::user()->users_name)[0];
+    @endphp
+    <span>{{ $firstName }}</span>
+    @else
+    <span>Guest</span>
+    @endif
                 
                                         </h5>
                                         <p class="text-muted small">Member since 2023</p>
@@ -73,7 +76,6 @@
                                         <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
-
                                             <div class="row mb-4">
                                                 <div class="col-md-3">
                                                     <label class="form-label">Profile Photo</label>
@@ -107,7 +109,7 @@
                                                     <input type="text"
                                                         class="form-control @error('name') is-invalid @enderror"
                                                         id="name"
-                                                        name="name"
+                                                        name="users_name"
                                                         value="{{ old('name', optional(Auth::user())->users_name) }}"
                                                         required>
                                                     @error('name')
@@ -119,7 +121,7 @@
                                                     <input type="email"
                                                         class="form-control @error('email') is-invalid @enderror"
                                                         id="email"
-                                                        name="email"
+                                                        name="users_email"
                                                         value="{{ old('email', optional(Auth::user())->users_email) }}"
                                                         required>
                                                     @error('email')
@@ -134,8 +136,8 @@
                                                     <input type="tel"
                                                         class="form-control @error('phone') is-invalid @enderror"
                                                         id="phone"
-                                                        name="phone"
-                                                        value="{{ old('phone', Auth::user()->phone ?? '') }}"
+                                                        name="users_phone"
+                                                        value="{{ old('phone', Auth::user()->users_phone ?? '') }}"
                                                         placeholder="+62 812-3456-7890">
                                                     @error('phone')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -147,7 +149,7 @@
                                                         class="form-control @error('birthdate') is-invalid @enderror"
                                                         id="birthdate"
                                                         name="birthdate"
-                                                        value="{{ old('birthdate', optional(Auth::user())->birthdate ? \Carbon\Carbon::parse(optional(Auth::user())->birthdate)->format('Y-m-d') : '') }}"
+                                                        value="{{ old('birthdate', optional(Auth::user())->birthdate ? \Carbon\Carbon::parse(optional(Auth::user())->birthdate)->format('Y-m-d') : '') }}">
                                                     @error('birthdate')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror

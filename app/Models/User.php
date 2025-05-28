@@ -13,6 +13,8 @@ class User extends Authenticatable
     protected $table = 'users';
     protected $primaryKey = 'users_id'; // penting!
     public $timestamps = false;
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'users_name',
@@ -29,6 +31,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'status_del' => 'boolean',
     ];
+    public function getAuthIdentifier()
+{
+    return $this->users_id;
+}
 
     public function getAuthIdentifierName()
     {

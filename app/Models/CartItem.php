@@ -28,4 +28,5 @@ class CartItem extends Model
         // Setiap CartItem milik satu Product
         return $this->belongsTo(Product::class, 'products_id');  // Foreign key: 'product_id'
     }
+   
 }

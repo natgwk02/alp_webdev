@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
     $products = Product::all();
     $wishlistProductIds = Auth::check()
-    ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
+    ? Wishlist::where('users_id', Auth::id())->pluck('product_id')->toArray()
     : [];
     $categories = DB::table('categories')->pluck('categories_name', 'categories_id')->toArray();
 
