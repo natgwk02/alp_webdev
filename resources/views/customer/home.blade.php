@@ -571,7 +571,7 @@
                         <div class="card-body d-flex flex-column h-100">
                             <h5 class="card-title">{{ $product->products_name }}</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="card-text mb-0">Rp {{ number_format($product->unit_price, 0, ',', '.') }}</p>
+                                <p class="card-text mb-0">Rp {{ number_format($product->orders_price, 0, ',', '.') }}</p>
                                 <div>
                                     @for ($i = 1; $i <= 5; $i++)
                                         <i class="bi {{ $i <= $product->rating ? 'bi-star-fill' : 'bi-star' }} text-warning"></i>

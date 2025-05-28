@@ -19,28 +19,31 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-        // Check if the user is logged in
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'You must be logged in to view your cart.');
         }
 
-        // Get the current user's cart, or create one if it doesn't exist
         $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
-
-        // Fetch all items in the cart, including product details
         $cartItems = $cart->items()->with('product')->get();
 
-        // Calculate the subtotal, tax, shipping, and total
-        $subtotal = $cartItems->sum(function ($item) {
-            return $item->product->price * $item->quantity;
-        });
 
+        $subtotal = $this->calculateSubtotal($cart);
         $shippingFee = 5000;
         $tax = round($subtotal * 0.1);
         $voucherDiscount = session('voucher_discount', 0);
         $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
 
-        return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
+        $selectedItemsOnLoad = session('selected_items_on_load', []);
+
+        return view('customer.cart', compact(
+            'cartItems',
+            'subtotal',
+            'shippingFee',
+            'tax',
+            'total',
+            'voucherDiscount',
+            'selectedItemsOnLoad'
+        ));
     }
 
     public function addToCart(Request $request)
@@ -54,7 +57,7 @@ class CartController extends Controller
         }
 
         // Get the current user's cart, or create one if it doesn't exist
-        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
 
         $cartItem = CartItem::firstOrNew([
             'cart_id' => $cart->id,
@@ -81,7 +84,7 @@ class CartController extends Controller
         $cart = Cart::where('users_id', Auth::id())->first();
 
         // Remove the product from the cart
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
         if ($cartItem) {
             $cartItem->delete();
         }
@@ -133,7 +136,11 @@ class CartController extends Controller
     private function calculateSubtotal($cart)
     {
         return $cart->items->sum(function ($item) {
-            return $item->product->price * $item->quantity;
+
+            if ($item->product && isset($item->product->orders_price)) {
+                return $item->product->orders_price * $item->quantity;
+            }
+            return 0;
         });
     }
 
@@ -142,7 +149,6 @@ class CartController extends Controller
      */
     public function applyVoucher(Request $request)
     {
-        // Ensure the user is logged in
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'You must be logged in to apply a voucher.');
         }
@@ -155,32 +161,41 @@ class CartController extends Controller
 
         $code = strtoupper($request->input('voucher_code'));
         $cart = Cart::where('users_id', Auth::id())->first();
-        $subtotal = $this->calculateSubtotal($cart);
+        $subtotal = $this->calculateSubtotal($cart); // Subtotal for voucher validation (whole cart)
+
+        // Get selected items from the form to flash back for UI persistence
+        $selectedItemsForRedirect = [];
+        if ($request->has('selected_items_voucher') && !empty($request->input('selected_items_voucher'))) {
+            $selectedItemsForRedirect = explode(',', $request->input('selected_items_voucher'));
+        }
 
         if (!array_key_exists($code, $validVouchers)) {
-            return back()->with('voucher_error', 'Invalid voucher code.');
+            return back()->withInput()->with('voucher_error', 'Invalid voucher code.')
+                ->with('selected_items_on_load', $selectedItemsForRedirect);
         }
 
         $voucher = $validVouchers[$code];
 
         if (isset($voucher['min']) && $subtotal < $voucher['min']) {
-            return back()->with('voucher_error', 'CHILLBRO voucher requires minimum purchase of Rp200,000');
+            return back()->withInput()->with('voucher_error', 'Voucher ' . $code . ' requires minimum purchase of Rp' . number_format($voucher['min'], 0, ',', '.'))
+                ->with('selected_items_on_load', $selectedItemsForRedirect);
         }
 
+        // Store voucher info in regular session for display and calculation
         session([
             'voucher_code' => $code,
             'voucher_discount' => $voucher['discount']
         ]);
 
-        return back()->with('voucher_success', 'Voucher applied successfully!');
+        return back()->with('voucher_success', 'Voucher applied successfully!') // This message is generic
+            ->with('selected_items_on_load', $selectedItemsForRedirect);
     }
 
-    /**
-     * Remove the applied voucher.
-     */
-    public function removeVoucher()
+    public function removeVoucher(Request $request)
     {
         session()->forget(['voucher_code', 'voucher_discount']);
-        return back()->with('voucher_success', 'Voucher removed successfully');
+        // To preserve selection, you might need to get current selection via JS before submitting this form
+        // For now, let's keep it simple and let the default selection (all items) apply on next page load
+        return back()->with('voucher_success', 'Voucher removed successfully.');
     }
 }

@@ -108,15 +108,15 @@
                             class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden product-card transition-transform position-relative">
 
                             <form
-                                action="{{ in_array($product->id ?? $product['id'], $wishlistProductIds)
+                                action="{{ in_array($product->products_id ?? $product['id'], $wishlistProductIds)
                                     ? route('wishlist.remove', ['productId' => $product->products_id ?? $product['id']])
                                     : route('wishlist.add', ['productId' => $product->products_id ?? $product['id']]) }}"
                                 method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                                 @csrf
                                 <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn"
-                                    data-product-id="{{ $product->id }}">
+                                    data-product-id="{{ $product->products_id }}">
                                     <i
-                                        class="bi bi-bookmark-heart-fill {{ in_array($product->id, $wishlistProductIds) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
+                                        class="bi bi-bookmark-heart-fill {{ in_array($product->products_id, $wishlistProductIds) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
                                 </button>
                             </form>
 

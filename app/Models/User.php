@@ -42,9 +42,9 @@ class User extends Authenticatable
         'status_del' => 'boolean',
     ];
     public function getAuthIdentifier()
-{
-    return $this->users_id;
-}
+    {
+        return $this->users_id;
+    }
 
     /**
      * Get the name of the unique identifier for the user.
@@ -56,12 +56,12 @@ class User extends Authenticatable
     }
 
     public function getRedirectRoute()
-{
-    return match ($this->role) {
-        'admin' => '/dashboard',
-        default => '/home',
-    };
-}
+    {
+        return match ($this->role) {
+            'admin' => '/dashboard',
+            default => '/home',
+        };
+    }
 
     /**
      * Get the password for the user.
@@ -87,6 +87,4 @@ class User extends Authenticatable
     {
         return $this->users_name;
     }
-
-
 }
