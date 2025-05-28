@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
 {
-    //
     protected $primaryKey = 'orders_id';
     public $incrementing = true;
 
@@ -31,15 +30,15 @@ class Order extends Model
         'shipping_fee',
         'tax',
         'voucher_discount',
-        'total', // Consider which 'total' is primary
+        'total',
         'notes',
-        'status_del', // For your manual soft delete
+        'status_del',
     ];
 
     protected $casts = [
         'orders_date' => 'datetime',
-        'orders_total_price' => 'float', // Or integer if you store in cents
-        'total' => 'float',           // Cast this as well
+        'orders_total_price' => 'float',
+        'total' => 'float',
         'subtotal' => 'float',
         'shipping_fee' => 'float',
         'tax' => 'float',
@@ -49,8 +48,7 @@ class Order extends Model
         'updated_at' => 'datetime',
     ];
 
-
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'users_id', 'users_id');
     }
@@ -68,5 +66,4 @@ class Order extends Model
             }
         );
     }
-
 }

@@ -14,8 +14,10 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+
 Route::post('/login', [AuthController::class, 'login_auth'])->name('login.auth');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
@@ -40,23 +42,25 @@ Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->na
 // });
 
 // Admin Routes
-// Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-    //  Product Management
-    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
-    Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-    Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit_data');
-    Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-    Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
-    Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
-    Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
+
+Route::get('/dashboard', [AdminController::class, 'dashboard'])
+    ->middleware(['auth'])
+    ->name('admin.dashboard'); // ✅ tambahkan ini
+
+//  Product Management
+Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit_data');
+Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
+Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
 
     // Order Management
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
     Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-// });
 
 // Home Route
 Route::middleware('web')->group(function () {
@@ -94,14 +98,7 @@ Route::get('/about', function () {
 //     return view('customer.profile');
 // })->name('profile');
 
-// Route::POST('/logout', function () {
-//     Auth::logout();
-//     request()->session()->invalidate();
-//     request()->session()->regenerateToken();
-//     return redirect('/login');
-// })->name('logout');
-// Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 // Profile Routes
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

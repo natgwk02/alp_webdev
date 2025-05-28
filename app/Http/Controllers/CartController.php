@@ -43,20 +43,18 @@ class CartController extends Controller
         return view('customer.cart', compact('cartItems', 'subtotal', 'shippingFee', 'tax', 'total', 'voucherDiscount'));
     }
 
-    /**
-     * Add a product to the cart.
-     */
-    public function addToCart(Request $request, $productId)
+    public function addToCart(Request $request)
     {
-        //dd(Auth::id());
-        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+        $productId = $request->input('product_id');
+        // Get the product details from the database
+        $product = Product::find($productId);
 
-        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
-
-        // Check if cart exists
-        if (!$cart) {
-            return back()->with('error', 'Could not access your cart.');
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found.');
         }
+
+        // Get the current user's cart, or create one if it doesn't exist
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
 
         $cartItem = CartItem::firstOrNew([
             'cart_id' => $cart->id,

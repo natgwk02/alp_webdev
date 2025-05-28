@@ -12,11 +12,10 @@ class User extends Authenticatable
 
     // Nama tabel (opsional jika memang pakai tabel bernama 'users')
     protected $table = 'users';
-    protected $primaryKey = 'users_id';
-    public $timestamps = false;
-    public $incrementing = true;
-    protected $keyType = 'int';
 
+    /**
+     * Kolom yang boleh diisi massal
+     */
     protected $fillable = [
         'users_name',
         'users_email',
@@ -56,6 +55,14 @@ class User extends Authenticatable
         return 'users_id';
     }
 
+    public function getRedirectRoute()
+{
+    return match ($this->role) {
+        'admin' => '/dashboard',
+        default => '/home',
+    };
+}
+
     /**
      * Get the password for the user.
      * Untuk mengubah kolom password default ke users_password
@@ -81,12 +88,5 @@ class User extends Authenticatable
         return $this->users_name;
     }
 
-    // Di App\Models\User.php
-    public function getRedirectRoute()
-    {
-        return match ($this->role) {
-            'admin' => '/dashboard',
-            default => '/home',
-        };
-    }
+
 }

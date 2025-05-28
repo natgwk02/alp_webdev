@@ -21,8 +21,9 @@ class AdminController extends Controller
         // Basic Stats (Ensure 'orders_total_price' is your revenue column)
         $stats = [
             'total_orders' => Order::count(),
+            'total_products' => Product::count(),
+            'total_active_products' => Product::where('status_del', 0)->count(), // ✅ ubah key ini
             'total_revenue' => Order::sum('orders_total_price'),
-            'total_products' => Product::where('status_del', 0)->count(),
         ];
 
         $recentOrders = Order::with('user')
