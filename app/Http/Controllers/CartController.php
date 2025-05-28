@@ -12,7 +12,7 @@ class CartController extends Controller
 {
     public function __construct()
     {
-      //   $this->middleware('auth');
+        //   $this->middleware('auth');
     }
     /**
      * Show the current user's cart.
@@ -58,7 +58,7 @@ class CartController extends Controller
 
         $cartItem = CartItem::firstOrNew([
             'cart_id' => $cart->id,
-            'product_id' => $productId
+            'products_id' => $productId
         ]);
 
         $cartItem->quantity += (int) $request->input('quantity', 1);
@@ -92,7 +92,7 @@ class CartController extends Controller
     /**
      * Update the quantity of a product in the cart.
      */
-    public function updateQuantity(Request $request, $productId)
+    public function updateCart(Request $request, $productId)
     {
         // Check if the user is logged in
         if (!Auth::check()) {

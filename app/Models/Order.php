@@ -5,14 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
 {
-    //
-   use HasFactory;
-
-    protected $table = 'orders';
+    protected $primaryKey = 'orders_id';
+    public $incrementing = true;
 
     protected $fillable = [
         'users_id',
@@ -48,12 +45,12 @@ class Order extends Model
         'voucher_discount' => 'float',
         'status_del' => 'boolean',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime', 
+        'updated_at' => 'datetime',
     ];
 
-    public function orderDetails()
+    public function user(): BelongsTo
     {
-        return $this->hasMany(OrderDetail::class, 'order_id');
+        return $this->belongsTo(User::class, 'users_id', 'users_id');
     }
 
     protected function statusBadgeClass(): Attribute
@@ -69,10 +66,4 @@ class Order extends Model
             }
         );
     }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'users_id', 'users_id');
-    }
-
 }

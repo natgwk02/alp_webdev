@@ -10,18 +10,18 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    
+
     public function index()
     {
     $products = Product::all();
     $wishlistProductIds = Auth::check()
-    ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
+    ? Wishlist::where('users_id', Auth::id())->pluck('product_id')->toArray()
     : [];
     $categories = DB::table('categories')->pluck('categories_name', 'categories_id')->toArray();
 
     return view('customer.products', compact('products', 'wishlistProductIds', 'categories'));
     }
-    
+
     public function show($id)
     {
         $product = Product::with('category')->findOrFail($id);
@@ -31,10 +31,16 @@ class ProductController extends Controller
     public function wishlist()
     {
          $wishlistItems = Wishlist::with('product')
-        ->where('user_id', Auth::id())
+        ->where('users_id', Auth::id())
         ->get()
         ->map(function ($item) {
-            return $item->product;
+            return [
+                'id' => $item->product->id,
+                'product_name' => $item->product->product_name,
+                'price' => $item->product->price,
+                'image' => $item->product->image,
+                'in_stock' => $item->product->stock > 0,
+            ];
         });
 
     return view('customer.wishlist', compact('wishlistItems'));
@@ -44,7 +50,7 @@ class ProductController extends Controller
     public function addToWishlist(Request $request, $productId)
     {
         Wishlist::firstOrCreate([
-        'user_id' => Auth::id(),
+        'users_id' => Auth::id(),
         'product_id' => $productId,
     ]);
 
@@ -53,7 +59,7 @@ class ProductController extends Controller
 
     public function removeFromWishlist(Request $request, $productId)
     {
-         Wishlist::where('user_id', Auth::id())
+         Wishlist::where('users_id', Auth::id())
             ->where('product_id', $productId)
             ->delete();
 
@@ -85,7 +91,7 @@ class ProductController extends Controller
         $message = 'Product removed from wishlist';
     } else {
         \App\Models\Wishlist::create([
-            'user_id' => Auth::id(),
+            'users_id' => Auth::id(),
             'product_id' => $productId,
         ]);
         $message = 'Product added to wishlist';

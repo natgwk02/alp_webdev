@@ -11,6 +11,7 @@
             </div>
         </div>
 
+        {{-- Statistics cards --}}
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <a href="{{ route('admin.orders') }}" class="text-decoration-none text-white">
@@ -34,7 +35,8 @@
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="text-uppercase fw-semibold mb-1">Total Revenue</h6>
-                                <h2 class="fw-bold mb-0">Rp {{ number_format($stats['total_revenue'] ?? 0, 0, ',', '.') }}</h2>
+                                <h2 class="fw-bold mb-0">Rp {{ number_format($stats['total_revenue'] ?? 0, 0, ',', '.') }}
+                                </h2>
                             </div>
                             <div class="icon-circle">
                                 <i class="fas fa-dollar-sign fa-lg"></i>
@@ -61,6 +63,7 @@
             </div>
         </div>
 
+        {{-- Recent Orders --}}
         <div class="row">
             <div class="col-md-8 mb-4">
                 <div class="card shadow-sm">
@@ -106,20 +109,31 @@
                 </div>
             </div>
 
+            {{-- Stock Alert Products --}}
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">
-                        <h5 class="mb-0">Low Stock Products</h5>
+                        <h5 class="mb-0">Stock Alert Products</h5>
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            @forelse ($lowStockProducts as $product)
+                            @forelse ($stockAlertProducts as $product)
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     {{ $product->products_name }}
-                                    {{-- Use a warning badge, maybe danger if very low --}}
-                                    <span
-                                        class="badge {{ $product->products_stock <= 5 ? 'bg-danger' : 'bg-warning text-dark' }}">
-                                        {{ $product->products_stock }} left
+                                    @php
+                                        $stock = $product->products_stock;
+                                        $badgeClass = '';
+
+                                        if ($stock <= 0) {
+                                            $badgeClass = 'bg-secondary';
+                                        } elseif ($stock < 10) {
+                                            $badgeClass = 'bg-danger';
+                                        } elseif ($stock <= $lowStockThreshold) {
+                                            $badgeClass = 'bg-warning text-dark';
+                                        }
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }}">
+                                        {{ $stock }} left
                                     </span>
                                 </li>
                             @empty
@@ -132,6 +146,42 @@
                 </div>
             </div>
         </div>
+
+        {{-- Example: Assuming you have a row for other info like Stock Alerts --}}
+        {{-- <div class="row"> --}}
+        {{-- <div class="col-md-6 mb-4"> --}}
+        {{-- Existing Stock Alerts Panel --}}
+        {{-- </div> --}}
+
+        {{--  Order Status Overview --}}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Order Status Overview</h5>
+                </div>
+                <div class="card-body">
+                    @if (!empty($orderStatusOverview))
+                        <ul class="list-group list-group-flush">
+                            @foreach ($orderStatusOverview as $statusData)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('admin.orders', ['status' => $statusData->name]) }}"
+                                        class="text-decoration-none link-dark">
+                                        {{ $statusData->name }} <i class="fas fa-link fa-xs ms-1"></i>
+                                    </a>
+                                    <span class="badge {{ $statusData->badge_class }} rounded-pill">
+
+                                        {{ $statusData->count }}
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-center">No order status data available.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+        {{-- </div> --}}
     </div>
 
     @push('styles')

@@ -160,12 +160,10 @@
                                     {{-- Ganti path asset() sesuai lokasi gambar Anda --}}
                                     {{-- Jika di storage/app/public/products -> asset('storage/products/' . $product->products_image) --}}
                                     {{-- Jika di public/images/products-img/ -> asset('images/products-img/' . $product->products_image) --}}
-                                    <img src="{{ $product->products_image ? asset('storage/products/' . $product->products_image) : 'https://via.placeholder.com/60' }}"
+                                    <img src="{{ $product->products_image ? asset('images/products-img/' . $product->products_image) : 'https://via.placeholder.com/60' }}"
                                         alt="{{ $product->products_name }}" class="product-img me-3">
                                     <div>
-                                        {{-- Gunakan $product->products_name --}}
                                         <h6 class="mb-0">{{ $product->products_name }}</h6>
-                                        {{-- Gunakan $product->products_id (atau primary key Anda) --}}
                                         <small class="text-muted">#{{ $product->products_id }}</small>
                                     </div>
                                 </div>
@@ -177,15 +175,17 @@
                             {{-- Gunakan $product->products_stock --}}
                             <td>{{ $product->products_stock }}</td>
                             <td>
-                                {{-- Logika Status (contoh - sesuaikan!) --}}
+
                                 @php
                                     $status = 'In Stock';
                                     $badgeClass = 'bg-success';
                                     if ($product->products_stock == 0) {
                                         $status = 'Out of Stock';
+                                        $badgeClass = 'bg-secondary';
+                                    } elseif ($product->products_stock < 10) {
+                                        $status = 'Low Stock';
                                         $badgeClass = 'bg-danger';
-                                    } elseif ($product->products_stock < 20) {
-                                        // Anggap 20 sebagai batas Low Stock
+                                    }elseif ($product->products_stock < 20) {
                                         $status = 'Low Stock';
                                         $badgeClass = 'bg-warning text-dark';
                                     }

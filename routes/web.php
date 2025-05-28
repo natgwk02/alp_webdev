@@ -31,14 +31,14 @@ Route::POST('/logout', function () {
 
 // Customer Routes
 // Route::middleware(['auth', 'customer'])->group(function () {
-    Route::get('/', [HomeController::class, 'showHome'])->name('home');
-    Route::get('/products', action: [ProductController::class, 'index'])->name('products');
-    Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
-    // Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
-    Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
-    Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
-    Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
+Route::get('/', [HomeController::class, 'showHome'])->name('home');
+Route::get('/products', action: [ProductController::class, 'index'])->name('products');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
+// Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
+Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
+Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
+Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
+Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
 // });
 
 // Admin Routes
@@ -63,9 +63,9 @@ Route::post('/admin/products/{product}/restore', [AdminController::class, 'resto
     Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
 // Home Route
-Route::middleware('web')->group(function(){
+Route::middleware('web')->group(function () {
     Route::get('/home', [HomeController::class, 'showHome'])
-    ->name('home');
+        ->name('home');
 });
 
 // Route::get('/orders', [OrderController::class, 'index'])->name('orders');
@@ -79,15 +79,14 @@ Route::middleware('auth')->group(function () {
     Route::post('wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
     Route::get('wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist'])->name('wishlist.toggle');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
     Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
-
-
 
 
 

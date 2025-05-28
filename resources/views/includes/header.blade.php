@@ -122,7 +122,7 @@
                 <li class="nav-item position-relative">
                     @php
                         // hitung jumlah macam item (bukan total quantity)
-                        $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
+                        $cartCount = \App\Models\CartItem::whereHas('cart', function ($q) {$q->where('users_id', Auth::id());})->sum('quantity');$cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
                     @endphp
 
                     <a class="nav-link custom-cart-color" href="{{ route('cart.index') }}">

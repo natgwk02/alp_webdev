@@ -14,8 +14,8 @@ class Product extends Model
     // Define the fillable attributes
     //
     protected $table = 'products';
-
     protected $primaryKey = 'products_id';
+
 
     protected $fillable = [
         'categories_id',

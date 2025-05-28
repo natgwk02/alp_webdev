@@ -41,6 +41,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'status_del' => 'boolean',
     ];
+    public function getAuthIdentifier()
+{
+    return $this->users_id;
+}
 
     /**
      * Get the name of the unique identifier for the user.
@@ -48,7 +52,7 @@ class User extends Authenticatable
      */
     public function getAuthIdentifierName()
     {
-        return 'users_email';
+        return 'users_id';
     }
 
     public function getRedirectRoute()
