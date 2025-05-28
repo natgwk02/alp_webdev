@@ -4,19 +4,18 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB; 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\DB;
 
 class UsersSeeder extends Seeder
 {
-    
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
+        // Insert data user biasa (langsung)
         DB::table('users')->insert([
-            ['users_name' => 'Alice Smith', 'users_email' => 'alice@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567001', 'users_address' => 'Jl. Mawar 1', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['users_name' => 'Alice Smith', 'users_email' => 'alice@mail.com', 'users_password' => bcrypt('alice'), 'users_phone' => '081234567001', 'users_address' => 'Jl. Mawar 1', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
             ['users_name' => 'Bob Johnson', 'users_email' => 'bob@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567002', 'users_address' => 'Jl. Melati 2', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
             ['users_name' => 'Cindy Lee', 'users_email' => 'cindy@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567003', 'users_address' => 'Jl. Kenanga 3', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
             ['users_name' => 'David Kim', 'users_email' => 'david@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567004', 'users_address' => 'Jl. Anggrek 4', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
@@ -26,16 +25,22 @@ class UsersSeeder extends Seeder
             ['users_name' => 'Hendra Wijaya', 'users_email' => 'hendra@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567008', 'users_address' => 'Jl. Sakura 8', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
             ['users_name' => 'Ika Lestari', 'users_email' => 'ika@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567009', 'users_address' => 'Jl. Teratai 9', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
             ['users_name' => 'Joko Santoso', 'users_email' => 'joko@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567010', 'users_address' => 'Jl. Bougenville 10', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-
         ]);
-        
-        User::create([
-        'users_name' => 'Admin',
-        'users_email' => 'admin@chillemart.com',
-        'password' => bcrypt('admin123')
-    ]);
-        
-    }
 
-    
+        // Insert admin (cek jika sudah ada atau update)
+        $admin = [
+            'users_name' => 'Admin',
+            'users_email' => 'admin@chillemart.com',
+            'users_password' => bcrypt('admin123'),
+            'users_phone' => '081234567000',
+            'users_address' => 'Jl. Admin Center',
+            'status_del' => false,
+            'role' => 'admin',
+        ];
+
+        User::updateOrCreate(
+            ['users_email' => $admin['admin@chillemart.com']],
+            $admin
+        );
+    }
 }

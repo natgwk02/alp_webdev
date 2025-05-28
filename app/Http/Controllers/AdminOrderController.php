@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 class AdminOrderController extends Controller
 {
 
+    public function dashboard()
+    {
+        $stats = [
+            'total_orders' => \App\Models\Order::count(),
+            // kamu bisa tambah statistik lainnya juga
+        ];
+
+        return view('admin.dashboard', compact('stats'));
+    }
+
     public function index(Request $request)
     {
         $query = Order::with('user')

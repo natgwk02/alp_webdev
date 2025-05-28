@@ -8,15 +8,26 @@ class Cart extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id'];
+    // Kolom yang bisa diisi secara mass-assignment
+    protected $fillable = ['users_id'];
 
+    /**
+     * Relasi One-to-Many antara Cart dan CartItem
+     */
     public function items()
     {
-        return $this->hasMany(CartItem::class);
+        // Menghubungkan Cart dengan banyak CartItem
+        // Laravel akan secara otomatis menganggap foreign key pada CartItem adalah 'cart_id'
+        return $this->hasMany(CartItem::class, 'cart_id'); // Pastikan 'cart_id' adalah foreign key di tabel cart_items
     }
 
+    /**
+     * Relasi Many-to-One antara Cart dan User
+     */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        // Menghubungkan Cart ke satu User
+        // Laravel akan secara otomatis menggunakan 'user_id' sebagai foreign key
+        return $this->belongsTo(User::class, 'users_id'); 
     }
 }
