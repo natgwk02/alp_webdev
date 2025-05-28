@@ -85,8 +85,6 @@ Route::middleware('auth')->group(function () {
 
 
 
-
-
 Route::get('/about', function () {
     return view('customer.about');
 })->name('about');

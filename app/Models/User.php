@@ -12,7 +12,7 @@ class User extends Authenticatable
 
     // Nama tabel (opsional jika memang pakai tabel bernama 'users')
     protected $table = 'users';
-    protected $primaryKey = 'users_id'; // penting!
+    protected $primaryKey = 'users_id';
     public $timestamps = false;
 
     protected $fillable = [
@@ -47,7 +47,7 @@ class User extends Authenticatable
      */
     public function getAuthIdentifierName()
     {
-        return 'users_email';
+        return 'users_id';
     }
 
     /**
