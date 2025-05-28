@@ -28,12 +28,12 @@ public function login_auth(Request $request)
     ])) {
         $request->session()->regenerate();
 
-        // Jika user yang login adalah admin
+        dd(Auth::user()); // ⬅️ Tambahkan ini dulu untuk cek apakah user berhasil login
+
         if (Auth::user()->users_email === 'admin@chillemart.com') {
             return redirect()->route('admin.dashboard');
         }
 
-        // Kalau bukan admin, arahkan ke halaman user
         return redirect()->route('home');
     }
 

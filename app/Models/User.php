@@ -11,7 +11,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $table = 'users';
-    protected $primaryKey = 'users_id'; // penting!
+    protected $primaryKey = 'users_id'; 
     public $timestamps = false;
 
     protected $fillable = [
@@ -44,4 +44,32 @@ class User extends Authenticatable
     {
         return $this->hasMany(Wishlist::class);
     }
+
+public function getEmailAttribute()
+{
+    return $this->attributes['users_email'];
 }
+
+
+public function getEmailForPasswordReset()
+{
+    return $this->users_email;
+}
+
+public function setEmailAttribute($value)
+{
+    $this->attributes['users_email'] = $value;
+}
+
+protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($model) {
+        unset($model->email); // force ignore 'email' column
+    });
+}
+
+
+}
+

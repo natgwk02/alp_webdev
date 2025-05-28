@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB; 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 class UsersSeeder extends Seeder
 {
     
@@ -24,7 +26,14 @@ class UsersSeeder extends Seeder
             ['users_name' => 'Hendra Wijaya', 'users_email' => 'hendra@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567008', 'users_address' => 'Jl. Sakura 8', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
             ['users_name' => 'Ika Lestari', 'users_email' => 'ika@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567009', 'users_address' => 'Jl. Teratai 9', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
             ['users_name' => 'Joko Santoso', 'users_email' => 'joko@mail.com', 'users_password' => bcrypt('123456'), 'users_phone' => '081234567010', 'users_address' => 'Jl. Bougenville 10', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+
         ]);
+        
+        User::create([
+        'users_name' => 'Admin',
+        'users_email' => 'admin@chillemart.com',
+        'password' => bcrypt('admin123')
+    ]);
         
     }
 
