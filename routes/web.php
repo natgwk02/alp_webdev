@@ -29,39 +29,39 @@ Route::POST('/logout', function () {
 
 // Customer Routes
 // Route::middleware(['auth', 'customer'])->group(function () {
-    Route::get('/', [HomeController::class, 'showHome'])->name('home');
-    Route::get('/products', action: [ProductController::class, 'index'])->name('products');
-    Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
-    // Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
-    Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
-    Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
-    Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
+Route::get('/', [HomeController::class, 'showHome'])->name('home');
+Route::get('/products', action: [ProductController::class, 'index'])->name('products');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
+// Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
+Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
+Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
+Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
+Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
 // });
 
 // Admin Routes
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+// Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-//  Product Management
-Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
-Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit_data');
-Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
-Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
-Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
+    //  Product Management
+    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit_data');
+    Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+    Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+    Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
+    Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
 
     // Order Management
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
     Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-});
+// });
 
 // Home Route
-Route::middleware('web')->group(function(){
+Route::middleware('web')->group(function () {
     Route::get('/home', [HomeController::class, 'showHome'])
-    ->name('home');
+        ->name('home');
 });
 
 // Route::get('/orders', [OrderController::class, 'index'])->name('orders');
