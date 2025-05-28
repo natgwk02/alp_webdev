@@ -48,7 +48,6 @@ class CartController extends Controller
      */
     public function addToCart(Request $request)
     {
-        $product = Product::findOrFail($productId);
         //dd(Auth::id());
         $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
 

@@ -70,14 +70,28 @@ Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail
 
 Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/wishlist', [ProductController::class, 'index'])->name('wishlist');
+    Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
+    Route::post('wishlist/add/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
+    Route::post('wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
+    Route::get('wishlist/toggle/{productId}', [ProductController::class, 'toggleWishlist'])->name('wishlist.toggle');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
+    Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
+
 
 
 Route::get('/about', function () {
     return view('customer.about');
 })->name('about');
 
+// Route::get('/profile', function () {
+//     return view('customer.profile');
+// })->name('profile');
 
 // Route::POST('/logout', function () {
 //     Auth::logout();
@@ -89,7 +103,7 @@ Route::get('/about', function () {
 
 // Profile Routes
 // Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+//     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 //     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 // });
