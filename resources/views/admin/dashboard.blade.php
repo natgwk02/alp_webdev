@@ -11,6 +11,7 @@
             </div>
         </div>
 
+        {{-- Statistics cards --}}
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <a href="{{ route('admin.orders') }}" class="text-decoration-none text-white">
@@ -62,6 +63,7 @@
             </div>
         </div>
 
+        {{-- Recent Orders --}}
         <div class="row">
             <div class="col-md-8 mb-4">
                 <div class="card shadow-sm">
@@ -107,6 +109,7 @@
                 </div>
             </div>
 
+            {{-- Stock Alert Products --}}
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">
@@ -123,8 +126,7 @@
 
                                         if ($stock <= 0) {
                                             $badgeClass = 'bg-secondary';
-                                        }
-                                        elseif ($stock < 10) {
+                                        } elseif ($stock < 10) {
                                             $badgeClass = 'bg-danger';
                                         } elseif ($stock <= $lowStockThreshold) {
                                             $badgeClass = 'bg-warning text-dark';
@@ -144,6 +146,42 @@
                 </div>
             </div>
         </div>
+
+        {{-- Example: Assuming you have a row for other info like Stock Alerts --}}
+        {{-- <div class="row"> --}}
+        {{-- <div class="col-md-6 mb-4"> --}}
+        {{-- Existing Stock Alerts Panel --}}
+        {{-- </div> --}}
+
+        {{--  Order Status Overview --}}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Order Status Overview</h5>
+                </div>
+                <div class="card-body">
+                    @if (!empty($orderStatusOverview))
+                        <ul class="list-group list-group-flush">
+                            @foreach ($orderStatusOverview as $statusData)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('admin.orders', ['status' => $statusData->name]) }}"
+                                        class="text-decoration-none link-dark">
+                                        {{ $statusData->name }} <i class="fas fa-link fa-xs ms-1"></i>
+                                    </a>
+                                    <span class="badge {{ $statusData->badge_class }} rounded-pill">
+
+                                        {{ $statusData->count }}
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-center">No order status data available.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+        {{-- </div> --}}
     </div>
 
     @push('styles')
