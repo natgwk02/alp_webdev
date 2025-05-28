@@ -11,6 +11,7 @@ class HomeController extends Controller
     public function showHome()
     {
         $products = Product::whereBetween('products_id', [2, 5])->get();
+        //dd(Auth::user());
         return view('customer.home', compact('products'));
     }
 }

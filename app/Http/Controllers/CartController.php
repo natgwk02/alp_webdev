@@ -48,10 +48,9 @@ class CartController extends Controller
      */
     public function addToCart(Request $request)
     {
-        if (!Auth::check()) {
-    return redirect()->route('login')->with('error', 'You must be logged in.');
-}
-        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+        $product = Product::findOrFail($productId);
+        //dd(Auth::id());
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
 
         $cartItem = CartItem::firstOrNew([
             'cart_id' => $cart->id,

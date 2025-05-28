@@ -26,17 +26,39 @@ class AdminController extends Controller
         ];
 
         $recentOrders = Order::with('user')
-                             ->latest('orders_date')
-                             ->take(5)
-                             ->get();
+            ->latest('orders_date')
+            ->take(5)
+            ->get();
 
         $stockAlertProducts = Product::where('status_del', 0)
-                                   ->where('products_stock', '<=', $lowStockThreshold)
-                                   ->orderBy('products_stock', 'asc')
-                                   ->take(5)
-                                   ->get();
+            ->where('products_stock', '<=', $lowStockThreshold)
+            ->orderBy('products_stock', 'asc')
+            ->take(5)
+            ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'stockAlertProducts','lowStockThreshold'));
+        $orderStatusCounts = Order::query()
+            ->selectRaw('orders_status, count(*) as total_count') // Get status and count
+            ->groupBy('orders_status')
+            ->pluck('total_count', 'orders_status'); // Creates a collection like ['Pending' => 10, 'Processing' => 5]
+
+        $definedOrderStatuses = [
+            'Pending'    => ['badge_class' => 'bg-secondary', 'name' => 'Pending'],
+            'Processing' => ['badge_class' => 'bg-warning text-dark', 'name' => 'Processing'],
+            'Shipped'    => ['badge_class' => 'bg-info', 'name' => 'Shipped'],
+            'Delivered'  => ['badge_class' => 'bg-success', 'name' => 'Delivered'],
+            'Cancelled'  => ['badge_class' => 'bg-danger', 'name' => 'Cancelled'],
+        ];
+
+        $orderStatusOverview = [];
+        foreach ($definedOrderStatuses as $statusKey => $statusData) {
+            $orderStatusOverview[] = (object)[ 
+                'name' => $statusData['name'],
+                'count' => $orderStatusCounts->get($statusKey, 0),
+                'badge_class' => $statusData['badge_class']
+            ];
+        }
+
+        return view('admin.dashboard', compact('stats', 'recentOrders', 'stockAlertProducts', 'lowStockThreshold', 'orderStatusOverview'));
     }
 
     public function products(Request $request)
@@ -198,8 +220,8 @@ class AdminController extends Controller
     public function trash(Request $request)
     {
         $query = Product::with('category')
-                        ->where('status_del', 1)
-                        ->orderBy('updated_at', 'desc');
+            ->where('status_del', 1)
+            ->orderBy('updated_at', 'desc');
 
         $trashedProducts = $query->paginate(10)->withQueryString();
         $categories = Category::pluck('categories_name', 'categories_id')->all();
@@ -207,7 +229,7 @@ class AdminController extends Controller
         return view('admin.products.trash', compact('trashedProducts', 'categories'));
     }
 
-     public function restore(Product $product)
+    public function restore(Product $product)
     {
         try {
             // Set the status_del back to 0 (or null if you prefer)
@@ -218,12 +240,11 @@ class AdminController extends Controller
 
             // Redirect back to the trash view with a success message
             return redirect()->route('admin.products.trash')
-                         ->with('success', "Product '{$product->products_name}' has been restored successfully!");
-
+                ->with('success', "Product '{$product->products_name}' has been restored successfully!");
         } catch (\Exception $e) {
             // Handle potential errors
             return redirect()->route('admin.products.trash')
-                         ->with('error', 'Could not restore product. ' . $e->getMessage());
+                ->with('error', 'Could not restore product. ' . $e->getMessage());
         }
     }
 }
