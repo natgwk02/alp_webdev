@@ -14,8 +14,8 @@ class Product extends Model
     // Define the fillable attributes
     //
     protected $table = 'products';
-
     protected $primaryKey = 'products_id';
+
 
     protected $fillable = [
         'categories_id',
@@ -36,13 +36,13 @@ class Product extends Model
     // Relationship to the Category model (each product belongs to one category)
     public function category()
     {
-    return $this->belongsTo(Category::class, 'categories_id');
+        return $this->belongsTo(Category::class, 'categories_id');
     }
 
     // Optional: Relationship to CartItems (if each product can appear in many cart items)
     public function cartItems(): HasMany
     {
-        return $this->hasMany(CartItem::class, 'product_id');
+        return $this->hasMany(CartItem::class, 'products_id');
     }
 
     // Optional: Method to check if the product is in stock

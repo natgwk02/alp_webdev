@@ -10,6 +10,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    // Nama tabel (opsional jika memang pakai tabel bernama 'users')
     protected $table = 'users';
     protected $primaryKey = 'users_id'; // penting!
     public $timestamps = false;
@@ -20,28 +21,62 @@ class User extends Authenticatable
         'users_password',
     ];
 
+    /**
+     * Kolom yang tidak boleh ditampilkan (misal saat toArray atau JSON)
+     */
     protected $hidden = [
         'users_password',
         'remember_token',
     ];
 
+    /**
+     * Cast field ke tipe tertentu
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'status_del' => 'boolean',
     ];
 
+    /**
+     * Get the name of the unique identifier for the user.
+     * Untuk mengubah kolom identifier default (email) ke users_email
+     */
     public function getAuthIdentifierName()
     {
         return 'users_email';
     }
 
+    /**
+     * Get the password for the user.
+     * Untuk mengubah kolom password default ke users_password
+     */
     public function getAuthPassword()
     {
         return $this->users_password;
     }
-    
-    public function wishlists()
+
+    /**
+     * Accessor untuk kompatibilitas dengan sistem yang mengharapkan 'email'
+     */
+    public function getEmailAttribute()
     {
-        return $this->hasMany(Wishlist::class);
+        return $this->users_email;
+    }
+
+    /**
+     * Accessor untuk kompatibilitas dengan sistem yang mengharapkan 'name'
+     */
+    public function getNameAttribute()
+    {
+        return $this->users_name;
+    }
+
+    // Di App\Models\User.php
+    public function getRedirectRoute()
+    {
+        return match ($this->role) {
+            'admin' => '/dashboard',
+            default => '/home',
+        };
     }
 }

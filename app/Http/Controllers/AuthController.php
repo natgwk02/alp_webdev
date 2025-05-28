@@ -9,140 +9,49 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function show()
+    public function showLogin()
     {
+        if (Auth::check()) {
+            return redirect()->intended('/home');
+        }
         return view('auth.login');
     }
 
-public function login_auth(Request $request)
-{
-    $validatedData = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+    public function login_auth(Request $request)
+    {
+        // Validate the input fields
+        $credentials = $request->validate([
+            'users_email' => 'required|email',
+            'users_password' => 'required',
+        ]);
 
-    // Coba login menggunakan data dari database
-    if (Auth::attempt([
-        'users_email' => $validatedData['email'],
-        'password' => $validatedData['password'],
-    ])) {
-        $request->session()->regenerate();
+        // Find the user by email
+        $user = User::where('users_email', $request->users_email)->first();
 
-        // Jika user yang login adalah admin
-        if (Auth::user()->users_email === 'admin@chillemart.com') {
-            return redirect()->route('admin.dashboard');
+        // Check if the user exists and the password is correct
+        if ($user && Hash::check($request->users_password, $user->users_password)) {
+            // Attempt to log the user in
+            Auth::login($user);
+
+            // Regenerate the session
+            $request->session()->regenerate();
+            // dd(Auth::user());
+            // Redirect to intended page or home
+            return redirect()->intended('/home');
+        } else {
+            // If credentials are incorrect, return error
+            return back()->withErrors(['users_email' => 'The provided credentials do not match our records.']); // Improve error message
         }
-
-        // Kalau bukan admin, arahkan ke halaman user
-        return redirect()->route('home');
     }
 
-    return back()->with('error', 'Email atau password salah.');
-}
 
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        Auth::logout();  // Log the user out
+        $request->session()->invalidate();  // Invalidate the session
+        $request->session()->regenerateToken();  // Regenerate CSRF token
 
-        return redirect('/logout');
-    }
-
-    public function showForgotPassword()
-    {
-        return view('auth.forgot_password');
-    }
-
-    public function sendResetLinkEmail(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
-
-        $user = User::where('users_email', $request->email)->first();
-
-        if (!$user) {
-            return back()->with('error', 'Email not found.');
-        }
-
-        session(['reset_email' => $user->users_email]);
-
-        return redirect()->route('password.reset.form')->with('status', 'A reset link has been sent to your email.');
-    }
-
-    public function showResetForm()
-    {
-        if (!session()->has('reset_email')) {
-            return redirect()->route('password.request')->with('error', 'Please enter your email first.');
-        }
-
-        return view('auth.reset');
-    }
-
-    public function resetPassword(Request $request)
-    {
-        $request->validate([
-            'password' => 'required|confirmed|min:6',
-        ]);
-
-        $email = session('reset_email');
-
-        if (!$email) {
-            return redirect()->route('password.request')->with('error', 'Session expired. Please try again.');
-        }
-
-        $user = User::where('users_email', $email)->first();
-
-        if (!$user) {
-            return redirect()->route('password.request')->with('error', 'Email not found.');
-        }
-
-        $user->users_password = Hash::make($request->password);
-        $user->save();
-
-        session()->forget('reset_email');
-
-        return redirect()->route('login')->with('status', 'Password has been reset. Please login.');
-    }
-
-    public function registerForm()
-    {
-        return view('auth.register');
-    }
-
-    public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,users_email'],
-            'password' => ['required', 'min:6', 'confirmed'],
-            'phone' => ['required', 'regex:/^[0-9]{10,12}$/'],
-            'address' => ['required'],
-        ]);
-
-        $user = User::create([
-            'users_name' => $validated['name'],
-            'users_email' => $validated['email'],
-            'users_password' => Hash::make($validated['password']),
-            'users_phone' => $validated['phone'],
-            'users_address' => $validated['address'],
-            'status_del' => false,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
-    }
-
-    public function destroy(Request $request)
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/login');
+        return redirect('/login');  // Redirect to login page
     }
 }

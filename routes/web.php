@@ -14,10 +14,8 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
-
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login_auth'])->name('login.auth');
-Route::get('/login', [AuthController::class, 'show'])->name('login');
-
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
 Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
@@ -30,8 +28,8 @@ Route::POST('/logout', function () {
 })->name('logout');
 
 // Customer Routes
-// //Route::middleware(['auth', 'customer'])->group(function () {
-    Route::get( '/', [HomeController::class, 'showHome'])->name('home');
+// Route::middleware(['auth', 'customer'])->group(function () {
+    Route::get('/', [HomeController::class, 'showHome'])->name('home');
     Route::get('/products', action: [ProductController::class, 'index'])->name('products');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
     // Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
@@ -39,12 +37,11 @@ Route::POST('/logout', function () {
     Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
     Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
-
-// //});
+// });
 
 // Admin Routes
-//Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
 //  Product Management
 Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
@@ -55,16 +52,18 @@ Route::post('/product/create', [AdminController::class, 'insertProduct'])->name(
 Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
 Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
 
-// Order Management
-Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-
-//});
+    // Order Management
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+});
 
 // Home Route
-Route::get('/home', [HomeController::class, 'showHome'])
-->name('home');
+Route::middleware('web')->group(function(){
+    Route::get('/home', [HomeController::class, 'showHome'])
+    ->name('home');
+});
+
 // Route::get('/orders', [OrderController::class, 'index'])->name('orders');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
 
@@ -96,7 +95,14 @@ Route::get('/about', function () {
 //     return view('customer.profile');
 // })->name('profile');
 
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+// Route::POST('/logout', function () {
+//     Auth::logout();
+//     request()->session()->invalidate();
+//     request()->session()->regenerateToken();
+//     return redirect('/login');
+// })->name('logout');
+// Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
 // Profile Routes
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
