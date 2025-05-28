@@ -40,26 +40,26 @@
                                                         <td class="align-middle">
                                                             <input type="checkbox" class="select-product"
                                                                 name="selected_items[]" value="{{ $item->id }}"
-                                                                data-price="{{ $item->product->price }}"
+                                                                data-price="{{ $item->product->orders_price }}"
                                                                 data-quantity="{{ $item->quantity }}"
                                                                 data-index="{{ $index }}"
                                                                 onclick="updateSelection()">
                                                         </td>
                                                         <td>
                                                             <div class="d-flex align-items-center">
-                                                                <img src="{{ asset('images/products-img/' . ($item->product->image ?? 'default.jpg')) }}"
+                                                                <img src="{{ asset('images/products-img/' . ($item->product->products_image ?? 'default.jpg')) }}"
                                                                     alt="{{ $item->product->name ?? 'Product Image' }}"
                                                                     class="img-thumbnail me-3"
                                                                     style="width: 80px; height: 80px; object-fit: cover;">
                                                                 <div>
-                                                                    <h5 class="mb-1">{{ $item->product->name }}</h5>
+                                                                    <h5 class="mb-1">{{ $item->product->products_name }}</h5>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td class="align-middle">
                                                             <span class="price-column"
-                                                                data-price="{{ $item->product->price }}">
-                                                                Rp{{ number_format($item->product->price, 0, ',', '.') }}
+                                                                data-price="{{ $item->product->orders_price }}">
+                                                                Rp{{ number_format($item->product->orders_price, 0, ',', '.') }}
                                                             </span>
                                                         </td>
                                                         <td class="text-center align-middle">
@@ -71,13 +71,13 @@
                                                                     class="form-control quantity-input"
                                                                     value="{{ $item->quantity }}" min="1"
                                                                     data-index="{{ $index }}"
-                                                                    data-price="{{ $item->product->price }}"
+                                                                    data-price="{{ $item->product->orders_price }}"
                                                                     style="width: 80px;" onchange="this.form.submit()">
                                                             </form>
                                                         </td>
                                                         <td class="align-middle text-center">
                                                             <span class="price-column"
-                                                                id="item-total-{{ $index }}">Rp{{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}</span>
+                                                                id="item-total-{{ $index }}">Rp{{ number_format($item->product->orders_price * $item->quantity, 0, ',', '.') }}</span>
                                                         </td>
                                                         <td class="align-middle text-center">
                                                             <form
