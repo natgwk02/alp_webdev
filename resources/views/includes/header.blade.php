@@ -1,6 +1,5 @@
 <style>
     header {
-
         background-color: transparent !important;
     }
 
@@ -25,20 +24,6 @@
         color: inherit;
     }
 
-
-    .cart-badge {
-        position: absolute;
-        top: -6px;
-        right: -10px;
-        background-color: red;
-        color: white;
-        font-size: 0.7rem;
-        font-weight: bold;
-        border-radius: 50%;
-        padding: 0.2rem 0.45rem;
-        line-height: 1;
-    }
-
     .navbar-toggler {
         border: none;
     }
@@ -59,11 +44,6 @@
         display: none;
     }
 
-    .badge {
-        font-size: 0.7rem;
-        padding: 4px 7px;
-    }
-
     .navbar-nav>li {
         display: inline-flex;
         align-items: center;
@@ -82,6 +62,60 @@
         display: inline-flex;
         align-items: center;
         color: inherit;
+        padding: 0.5rem 0.75rem; 
+    }
+
+    
+    .nav-item.position-relative {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-link i {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #wishlistBadge, #cartBadge {
+        position: absolute !important;
+        top: -5px !important;
+        right: -2px !important;
+        transform: none !important;
+        left: auto !important;
+        width: 18px !important;
+        height: 18px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0.65rem !important;
+        line-height: 1 !important;
+        background-color: #dc3545 !important;
+        color: white !important;
+        border-radius: 50% !important;
+        font-weight: bold !important;
+        border: 2px solid white !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
+        min-width: 18px !important;
+    }
+
+    
+    .badge-spacing-alt #wishlistBadge,
+    .badge-spacing-alt #cartBadge {
+        top: -8px !important;
+        right: -8px !important;
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+    }
+
+    @media (max-width: 768px) {
+        #wishlistBadge, #cartBadge {
+            top: -3px !important;
+            right: 0px !important;
+        }
     }
 </style>
 
@@ -106,43 +140,39 @@
                     <a class="nav-link px-3" href="{{ route('about') }}">About Us</a>
                 </li>
                 <li class="nav-item">
-                        <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
-                            href="{{ route('orders.index') }}">My Orders</a>
+                    <a class="nav-link px-3 {{ request()->routeIs('order.index') ? 'active' : '' }}"
+                        href="{{ route('orders.index') }}">My Orders</a>
                 </li>
             </ul>
 
             <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
 
-                <li class="nav-item">
-                    <a class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
+                <li class="nav-item position-relative">
+                    <a id="wishlistLink" class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
                         <i class="bi bi-bookmark-heart-fill fs-5"></i>
+                        @if (!empty($wishlistCount) && $wishlistCount > 0)
+                            <span id='wishlistBadge' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ $wishlistCount }}
+                            </span>
+                        @endif
                     </a>
                 </li>
 
                 <li class="nav-item position-relative">
-                    @php
-                        // hitung jumlah macam item (bukan total quantity)
-                        $cartCount = \App\Models\CartItem::whereHas('cart', function ($q) {$q->where('users_id', Auth::id());})->sum('quantity');$cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
-                    @endphp
-
-                    <a class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
+                    <a id="cartLink" class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
                         <i class="fas fa-cart-shopping fs-5"></i>
-
-                        @if ($cartCount > 0)
-                            <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        @if (!empty($cartCount) && $cartCount > 0)
+                            <span id='cartBadge' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ $cartCount }}
                             </span>
                         @endif
                     </a>
                 </li>
 
-
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false" onclick="event.preventDefault();">
                         <i class="bi bi-person-fill fs-3"></i>
-                        {{-- <img src="{{ asset('assets/profile.png') }}" alt="Profile" class="profile" /> --}}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
                         <li>

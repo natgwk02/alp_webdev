@@ -17,6 +17,15 @@ class ProductController extends Controller
     $wishlistProductIds = Auth::check()
     ? Wishlist::where('users_id', Auth::id())->pluck('products_id')->toArray()
     : [];
+    $wishlistCount = Auth::check()
+        ? Wishlist::where('users_id', Auth::id())->count()
+        : 0;
+
+    $cartCount = 0;
+    if (Auth::check()) {
+        $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
+        $cartCount = $cart ? $cart->items()->sum('quantity') : 0;
+    }
     $categories = DB::table('categories')->pluck('categories_name', 'categories_id')->toArray();
 
     return view('customer.products', compact('products', 'wishlistProductIds', 'categories'));
@@ -44,6 +53,7 @@ class ProductController extends Controller
                 'categories_name'=> optional($item->product->category)->categories_name
             ];
         });
+        
 
     return view('customer.wishlist', compact('wishlistItems'));
     }

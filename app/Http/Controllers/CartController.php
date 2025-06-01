@@ -25,6 +25,7 @@ class CartController extends Controller
 
         $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
         $cartItems = $cart->items()->with('product')->get();
+        
 
 
         $subtotal = $this->calculateSubtotal($cart);
@@ -67,7 +68,11 @@ class CartController extends Controller
         $cartItem->quantity += (int) $request->input('quantity', 1);
         $cartItem->save();
 
-        return back()->with('success', 'Item added to cart.');
+        if ($request->ajax()) {
+        return response()->json(['success' => true, 'message' => 'Item added to cart.']);
+    }
+
+    return back()->with('success', 'Item added to cart.');
     }
 
     /**
@@ -109,7 +114,7 @@ class CartController extends Controller
         $cart = Cart::where('users_id', Auth::id())->first();
 
         // Update the quantity of the product in the cart
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
         if ($cartItem) {
             $cartItem->quantity = $quantity;
             $cartItem->save();
@@ -198,4 +203,21 @@ class CartController extends Controller
         // For now, let's keep it simple and let the default selection (all items) apply on next page load
         return back()->with('voucher_success', 'Voucher removed successfully.');
     }
+    public function getCounts()
+{
+    $cartCount = 0;
+    $wishlistCount = 0;
+
+    if (Auth::check()) {
+        $cart = Cart::where('users_id', Auth::id())->first();
+        $cartCount = $cart ? $cart->items()->count() : 0;
+
+        $wishlistCount = \App\Models\Wishlist::where('users_id', Auth::id())->count();
+    }
+
+    return response()->json([
+        'cart' => $cartCount,
+        'wishlist' => $wishlistCount,
+    ]);
+}
 }

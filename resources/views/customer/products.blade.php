@@ -4,21 +4,44 @@
 
 @section('content')
 
-    @if (session('success'))
-        <div id="successAlert"
-            class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-            role="alert" style="min-width: 300px;">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-    <div class="container">
-        <div class="row mb-4 mt-4">
-            <div class="col-12 text-center">
-                <h1 class="fw-bold display-5" style="color: #052659;">Our Frozen Food Selection</h1>
-                <p class="text-muted">Premium quality frozen foods from around the world</p>
-            </div>
-        </div>
+    <div class="container-fluid px-3 px-md-4 px-lg-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-11 col-xxl-10">
+                
+                {{-- Header Section with Title and Alert --}}
+                <div class="row align-items-center mb-5 py-4">
+                    {{-- Spacer for desktop --}}
+                    <div class="col-lg-3 d-none d-lg-block"></div>
+                    
+                    {{-- Centered Title --}}
+                    <div class="col-lg-6 col-12 text-center">
+                        <h1 class="fw-bold display-5 mb-3 text-nowrap" style="color: #052659;">Our Frozen Food Selection</h1>
+                        <p class="text-muted mb-0 fs-5">Premium quality frozen foods from around the world</p>
+                    </div>
+
+                    <div class="col-lg-3 col-12 d-flex justify-content-lg-end justify-content-center mt-3 mt-lg-0">
+                        <div id="customAlertContainer" class="w-100" style="max-width: 300px;">
+                            @if (session('success'))
+                                <div id="successAlertServer"
+                                     class="alert alert-success alert-dismissible fade show shadow-sm mb-0"
+                                     role="alert" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ session('success') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <script>
+                                    setTimeout(() => {
+                                        const serverAlert = document.getElementById('successAlertServer');
+                                        if (serverAlert) {
+                                            serverAlert.classList.remove('show');
+                                            serverAlert.classList.add('fade');
+                                            serverAlert.remove();
+                                        }
+                                    }, 3000);
+                                </script>
+                            @endif
+                        </div>
+                    </div>
+                </div>
 
         <div class="row mb-4">
             <div class="col-12">
@@ -113,6 +136,9 @@
                                     : route('wishlist.add', ['productId' => $product->products_id ?? $product['id']]) }}"
                                 method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                                 @csrf
+                                @if (in_array($product->products_id ?? $product['id'], $wishlistProductIds))
+        @method('DELETE')
+    @endif
                                 <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn"
                                     data-product-id="{{ $product->products_id }}">
                                     <i
@@ -160,9 +186,9 @@
                                     {{ number_format($product->orders_price, 0, ',', '.') }}</h5>
 
                                 <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST"
-                                    class="mt-auto">
+                                    class="mt-auto add-to-cart-form">
                                     @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="product_id" value="{{ $product->products_id }}">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <a href="{{ route('product.detail', $product->products_id) }}"
                                             class="btn btn-outline-primary rounded-pill">View Details</a>
@@ -304,43 +330,92 @@
 @endsection
 
 @section('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            if ($('#successAlert').length) {
-                setTimeout(function() {
-                    $('#successAlert').fadeOut('slow', function() {
-                        $(this).remove();
-                    });
-                }, 5000);
-            }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function showSuccessAlert(message) {
+    $('#successAlertClient').remove();
 
-    $(document).on('click', '.wishlist-btn', function(e) {
-        e.preventDefault();
-        var productId = $(this).data('product-id');
-        var icon = $(this).find('.heart-icon');
+    const alertHtml = `
+        <div id="successAlertClient" class="alert alert-success alert-dismissible fade show shadow-sm d-inline-block"
+            role="alert" style="min-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+    $('#customAlertContainer').html(alertHtml);
 
-        icon.toggleClass('text-dark text-danger');
-
-        $.ajax({
-            url: '/wishlist/toggle/' + productId,
-            type: 'GET',
-            success: function(response) {
-                const alertHtml = `
-                <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed top-20 end-0 m-3 shadow-lg z-3"
-                    role="alert" style="min-width: 300px; z-index: 1055;">
-                    ${response.message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
-                $('body').prepend(alertHtml);
-                setTimeout(() => $('#successAlert').fadeOut('slow', () => $(this).remove()), 5000);
-            },
-            error: function(xhr) {
-                alert('Failed to update wishlist.');
-                console.error(xhr.responseText);
-            }
+    setTimeout(() => {
+        $('#successAlertClient').fadeOut('slow', function () {
+            $(this).remove();
         });
+    }, 3000);
+}
+
+        function updateCountsBadge() {
+            $.get('{{ route('counts') }}', function (data) {
+                const cartIcon = $('#cartLink');
+                cartIcon.find('.badge').remove();
+                if (data.cart > 0) {
+                    cartIcon.append(`<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${data.cart}</span>`);
+                }
+
+                const wishIcon = $('#wishlistLink');
+                wishIcon.find('.badge').remove();
+                if (data.wishlist > 0) {
+                    wishIcon.append(`<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${data.wishlist}</span>`);
+                }
+            });
+        }
+
+        // Wishlist toggle
+        $(document).on('click', '.wishlist-btn', function (e) {
+            e.preventDefault();
+            const productId = $(this).data('product-id');
+            const icon = $(this).find('.heart-icon');
+
+            icon.toggleClass('text-dark text-danger');
+
+            $.ajax({
+                url: '/wishlist/toggle/' + productId,
+                type: 'GET',
+                success: function (response) {
+                    showSuccessAlert(response.message);
+                    updateCountsBadge();
+                },
+                error: function (xhr) {
+                    alert('Failed to update wishlist.');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        // Add to cart via AJAX
+        $(document).on('submit', 'form.add-to-cart-form', function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const productId = form.find('input[name="product_id"]').val();
+
+            $.ajax({
+                url: '/cart/add/' + productId,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    product_id: productId
+                },
+                success: function () {
+                    showSuccessAlert('Product added to cart.');
+                    updateCountsBadge();
+                },
+                error: function (xhr) {
+                    alert('Failed to add to cart.');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        // Initial load
+        updateCountsBadge();
     });
-});
 </script>
 @endsection
+
