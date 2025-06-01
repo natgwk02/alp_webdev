@@ -12,9 +12,9 @@
                     <div class="border rounded shadow-sm p-4 bg-white">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="fw-semibold text-secondary">Order ID:
-                                {{ $order['order_number'] ?? $order['id'] }}</span>
+                                {{ $order['orders_id'] }}</span>
                             @php
-                                $statusClass = match ($order['status']) {
+                                $statusClass = match ($order['orders_status']) {
                                     'Delivered' => 'badge bg-success',
                                     'Processing' => 'badge bg-warning text-white',
                                     'Cancelled' => 'badge bg-danger',
@@ -24,7 +24,7 @@
                                     default => 'badge bg-secondary',
                                 };
                             @endphp
-                            <span class="{{ $statusClass }}">{{ $order['status'] }}</span>
+                            <span class="{{ $statusClass }}">{{ $order['orders_status'] }}</span>
                         </div>
 
                         <div class="mb-3 text-muted small">
@@ -37,18 +37,19 @@
 
                         @foreach ($order['items'] as $item)
                             <div class="d-flex gap-4 align-items-center mb-3">
-                                <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}"
-                                    alt="{{ $item['product_name'] ?? 'Unknown Product' }}" class="rounded border"
+                                <img src="{{ asset('images/products-img/' . ($item['product_image'] ?? 'no-image.png')) }}"
+                                    alt="{{ $item->product->products_name ?? 'Unknown Product' }}" class="rounded border"
                                     style="width: 80px; height: 80px; object-fit: cover;">
 
                                 <div class="flex-grow-1">
-                                    <div class="fw-semibold fs-6">{{ \Illuminate\Support\Str::limit($item['name'], 50) }}
+                                    <div class="fw-semibold fs-6">
+                                        {{ \Illuminate\Support\Str::limit($item->product->product_name, 50) }}
                                     </div>
-                                    <div class="text-muted">Qty: {{ $item['quantity'] }}</div>
-                                    <div class="text-muted">Price: Rp{{ number_format($item['price'], 0, ',', '.') }}</div>
+                                    <div class="text-muted">Qty: {{ $item->order_details_quantity }}</div>
+                                    <div class="text-muted">Price: Rp{{ number_format($item->price, 0, ',', '.') }}</div>
                                 </div>
                                 <div class="fw-bold text-dark">
-                                    Total: Rp{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+                                    Total: Rp{{ number_format($item->price * $item->order_details_quantity, 0, ',', '.') }}
                                 </div>
                             </div>
                         @endforeach
@@ -59,7 +60,7 @@
                                 {{ isset($order['total']) ? number_format($order['total'], 0, ',', '.') : '0' }}
                             </div>
                             <div class="mt-2 mt-md-0 d-flex gap-2">
-                                <a href="{{ route('order.detail', ['id' => $order['id']]) }}"
+                                <a href="{{ route('order.detail', ['id' => $order['orders_id']]) }}"
                                     class="btn btn-outline-primary btn-sm px-4">
                                     View Details
                                 </a>

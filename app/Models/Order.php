@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
@@ -51,6 +52,10 @@ class Order extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'users_id', 'users_id');
+    }
+
+    public function orderDetails(): HasMany{
+        return $this->hasMany(OrderDetail::class, 'orders_id', 'order_details_id');
     }
 
     protected function statusBadgeClass(): Attribute
