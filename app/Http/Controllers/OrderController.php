@@ -12,11 +12,46 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('orderDetails.product')
+        $orders_query_result = Order::with('orderDetails.product')
             ->where('users_id', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($order) {
+            return [
+                'orders_id' => $order->orders_id,
+                'orders_number' => $order->orders_id, // or any other order number logic
+                'orders_status' => $order->orders_status,
+                'created_at' => $order->created_at,
+                'total' => $order->total,
+                'items' => $order->orderDetails->map(function ($detail) {
+                    return [
+                        'product_id' => $detail->product->products_id ?? null,
+                        'product_name' => $detail->product->product_name ?? 'Unknown Product',
+                        'price' => $detail->price,
+                        'quantity' => $detail->order_details_quantity,
+                        'product_image' => $detail->product->product_image ?? 'no-image.png',
+                    ];
+                })->toArray(),
+                'customer' => [
+                    'first_name' => $order->first_name,
+                    'last_name' => $order->last_name,
+                    'email' => $order->email,
+                    'phone' => $order->phone,
+                    'address' => $order->address,
+                    'city' => $order->city,
+                    'zip' => $order->zip,
+                    'country' => $order->country,
+                ],
+                'payment_method' => $order->payment_method,
+                'payment_status' => $order->payment_status,
+                'subtotal' => $order->subtotal,
+                'shipping_fee' => $order->shipping_fee,
+                'tax' => $order->tax,
+                'voucher_discount' => $order->voucher_discount,
+            ];
+        });
 
+        $orders = $orders_query_result->all();
         return view('customer.orders', compact('orders'));
     }
 
@@ -28,10 +63,44 @@ class OrderController extends Controller
             ->first();
 
         if (!$order) {
-            return redirect()->route('order.index')->with('error', 'Order not found.');
+            return redirect()->route('orders.index')->with('error', 'Order not found.');
         }
 
-        return view('customer.order_details', compact('order'));
+         $formattedOrder = [
+        'id' => $order->orders_id,
+        'order_number' => $order->orders_id,
+        'created_at' => $order->created_at,
+        'status' => $order->orders_status,
+        'items' => $order->orderDetails->map(function ($detail) {
+            return [
+                'products_id' => $detail->product->product_id ?? null,
+                'product_name' => $detail->product->product_name ?? 'Unknown Product',
+                'price' => $detail->price,
+                'quantity' => $detail->order_details_quantity,
+                'product_image' => $detail->product->product_image ?? 'no-image.png',
+            ];
+        })->toArray(),
+        'customer' => [
+            'first_name' => $order->first_name,
+            'last_name' => $order->last_name,
+            'email' => $order->email,
+            'phone' => $order->phone,
+            'address' => $order->address,
+            'city' => $order->city,
+            'zip' => $order->zip,
+            'country' => $order->country,
+        ],
+        'payment_method' => $order->payment_method,
+        'payment_status' => $order->payment_status,
+        'subtotal' => $order->subtotal,
+        'shipping_fee' => $order->shipping_fee,
+        'tax' => $order->tax,
+        'voucher_discount' => $order->voucher_discount,
+        'total' => $order->total,
+    ];
+
+
+        return view('customer.order_details',[ 'order' =>$formattedOrder]);
     }
 
     public function showCheckoutForm(Request $request)
@@ -139,7 +208,7 @@ class OrderController extends Controller
 
         foreach ($checkoutItems as $item) {
             OrderDetail::create([
-                'order_id' => $order->id,
+                'orders_id' => $order->id,
                 'product_id' => $item['id'],
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
