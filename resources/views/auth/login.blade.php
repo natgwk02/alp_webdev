@@ -8,7 +8,7 @@
     <title>Chile Mart - @yield('title')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @stack('styles')
 </head>
@@ -64,7 +64,7 @@
                         <input class="form-check-input" type="checkbox" id="remember" name="remember">
                         <label class="form-check-label" for="remember">Remember Me</label>
                     </div>
-                    <a href="forgot-password" class="text-link">Forgot Password?</a>
+                    <a href="{{ route('password.request') }}" class="text-link">Forgot Password?</a>
                 </div>
 
                 <!-- Sign In button -->

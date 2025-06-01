@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -99,5 +102,73 @@ class AuthController extends Controller
 
         return $formatted;
     }
+
+    public function showForgotPasswordForm()
+{
+    return view('auth.forgot_password');
+}
+
+
+public function sendResetLink(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email|exists:users,users_email',
+    ]);
+
+    $token = Str::random(64);
+
+    DB::table('password_resets')->updateOrInsert(
+        ['email' => $request->email],
+        [
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]
+    );
+
+    $link = url("/reset-password/{$token}");
+
+    
+    return back()->with('status', $link);
+}
+
+// Tampilkan form reset password
+public function showResetForm($token)
+{
+    $reset = DB::table('password_resets')->where('token', $token)->first();
+
+    if (!$reset) {
+        return redirect()->route('password.request')->with('error', 'Token tidak ditemukan atau sudah kadaluarsa.');
+    }
+
+    return view('auth.reset', ['token' => $token, 'email' => $reset->email]);
+}
+
+// Simpan password baru
+public function resetPassword(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email|exists:users,users_email',
+        'password' => 'required|min:8|confirmed',
+        'token' => 'required',
+    ]);
+
+    $reset = DB::table('password_resets')
+        ->where('email', $request->email)
+        ->where('token', $request->token)
+        ->first();
+
+    if (!$reset) {
+        return back()->with('error', 'Token tidak valid atau sudah kadaluarsa.');
+    }
+
+    $user = User::where('users_email', $request->email)->first();
+    $user->users_password = bcrypt($request->password);
+    $user->save();
+
+    DB::table('password_resets')->where('email', $request->email)->delete();
+
+    return redirect()->route('login')->with('success', 'Password berhasil direset. Silakan login kembali.');
+}
+    
 
 }

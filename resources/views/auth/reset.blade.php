@@ -86,38 +86,51 @@
     </style>
 
     <div class="forgot-wrapper">
-        <div class="forgot-card">
-            <h2>Reset your password</h2>
-            <p>Enter your new password below.</p>
+    <div class="forgot-card">
+        <h2>Reset your password</h2>
+        <p>Enter your new password below.</p>
 
-            @if (session('status'))
-                <div class="alert alert-success">{{ session('status') }}</div>
-            @elseif (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif
+        @if (session('status'))
+            <div class="alert alert-success">{{ session('status') }}</div>
+        @elseif (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
-            <form method="POST" action="{{ route('password.update') }}">
-                @csrf
+        <form method="POST" action="{{ route('password.update') }}">
+            @csrf
 
-                <div class="mb-3 text-start">
-                    <label for="password" class="form-label">New Password</label>
-                    <input type="password" id="password" name="password"
-                        class="form-control @error('password') is-invalid @enderror" required>
-                    @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+            {{-- Token dan Email WAJIB ada --}}
+            <input type="hidden" name="token" value="{{ $token }}">
+            <div class="mb-3 text-start">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email"
+                class="form-control @error('email') is-invalid @enderror"
+                value="{{ old('email', $email ?? '') }}" required>
 
-                <div class="mb-3 text-start">
-                    <label for="password_confirmation" class="form-label">Confirm Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control"
-                        required>
-                </div>
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-                <button type="submit" class="btn btn-blue">Reset Password</button>
-            </form>
+            <div class="mb-3 text-start">
+                <label for="password" class="form-label">New Password</label>
+                <input type="password" id="password" name="password"
+                    class="form-control @error('password') is-invalid @enderror" required>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-            <a href="{{ route('login.show') }}" class="back-link">← Back to Login</a>
-        </div>
+            <div class="mb-3 text-start">
+                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation"
+                    class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-blue">Reset Password</button>
+        </form>
+
+        <a href="{{ route('login') }}" class="back-link">← Back to Login</a>
     </div>
+</div>
 @endsection

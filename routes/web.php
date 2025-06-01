@@ -21,8 +21,10 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
-Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 Route::POST('/logout', function () {
     Auth::logout();
