@@ -14,6 +14,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
+
 // Authentication Routes
 
 Route::post('/login', [AuthController::class, 'login_auth'])->name('login.auth');
