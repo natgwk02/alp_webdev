@@ -57,10 +57,6 @@ class Order extends Model
     public function items(): HasMany{
         return $this->hasMany(OrderDetail::class, 'orders_id', 'orders_id');
     }
-    public function product(): BelongsTo
-{
-    return $this->belongsTo(Product::class, 'product_id', 'product_id');
-}
 
     protected function statusBadgeClass(): Attribute
     {
@@ -76,8 +72,4 @@ class Order extends Model
         );
     }
 
-    public function orderDetails()
-    {
-        return $this->hasMany(OrderDetail::class, 'orders_id', 'orders_id');
-    }
 }
