@@ -15,8 +15,17 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect(Auth::user()->getRedirectRoute());
+        /** @var \App\Models\User $user An instance of your User model */
+        $user = Auth::user();
+
+        // It's also good practice to ensure $user is not null,
+        // though Auth::check() should generally guarantee it.
+        if ($user) {
+            return redirect($user->getRedirectRoute());
         }
+        // Fallback if somehow user is null after Auth::check()
+        return redirect('/home'); // Or your default fallback
+    }
 
         return view('auth.login');
     }

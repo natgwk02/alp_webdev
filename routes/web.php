@@ -56,7 +56,7 @@ Route::get('/dashboard', [AdminController::class, 'dashboard'])
 //  Product Management
 Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
 Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit_data');
+Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit-data');
 Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
 Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');

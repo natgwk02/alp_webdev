@@ -52,7 +52,7 @@ class AdminController extends Controller
 
         $orderStatusOverview = [];
         foreach ($definedOrderStatuses as $statusKey => $statusData) {
-            $orderStatusOverview[] = (object)[ 
+            $orderStatusOverview[] = (object)[
                 'name' => $statusData['name'],
                 'count' => $orderStatusCounts->get($statusKey, 0),
                 'badge_class' => $statusData['badge_class']
@@ -115,9 +115,8 @@ class AdminController extends Controller
             'products_stock' => 'required|integer|min:0',
             'products_description' => 'nullable|string',
             'categories_id' => 'required|exists:categories,categories_id',
-            'products_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'hover_image' => 'nullable|string|max:255',
-            'status_del' => 'nullable|boolean',
+            'products_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'hover_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'orders_price' => 'required|integer|min:0'
         ]);
 
@@ -133,10 +132,18 @@ class AdminController extends Controller
 
         // Handle Image Upload
         if ($request->hasFile('products_image')) {
-            $path = $request->file('products_image')->store('products', 'public');
-            $product->products_image = basename($path); // Store only filename if using asset() like in view
+            $image = $request->file('products_image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/products-img'), $imageName);
+            $product->products_image = $imageName;
         }
 
+        if ($request->hasFile('hover_image')) {
+            $hoverImage = $request->file('hover_image');
+            $hoverImageName = time() . '_hover_' . $hoverImage->getClientOriginalName();
+            $hoverImage->move(public_path('images/hoverproducts-img'), $hoverImageName);
+            $product->hover_image = $hoverImageName;
+        }
         // Add logic for 'status' (In Stock, Low Stock etc.) if you have that column
         // e.g., $product->status = $this->determineStatus($validatedData['products_stock']);
 
@@ -156,7 +163,7 @@ class AdminController extends Controller
             'products_description' => 'nullable|string',
             'categories_id' => 'required|exists:categories,categories_id',
             'products_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'hover_image' => 'nullable|string|max:255',
+            'hover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status_del' => 'nullable|boolean',
             'orders_price' => 'required|integer|min:0'
         ]);
@@ -171,20 +178,36 @@ class AdminController extends Controller
         $product->status_del = 0;
 
         // Handle Image Upload (Optional Update)
-        if ($request->hasFile('products_image')) {
-            // Optional: Delete old image
-            // if ($product->products_image) {
-            //     Storage::disk('public')->delete('products/' . $product->products_image);
-            // }
-            $path = $request->file('products_image')->store('products', 'public');
-            $product->products_image = basename($path);
+      if ($request->hasFile('products_image')) {
+        // Delete old image if exists
+        if ($product->products_image && file_exists(public_path('images/products-img/'.$product->products_image))) {
+            unlink(public_path('images/products-img/'.$product->products_image));
         }
+        
+        $image = $request->file('products_image');
+        $imageName = time().'_'.$image->getClientOriginalName();
+        $image->move(public_path('images/products-img'), $imageName);
+        $product->products_image = $imageName;
+
+         // Handle Hover Image Update
+    if ($request->hasFile('hover_image')) {
+        // Delete old hover image if exists
+        if ($product->hover_image && file_exists(public_path('images/hoverproducts-img/'.$product->hover_image))) {
+            unlink(public_path('images/hoverproducts-img/'.$product->hover_image));
+        }
+        
+        $hoverImage = $request->file('hover_image');
+        $hoverImageName = time().'_hover_'.$hoverImage->getClientOriginalName();
+        $hoverImage->move(public_path('images/hoverproducts-img'), $hoverImageName);
+        $product->hover_image = $hoverImageName;
+    }
 
         $product->save();
 
         return redirect(route('admin.products'))
             ->with('success', 'Product updated successfully!');
     }
+}
 
     /**
      * Fetch product data for AJAX editing.
@@ -192,12 +215,20 @@ class AdminController extends Controller
      * @param  \App\Models\Product $product
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getProductData(Product $product)
-    {
-        // You can load relationships if needed, but usually just the model is enough
-        // $product->load('category');
-        return response()->json($product);
-    }
+   public function getProductData(Product $product)
+{
+    return response()->json([
+        'products_name' => $product->products_name,
+        'categories_id' => $product->categories_id,
+        'unit_price' => $product->unit_price,
+        'orders_price' => $product->orders_price,
+        'products_stock' => $product->products_stock,
+        'products_description' => $product->products_description,
+        'products_image' => $product->products_image,
+        'hover_image' => $product->hover_image,
+        // tambahkan field lain jika diperlukan
+    ]);
+}
 
     public function deleteProduct(Product $product)
     {
