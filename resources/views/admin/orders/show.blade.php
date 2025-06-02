@@ -29,7 +29,7 @@
                     <h1 class="fw-bold">Order #{{ $order['order_number'] }}</h1>
 
                     {{-- Cancel Order Form --}}
-                    <form action="{{ route('admin.orders.updateStatus', $order['id']) }}" method="POST"
+                    <form action="{{ route('admin.orders.updateStatus', $order->orders_id) }}" method="POST"
                         onsubmit="return confirm('Are you sure you want to cancel this order?');">
                         @csrf
                         @method('PUT')
@@ -132,7 +132,7 @@
                             </p>
                         </div>
 
-                        <form action="{{ route('admin.orders.updateStatus', $order['id']) }}" method="POST">
+                        <form action="{{ route('admin.orders.updateStatus', $order->orders_id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
