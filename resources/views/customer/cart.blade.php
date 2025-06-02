@@ -190,7 +190,7 @@
                                         <span id="total-display">Rp{{ number_format($total, 0, ',', '.') }}</span>
                                     </div>
 
-                                    <form id="checkout-form" action="{{ route('checkout') }}" method="POST">
+                                    <form id="checkout-form" action="{{ route('checkout.form') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="selected_items" id="selected-items">
                                         <button type="submit" class="btn btn-primary w-100 mt-3"

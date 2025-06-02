@@ -162,7 +162,7 @@ class CheckoutController extends Controller
             // // Save Payment URL
             // $order->payment_url = $snapUrl;
             // $order->save();
-            
+
             // DB::commit();
 
             // session()->forget('cart'); // Clear cart
@@ -174,5 +174,9 @@ class CheckoutController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Checkout gagal: ' . $e->getMessage());
         }
+    }
+
+    public function terms() {
+        return view('terms-and-conditions');
     }
 }

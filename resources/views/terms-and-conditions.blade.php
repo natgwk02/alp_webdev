@@ -29,7 +29,7 @@
 
         <h3>3. Pricing & Payments</h3>
         <ul>
-            <li>All prices are listed in <strong>USD</strong> and are subject to change without notice.</li>
+            <li>All prices are listed in <strong>Rp</strong> and are subject to change without notice.</li>
             <li>Additional charges (taxes and shipping fees) will be displayed at checkout.</li>
             <li>We accept <strong>Payment Methods – e.g., Credit/Debit Cards, UPI, PayPal, etc.</strong>.</li>
         </ul>
