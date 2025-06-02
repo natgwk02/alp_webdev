@@ -391,6 +391,7 @@
         .bi-star {
             color:#ffdd00 !important;
         }
+        
     </style>
 
     <section class="hero-section">

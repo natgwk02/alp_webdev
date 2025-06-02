@@ -77,11 +77,10 @@
                                                 <label for="categoryFilter" class="form-label small">Category</label>
                                                 <select class="form-select" name="category" id="categoryFilter">
                                                     <option value="">All Categories</option>
-                                                    @foreach ($categories as $category)
-                                                        <option value="{{ $category }}"
-                                                            {{ request('category') == $category ? 'selected' : '' }}>
-                                                            {{ $category }}
-                                                        </option>
+                                                    @foreach ($categories as $id => $name)
+                                                    <option value="{{ $id }}" {{ request('category') == $id ? 'selected' : '' }}>
+                                                        {{ $name }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -181,7 +180,7 @@
                                     </div>
                                 </div>
 
-                                <p class="text-secondary small mb-1">{{ $product->product_category }}</p>
+                                <p class="text-secondary small mb-1">{{ $product->category->categories_name}}</p>
                                     <h5 class="text-primary fw-semibold mb-4">
                                         Rp {{ number_format($product->orders_price, 0, ',', '.') }}
                                     </h5>
@@ -352,21 +351,21 @@
     }, 3000);
 }
 
-        function updateCountsBadge() {
-            $.get('{{ route('counts') }}', function (data) {
-                const cartIcon = $('#cartLink');
-                cartIcon.find('.badge').remove();
-                if (data.cart > 0) {
-                    cartIcon.append(`<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${data.cart}</span>`);
-                }
+        // function updateCountsBadge() {
+        //     $.get('{{ route('counts') }}', function (data) {
+        //         const cartIcon = $('#cartLink');
+        //         cartIcon.find('.badge').remove();
+        //         if (data.cart > 0) {
+        //             cartIcon.append(`<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${data.cart}</span>`);
+        //         }
 
-                const wishIcon = $('#wishlistLink');
-                wishIcon.find('.badge').remove();
-                if (data.wishlist > 0) {
-                    wishIcon.append(`<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${data.wishlist}</span>`);
-                }
-            });
-        }
+        //         const wishIcon = $('#wishlistLink');
+        //         wishIcon.find('.badge').remove();
+        //         if (data.wishlist > 0) {
+        //             wishIcon.append(`<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${data.wishlist}</span>`);
+        //         }
+        //     });
+        // }
 
         // Wishlist toggle
         $(document).on('click', '.wishlist-btn', function (e) {
@@ -381,7 +380,7 @@
                 type: 'GET',
                 success: function (response) {
                     showSuccessAlert(response.message);
-                    updateCountsBadge();
+                    // updateCountsBadge();
                 },
                 error: function (xhr) {
                     alert('Failed to update wishlist.');
@@ -405,7 +404,7 @@
                 },
                 success: function () {
                     showSuccessAlert('Product added to cart.');
-                    updateCountsBadge();
+                    // updateCountsBadge();
                 },
                 error: function (xhr) {
                     alert('Failed to add to cart.');
@@ -415,7 +414,7 @@
         });
 
         // Initial load
-        updateCountsBadge();
+        // updateCountsBadge();
     });
 </script>
 @endsection

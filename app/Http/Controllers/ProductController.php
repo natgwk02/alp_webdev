@@ -11,24 +11,57 @@ use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-    $products = Product::all();
+    $query = Product::query();
+
+    // Filter: Search by name
+    if ($request->filled('search')) {
+        $query->where('products_name', 'like', '%' . $request->search . '%');
+    }
+
+    // Filter: Category
+    if ($request->filled('category')) {
+        $query->where('categories_id', $request->category);
+    }
+
+    // Filter: Price range
+    if ($request->filled('min_price')) {
+        $query->where('orders_price', '>=', $request->min_price);
+    }
+
+    if ($request->filled('max_price')) {
+        $query->where('orders_price', '<=', $request->max_price);
+    }
+
+    $products = $query->get();
+
+    // Wishlist
     $wishlistProductIds = Auth::check()
-    ? Wishlist::where('users_id', Auth::id())->pluck('products_id')->toArray()
-    : [];
+        ? Wishlist::where('users_id', Auth::id())->pluck('products_id')->toArray()
+        : [];
+
     $wishlistCount = Auth::check()
         ? Wishlist::where('users_id', Auth::id())->count()
         : 0;
 
+    // Cart Count
     $cartCount = 0;
     if (Auth::check()) {
         $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
         $cartCount = $cart ? $cart->items()->sum('quantity') : 0;
     }
+
+    // Get distinct product categories
     $categories = DB::table('categories')->pluck('categories_name', 'categories_id')->toArray();
 
-    return view('customer.products', compact('products', 'wishlistProductIds', 'categories'));
+    return view('customer.products', compact(
+        'products',
+        'wishlistProductIds',
+        'wishlistCount',
+        'cartCount',
+        'categories'
+    ));
     }
 
     public function show($id)
