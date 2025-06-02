@@ -137,11 +137,11 @@ class CheckoutController extends Controller
             // }
 
 
-            // Midtrans Config
-            Config::$serverKey = config('midtrans.server_key');
-            Config::$isProduction = config('midtrans.is_production');
-            Config::$isSanitized = true;
-            Config::$is3ds = true;
+            // // Midtrans Config
+            // Config::$serverKey = config('midtrans.server_key');
+            // Config::$isProduction = config('midtrans.is_production');
+            // Config::$isSanitized = true;
+            // Config::$is3ds = true;
 
             // Create Midtrans Transaction
             // $params = [

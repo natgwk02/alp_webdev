@@ -217,45 +217,52 @@
             const checkoutForm = document.getElementById('checkout-form');
             const voucherForm = document.getElementById('voucher-form');
             const selectedItemsInput = document.getElementById('selected-items'); // For checkout
-            const selectedItemsVoucherInput = document.getElementById('selected-items-voucher'); // For voucher form
+            const selectedItemsVoucherInput = document.getElementById('selected-items-voucher'); // For voucher
 
-            // Create a unique key for localStorage, per user if logged in
+            console.log('DOM Loaded.');
+            console.log('Checkboxes found:', checkboxes.length);
+            console.log('selectedItemsInput element:', selectedItemsInput);
+            console.log('selectedItemsVoucherInput element:',
+                selectedItemsVoucherInput); // Will be null when voucher is active
+            console.log('checkoutForm element:', checkoutForm);
+            console.log('checkoutButton element:', checkoutButton);
+
             const localStorageKey = 'cartSelection_{{ Auth::check() ? Auth::id() : 'guest' }}';
 
-            // --- localStorage Functions ---
             function saveSelectionToLocalStorage() {
                 const selectedIds = Array.from(checkboxes)
                     .filter(cb => cb.checked)
-                    .map(cb => cb.value); // These are cart item IDs (strings)
+                    .map(cb => cb.value);
                 localStorage.setItem(localStorageKey, JSON.stringify(selectedIds));
+                console.log('Selection saved to localStorage:', selectedIds);
             }
 
             function loadSelectionFromLocalStorage() {
                 const savedSelection = localStorage.getItem(localStorageKey);
+                console.log('Loading from localStorage:', savedSelection);
                 if (savedSelection) {
                     try {
                         return JSON.parse(savedSelection);
                     } catch (e) {
                         console.error("Error parsing saved selection from localStorage:", e);
-                        localStorage.removeItem(localStorageKey); // Clear corrupted data
+                        localStorage.removeItem(localStorageKey);
                         return [];
                     }
                 }
-                return []; // Default to empty array if nothing saved or error
+                return [];
             }
 
-            // This data comes from PHP, flashed after specific server actions (e.g., voucher apply)
             const selectedItemsFromServer = {!! json_encode($selectedItemsOnLoad ?? []) !!};
+            console.log('Selected items from server (on load):', selectedItemsFromServer);
 
-            // Function to apply selections to checkboxes
             function applySelectionsToCheckboxes(idsToSelect) {
+                console.log('Applying selections to checkboxes:', idsToSelect);
                 if (checkboxes.length === 0) {
                     if (selectAllCheckbox) selectAllCheckbox.checked = false;
                     return;
                 }
                 checkboxes.forEach(cb => {
-                    cb.checked = idsToSelect.includes(cb
-                        .value); // cb.value is string, idsToSelect should be array of strings
+                    cb.checked = idsToSelect.includes(cb.value);
                 });
                 if (selectAllCheckbox) {
                     selectAllCheckbox.checked = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb
@@ -263,9 +270,8 @@
                 }
             }
 
-            // --- Your existing updateSummary, updateSelectedItems, updateCheckoutButton ---
-            // Ensure updateSelectedItems uses the current checkbox states to populate hidden fields.
             function updateSummary() {
+                console.log('updateSummary called.');
                 let subtotal = 0;
                 document.querySelectorAll('.select-product:checked').forEach(checkbox => {
                     const price = parseFloat(checkbox.getAttribute('data-price'));
@@ -274,111 +280,173 @@
                         subtotal += price * quantity;
                     }
                 });
-                // ... (rest of your updateSummary logic for shipping, tax, voucher, total)
-                // Make sure it correctly references the display elements
+
                 const shippingDisplay = document.getElementById('shipping-display');
                 const taxDisplay = document.getElementById('tax-display');
                 const totalDisplay = document.getElementById('total-display');
-                const voucherDisplaySpan = document.getElementById(
-                    'voucher-display'); // The span for the discount amount
+                const voucherDisplaySpan = document.getElementById('voucher-display');
                 const subtotalDisplay = document.getElementById('subtotal-display');
 
+                // Ensure default shippingFee if element not found or text is unparseable
+                let shippingFee = 5000; // Default shipping fee
+                if (shippingDisplay && shippingDisplay.textContent) {
+                    const parsedShipping = parseFloat(shippingDisplay.textContent.replace(/[^\d]/g, ''));
+                    if (!isNaN(parsedShipping)) {
+                        shippingFee = parsedShipping;
+                    }
+                } else {
+                    console.warn('Shipping display element not found or empty, using default shipping fee.');
+                }
 
-                const shippingFeeText = shippingDisplay ? shippingDisplay.textContent : 'Rp5.000';
-                const shippingFee = parseFloat(shippingFeeText.replace(/[^\d]/g, '')) || 5000;
                 const tax = Math.round(subtotal * 0.1);
-                const voucherDiscountText = voucherDisplaySpan ? voucherDisplaySpan.textContent : 'Rp0';
-                const voucherDiscount = parseFloat(voucherDiscountText.replace(/[^\d]/g, '')) || 0;
+                let voucherDiscount = 0;
+                if (voucherDisplaySpan && voucherDisplaySpan.textContent) {
+                    const parsedVoucher = parseFloat(voucherDisplaySpan.textContent.replace(/[^\d]/g, ''));
+                    if (!isNaN(parsedVoucher)) {
+                        voucherDiscount = parsedVoucher;
+                    }
+                }
+
                 const total = subtotal + shippingFee + tax - voucherDiscount;
 
                 if (subtotalDisplay) subtotalDisplay.textContent = 'Rp' + subtotal.toLocaleString('id-ID');
                 if (taxDisplay) taxDisplay.textContent = 'Rp' + tax.toLocaleString('id-ID');
+                if (shippingDisplay) shippingDisplay.textContent = 'Rp' + shippingFee.toLocaleString('id-ID');
                 if (totalDisplay) totalDisplay.textContent = 'Rp' + total.toLocaleString('id-ID');
+                console.log('Summary updated: Subtotal=', subtotal, 'Total=', total);
             }
 
             function updateSelectedItems() {
+                console.log('updateSelectedItems called.');
                 const selected = Array.from(checkboxes)
                     .filter(cb => cb.checked)
                     .map(cb => cb.value);
+                console.log('IDs selected by checkboxes for hidden input:', selected);
 
-                if (selectedItemsInput) selectedItemsInput.value = selected.join(',');
-                if (selectedItemsVoucherInput) selectedItemsVoucherInput.value = selected.join(',');
+                // Always update checkout input (this should always exist)
+                if (selectedItemsInput) {
+                    selectedItemsInput.value = selected.join(',');
+                    console.log('Populated selectedItemsInput (checkout) with:', selectedItemsInput.value);
+                } else {
+                    console.error('selectedItemsInput (checkout) is null in updateSelectedItems.');
+                }
+
+                // Only update voucher input if it exists (it won't exist when voucher is already applied)
+                if (selectedItemsVoucherInput) {
+                    selectedItemsVoucherInput.value = selected.join(',');
+                    console.log('Populated selectedItemsVoucherInput with:', selectedItemsVoucherInput.value);
+                } else {
+                    console.log(
+                        'selectedItemsVoucherInput not found (probably because voucher is already applied or form is hidden).'
+                    );
+                }
             }
 
             function updateCheckoutButton() {
-                if (!checkoutButton) return;
+                if (!checkoutButton) {
+                    console.warn('checkoutButton element not found in updateCheckoutButton.');
+                    return;
+                }
                 const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
                 checkoutButton.disabled = !anyChecked;
+                console.log('updateCheckoutButton: anyChecked =', anyChecked, ', button disabled =', checkoutButton
+                    .disabled);
             }
-            // --- End of existing update functions ---
 
             function updateAll() {
+                console.log('updateAll called.');
                 updateSelectedItems();
                 updateSummary();
                 updateCheckoutButton();
             }
 
-
             // --- Initial Page Load Logic ---
             let initialSelectionIdsToApply = [];
-            if (selectedItemsFromServer.length > 0) {
-                // If server flashed data (e.g., after voucher attempt), use that.
+            if (selectedItemsFromServer && selectedItemsFromServer.length > 0) {
+                console.log('Using selected items from server for initial selection.');
                 initialSelectionIdsToApply = selectedItemsFromServer;
             } else {
-                // Otherwise, try to load from localStorage (for generic refreshes).
+                console.log('No server-side selection, trying localStorage.');
                 initialSelectionIdsToApply = loadSelectionFromLocalStorage();
                 if (initialSelectionIdsToApply.length === 0 && checkboxes.length > 0) {
-                    // If NOTHING from server AND NOTHING from localStorage, and cart has items,
-                    // you can choose a default: either all selected or none selected.
-                    // Let's default to NONE selected for a truly fresh state.
-                    // initialSelectionIdsToApply = Array.from(checkboxes).map(cb => cb.value); // For all selected
-                    initialSelectionIdsToApply = []; // For none selected
+                    console.log('No localStorage selection, defaulting to NO items selected.');
+                    initialSelectionIdsToApply = []; // Default to none selected
                 }
             }
-
             applySelectionsToCheckboxes(initialSelectionIdsToApply);
-            saveSelectionToLocalStorage(); // Save this initial state to localStorage
-            updateAll(); // Update summary etc. based on initial selections
-
+            saveSelectionToLocalStorage();
+            updateAll();
 
             // --- Event Listeners ---
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', () => {
+                    console.log('Checkbox changed:', cb.value, 'Checked:', cb.checked);
                     if (selectAllCheckbox) {
                         selectAllCheckbox.checked = checkboxes.length > 0 && Array.from(checkboxes)
                             .every(c => c.checked);
                     }
-                    saveSelectionToLocalStorage(); // Save selection whenever a checkbox changes
+                    saveSelectionToLocalStorage();
                     updateAll();
                 });
             });
 
             if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener('change', function() {
+                    console.log('Select All checkbox changed:', this.checked);
                     checkboxes.forEach(cb => cb.checked = this.checked);
-                    saveSelectionToLocalStorage(); // Save selection when "Select All" changes
+                    saveSelectionToLocalStorage();
                     updateAll();
                 });
             }
 
+            // Only attach voucher form listener if the form exists
             if (voucherForm) {
                 voucherForm.addEventListener('submit', function() {
-                    // updateSelectedItems() is called to ensure hidden field is populated
-                    // with current selection before form submission
-                    updateSelectedItems();
+                    console.log('Voucher form submitting. Updating selected items for voucher.');
+                    updateSelectedItems(); // This will handle the null check internally
                 });
             }
 
             if (checkoutForm) {
+                console.log('Checkout form event listener being attached.');
                 checkoutForm.addEventListener('submit', function(e) {
-                    updateSelectedItems();
-                    if (selectedItemsInput && !selectedItemsInput.value) {
+                    console.log('Checkout form submit event TRIGGERED.');
+
+                    // Get currently selected items
+                    const selectedIds = Array.from(checkboxes)
+                        .filter(cb => cb.checked)
+                        .map(cb => cb.value);
+
+                    console.log('Selected IDs for checkout:', selectedIds);
+
+                    // Update the hidden input
+                    if (selectedItemsInput) {
+                        selectedItemsInput.value = selectedIds.join(',');
+                        console.log('Updated selectedItemsInput value:', selectedItemsInput.value);
+                    }
+
+                    if (selectedIds.length === 0) {
+                        console.log('PREVENTING SUBMISSION: No items selected.');
                         e.preventDefault();
                         alert('Please select at least one item to proceed to checkout.');
+                        return false;
                     }
+
+                    if (!selectedItemsInput) {
+                        console.error(
+                            'CRITICAL ERROR: selectedItemsInput element NOT FOUND. Preventing submission.'
+                            );
+                        e.preventDefault();
+                        alert('An error occurred with the checkout form. Please refresh and try again.');
+                        return false;
+                    }
+
+                    console.log('ALLOWING SUBMISSION with selected items:', selectedItemsInput.value);
+                    // Form will submit normally
                 });
+            } else {
+                console.error('CRITICAL ERROR: Checkout form (checkout-form) NOT FOUND in DOM.');
             }
         });
     </script>
-
 @endsection

@@ -10,10 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function __construct()
-    {
-        //   $this->middleware('auth');
-    }
+
     /**
      * Show the current user's cart.
      */
