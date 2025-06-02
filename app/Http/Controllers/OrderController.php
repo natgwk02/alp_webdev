@@ -24,12 +24,23 @@ class OrderController extends Controller
                     'created_at' => $order->created_at,
                     'total' => $order->total,
                     'items' => $order->orderDetails->map(function ($detail) {
+                        $productName = 'Unknown Product';
+                        $productImage = 'no-image.png';
+
+                        if ($detail->product) {
+
+                            $productName = $detail->product->products_name;
+                            $productImage = $detail->product->products_image;
+                        } else {
+                            Log::warning('Product not loaded via OrderDetail relation. OrderDetail ID: ' . $detail->getKey() . ', Product FK: ' . $detail->products_id);
+                        }
+
                         return [
-                            'product_id' => $detail->product->products_id ?? null,
-                            'product_name' => $detail->product->product_name ?? 'Unknown Product',
-                            'price' => $detail->price,
-                            'quantity' => $detail->order_details_quantity,
-                            'product_image' => $detail->product->product_image ?? 'no-image.png',
+
+                            'product_name'  => $productName,
+                            'price'         => $detail->price,
+                            'quantity'      => $detail->order_details_quantity,
+                            'product_image' => $productImage,
                         ];
                     })->toArray(),
                     'customer' => [
@@ -58,7 +69,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::with('orderDetails.product')
-            ->where('id', $id)
+            ->where('orders_id', $id)
             ->where('users_id', Auth::id())
             ->first();
 
@@ -69,15 +80,27 @@ class OrderController extends Controller
         $formattedOrder = [
             'id' => $order->orders_id,
             'order_number' => $order->orders_id,
-            'created_at' => $order->created_at,
+            'created_at' => $order->created_at->format('Y-m-d H:i:s'),
             'status' => $order->orders_status,
             'items' => $order->orderDetails->map(function ($detail) {
+                $productName = 'Unknown Product';
+                $productImage = 'no-image.png';
+
+
+                if ($detail->product) {
+                    $productName = $detail->product->products_name;
+                    $productImage = $detail->product->products_image;
+                } else {
+
+                    Log::warning('Product not loaded for OrderDetail ID: ' . $detail->getKey() . ' (OrderDetail uses products_id FK: ' . $detail->products_id . ')');
+                }
+
                 return [
-                    'products_id' => $detail->product->product_id ?? null,
-                    'product_name' => $detail->product->product_name ?? 'Unknown Product',
-                    'price' => $detail->price,
-                    'quantity' => $detail->order_details_quantity,
-                    'product_image' => $detail->product->product_image ?? 'no-image.png',
+
+                    'name'           => $productName,
+                    'price'          => $detail->price,
+                    'quantity'       => $detail->order_details_quantity,
+                    'image_filename' => $productImage,
                 ];
             })->toArray(),
             'customer' => [
@@ -98,7 +121,6 @@ class OrderController extends Controller
             'voucher_discount' => $order->voucher_discount,
             'total' => $order->total,
         ];
-
 
         return view('customer.order_details', ['order' => $formattedOrder]);
     }
@@ -230,11 +252,15 @@ class OrderController extends Controller
             'zip' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'paymentMethod' => 'required|string',
-            'selected_items' => 'required|array',
+            'selected_items' => 'required|json',
             'sellerNotes' => 'nullable|string|max:65535',
         ]);
 
-        $selectedProductIds = $request->input('selected_items');
+        $selectedProductIds = json_decode($request->input('selected_items'));
+
+        if (empty($selectedProductIds)) {
+            return redirect()->route('cart.index')->with('error', 'No items were selected for checkout.');
+        }
 
         // Get cart items from database
         $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
@@ -263,7 +289,6 @@ class OrderController extends Controller
             'orders_date' => now()->toDateString(),
             'first_name' => $request->firstName,
             'last_name' => $request->lastName,
-            'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
             'city' => $request->city,
@@ -283,10 +308,11 @@ class OrderController extends Controller
 
         foreach ($checkoutItems as $cartItem) {
             OrderDetail::create([
-                'orders_id' => $order->id,
-                'product_id' => $cartItem->products_id,
-                'quantity' => $cartItem->quantity,
+                'orders_id' => $order->getKey(),
+                'products_id' => $cartItem->products_id,
+                'order_details_quantity' => $cartItem->quantity,
                 'price' => $cartItem->product->orders_price,
+                'total' => ($cartItem->product->orders_price ?? 0) * $cartItem->quantity,
             ]);
         }
 
@@ -296,7 +322,9 @@ class OrderController extends Controller
         // Clear voucher session data
         session()->forget(['voucher_code', 'voucher_discount', 'checkout_selected_ids_temp']);
 
-        return redirect()->route('order.show', ['id' => $order->orders_id])
+        // return redirect()->route('order.confirmation', ['id' => $order->orders_id])
+        //     ->with('success', 'Checkout completed! Your order has been placed.');
+        return view('customer.order_confirmation', ['id' => $order->orders_id])
             ->with('success', 'Checkout completed! Your order has been placed.');
     }
 }

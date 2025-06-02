@@ -36,7 +36,7 @@ class Product extends Model
     // Relationship to the Category model (each product belongs to one category)
     public function category()
     {
-    return $this->belongsTo(Category::class, 'categories_id');
+        return $this->belongsTo(Category::class, 'categories_id');
     }
 
     // Optional: Relationship to CartItems (if each product can appear in many cart items)
@@ -49,6 +49,13 @@ class Product extends Model
     public function isInStock(): bool
     {
         return $this->stock > 0;
+    }
+
+    public function orderDetails(): HasMany
+    {
+        // Assumes 'products_id' is the foreign key in 'order_details' table
+        // and 'products_id' is the primary key of this Product model
+        return $this->hasMany(OrderDetail::class, 'products_id', 'products_id');
     }
 
     /**
@@ -71,5 +78,4 @@ class Product extends Model
             }
         );
     }
-
 }

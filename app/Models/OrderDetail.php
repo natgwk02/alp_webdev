@@ -21,6 +21,8 @@ class OrderDetail extends Model
         'status_del',
     ];
 
+     const UPDATED_AT = null;
+
     protected $casts = [
         'status_del' => 'boolean',
 
@@ -35,4 +37,6 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(Product::class, 'products_id', 'products_id');
     }
+
+
 }
