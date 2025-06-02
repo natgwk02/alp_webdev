@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Chille Mart')
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
 <script>
     function scrollWithOffset(e) {
         e.preventDefault();
@@ -386,13 +389,11 @@
         .bi-star-fill,
         .bi-star-half,
         .bi-star {
-            color: #052659 !important;
+            color:#ffdd00 !important;
         }
     </style>
 
-    {{-- Hero Section with Local Video --}}
     <section class="hero-section">
-        <!-- Background Video -->
         <video autoplay muted loop playsinline class="bg-video">
             <source src="{{ asset('videos/chille video.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
@@ -580,7 +581,7 @@
                             </div>
                             <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST">
                             @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="product_id" value="{{ $product->products_id }}">
                                 <input type="hidden" name="quantity" value="1">
                                 <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
                                     <i class="bi bi-cart-plus-fill"></i> Add to Cart
@@ -819,7 +820,7 @@
                     $('#successAlert').fadeOut('slow', function() {
                         $(this).remove();
                     });
-                }, 5000);
+                }, 3000);
             }
 
             if ($('#errorAlert').length) {
@@ -827,7 +828,7 @@
                     $('#errorAlert').fadeOut('slow', function() {
                         $(this).remove();
                     });
-                }, 5000);
+                }, 3000);
             }
 
             // Carousel controls

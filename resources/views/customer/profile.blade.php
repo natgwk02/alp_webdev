@@ -14,13 +14,10 @@
                         alt="Profile Photo">
                     <h5 class="card-title">
                     @if (Auth::check())
-    @php
-        $firstName = explode(' ', Auth::user()->users_name)[0];
-    @endphp
-    <span>{{ $firstName }}</span>
-    @else
-    <span>Guest</span>
-    @endif
+                        <span>{{ Auth::user()->users_name }}</span>
+                    @else
+                    <span>Guest</span>
+                    @endif
                 
                                         </h5>
                                         <p class="text-muted small">Member since 2023</p>

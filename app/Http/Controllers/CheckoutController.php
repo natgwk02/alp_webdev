@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Midtrans\Snap;
+use Midtrans\Config;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class CheckoutController extends Controller
 {
@@ -100,5 +103,76 @@ class CheckoutController extends Controller
             'paymentMethod' => 'required|string|in:creditCard,paypal,bankTransfer',
             'termsAgreement' => 'required|accepted'
         ]);
+    }
+
+    public function checkout(Request $request){
+        $cart = session('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->back()->with('error', 'Your cart is empty!');
+        }
+
+        DB::beginTransaction();
+        try {
+            $totalPrice = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
+
+            // $order = Order::create([
+            //     'invoice_number' => 'INV-' . date('Ymd') . '-' . strtoupper(Str::random(6)),
+            //     'user_id' => Auth::id(),
+            //     'customer_name' => Auth::user()->name,
+            //     'total_price' => $totalPrice,
+            //     'status' => 'pending',
+            //     'payment_url' => null,
+            // ]);
+
+            // foreach ($cart as $product_id => $item) {
+            //     OrderDetail::create([
+            //         'order_id' => $order->id,
+            //         'product_id' => $product_id,
+            //         'product_name' => $item['name'],
+            //         'quantity' => $item['quantity'],
+            //         'price' => $item['price'],
+            //         'subtotal' => $item['price'] * $item['quantity'],
+            //     ]);
+            // }
+
+
+            // Midtrans Config
+            Config::$serverKey = config('midtrans.server_key');
+            Config::$isProduction = config('midtrans.is_production');
+            Config::$isSanitized = true;
+            Config::$is3ds = true;
+
+            // Create Midtrans Transaction
+            // $params = [
+            //     'transaction_details' => [
+            //         'order_id' => $order->invoice_number,
+            //         'gross_amount' => $totalPrice,
+            //     ],
+            //     'customer_details' => [
+            //         'first_name' => Auth::user()->name,
+            //         'email' => Auth::user()->email,
+            //     ],
+			// 	'callbacks' => [
+            //         'finish' => route('store'),
+            //     ]
+            // ];
+
+            // $snapUrl = Snap::createTransaction($params)->redirect_url;
+            // // Save Payment URL
+            // $order->payment_url = $snapUrl;
+            // $order->save();
+            
+            // DB::commit();
+
+            // session()->forget('cart'); // Clear cart
+            // return redirect($snapUrl);
+
+            //return redirect()->route('store')->with('success', 'Checkout berhasil!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Checkout gagal: ' . $e->getMessage());
+        }
     }
 }

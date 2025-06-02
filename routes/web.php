@@ -9,9 +9,11 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UtilityController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
+
 
 // Authentication Routes
 
@@ -19,8 +21,11 @@ Route::post('/login', [AuthController::class, 'login_auth'])->name('login.auth')
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
-Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 Route::POST('/logout', function () {
     Auth::logout();
@@ -51,7 +56,7 @@ Route::get('/dashboard', [AdminController::class, 'dashboard'])
 //  Product Management
 Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
 Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit_data');
+Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit-data');
 Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
 Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
@@ -86,7 +91,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/counts', [ CartController::class, 'getCounts'])->name('counts');
 });
+Route::middleware('auth:sanctum')->get('/badge-counts', 'App\Http\Controllers\BadgeController@getCounts');
 
 
 

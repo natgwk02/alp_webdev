@@ -9,6 +9,9 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+    protected $primaryKey = 'users_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     // Nama tabel (opsional jika memang pakai tabel bernama 'users')
     protected $table = 'users';
@@ -86,5 +89,12 @@ class User extends Authenticatable
     public function getNameAttribute()
     {
         return $this->users_name;
+    }
+    public function wishlists() {
+    return $this->hasMany(Wishlist::class);
+    }
+
+    public function carts() {
+    return $this->hasMany(Cart::class);
     }
 }

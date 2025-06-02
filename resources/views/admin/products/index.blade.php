@@ -185,7 +185,7 @@
                                     } elseif ($product->products_stock < 10) {
                                         $status = 'Low Stock';
                                         $badgeClass = 'bg-danger';
-                                    }elseif ($product->products_stock < 20) {
+                                    } elseif ($product->products_stock < 20) {
                                         $status = 'Low Stock';
                                         $badgeClass = 'bg-warning text-dark';
                                     }
@@ -378,7 +378,7 @@
             </div>
         </div>
 
-        <!-- Edit Product - Modal -->
+        <!-- Edit Product - Modal !!!!! -->
         <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -438,167 +438,215 @@
                                 <label for="editProductDescription" class="form-label">Description</label>
                                 <textarea class="form-control" id="editProductDescription" name="products_description" rows="3"></textarea>
                             </div>
-                            <div class="mb-3">
-                                <label for="editProductImage" class="form-label">Product Image (Upload new to
-                                    replace)</label>
-                                <div class="d-flex align-items-center mb-2">
-                                    <img src="https://via.placeholder.com/100" id="currentProductImage"
-                                        alt="Current product image" class="me-3 rounded"
-                                        style="width: 100px; height: 100px; object-fit: cover;">
-                                    <span class="text-muted">Current image</span>
+                            <form>
+                                <!-- In your edit modal -->
+                                !-- Product Image Section -->
+                                <div class="mb-3">
+                                    <label class="form-label">Product Image (Upload new to replace)</label>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div id="productImageLoading"
+                                            style="width:100px;height:100px;display:flex;align-items:center;justify-content:center;">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <img src="" id="currentProductImage" alt="Current product image"
+                                            class="me-3 rounded"
+                                            style="width:100px;height:100px;object-fit:cover;display:none;"
+                                            onerror="this.onerror=null;this.src='https://via.placeholder.com/100?text=Image+Error'">
+                                        <span class="text-muted">Current image</span>
+                                    </div>
+                                    <input class="form-control" type="file" name="products_image">
                                 </div>
-                                {{-- Image input is NOT required for edit --}}
-                                <input class="form-control" type="file" id="editProductImage" name="products_image">
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="editHoverImage" class="form-label">Hover Image (Upload new to
-                                    replace)</label>
-                                <div class="d-flex align-items-center mb-2">
-                                    <img src="https://via.placeholder.com/100" id="currentProductImage"
-                                        alt="Current product image" class="me-3 rounded"
-                                        style="width: 100px; height: 100px; object-fit: cover;">
-                                    <span class="text-muted">Current image</span>
+                                <!-- Hover Image Section -->
+                                <div class="mb-3">
+                                    <label class="form-label">Hover Image (Upload new to replace)</label>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div id="hoverImageLoading"
+                                            style="width:100px;height:100px;display:flex;align-items:center;justify-content:center;">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <img src="" id="currentHoverImage" alt="Current hover image"
+                                            class="me-3 rounded"
+                                            style="width:100px;height:100px;object-fit:cover;display:none;"
+                                            onerror="this.onerror=null;this.src='https://via.placeholder.com/100?text=Image+Error'">
+                                        <span class="text-muted">Current image</span>
+                                    </div>
+                                    <input class="form-control" type="file" name="hover_image">
                                 </div>
-                                {{-- Image input is NOT required for edit --}}
-                                <input class="form-control" type="file" id="editHoverImage" name="hover_image">
-                            </div>
-
-                        </form>
+                            </form>
                     </div>
+                    <!-- Modal footer... -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" form="editProductForm" class="btn btn-primary">Save Changes</button>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Delete Product - Modal -->
-        <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete <strong id="deleteProductName"></strong>?</p>
-                        <p class="text-danger mb-0">This action cannot be undone.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <!-- Form action will be set dynamically by JavaScript -->
-                        <form id="deleteProductForm" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete Product</button>
-                        </form>
+
+            <!-- Delete Product - Modal -->
+            <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete <strong id="deleteProductName"></strong>?</p>
+                            <p class="text-danger mb-0">This action cannot be undone.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <!-- Form action will be set dynamically by JavaScript -->
+                            <form id="deleteProductForm" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Delete Product</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Bootstrap JS Bundle with Popper -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            // Select all checkbox functionality
-            document.getElementById('selectAll').addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('tbody .form-check-input');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+            <!-- Bootstrap JS Bundle with Popper -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script>
+                // Select all checkbox functionality
+                document.getElementById('selectAll').addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('tbody .form-check-input');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
                 });
-            });
 
-            // Handle edit product modal
-            document.addEventListener('DOMContentLoaded', function() {
+                // Product data cache
+                const productCache = {};
+
+                // Prefetch product data when hovering over edit button
+                document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#editProductModal"]').forEach(button => {
+                    button.addEventListener('mouseenter', function() {
+                        const productId = this.getAttribute('data-product-id');
+                        if (!productCache[productId]) {
+                            fetch(`/admin/products/${productId}/edit-data`, {
+                                    headers: {
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                            .content,
+                                        'Accept': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(product => {
+                                    productCache[productId] = product;
+                                    // Preload images
+                                    if (product.products_image) {
+                                        const img = new Image();
+                                        img.src = '{{ asset('images/products-img') }}/' + product
+                                            .products_image;
+                                    }
+                                    if (product.hover_image) {
+                                        const img = new Image();
+                                        img.src = '{{ asset('images/products-img') }}/' + product.hover_image;
+                                    }
+                                })
+                                .catch(error => console.error('Prefetch error:', error));
+                        }
+                    });
+                });
+
+                // Edit Product Modal
                 const editProductModal = document.getElementById('editProductModal');
                 if (editProductModal) {
                     editProductModal.addEventListener('show.bs.modal', async function(event) {
-                        const button = event.relatedTarget; // Button that triggered the modal
+                        const button = event.relatedTarget;
                         const productId = button.getAttribute('data-product-id');
 
-                        const form = document.getElementById('editProductForm');
-                        // Construct URLs - Ensure these match your routes!
-                        const updateUrl = `/admin/products/${productId}/update`;
-                        const getDataUrl = `/admin/products/${productId}/edit-data`;
+                        // Set form action
+                        document.getElementById('editProductForm').action = `/admin/products/${productId}/update`;
 
-                        // Set the form action
-                        form.action = updateUrl;
+                        // Show loading state
+                        document.getElementById('productImageLoading').style.display = 'flex';
+                        document.getElementById('currentProductImage').style.display = 'none';
+                        document.getElementById('hoverImageLoading').style.display = 'flex';
+                        document.getElementById('currentHoverImage').style.display = 'none';
 
-                        // Clear previous data / set loading state (optional)
-                        form.reset(); // Simple way to clear
-                        document.getElementById('currentProductImage').src =
-                            'https://via.placeholder.com/100';
-
-
-                        // Fetch product data
                         try {
-                            const response = await fetch(getDataUrl);
-
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-
-                            const product = await response.json();
+                            const response = await fetch(`/admin/products/${productId}/edit-data`);
+            if (!response.ok) throw new Error('Failed to fetch product data');
+            
+            const product = await response.json();
+            
 
                             // Populate form fields
                             document.getElementById('editProductName').value = product.products_name || '';
-                            document.getElementById('editProductCategory').value = product.categories_id ||
-                                '';
+                            document.getElementById('editProductCategory').value = product.categories_id || '';
                             document.getElementById('editProductPrice').value = product.unit_price || '';
                             document.getElementById('editOrdersPrice').value = product.orders_price || '';
-                            document.getElementById('editProductStock').value = product.products_stock ||
-                                '';
-                            document.getElementById('editProductDescription').value = product
-                                .products_description || '';
+                            document.getElementById('editProductStock').value = product.products_stock || '';
+                            document.getElementById('editProductDescription').value = product.products_description ||
+                            '';
 
+                            // Handle product image
+                            const productImg = document.getElementById('currentProductImage');
+            const productImgUrl = product.products_image 
+                ? `/images/products-img/${product.products_image}?t=${new Date().getTime()}`
+                : 'https://via.placeholder.com/100?text=No+Image';
+            
+            productImg.onload = function() {
+                document.getElementById('productImageLoading').style.display = 'none';
+                productImg.style.display = 'block';
+            };
+            productImg.src = productImgUrl;
+            
+                            // Handle hover image
+                            const hoverImg = document.getElementById('currentHoverImage');
+            const hoverImgUrl = product.hover_image 
+                ? `/images/hoverproducts-img/${product.hover_image}?t=${new Date().getTime()}`
+                : 'https://via.placeholder.com/100?text=No+Hover+Image';
+            
+            hoverImg.onload = function() {
+                document.getElementById('hoverImageLoading').style.display = 'none';
+                hoverImg.style.display = 'block';
+            };
+            hoverImg.src = hoverImgUrl;
+            
+        } catch (error) {
+            console.error('Error:', error);
+                            // Show error state
+                             document.getElementById('productImageLoading').style.display = 'none';
+            document.getElementById('currentProductImage').src = 'https://via.placeholder.com/100?text=Error';
+            document.getElementById('currentProductImage').style.display = 'block';
+            
+            document.getElementById('hoverImageLoading').style.display = 'none';
+            document.getElementById('currentHoverImage').src = 'https://via.placeholder.com/100?text=Error';
+            document.getElementById('currentHoverImage').style.display = 'block';
+        }
+    });
+}
+                // Delete Product Modal (keep your existing implementation)
+                const deleteProductModal = document.getElementById('deleteProductModal');
+                deleteProductModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const productId = button.getAttribute('data-product-id');
+                    const productName = button.getAttribute('data-product-name');
 
-                            // Set current image
-                            if (product.products_image) {
-                                document.getElementById('currentProductImage').src =
-                                    `/storage/products/${product.products_image}`;
-                            } else {
-                                document.getElementById('currentProductImage').src =
-                                    'https://via.placeholder.com/100';
-                            }
+                    document.getElementById('deleteProductName').textContent = productName;
+                    const form = document.getElementById('deleteProductForm');
+                    form.action = `/admin/products/delete/${productId}`;
+                });
 
-                        } catch (error) {
-                            console.error('Error fetching product data:', error);
-                            alert('Could not load product data. Please try again.');
-                        }
-                    });
-                }
-            });
-
-            // Handle delete product modal
-            const deleteProductModal = document.getElementById('deleteProductModal');
-            deleteProductModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const productId = button.getAttribute('data-product-id');
-                const productName = button.getAttribute('data-product-name');
-
-                // Set the product name in the confirmation message
-                document.getElementById('deleteProductName').textContent = productName;
-
-                // Set the form action URL dynamically
-                const form = document.getElementById('deleteProductForm');
-                form.action = `/admin/products/delete/${productId}`;
-            });
-
-            // Search and filter functionality
-            const searchInput = document.getElementById('searchInput');
-            const categorySelect = document.getElementById('categorySelect');
-            const statusSelect = document.getElementById('statusSelect');
-            const resetBtn = document.getElementById('resetBtn');
-            const filterBtn = document.getElementById('filterBtn');
-
-            // Reset button
-            resetBtn.addEventListener('click', function() {
-                searchInput.value = '';
-                categorySelect.selectedIndex = 0;
-                statusSelect.selectedIndex = 0;
-            });
-        </script>
-    @endsection
+                // Search and filter functionality (keep your existing implementation)
+                const resetBtn = document.getElementById('resetBtn');
+                resetBtn.addEventListener('click', function() {
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('categorySelect').selectedIndex = 0;
+                    document.getElementById('statusSelect').selectedIndex = 0;
+                });
+            </script>
+        @endsection

@@ -1,6 +1,7 @@
 @extends('base.base')
 
 @section('content')
+
     <style>
         body {
             background: url('/images/background.jpg') no-repeat center center fixed;
@@ -76,13 +77,31 @@
             font-size: 0.9rem;
         }
 
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #666;
+        .form-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 2;
+    color: #888;
+}
+
+input.form-control {
+    padding-right: 45px; /* Space for eye icon */
+    background-color: #eef4ff; /* optional: soft blue bg */
+}
+
+input.is-invalid {
+    border-color: #dc3545;
+}
+
+        .text-danger {
+            font-size: 0.85rem;
         }
 
         .position-relative {
@@ -96,47 +115,87 @@
             <h4>Create an Account</h4>
             <p>Start shopping your frozen favorites with Chillé Mart!</p>
 
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li class="small">{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+<form action="{{ route('register.submit') }}" method="POST">
+    @csrf
 
-            <form action="{{ route('register.submit') }}" method="POST">
-                @csrf
+    <div class="mb-3">
+        <input type="text" class="form-control @error('users_name') is-invalid @enderror"
+               name="users_name" value="{{ old('users_name') }}" placeholder="Full Name" required>
+        @error('users_name')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
+    </div>
 
-                <input type="text" name="name" class="form-control" placeholder="Full Name" required>
-                <input type="email" name="email" class="form-control" placeholder="Email Address" required>
-                <input type="text" name="phone" class="form-control" placeholder="Phone Number" maxlength="12"
-                    pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                <input type="text" name="address" class="form-control" placeholder="Address" required>
+    <div class="mb-3">
+        <input type="email" class="form-control @error('users_email') is-invalid @enderror"
+               name="users_email" value="{{ old('users_email') }}" placeholder="Email" required>
+        @error('users_email')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
+    </div>
 
-                <div class="position-relative">
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Password"
-                        required>
-                    <span class="toggle-password" onclick="togglePassword('password', this)">
-                        <i class="fa fa-eye"></i>
-                    </span>
-                </div>
+    <div class="mb-3">
+        <input type="text" class="form-control @error('users_phone') is-invalid @enderror"
+               name="users_phone" value="{{ old('users_phone') }}" placeholder="Phone Number"
+               pattern="[0-9]+" maxlength="15"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+        @error('users_phone')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
+    </div>
 
-                <div class="position-relative">
-                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control"
-                        placeholder="Confirm Password" required>
-                    <span class="toggle-password" onclick="togglePassword('password_confirmation', this)">
-                        <i class="fa fa-eye"></i>
-                    </span>
-                </div>
+    <div class="mb-3">
+        <input type="text" class="form-control @error('users_address') is-invalid @enderror"
+               name="users_address" value="{{ old('users_address') }}" placeholder="Address" required>
+        @error('users_address')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
+    </div>
 
-                <button type="submit" class="btn btn-blue w-100 mt-3">Register</button>
-            </form>
+<div class="form-group position-relative mb-3">
+    <input type="password"
+           id="password"
+           name="users_password"
+           class="form-control @error('users_password') is-invalid @enderror"
+           placeholder="Password (min. 8 characters)"
+           minlength="8"
+           required>
 
+    <span class="toggle-password" onclick="togglePassword('password', this)">
+        <i class="fa fa-eye"></i>
+    </span>
+
+    @error('users_password')
+        <div class="text-danger small mt-1">{{ $message }}</div>
+    @enderror
+</div>
+
+
+    <div class="mb-3 position-relative">
+        <input type="password" id="password_confirmation" class="form-control @error('users_password_confirmation') is-invalid @enderror"
+               name="users_password_confirmation" placeholder="Confirm Password" required>
+        <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3"
+              onclick="togglePassword('password_confirmation', this)" style="cursor: pointer;">
+            <i class="fa fa-eye"></i>
+        </span>
+        @error('users_password_confirmation')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <button type="submit" class="btn btn-blue w-100 mt-3">Register</button>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+</form>
+            
             <div class="text-center mt-3">
                 <span class="text-muted">Already have an account?
-                    <a href="{{ route('login.show') }}" class="text-link">Sign In</a>
+                    <a href="{{ route('login') }}" class="text-link">Sign In</a>
                 </span>
             </div>
 
