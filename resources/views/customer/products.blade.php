@@ -7,13 +7,8 @@
     <div class="container-fluid px-3 px-md-4 px-lg-5">
         <div class="row justify-content-center">
             <div class="col-12 col-xl-11 col-xxl-10">
-                
-                {{-- Header Section with Title and Alert --}}
                 <div class="row align-items-center mb-5 py-4">
-                    {{-- Spacer for desktop --}}
                     <div class="col-lg-3 d-none d-lg-block"></div>
-                    
-                    {{-- Centered Title --}}
                     <div class="col-lg-6 col-12 text-center">
                         <h1 class="fw-bold display-5 mb-3 text-nowrap" style="color: #052659;">Our Frozen Food Selection</h1>
                         <p class="text-muted mb-0 fs-5">Premium quality frozen foods from around the world</p>
@@ -77,11 +72,10 @@
                                                 <label for="categoryFilter" class="form-label small">Category</label>
                                                 <select class="form-select" name="category" id="categoryFilter">
                                                     <option value="">All Categories</option>
-                                                    @foreach ($categories as $category)
-                                                        <option value="{{ $category }}"
-                                                            {{ request('category') == $category ? 'selected' : '' }}>
-                                                            {{ $category }}
-                                                        </option>
+                                                    @foreach ($categories as $id => $name)
+                                                    <option value="{{ $id }}" {{ request('category') == $id ? 'selected' : '' }}>
+                                                        {{ $name }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -181,7 +175,7 @@
                                     </div>
                                 </div>
 
-                                <p class="text-secondary small mb-1">{{ $product->product_category }}</p>
+                                <p class="text-secondary small mb-1">{{ $product->category->categories_name}}</p>
                                     <h5 class="text-primary fw-semibold mb-4">
                                         Rp {{ number_format($product->orders_price, 0, ',', '.') }}
                                     </h5>
@@ -351,24 +345,6 @@
         });
     }, 3000);
 }
-
-        function updateCountsBadge() {
-            $.get('{{ route('counts') }}', function (data) {
-                const cartIcon = $('#cartLink');
-                cartIcon.find('.badge').remove();
-                if (data.cart > 0) {
-                    cartIcon.append(`<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${data.cart}</span>`);
-                }
-
-                const wishIcon = $('#wishlistLink');
-                wishIcon.find('.badge').remove();
-                if (data.wishlist > 0) {
-                    wishIcon.append(`<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${data.wishlist}</span>`);
-                }
-            });
-        }
-
-        // Wishlist toggle
         $(document).on('click', '.wishlist-btn', function (e) {
             e.preventDefault();
             const productId = $(this).data('product-id');
@@ -381,7 +357,7 @@
                 type: 'GET',
                 success: function (response) {
                     showSuccessAlert(response.message);
-                    updateCountsBadge();
+                    
                 },
                 error: function (xhr) {
                     alert('Failed to update wishlist.');
@@ -390,7 +366,7 @@
             });
         });
 
-        // Add to cart via AJAX
+        
         $(document).on('submit', 'form.add-to-cart-form', function (e) {
             e.preventDefault();
             const form = $(this);
@@ -405,7 +381,6 @@
                 },
                 success: function () {
                     showSuccessAlert('Product added to cart.');
-                    updateCountsBadge();
                 },
                 error: function (xhr) {
                     alert('Failed to add to cart.');
@@ -414,8 +389,6 @@
             });
         });
 
-        // Initial load
-        updateCountsBadge();
     });
 </script>
 @endsection

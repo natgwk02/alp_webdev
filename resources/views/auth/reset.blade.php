@@ -83,6 +83,35 @@
         .back-link:hover {
             text-decoration: underline;
         }
+        
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            color: #888;
+            cursor: pointer;
+            z-index: 2;
+            height: 20px;
+            width: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        
+        .toggle-password:hover {
+            color: #224488;
+        }
+        
+        .password-wrapper .form-control {
+            padding-right: 45px;
+        }
     </style>
 
     <div class="forgot-wrapper">
@@ -114,8 +143,12 @@
 
             <div class="mb-3 text-start">
                 <label for="password" class="form-label">New Password</label>
-                <input type="password" id="password" name="password"
-                    class="form-control @error('password') is-invalid @enderror" required>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password"
+                        class="form-control pe-5 @error('password') is-invalid @enderror"
+                        placeholder="Enter your new password" required>
+                    <i class="fa fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+                </div>
                 @error('password')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -123,14 +156,30 @@
 
             <div class="mb-3 text-start">
                 <label for="password_confirmation" class="form-label">Confirm Password</label>
-                <input type="password" id="password_confirmation" name="password_confirmation"
-                    class="form-control" required>
+                <div class="password-wrapper">
+                    <input type="password" id="password_confirmation" name="password_confirmation"
+                        class="form-control pe-5" placeholder="Confirm your password" required>
+                    <i class="fa fa-eye toggle-password" onclick="togglePassword('password_confirmation', this)"></i>
+                </div>
             </div>
-
+            
             <button type="submit" class="btn btn-blue">Reset Password</button>
         </form>
 
         <a href="{{ route('login') }}" class="back-link">← Back to Login</a>
     </div>
 </div>
+
+<script>
+    function togglePassword(fieldId, el) {
+        const input = document.getElementById(fieldId);
+        if (input.type === "password") {
+            input.type = "text";
+            el.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            input.type = "password";
+            el.classList.replace("fa-eye-slash", "fa-eye");
+        }
+    }
+</script>
 @endsection

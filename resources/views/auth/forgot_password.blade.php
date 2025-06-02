@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('base.base')
 @section('title', 'Forgot Password')
 
 @section('content')
@@ -7,6 +7,7 @@
         background: url('/images/background.jpg') no-repeat center center fixed;
         background-size: cover;
         font-family: 'Segoe UI', sans-serif;
+        margin: 0;
     }
 
     .auth-wrapper {
@@ -72,7 +73,7 @@
     }
 
     .truncate-link {
-        word-break: break-all;
+        word-break: break-word;
         font-size: 0.9rem;
     }
 </style>
