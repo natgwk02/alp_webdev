@@ -15,8 +15,15 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect(Auth::user()->getRedirectRoute());
+        /** @var \App\Models\User $user An instance of your User model */
+        $user = Auth::user();
+
+        if ($user) {
+            return redirect($user->getRedirectRoute());
         }
+
+        return redirect('/home');
+    }
 
         return view('auth.login');
     }
@@ -38,7 +45,7 @@ class AuthController extends Controller
             return redirect()->intended($user->getRedirectRoute());
         } else {
             return back()->withErrors([
-                'users_email' => 'The provided credentials do not match our records.',
+                'users_email' => 'Oops! Your email or password does not match our records.',
             ]);
         }
     }

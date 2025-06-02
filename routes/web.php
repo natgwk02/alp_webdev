@@ -62,10 +62,10 @@ Route::post('/product/create', [AdminController::class, 'insertProduct'])->name(
 Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
 Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
 
-    // Order Management
-    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+// Order Management
+Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
 // Home Route
 Route::middleware('web')->group(function () {
@@ -88,7 +88,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout');
-    Route::get('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
+    Route::post('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
+    Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/terms-and-conditions', [CheckoutController::class, 'terms'] )->name('terms');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/counts', [ CartController::class, 'getCounts'])->name('counts');

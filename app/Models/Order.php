@@ -75,4 +75,9 @@ class Order extends Model
             }
         );
     }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'orders_id', 'orders_id');
+    }
 }

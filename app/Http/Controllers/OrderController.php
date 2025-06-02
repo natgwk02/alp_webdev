@@ -17,39 +17,39 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($order) {
-            return [
-                'orders_id' => $order->orders_id,
-                'orders_number' => $order->orders_id, // or any other order number logic
-                'orders_status' => $order->orders_status,
-                'created_at' => $order->created_at,
-                'total' => $order->total,
-                'items' => $order->orderDetails->map(function ($detail) {
-                    return [
-                        'product_id' => $detail->product->products_id ?? null,
-                        'product_name' => $detail->product->product_name ?? 'Unknown Product',
-                        'price' => $detail->price,
-                        'quantity' => $detail->order_details_quantity,
-                        'product_image' => $detail->product->product_image ?? 'no-image.png',
-                    ];
-                })->toArray(),
-                'customer' => [
-                    'first_name' => $order->first_name,
-                    'last_name' => $order->last_name,
-                    'email' => $order->email,
-                    'phone' => $order->phone,
-                    'address' => $order->address,
-                    'city' => $order->city,
-                    'zip' => $order->zip,
-                    'country' => $order->country,
-                ],
-                'payment_method' => $order->payment_method,
-                'payment_status' => $order->payment_status,
-                'subtotal' => $order->subtotal,
-                'shipping_fee' => $order->shipping_fee,
-                'tax' => $order->tax,
-                'voucher_discount' => $order->voucher_discount,
-            ];
-        });
+                return [
+                    'orders_id' => $order->orders_id,
+                    'orders_number' => $order->orders_id, // or any other order number logic
+                    'orders_status' => $order->orders_status,
+                    'created_at' => $order->created_at,
+                    'total' => $order->total,
+                    'items' => $order->orderDetails->map(function ($detail) {
+                        return [
+                            'product_id' => $detail->product->products_id ?? null,
+                            'product_name' => $detail->product->product_name ?? 'Unknown Product',
+                            'price' => $detail->price,
+                            'quantity' => $detail->order_details_quantity,
+                            'product_image' => $detail->product->product_image ?? 'no-image.png',
+                        ];
+                    })->toArray(),
+                    'customer' => [
+                        'first_name' => $order->first_name,
+                        'last_name' => $order->last_name,
+                        'email' => $order->email,
+                        'phone' => $order->phone,
+                        'address' => $order->address,
+                        'city' => $order->city,
+                        'zip' => $order->zip,
+                        'country' => $order->country,
+                    ],
+                    'payment_method' => $order->payment_method,
+                    'payment_status' => $order->payment_status,
+                    'subtotal' => $order->subtotal,
+                    'shipping_fee' => $order->shipping_fee,
+                    'tax' => $order->tax,
+                    'voucher_discount' => $order->voucher_discount,
+                ];
+            });
 
         $orders = $orders_query_result->all();
         return view('customer.orders', compact('orders'));
@@ -66,87 +66,146 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('error', 'Order not found.');
         }
 
-         $formattedOrder = [
-        'id' => $order->orders_id,
-        'order_number' => $order->orders_id,
-        'created_at' => $order->created_at,
-        'status' => $order->orders_status,
-        'items' => $order->orderDetails->map(function ($detail) {
-            return [
-                'products_id' => $detail->product->product_id ?? null,
-                'product_name' => $detail->product->product_name ?? 'Unknown Product',
-                'price' => $detail->price,
-                'quantity' => $detail->order_details_quantity,
-                'product_image' => $detail->product->product_image ?? 'no-image.png',
-            ];
-        })->toArray(),
-        'customer' => [
-            'first_name' => $order->first_name,
-            'last_name' => $order->last_name,
-            'email' => $order->email,
-            'phone' => $order->phone,
-            'address' => $order->address,
-            'city' => $order->city,
-            'zip' => $order->zip,
-            'country' => $order->country,
-        ],
-        'payment_method' => $order->payment_method,
-        'payment_status' => $order->payment_status,
-        'subtotal' => $order->subtotal,
-        'shipping_fee' => $order->shipping_fee,
-        'tax' => $order->tax,
-        'voucher_discount' => $order->voucher_discount,
-        'total' => $order->total,
-    ];
+        $formattedOrder = [
+            'id' => $order->orders_id,
+            'order_number' => $order->orders_id,
+            'created_at' => $order->created_at,
+            'status' => $order->orders_status,
+            'items' => $order->orderDetails->map(function ($detail) {
+                return [
+                    'products_id' => $detail->product->product_id ?? null,
+                    'product_name' => $detail->product->product_name ?? 'Unknown Product',
+                    'price' => $detail->price,
+                    'quantity' => $detail->order_details_quantity,
+                    'product_image' => $detail->product->product_image ?? 'no-image.png',
+                ];
+            })->toArray(),
+            'customer' => [
+                'first_name' => $order->first_name,
+                'last_name' => $order->last_name,
+                'email' => $order->email,
+                'phone' => $order->phone,
+                'address' => $order->address,
+                'city' => $order->city,
+                'zip' => $order->zip,
+                'country' => $order->country,
+            ],
+            'payment_method' => $order->payment_method,
+            'payment_status' => $order->payment_status,
+            'subtotal' => $order->subtotal,
+            'shipping_fee' => $order->shipping_fee,
+            'tax' => $order->tax,
+            'voucher_discount' => $order->voucher_discount,
+            'total' => $order->total,
+        ];
 
 
-        return view('customer.order_details',[ 'order' =>$formattedOrder]);
+        return view('customer.order_details', ['order' => $formattedOrder]);
     }
 
     public function showCheckoutForm(Request $request)
     {
-        $selectedItems = $request->input('selected_items', []);
+        // Debug: Log the incoming request data
+        Log::info('Checkout form request data:', $request->all());
 
-        if (is_string($selectedItems)) {
-            $selectedItems = explode(',', $selectedItems);
+        // 1. Get selected product IDs from the request
+        $selectedProductIds = $request->input('selected_items', []);
+
+        // Handle different input formats
+        if (is_string($selectedProductIds) && !empty($selectedProductIds)) {
+            $selectedProductIds = explode(',', $selectedProductIds);
         }
 
-        if (empty($selectedItems)) {
-            $selectedItems = session('selected_items', []);
+        // Remove empty values and ensure we have integers
+        $selectedProductIds = array_filter($selectedProductIds, function ($id) {
+            return !empty($id) && is_numeric($id);
+        });
+        $selectedProductIds = array_map('intval', $selectedProductIds);
+
+        Log::info('Processed selected product IDs:', $selectedProductIds);
+
+        // If empty from request, try to get from session
+        if (empty($selectedProductIds) && session()->has('checkout_selected_ids_temp')) {
+            $selectedProductIds = session('checkout_selected_ids_temp');
         }
 
-        if (!empty($selectedItems)) {
-            session(['selected_items' => $selectedItems]);
+        if (empty($selectedProductIds)) {
+            Log::warning('No items selected for checkout');
+            return redirect()->route('cart.index')->with('error', 'No items selected for checkout. Please select items from your cart.');
         }
 
-        if (empty($selectedItems) || !is_array($selectedItems)) {
-            return redirect()->route('cart.index')->with('error', 'No items selected for checkout.');
+        // Store these IDs in session temporarily
+        session(['checkout_selected_ids_temp' => $selectedProductIds]);
+
+        // 2. Get cart items from database instead of session (since you're using database cart)
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to checkout.');
         }
 
-        $cartItems = session('cart', []);
-        $filteredItems = array_filter($cartItems, function ($item) use ($selectedItems) {
-            return in_array($item['id'], (array) $selectedItems);
+        $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
+        if (!$cart) {
+            return redirect()->route('cart.index')->with('error', 'Cart not found.');
+        }
+
+        // Get cart items that match selected product IDs
+        $cartItems = $cart->items()->with('product')->whereIn('products_id', $selectedProductIds)->get();
+
+        if ($cartItems->isEmpty()) {
+            session()->forget('checkout_selected_ids_temp');
+            return redirect()->route('cart.index')->with('error', 'Selected items not found in cart. Please try again.');
+        }
+
+        // Convert cart items to the format expected by the checkout view
+        $filteredItems = $cartItems->map(function ($cartItem) {
+            return [
+                'id' => $cartItem->products_id,
+                'name' => $cartItem->product->products_name ?? 'Unknown Product',
+                'price' => $cartItem->product->orders_price ?? 0,
+                'quantity' => $cartItem->quantity,
+                'image' => $cartItem->product->products_image ?? 'no-image.png',
+            ];
+        })->toArray();
+
+        // 3. Calculate totals based on these items
+        $subtotal = collect($filteredItems)->sum(function ($item) {
+            return ($item['price'] ?? 0) * ($item['quantity'] ?? 0);
         });
 
-        $subtotal = array_sum(array_map(function ($item) {
-            return $item['price'] * $item['quantity'];
-        }, $filteredItems));
-
-        $shippingFee = 5000;
+        $shippingFee = 5000; // Or your dynamic shipping logic
         $tax = round($subtotal * 0.1);
         $voucherDiscount = session('voucher_discount', 0);
         $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
 
+        // 4. Prepare default data for shipping form
         $defaultData = [
-            'firstName' => 'John',
-            'lastName' => 'Doe',
-            'email' => 'john.doe@example.com',
-            'phone' => '+56912345678',
-            'address' => '123 Main St, Santiago, Chile',
-            'city' => 'Santiago',
-            'zip' => '8320000',
-            'country' => 'Chile'
+            'firstName' => '',
+            'lastName' => '',
+            'email' => '',
+            'phone' => '',
+            'address' => '',
+            'city' => '',
+            'zip' => '',
+            'country' => 'Chile', // Default country
         ];
+
+        if (Auth::check()) {
+            $user = Auth::user();
+            $nameParts = explode(' ', $user->users_name ?? '', 2);
+            $defaultData['firstName'] = old('firstName', $nameParts[0] ?? '');
+            $defaultData['lastName'] = old('lastName', $nameParts[1] ?? '');
+            $defaultData['email'] = old('email', $user->users_email ?? '');
+            $defaultData['phone'] = old('phone', $user->users_phone ?? '');
+            $defaultData['address'] = old('address', $user->users_address ?? '');
+            $defaultData['city'] = old('city', $user->users_city ?? '');
+            $defaultData['zip'] = old('zip', $user->users_zip ?? '');
+            $defaultData['country'] = old('country', $user->users_country ?? 'Chile');
+        } else {
+            foreach ($defaultData as $key => $value) {
+                $defaultData[$key] = old($key, $value);
+            }
+        }
+
+        Log::info('Checkout form data prepared successfully');
 
         return view('customer.checkout', compact(
             'filteredItems',
@@ -162,31 +221,46 @@ class OrderController extends Controller
     public function processCheckout(Request $request)
     {
         $request->validate([
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required|string',
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:255',
             'address' => 'required|string',
-            'city' => 'required|string',
-            'zip' => 'required|string',
-            'country' => 'required|string',
+            'city' => 'required|string|max:255',
+            'zip' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
             'paymentMethod' => 'required|string',
             'selected_items' => 'required|array',
+            'sellerNotes' => 'nullable|string|max:65535',
         ]);
 
-        $selectedItems = $request->input('selected_items');
-        $cartItems = session('cart', []);
+        $selectedProductIds = $request->input('selected_items');
 
-        $checkoutItems = collect($cartItems)->filter(fn($item) => in_array($item['id'], $selectedItems))->values();
+        // Get cart items from database
+        $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
+        if (!$cart) {
+            return redirect()->route('cart.index')->with('error', 'Cart not found.');
+        }
 
-        $subtotal = $checkoutItems->sum(fn($item) => $item['price'] * $item['quantity']);
-        $shippingFee = 20000;
+        $checkoutItems = $cart->items()->with('product')->whereIn('products_id', $selectedProductIds)->get();
+
+        if ($checkoutItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'No items selected for checkout or cart is empty.');
+        }
+
+        // Calculate totals server-side for security
+        $subtotal = $checkoutItems->sum(function ($item) {
+            return ($item->product->orders_price ?? 0) * $item->quantity;
+        });
+
+        $shippingFee = 5000;
         $tax = round($subtotal * 0.1);
         $voucherDiscount = session('voucher_discount', 0);
-        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+        $finalTotal = $subtotal + $shippingFee + $tax - $voucherDiscount;
 
         $order = Order::create([
             'users_id' => Auth::id(),
+            'orders_date' => now()->toDateString(),
             'first_name' => $request->firstName,
             'last_name' => $request->lastName,
             'email' => $request->email,
@@ -197,27 +271,32 @@ class OrderController extends Controller
             'country' => $request->country,
             'notes' => $request->sellerNotes,
             'payment_method' => ucfirst($request->paymentMethod),
-            'payment_status' => 'Paid',
+            'payment_status' => 'Pending',
             'subtotal' => $subtotal,
             'shipping_fee' => $shippingFee,
             'tax' => $tax,
             'voucher_discount' => $voucherDiscount,
-            'total' => $total,
-            'status' => 'Pending',
+            'total' => $finalTotal,
+            'orders_total_price' => $finalTotal,
+            'orders_status' => 'Pending',
         ]);
 
-        foreach ($checkoutItems as $item) {
+        foreach ($checkoutItems as $cartItem) {
             OrderDetail::create([
                 'orders_id' => $order->id,
-                'product_id' => $item['id'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
+                'product_id' => $cartItem->products_id,
+                'quantity' => $cartItem->quantity,
+                'price' => $cartItem->product->orders_price,
             ]);
         }
 
-        session()->forget(['voucher_code', 'voucher_discount', 'selected_items']);
-        session()->put('cart', collect($cartItems)->reject(fn($item) => in_array($item['id'], $selectedItems))->toArray());
+        // Remove the checked out items from cart
+        $cart->items()->whereIn('products_id', $selectedProductIds)->delete();
 
-        return redirect()->route('products')->with('success', 'Checkout completed! Your order has been placed.');
+        // Clear voucher session data
+        session()->forget(['voucher_code', 'voucher_discount', 'checkout_selected_ids_temp']);
+
+        return redirect()->route('order.show', ['id' => $order->orders_id])
+            ->with('success', 'Checkout completed! Your order has been placed.');
     }
 }
