@@ -35,6 +35,7 @@
         </div>
     @endif
     <style>
+        
         body {
             color: #052659;
         }
@@ -416,10 +417,10 @@
     {{-- category --}}
 
     <section class="category py-5">
-        <div class="container">
-            <section id="shop-category">
-                <h2 class="text-center mb-4">Shop by Category</h2>
-            </section>
+    <div class="container">
+        <section id="shop-category">
+            <h2 class="text-center mb-4">Shop by Category</h2>
+        </section>
 
             <div id="categoryCarousel" class="carousel slide category-carousel" data-bs-ride="carousel"
                 data-bs-interval="4000" data-bs-pause="hover">
@@ -430,78 +431,88 @@
                         aria-label="Slide 2"></button>
                 </div>
 
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="row">
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/ready-meals.jpg') }}" alt="Ready Meals"
-                                        class="img-fluid">
-                                    <div class="category-text">
-                                        <h5 class="mb-0">Ready Meals</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/vegetable.jpeg') }}" alt="Frozen Vegetable"
-                                        class="img-fluid">
-                                    <div class="category-text">
-                                        <h5 class="mb-0">Frozen Vegetable</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Frozen Dimsum"
-                                        class="img-fluid">
-                                    <div class="category-text">
-                                        <h5 class="mb-0">Frozen Dimsum</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/meat.jpg') }}" alt="Frozen Meat"
-                                        class="img-fluid">
-                                    <div class="category-text">
-                                        <h5 class="mb-0">Frozen Meat</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="carousel-item active">
+    <div class="row">
+        <div class="col-md-3 col-6 mb-4">
+            <a href="{{ route('products', ['category' => '1']) }}" class="text-decoration-none text-reset">
+                <div class="category-item">
+                    <img src="{{ asset('images/category-img/ready-meals.jpg') }}" alt="Ready Meals" class="img-fluid">
+                    <div class="category-text">
+                        <h5 class="mb-0">Ready Meals</h5>
                     </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+            <a href="{{ route('products', ['category' => '2']) }}" class="text-decoration-none text-reset">
+                <div class="category-item">
+                    <img src="{{ asset('images/category-img/vegetable.jpeg') }}" alt="Frozen Vegetable" class="img-fluid">
+                    <div class="category-text">
+                        <h5 class="mb-0">Frozen Vegetable</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+            <a href="{{ route('products', ['category' => '3']) }}" class="text-decoration-none text-reset">
+                <div class="category-item">
+                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Frozen Dimsum" class="img-fluid">
+                    <div class="category-text">
+                        <h5 class="mb-0">Frozen Dimsum</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+            <a href="{{ route('products', ['category' => '4']) }}" class="text-decoration-none text-reset">
+                <div class="category-item">
+                    <img src="{{ asset('images/category-img/meat.jpg') }}" alt="Frozen Meat" class="img-fluid">
+                    <div class="category-text">
+                        <h5 class="mb-0">Frozen Meat</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
 
                     <div class="carousel-item">
                         <div class="row">
                             <div class="col-md-3 col-6 mb-4">
+                                <a href="{{ route('products', ['category' => '5']) }}" class="text-decoration-none text-reset">
                                 <div class="category-item">
                                     <img src="{{ asset('images/category-img/nugget.jpg') }}" alt="Frozen Nugget"
                                         class="img-fluid">
                                     <div class="category-text">
                                         <h5 class="mb-0">Frozen Nugget</h5>
                                     </div>
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-3 col-6 mb-4">
+                                <a href="{{ route('products', ['category' => '5']) }}" class="text-decoration-none text-reset">
                                 <div class="category-item">
                                     <img src="{{ asset('images/category-img/fruit.jpeg') }}" alt="Frozen Fruit"
                                         class="img-fluid">
                                     <div class="category-text">
                                         <h5 class="mb-0">Frozen Fruit</h5>
                                     </div>
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-3 col-6 mb-4">
+                                <a href="{{ route('products', ['category' => '6']) }}" class="text-decoration-none text-reset">
                                 <div class="category-item">
                                     <img src="{{ asset('images/category-img/seafood.jpg') }}" alt="Frozen Seafood"
                                         class="img-fluid">
                                     <div class="category-text">
                                         <h5 class="mb-0">Frozen Seafood</h5>
                                     </div>
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-3 col-6 mb-4">
+                                <a href="{{ route('products', ['category' => '7']) }}" class="text-decoration-none text-reset">
                                 <div class="category-item">
                                     <img src="{{ asset('images/category-img/dessert.jpg') }}" alt="Dessert"
                                         class="img-fluid">
@@ -509,6 +520,7 @@
                                         <h5 class="mb-0">Dessert</h5>
                                     </div>
                                 </div>
+                                </a>
                             </div>
                         </div>
                     </div>

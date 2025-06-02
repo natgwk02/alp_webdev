@@ -54,9 +54,13 @@ class Order extends Model
         return $this->belongsTo(User::class, 'users_id', 'users_id');
     }
 
-    public function orderDetails(): HasMany{
-        return $this->hasMany(OrderDetail::class, 'orders_id', 'order_details_id');
+    public function items(): HasMany{
+        return $this->hasMany(OrderDetail::class, 'orders_id', 'orders_id');
     }
+    public function product(): BelongsTo
+{
+    return $this->belongsTo(Product::class, 'product_id', 'product_id');
+}
 
     protected function statusBadgeClass(): Attribute
     {

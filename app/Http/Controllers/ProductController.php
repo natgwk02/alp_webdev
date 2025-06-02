@@ -49,7 +49,7 @@ class ProductController extends Controller
     $cartCount = 0;
     if (Auth::check()) {
         $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
-        $cartCount = $cart ? $cart->items()->sum('quantity') : 0;
+        $cartCount = $cart ? $cart->items()->count() : 0;
     }
 
     // Get distinct product categories
