@@ -152,42 +152,272 @@
         }
 
         .category {
-            background-color: #f8f9fa;
-            padding: 3rem 0;
-        }
+    background-color: #f8f9fa;
+    padding: 3rem 0;
+}
 
-        .category-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            height: 100%;
-            transition: transform 0.3s ease-in-out;
-        }
+.category-carousel {
+    position: relative;
+}
 
-        .category-item img {
-            height: 40vh;
-            transition: transform 0.3s;
-            width: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease-in-out;
-        }
+.category-carousel .carousel-inner {
+    padding-bottom: 60px; /* Space for indicators */
+}
+
+.category-carousel .carousel-item {
+    padding: 0 15px;
+    min-height: 320px; /* Ensure consistent height */
+}
+
+.category-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.category-item img {
+    height: 40vh; /* Ukuran asli seperti kode sebelumnya */
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.category-item:hover {
+    transform: translateY(-5px);
+}
+
+.category-item:hover img {
+    transform: scale(1.05);
+}
+
+.category-text {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    text-align: center;
+    background: rgba(102, 204, 255, 0.8);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.category-item:hover .category-text {
+    background: rgba(102, 204, 255, 1);
+}
+
+/* Carousel Controls */
+.category-carousel .carousel-control-prev,
+.category-carousel .carousel-control-next {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(5, 38, 89, 0.8);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.8;
+    border: none;
+}
+
+.category-carousel .carousel-control-prev {
+    left: -25px;
+}
+
+.category-carousel .carousel-control-next {
+    right: -25px;
+}
+
+.category-carousel .carousel-control-prev:hover,
+.category-carousel .carousel-control-next:hover {
+    opacity: 1;
+    background-color: rgba(5, 38, 89, 1);
+}
+
+.category-carousel .carousel-control-prev-icon,
+.category-carousel .carousel-control-next-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Carousel Indicators */
+.category-carousel .carousel-indicators {
+    bottom: -50px;
+    margin-bottom: 0;
+}
+
+.category-carousel .carousel-indicators button {
+    background-color: #4ed1f2;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+    border: none;
+    opacity: 0.5;
+}
+
+.category-carousel .carousel-indicators button.active {
+    opacity: 1;
+    background-color: #052659;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .category-item img {
+        height: 35vh;
+    }
+    
+    .category-text {
+        font-size: 1rem;
+        padding: 8px;
+    }
+    
+    .category-carousel .carousel-control-prev {
+        left: -15px;
+    }
+    
+    .category-carousel .carousel-control-next {
+        right: -15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .category-item img {
+        height: 30vh;
+    }
+    
+    .category-text h5 {
+        font-size: 0.9rem;
+    }
+}
+
+.category-item:hover {
+    transform: translateY(-5px);
+}
+
+.category-item:hover img {
+    transform: scale(1.05);
+}
+
+.category-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    text-align: center;
+    background: rgba(102, 204, 255, 0.9);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-item:hover .category-text {
+    background: rgba(102, 204, 255, 1);
+}
+
+/* Carousel Controls */
+.category-carousel .carousel-control-prev,
+.category-carousel .carousel-control-next {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(5, 38, 89, 0.8);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.8;
+    border: none;
+}
+
+.category-carousel .carousel-control-prev {
+    left: -25px;
+}
+
+.category-carousel .carousel-control-next {
+    right: -25px;
+}
+
+.category-carousel .carousel-control-prev:hover,
+.category-carousel .carousel-control-next:hover {
+    opacity: 1;
+    background-color: rgba(5, 38, 89, 1);
+}
+
+.category-carousel .carousel-control-prev-icon,
+.category-carousel .carousel-control-next-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Carousel Indicators */
+.category-carousel .carousel-indicators {
+    bottom: -50px;
+    margin-bottom: 0;
+}
+
+.category-carousel .carousel-indicators button {
+    background-color: #4ed1f2;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+    border: none;
+    opacity: 0.5;
+}
+
+.category-carousel .carousel-indicators button.active {
+    opacity: 1;
+    background-color: #052659;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .category-item {
+        height: 250px;
+    }
+    
+    .category-item img {
+        height: 180px;
+    }
+    
+    .category-text {
+        font-size: 0.9rem;
+        padding: 10px;
+        min-height: 50px;
+    }
+    
+    .category-carousel .carousel-control-prev {
+        left: -15px;
+    }
+    
+    .category-carousel .carousel-control-next {
+        right: -15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .category-item {
+        height: 220px;
+    }
+    
+    .category-item img {
+        height: 160px;
+    }
+    
+    .category-text h5 {
+        font-size: 0.85rem;
+    }
+}
 
         .category-item:hover img {
             transform: scale(1.05);
-        }
-
-        .category-text {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            padding: 10px;
-            text-align: center;
-            background: rgba(102, 204, 255, 0.8);
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
         }
 
         .category-overlay {
@@ -218,14 +448,6 @@
             top: 50%;
             transform: translateY(-50%);
             opacity: 0.8;
-        }
-
-        .category-carousel .carousel-control-prev {
-            left: 15px;
-        }
-
-        .category-carousel .carousel-control-next {
-            right: 15px;
         }
 
         .category-carousel .carousel-control-prev:hover,
@@ -415,131 +637,130 @@
 
 
     {{-- category --}}
-
-    <section class="category py-5">
+<section class="category py-5">
     <div class="container">
         <section id="shop-category">
             <h2 class="text-center mb-4">Shop by Category</h2>
         </section>
 
-            <div id="categoryCarousel" class="carousel slide category-carousel" data-bs-ride="carousel"
-                data-bs-interval="4000" data-bs-pause="hover">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="0" class="active"
-                        aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="1"
-                        aria-label="Slide 2"></button>
-                </div>
+        <div id="categoryCarousel" class="carousel slide category-carousel" data-bs-ride="carousel"
+            data-bs-interval="4000" data-bs-pause="hover">
+            
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
+            </div>
 
+            <!-- Carousel Inner -->
+            <div class="carousel-inner">
+                <!-- First Slide -->
                 <div class="carousel-item active">
-    <div class="row">
-        <div class="col-md-3 col-6 mb-4">
-            <a href="{{ route('products', ['category' => '1']) }}" class="text-decoration-none text-reset">
-                <div class="category-item">
-                    <img src="{{ asset('images/category-img/ready-meals.jpg') }}" alt="Ready Meals" class="img-fluid">
-                    <div class="category-text">
-                        <h5 class="mb-0">Ready Meals</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-            <a href="{{ route('products', ['category' => '2']) }}" class="text-decoration-none text-reset">
-                <div class="category-item">
-                    <img src="{{ asset('images/category-img/vegetable.jpeg') }}" alt="Frozen Vegetable" class="img-fluid">
-                    <div class="category-text">
-                        <h5 class="mb-0">Frozen Vegetable</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-            <a href="{{ route('products', ['category' => '3']) }}" class="text-decoration-none text-reset">
-                <div class="category-item">
-                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Frozen Dimsum" class="img-fluid">
-                    <div class="category-text">
-                        <h5 class="mb-0">Frozen Dimsum</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-            <a href="{{ route('products', ['category' => '4']) }}" class="text-decoration-none text-reset">
-                <div class="category-item">
-                    <img src="{{ asset('images/category-img/meat.jpg') }}" alt="Frozen Meat" class="img-fluid">
-                    <div class="category-text">
-                        <h5 class="mb-0">Frozen Meat</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-</div>
-
-                    <div class="carousel-item">
-                        <div class="row">
-                            <div class="col-md-3 col-6 mb-4">
-                                <a href="{{ route('products', ['category' => '5']) }}" class="text-decoration-none text-reset">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('products', ['category' => '1']) }}" class="text-decoration-none text-reset">
                                 <div class="category-item">
-                                    <img src="{{ asset('images/category-img/nugget.jpg') }}" alt="Frozen Nugget"
-                                        class="img-fluid">
+                                    <img src="{{ asset('images/category-img/ready-meals.jpg') }}" alt="Ready Meals" class="img-fluid">
                                     <div class="category-text">
-                                        <h5 class="mb-0">Frozen Nugget</h5>
-                                    </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <a href="{{ route('products', ['category' => '5']) }}" class="text-decoration-none text-reset">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/fruit.jpeg') }}" alt="Frozen Fruit"
-                                        class="img-fluid">
-                                    <div class="category-text">
-                                        <h5 class="mb-0">Frozen Fruit</h5>
-                                    </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <a href="{{ route('products', ['category' => '6']) }}" class="text-decoration-none text-reset">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/seafood.jpg') }}" alt="Frozen Seafood"
-                                        class="img-fluid">
-                                    <div class="category-text">
-                                        <h5 class="mb-0">Frozen Seafood</h5>
-                                    </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-4">
-                                <a href="{{ route('products', ['category' => '7']) }}" class="text-decoration-none text-reset">
-                                <div class="category-item">
-                                    <img src="{{ asset('images/category-img/dessert.jpg') }}" alt="Dessert"
-                                        class="img-fluid">
-                                    <div class="category-text">
-                                        <h5 class="mb-0">Dessert</h5>
+                                        <h5 class="mb-0">Ready Meals</h5>
                                     </div>
                                 </div>
-                                </a>
-                            </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('products', ['category' => '2']) }}" class="text-decoration-none text-reset">
+                                <div class="category-item">
+                                    <img src="{{ asset('images/category-img/vegetable.jpeg') }}" alt="Frozen Vegetable" class="img-fluid">
+                                    <div class="category-text">
+                                        <h5 class="mb-0">Frozen Vegetable</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('products', ['category' => '3']) }}" class="text-decoration-none text-reset">
+                                <div class="category-item">
+                                    <img src="{{ asset('images/category-img/dimsum.jpg') }}" alt="Frozen Dimsum" class="img-fluid">
+                                    <div class="category-text">
+                                        <h5 class="mb-0">Frozen Dimsum</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('products', ['category' => '4']) }}" class="text-decoration-none text-reset">
+                                <div class="category-item">
+                                    <img src="{{ asset('images/category-img/meat.jpg') }}" alt="Frozen Meat" class="img-fluid">
+                                    <div class="category-text">
+                                        <h5 class="mb-0">Frozen Meat</h5>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+                <!-- Second Slide -->
+                <div class="carousel-item">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('products', ['category' => '5']) }}" class="text-decoration-none text-reset">
+                                <div class="category-item">
+                                    <img src="{{ asset('images/category-img/nugget.jpg') }}" alt="Frozen Nugget" class="img-fluid">
+                                    <div class="category-text">
+                                        <h5 class="mb-0">Frozen Nugget</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('products', ['category' => '6']) }}" class="text-decoration-none text-reset">
+                                <div class="category-item">
+                                    <img src="{{ asset('images/category-img/fruit.jpeg') }}" alt="Frozen Fruit" class="img-fluid">
+                                    <div class="category-text">
+                                        <h5 class="mb-0">Frozen Fruit</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('products', ['category' => '7']) }}" class="text-decoration-none text-reset">
+                                <div class="category-item">
+                                    <img src="{{ asset('images/category-img/seafood.jpg') }}" alt="Frozen Seafood" class="img-fluid">
+                                    <div class="category-text">
+                                        <h5 class="mb-0">Frozen Seafood</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ route('products', ['category' => '8']) }}" class="text-decoration-none text-reset">
+                                <div class="category-item">
+                                    <img src="{{ asset('images/category-img/dessert.jpg') }}" alt="Dessert" class="img-fluid">
+                                    <div class="category-text">
+                                        <h5 class="mb-0">Dessert</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
 
+            <!-- Carousel Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
 
     {{-- special offer --}}
     <section class="voucher-hero d-flex align-items-center justify-content-center py-5 px-3">
