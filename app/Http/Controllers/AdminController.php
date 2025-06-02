@@ -9,20 +9,19 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage; // Added for image handling
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-
     public function dashboard()
     {
         $lowStockThreshold = 20;
 
-        // Basic Stats (Ensure 'orders_total_price' is your revenue column)
+        // Basic Stats
         $stats = [
             'total_orders' => Order::count(),
             'total_products' => Product::count(),
-            'total_active_products' => Product::where('status_del', 0)->count(), // ✅ ubah key ini
+            'total_active_products' => Product::where('status_del', 0)->count(),
             'total_revenue' => Order::sum('orders_total_price'),
         ];
 
@@ -31,16 +30,23 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
-        $stockAlertProducts = Product::where('status_del', 0)
-            ->where('products_stock', '<=', $lowStockThreshold)
+        // Get low stock products based on category type
+        $stockAlertProducts = Product::with('category')
+            ->where('status_del', 0)
+            ->where(function ($query) {
+                $query->whereIn(DB::raw('(SELECT categories_name FROM categories WHERE categories_id = products.categories_id)'), $this->fastMovingCategories)
+                    ->where('products_stock', '<=', 20)
+                    ->orWhereIn(DB::raw('(SELECT categories_name FROM categories WHERE categories_id = products.categories_id)'), $this->slowMovingCategories)
+                    ->where('products_stock', '<=', 10);
+            })
             ->orderBy('products_stock', 'asc')
             ->take(5)
             ->get();
 
         $orderStatusCounts = Order::query()
-            ->selectRaw('orders_status, count(*) as total_count') // Get status and count
+            ->selectRaw('orders_status, count(*) as total_count')
             ->groupBy('orders_status')
-            ->pluck('total_count', 'orders_status'); // Creates a collection like ['Pending' => 10, 'Processing' => 5]
+            ->pluck('total_count', 'orders_status');
 
         $definedOrderStatuses = [
             'Pending'    => ['badge_class' => 'bg-secondary', 'name' => 'Pending'],
@@ -64,7 +70,6 @@ class AdminController extends Controller
 
     public function products(Request $request)
     {
-
         $query = Product::with('category')
             ->where(function ($q) {
                 $q->where('status_del', 0)
@@ -80,21 +85,24 @@ class AdminController extends Controller
             $query->where('categories_id', $request->category);
         }
 
-        if ($request->filled('status')) {
-            $status = $request->status;
-            $lowStockThreshold = 20;
+       if ($request->filled('status')) {
+    $status = $request->status;
 
-            if ($status === 'In Stock') {
-                $query->where('products_stock', '>', $lowStockThreshold);
-            } elseif ($status === 'Low Stock') {
-                $query->whereBetween('products_stock', [1, $lowStockThreshold]);
-            } elseif ($status === 'Out of Stock') {
-                $query->where('products_stock', '<=', 0);
-            }
-        }
+    if ($status === 'In Stock') {
+        $query->where(function($q) {
+            $q->where('products_stock', '>', DB::raw('IFNULL(low_stock_threshold, 10)'));
+        });
+    } elseif ($status === 'Low Stock') {
+        $query->where(function($q) {
+            $q->where('products_stock', '>', 0)
+              ->where('products_stock', '<=', DB::raw('IFNULL(low_stock_threshold, 10)'));
+        });
+    } elseif ($status === 'Out of Stock') {
+        $query->where('products_stock', '<=', 0);
+    }
+}
 
         $products = $query->paginate(10);
-
         $categories = Category::pluck('categories_name', 'categories_id')->all();
 
         return view('admin.products.index', [
@@ -108,7 +116,6 @@ class AdminController extends Controller
 
     public function insertProduct(Request $request)
     {
-
         $validatedData = $request->validate([
             'products_name' => 'required|string|max:50',
             'unit_price' => 'required|integer|min:0',
@@ -117,7 +124,9 @@ class AdminController extends Controller
             'categories_id' => 'required|exists:categories,categories_id',
             'products_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'hover_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'orders_price' => 'required|integer|min:0'
+            'orders_price' => 'required|integer|min:0',
+                    'low_stock_threshold' => 'required|integer|min:1'
+
         ]);
 
         $product = new Product();
@@ -126,9 +135,10 @@ class AdminController extends Controller
         $product->products_stock = $validatedData['products_stock'];
         $product->products_description = $validatedData['products_description'] ?? '';
         $product->categories_id = $validatedData['categories_id'];
-        $product->hover_image = $validatedData['hover_image'] ?? '';
         $product->orders_price = $validatedData['orders_price'];
         $product->status_del = 0;
+            $product->low_stock_threshold = $validatedData['low_stock_threshold'];
+
 
         // Handle Image Upload
         if ($request->hasFile('products_image')) {
@@ -144,15 +154,12 @@ class AdminController extends Controller
             $hoverImage->move(public_path('images/hoverproducts-img'), $hoverImageName);
             $product->hover_image = $hoverImageName;
         }
-        // Add logic for 'status' (In Stock, Low Stock etc.) if you have that column
-        // e.g., $product->status = $this->determineStatus($validatedData['products_stock']);
 
         $product->save();
 
         return redirect(route('admin.products'))
             ->with('success', 'Product added successfully!');
     }
-
 
     public function updateProduct(Request $request, Product $product)
     {
@@ -165,7 +172,9 @@ class AdminController extends Controller
             'products_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'hover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status_del' => 'nullable|boolean',
-            'orders_price' => 'required|integer|min:0'
+            'orders_price' => 'required|integer|min:0',
+            'low_stock_threshold' => 'required|integer|min:1'
+
         ]);
 
         $product->products_name = $validatedData['products_name'];
@@ -173,77 +182,67 @@ class AdminController extends Controller
         $product->products_stock = $validatedData['products_stock'];
         $product->products_description = $validatedData['products_description'] ?? '';
         $product->categories_id = $validatedData['categories_id'];
-        $product->hover_image = $validatedData['hover_image'] ?? $product->hover_image;
-        $product->orders_price = $validatedData['orders_price'] ?? $product->orders_price;
+        $product->orders_price = $validatedData['orders_price'];
         $product->status_del = 0;
+    $product->low_stock_threshold = $validatedData['low_stock_threshold']; // This should be present
 
         // Handle Image Upload (Optional Update)
-      if ($request->hasFile('products_image')) {
-        // Delete old image if exists
-        if ($product->products_image && file_exists(public_path('images/products-img/'.$product->products_image))) {
-            unlink(public_path('images/products-img/'.$product->products_image));
-        }
-        
-        $image = $request->file('products_image');
-        $imageName = time().'_'.$image->getClientOriginalName();
-        $image->move(public_path('images/products-img'), $imageName);
-        $product->products_image = $imageName;
+        if ($request->hasFile('products_image')) {
+            // Delete old image if exists
+            if ($product->products_image && file_exists(public_path('images/products-img/' . $product->products_image))) {
+                unlink(public_path('images/products-img/' . $product->products_image));
+            }
 
-         // Handle Hover Image Update
-    if ($request->hasFile('hover_image')) {
-        // Delete old hover image if exists
-        if ($product->hover_image && file_exists(public_path('images/hoverproducts-img/'.$product->hover_image))) {
-            unlink(public_path('images/hoverproducts-img/'.$product->hover_image));
+            $image = $request->file('products_image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/products-img'), $imageName);
+            $product->products_image = $imageName;
         }
-        
-        $hoverImage = $request->file('hover_image');
-        $hoverImageName = time().'_hover_'.$hoverImage->getClientOriginalName();
-        $hoverImage->move(public_path('images/hoverproducts-img'), $hoverImageName);
-        $product->hover_image = $hoverImageName;
-    }
+
+        // Handle Hover Image Update
+        if ($request->hasFile('hover_image')) {
+            // Delete old hover image if exists
+            if ($product->hover_image && file_exists(public_path('images/hoverproducts-img/' . $product->hover_image))) {
+                unlink(public_path('images/hoverproducts-img/' . $product->hover_image));
+            }
+
+            $hoverImage = $request->file('hover_image');
+            $hoverImageName = time() . '_hover_' . $hoverImage->getClientOriginalName();
+            $hoverImage->move(public_path('images/hoverproducts-img'), $hoverImageName);
+            $product->hover_image = $hoverImageName;
+        }
 
         $product->save();
 
         return redirect(route('admin.products'))
             ->with('success', 'Product updated successfully!');
     }
-}
 
-    /**
-     * Fetch product data for AJAX editing.
-     *
-     * @param  \App\Models\Product $product
-     * @return \Illuminate\Http\JsonResponse
-     */
-   public function getProductData(Product $product)
-{
-    return response()->json([
-        'products_name' => $product->products_name,
-        'categories_id' => $product->categories_id,
-        'unit_price' => $product->unit_price,
-        'orders_price' => $product->orders_price,
-        'products_stock' => $product->products_stock,
-        'products_description' => $product->products_description,
-        'products_image' => $product->products_image,
-        'hover_image' => $product->hover_image,
-        // tambahkan field lain jika diperlukan
-    ]);
-}
+    public function getProductData(Product $product)
+    {
+        return response()->json([
+            'products_name' => $product->products_name,
+            'categories_id' => $product->categories_id,
+            'unit_price' => $product->unit_price,
+            'orders_price' => $product->orders_price,
+            'products_stock' => $product->products_stock,
+                    'low_stock_threshold' => $product->low_stock_threshold, 
+
+            'products_description' => $product->products_description,
+            'products_image' => $product->products_image,
+            'hover_image' => $product->hover_image,
+        ]);
+    }
 
     public function deleteProduct(Product $product)
     {
         try {
-            // Set kolom status_del menjadi 1
             $product->status_del = 1;
-
-            // Simpan perubahan ke database
             $product->save();
 
-            // Berikan pesan sukses yang sesuai
             return redirect(route('admin.products'))
                 ->with('success', 'Product deleted successfully!');
         } catch (\Exception $e) {
-            // Tangani jika ada error saat menyimpan
             return redirect(route('admin.products'))
                 ->with('error', 'Could not delete product.' . $e->getMessage());
         }
@@ -264,19 +263,25 @@ class AdminController extends Controller
     public function restore(Product $product)
     {
         try {
-            // Set the status_del back to 0 (or null if you prefer)
             $product->status_del = 0;
-
-            // Save the change
             $product->save();
 
-            // Redirect back to the trash view with a success message
             return redirect()->route('admin.products.trash')
                 ->with('success', "Product '{$product->products_name}' has been restored successfully!");
         } catch (\Exception $e) {
-            // Handle potential errors
             return redirect()->route('admin.products.trash')
                 ->with('error', 'Could not restore product. ' . $e->getMessage());
         }
     }
+public function editData($productId)
+{
+    $product = Product::with('category')->findOrFail($productId);
+    
+    return response()
+        ->json($product)
+        ->header('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
 }
+}
+

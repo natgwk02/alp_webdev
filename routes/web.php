@@ -61,7 +61,7 @@ Route::delete('admin/products/delete/{product}', [AdminController::class, 'delet
 Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
 Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
 Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
-
+Route::get('/admin/products/{productId}/edit-data', [AdminController::class, 'editData']);
     // Order Management
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
