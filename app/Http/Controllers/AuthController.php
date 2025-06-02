@@ -45,7 +45,7 @@ class AuthController extends Controller
             return redirect()->intended($user->getRedirectRoute());
         } else {
             return back()->withErrors([
-                'users_email' => 'The provided credentials do not match our records.',
+                'users_email' => 'Oops! Your email or password does not match our records.',
             ]);
         }
     }
