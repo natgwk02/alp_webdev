@@ -44,11 +44,36 @@ class CartController extends Controller
         ));
     }
 
-    public function addToCart(Request $request, $productId)
-{
-    $product = Product::find($productId);
-    if (!$product) {
-        return response()->json(['success' => false, 'message' => 'Product not found.'], 404);
+    public function addToCart(Request $request)
+    {
+        $productId = $request->input('product_id');
+        // Get the product details from the database
+        $product = Product::find($productId);
+
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+
+        // Get the current user's cart, or create one if it doesn't exist
+        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+
+        $cartItem = CartItem::firstOrNew([
+            'cart_id' => $cart->id,
+            'products_id' => $productId
+        ]);
+
+        $cartItem->quantity += (int) $request->input('quantity', 1);
+        $cartItem->save();
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Item added to cart.']);
+        }
+
+        return back()->with('success', 'Item added to cart.');
+
+        if (session()->has('is_guest')) {
+        return response()->json(['message' => 'Guests cannot add to cart.'], 403);
+    }
     }
 
     if (!Auth::check()) {

@@ -47,6 +47,20 @@ class Product extends Model
         return $this->hasMany(CartItem::class, 'products_id');
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'product_id', 'products_id');
+    }
+
+
+
+
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rating');
+    }
+
+
     // Optional: Method to check if the product is in stock
     public function isInStock(): bool
     {

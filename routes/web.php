@@ -4,11 +4,13 @@ use App\Mail\TestEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UtilityController;
@@ -43,7 +45,7 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.
 
 // Admin Routes
 
-
+Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
 Route::get('/dashboard', [AdminController::class, 'dashboard'])
     ->middleware(['auth'])
     ->name('admin.dashboard'); // ✅ tambahkan ini
@@ -92,7 +94,10 @@ Route::middleware('auth')->group(function () {
 });
 Route::middleware('auth:sanctum')->get('/badge-counts', 'App\Http\Controllers\BadgeController@getCounts');
 
-
+Route::get('/guest', function () {
+    Session::put('is_guest', true);
+    return redirect()->route('home');
+})->name('guest.login');
 
 Route::get('/about', function () {
     return view('customer.about');

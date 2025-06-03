@@ -13,7 +13,6 @@
                         <h1 class="fw-bold display-5 mb-3 text-nowrap" style="color: #052659;">Our Frozen Food Selection</h1>
                         <p class="text-muted mb-0 fs-5">Premium quality frozen foods from around the world</p>
                     </div>
-
                     <div class="col-lg-3 col-12 d-flex justify-content-lg-end justify-content-center mt-3 mt-lg-0">
                         <div id="customAlertContainer" class="w-100" style="max-width: 300px;">
                             @if (session('success'))
@@ -57,7 +56,6 @@
                                         </button>
                                     </div>
                                 </div>
-
                                 <div class="col-md-3 col-12 d-flex justify-content-md-end">
                                     <div class="dropdown filter-dropdown w-100">
                                         <button class="btn btn-outline-primary dropdown-toggle w-100" type="button"
@@ -79,7 +77,6 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-
                                             <div class="mb-3">
                                                 <label class="form-label small">Price Range</label>
                                                 <div class="d-flex align-items-center gap-2 price-range-inputs">
@@ -98,7 +95,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="d-flex justify-content-between">
                                                 <a href="{{ route('products') }}" class="btn btn-sm btn-outline-secondary">
                                                     Reset Filters
@@ -121,72 +117,57 @@
             @if (count($products) > 0)
                 @foreach ($products as $product)
                     <div class="col-lg-4 col-md-6 mb-4">
-                        <div
-                            class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden product-card transition-transform position-relative">
-
-                            <form
-                                action="{{ in_array($product->products_id ?? $product['id'], $wishlistProductIds)
-                                    ? route('wishlist.remove', ['productId' => $product->products_id ?? $product['id']])
-                                    : route('wishlist.add', ['productId' => $product->products_id ?? $product['id']]) }}"
-                                method="POST" class="position-absolute top-0 end-0 m-2 z-3">
+                        <div class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden product-card transition-transform position-relative">
+                            <form action="{{ in_array($product->products_id ?? $product['id'], $wishlistProductIds) ? route('wishlist.remove', ['productId' => $product->products_id ?? $product['id']]) : route('wishlist.add', ['productId' => $product->products_id ?? $product['id']]) }}" method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                                 @csrf
                                 @if (in_array($product->products_id ?? $product['id'], $wishlistProductIds))
-        @method('DELETE')
-    @endif
-                                <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn"
-                                    data-product-id="{{ $product->products_id }}">
-                                    <i
-                                        class="bi bi-bookmark-heart-fill {{ in_array($product->products_id, $wishlistProductIds) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
+                                    @method('DELETE')
+                                @endif
+                                <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn" data-product-id="{{ $product->products_id }}">
+                                    <i class="bi bi-bookmark-heart-fill {{ in_array($product->products_id, $wishlistProductIds) ? 'text-danger' : 'text-dark' }} heart-icon fs-5"></i>
                                 </button>
                             </form>
-
                             <div class="text-center p-4 bg-white position-relative product-img-container">
-                                <img src="{{ asset('images/products-img/' . $product->products_image) }}"
-                                    alt="{{ $product->products_name }}" class="img-fluid main-img" />
-
+                                <img src="{{ asset('images/products-img/' . $product->products_image) }}" alt="{{ $product->products_name }}" class="img-fluid main-img" />
                                 @if (!empty($product['hover_image']))
-                                    <img src="{{ asset('images/hoverproducts-img/' . $product->hover_image) }}"
-                                        alt="{{ $product->products_name }} Hover" class="img-fluid hover-img" />
+                                    <img src="{{ asset('images/hoverproducts-img/' . $product->hover_image) }}" alt="{{ $product->products_name }} Hover" class="img-fluid hover-img" />
                                 @endif
                             </div>
-
                             <div class="card-body px-4 pb-4 d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h5 class="card-title fw-bold text-dark mb-0">{{ $product->products_name }}</h5>
+                                <h5 class="card-title fw-bold text-dark mb-0">{{ $product->products_name }}</h5>
+                                <p class="text-secondary small mb-1">{{ $product->category->categories_name }}</p>
+                                <div class="d-flex flex-column align-items-start mb-2">
                                     <div class="rating-stars d-flex">
                                         @php
-                                            $rating = $product->rating ?? 0;
-                                            $fullStars = floor($rating);
-                                            $halfStar = $rating - $fullStars >= 0.5;
-                                            $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
-                                        @endphp
+                                    $rating = $product->averageRating();
+                                    $fullStars = $rating ? floor($rating) : 0;
+                                    $halfStar = $rating && ($rating - $fullStars >= 0.5);
+                                    $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                                @endphp
 
-                                        @for ($i = 0; $i < $fullStars; $i++)
-                                            <i class="bi bi-star-fill text-warning small"></i>
-                                        @endfor
+                                @for ($i = 0; $i < $fullStars; $i++)
+                                    <i class="bi bi-star-fill text-warning small"></i>
+                                @endfor
 
-                                        @if ($halfStar)
-                                            <i class="bi bi-star-half text-warning small"></i>
-                                        @endif
+                                @if ($halfStar)
+                                    <i class="bi bi-star-half text-warning small"></i>
+                                @endif
 
-                                        @for ($i = 0; $i < $emptyStars; $i++)
-                                            <i class="bi bi-star text-warning small"></i>
-                                        @endfor
+                                @for ($i = 0; $i < $emptyStars; $i++)
+                                    <i class="bi bi-star text-secondary small"></i>
+                                @endfor
+
                                     </div>
+                                    <small class="text-muted mt-1">Customer Reviews: ({{ $product->ratings()->count() }})</small>
                                 </div>
-
-                                <p class="text-secondary small mb-1">{{ $product->category->categories_name}}</p>
-                                    <h5 class="text-primary fw-semibold mb-4">
-                                        Rp {{ number_format($product->orders_price, 0, ',', '.') }}
-                                    </h5>
-
-                                <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST"
-                                    class="mt-auto add-to-cart-form">
+                                <h5 class="text-primary fw-semibold mb-4">
+                                    Rp {{ number_format($product->orders_price, 0, ',', '.') }}
+                                </h5>
+                                <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST" class="mt-auto add-to-cart-form">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->products_id }}">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{{ route('product.detail', $product->products_id) }}"
-                                            class="btn btn-outline-primary rounded-pill">View Details</a>
+                                        <a href="{{ route('product.detail', $product->products_id) }}" class="btn btn-outline-primary rounded-pill">View Details</a>
                                         <button type="submit" class="btn btn-success rounded-pill">
                                             <i class="bi bi-cart-plus-fill"></i> Add
                                         </button>
@@ -344,7 +325,22 @@
             $(this).remove();
         });
     }, 3000);
-}
+    }
+
+    @if (session('is_guest'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.add-to-cart-form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    // Pop-up styled alert
+                    alert("Please sign in to add items to cart.");
+                });
+            });
+        });
+    </script>
+    @endif
+
         $(document).on('click', '.wishlist-btn', function (e) {
             e.preventDefault();
             const productId = $(this).data('product-id');

@@ -19,7 +19,7 @@
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="text-uppercase fw-semibold mb-1">Total Orders</h6>
-<h2 class="fw-bold mb-0">{{ $stats['total_orders'] ?? 0 }}</h2>
+                                <h2 class="fw-bold mb-0">{{ $stats['total_orders'] ?? 0 }}</h2>
                             </div>
                             <div class="icon-circle">
                                 <i class="fas fa-shopping-bag fa-lg"></i>
@@ -52,7 +52,7 @@
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="text-uppercase fw-semibold mb-1">Total Products</h6>
- <h2 class="fw-bold mb-0">{{ $stats['total_products'] ?? 0 }}</h2>
+                                <h2 class="fw-bold mb-0">{{ $stats['total_products'] ?? 0 }}</h2>
                             </div>
                             <div class="icon-circle">
                                 <i class="fas fa-box-open fa-lg"></i>
@@ -65,7 +65,7 @@
 
         {{-- Recent Orders --}}
         <div class="row">
-            <div class="col-md-8 mb-4">
+            <div class="col-md-12 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">
                         <h5 class="mb-0">Recent Orders</h5>
@@ -109,102 +109,105 @@
                 </div>
             </div>
 
-            {{-- Stock Alert Products --}}
-            {{-- Stock Alert Products --}}
-<div class="col-md-4 mb-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-white">
-            <h5 class="mb-0">Stock Alert Products</h5>
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                @forelse ($stockAlertProducts as $product)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ $product->products_name }}
-                        @php
-                            $stock = $product->products_stock;
-                            $threshold = $product->low_stock_threshold ?? 10; // Use product's threshold or default to 10
-                            $badgeClass = '';
-
-                            if ($stock <= 0) {
-                                $badgeClass = 'bg-secondary';
-                            } elseif ($stock < 5) { // Critical low stock
-                                $badgeClass = 'bg-danger';
-                            } elseif ($stock <= $threshold) { // Low stock but not critical
-                                $badgeClass = 'bg-warning text-dark';
-                            }
-                        @endphp
-                        <span class="badge {{ $badgeClass }}">
-                            {{ $stock }} left
-                        </span>
-                    </li>
-                @empty
-                    <li class="list-group-item text-center">No low stock products currently.</li>
-                @endforelse
-            </ul>
-            <a href="{{ route('admin.products') }}" class="btn btn-sm btn-outline-primary mt-3">Manage Products</a>
-        </div>
-    </div>
-</div>
-        {{-- Example: Assuming you have a row for other info like Stock Alerts --}}
-        {{-- <div class="row"> --}}
-        {{-- <div class="col-md-6 mb-4"> --}}
-        {{-- Existing Stock Alerts Panel --}}
-        {{-- </div> --}}
-
-        {{--  Order Status Overview --}}
-        <div class="col-md-3 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Order Status Overview</h5>
-                </div>
-                <div class="card-body">
-                    @if (!empty($orderStatusOverview))
-                        <ul class="list-group list-group-flush">
-                            @foreach ($orderStatusOverview as $statusData)
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <a href="{{ route('admin.orders', ['status' => $statusData->name]) }}"
-                                        class="text-decoration-none link-dark">
-                                        {{ $statusData->name }} <i class="fas fa-link fa-xs ms-1"></i>
-                                    </a>
-                                    <span class="badge {{ $statusData->badge_class }} rounded-pill">
-
-                                        {{ $statusData->count }}
-                                    </span>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text-center">No order status data available.</p>
-                    @endif
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Status Overview</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (!empty($orderStatusOverview))
+                            <ul class="list-group list-group-flush">
+                                @foreach ($orderStatusOverview as $statusData)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-3 py-2">
+                                        <a href="{{ route('admin.orders', ['status' => $statusData->name]) }}"
+                                            class="text-decoration-none link-dark text-truncate"
+                                            title="{{ $statusData->name }}">
+                                            {{ $statusData->name }}
+                                            <i class="fas fa-link fa-xs ms-1"></i>
+                                        </a>
+                                        <span class="badge {{ $statusData->badge_class }} rounded-pill ms-2">
+                                            {{ $statusData->count }}
+                                        </span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <div class="text-center p-3">
+                                <p class="text-muted mb-0">No order status data available.</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
-        {{-- </div> --}}
-    </div>
 
-    @push('styles')
-        <style>
-            .gradient-blue {
-                background: linear-gradient(135deg, #1E90FF, #4682B4);
-            }
+            {{-- Stock Alert Products --}}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Stock Alert Products</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            @forelse ($stockAlertProducts as $product)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ $product->products_name }}
+                                    @php
+                                        $stock = $product->products_stock;
+                                        $threshold = $product->low_stock_threshold ?? 10; // Use product's threshold or default to 10
+$badgeClass = '';
 
-            .gradient-green {
-                background: linear-gradient(135deg, #28a745, #218838);
-            }
+if ($stock <= 0) {
+    $badgeClass = 'bg-secondary';
+} elseif ($stock < 5) {
+    // Critical low stock
+    $badgeClass = 'bg-danger';
+} elseif ($stock <= $threshold) {
+    // Low stock but not critical
+    $badgeClass = 'bg-warning text-dark';
+                                        }
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }}">
+                                        {{ $stock }} left
+                                    </span>
+                                </li>
+                            @empty
+                                <li class="list-group-item text-center">No low stock products currently.</li>
+                            @endforelse
+                        </ul>
+                        <a href="{{ route('admin.products') }}" class="btn btn-sm btn-outline-primary mt-3">Manage
+                            Products</a>
+                    </div>
+                </div>
+            </div>
+            {{-- Example: Assuming you have a row for other info like Stock Alerts --}}
+            {{-- <div class="row"> --}}
+            {{-- <div class="col-md-6 mb-4"> --}}
+            {{-- Existing Stock Alerts Panel --}}
+            {{-- </div> --}}
+            {{-- Order Status Overview --}}
 
-            .gradient-cyan {
-                background: linear-gradient(135deg, #17a2b8, #138496);
-            }
+            @push('styles')
+                <style>
+                    .gradient-blue {
+                        background: linear-gradient(135deg, #1E90FF, #4682B4);
+                    }
 
-            .icon-circle {
-                background-color: rgba(255, 255, 255, 0.15);
-                border-radius: 50%;
-                padding: 15px;
-                box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-                transition: transform 0.3s ease;
-            }
-        </style>
-    @endpush
+                    .gradient-green {
+                        background: linear-gradient(135deg, #28a745, #218838);
+                    }
 
-@endsection
+                    .gradient-cyan {
+                        background: linear-gradient(135deg, #17a2b8, #138496);
+                    }
+
+                    .icon-circle {
+                        background-color: rgba(255, 255, 255, 0.15);
+                        border-radius: 50%;
+                        padding: 15px;
+                        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+                        transition: transform 0.3s ease;
+                    }
+                </style>
+            @endpush
+
+        @endsection

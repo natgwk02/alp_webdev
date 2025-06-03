@@ -22,6 +22,7 @@
                                         <th>Price</th>
                                         <th>Quantity</th>
                                         <th>Total</th>
+                                        <th>Rate</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -35,8 +36,23 @@
                                             </td>
                                             <td>Rp {{ number_format($item['price'] ?? 0, 0, ',', '.') }}</td>
                                             <td>{{ $item['quantity'] ?? 0 }}</td>
-                                            <td>Rp
-                                                {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
+                                            <td>Rp {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}</td>
+                                            <td>
+                                                @if (!empty($item['product_id']) && empty($item['is_rated']))
+                                                    <form method="POST" action="{{ route('ratings.store') }}">
+                                                        @csrf
+                                                        <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
+                                                        <div class="d-flex">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <button type="submit" name="rating" value="{{ $i }}" class="btn btn-link p-0 border-0">
+                                                                    <i class="bi bi-star"></i>
+                                                                </button>
+                                                            @endfor
+                                                        </div>
+                                                    </form>
+                                                @elseif(!empty($item['is_rated']))
+                                                    <span class="text-muted small">Rated</span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
