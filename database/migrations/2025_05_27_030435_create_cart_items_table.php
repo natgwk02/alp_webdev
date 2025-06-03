@@ -10,13 +10,13 @@ return new class extends Migration
      */
     public function up()
     {
-        // Schema::create('cart_items', function (Blueprint $table) {
-        //     $table->id();  // Menambahkan primary key auto increment
-        //     $table->foreignId('cart_id')->constrained()->onDelete('cascade');  // Menghubungkan ke tabel carts
-        //     $table->foreignId('product_id')->constrained()->onDelete('cascade');  // Menghubungkan ke tabel products
-        //     $table->integer('quantity')->default(1);  // Menyimpan jumlah produk
-        //     $table->timestamps();  // Menyimpan waktu pembuatan dan pembaruan
-        // });
+        Schema::create('cart_items', function (Blueprint $table) {
+            $table->id();  // Menambahkan primary key auto increment
+            $table->foreignId('cart_id')->constrained()->onDelete('cascade');  // Menghubungkan ke tabel carts
+            $table->foreignId('products_id')->constrained()->onDelete('cascade');  // Menghubungkan ke tabel products
+            $table->integer('quantity')->default(1);  // Menyimpan jumlah produk
+            $table->timestamps();  // Menyimpan waktu pembuatan dan pembaruan
+        });
     }
 
     /**
