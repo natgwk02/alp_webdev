@@ -55,7 +55,7 @@ class Order extends Model
     }
 
     public function orderDetails(): HasMany{
-        return $this->hasMany(OrderDetail::class, 'orders_id', 'order_details_id');
+        return $this->hasMany(OrderDetail::class, 'orders_id', 'orders_id');
     }
 
     protected function statusBadgeClass(): Attribute
@@ -71,4 +71,5 @@ class Order extends Model
             }
         );
     }
+
 }

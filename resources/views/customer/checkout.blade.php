@@ -2,8 +2,26 @@
 @section('title', 'Checkout - Chile Mart')
 
 @section('content')
+
+<style>
+    .order-summary-sticky .card {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 5.6vw;
+        align-self: flex-start;
+    }
+
+    @media (max-width: 767.98px) {
+        .order-summary-sticky .card {
+            position: static;
+            align-self: auto;
+        }
+    }
+</style>
+
+
     <div class="container py-4">
-        <form id="checkout-form" action="{{ route('checkout') }}" method="POST">
+        <form id="checkout-form" action="{{ route('checkout.process') }}" method="POST">
             @csrf
             <div class="row">
                 <div class="col-md-8">
@@ -202,7 +220,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 order-summary-sticky">
                     <div class="card shadow-sm" style="background-color: white;">
                         <div class="card-header bg-white">
                             <h4 class="mb-0">Order Summary</h4>

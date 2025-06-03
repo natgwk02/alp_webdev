@@ -38,18 +38,21 @@
                         @foreach ($order['items'] as $item)
                             <div class="d-flex gap-4 align-items-center mb-3">
                                 <img src="{{ asset('images/products-img/' . ($item['product_image'] ?? 'no-image.png')) }}"
-                                    alt="{{ $item->product->products_name ?? 'Unknown Product' }}" class="rounded border"
+                                    alt="{{ $item['product_name'] ?? 'Unknown Product' }}" class="rounded border"
                                     style="width: 80px; height: 80px; object-fit: cover;">
 
                                 <div class="flex-grow-1">
                                     <div class="fw-semibold fs-6">
-                                        {{ \Illuminate\Support\Str::limit($item->product->product_name, 50) }}
+                                        {{ \Illuminate\Support\Str::limit($item['product_name'] ?? 'Unknown Product', 50) }}
                                     </div>
-                                    <div class="text-muted">Qty: {{ $item->order_details_quantity }}</div>
-                                    <div class="text-muted">Price: Rp{{ number_format($item->price, 0, ',', '.') }}</div>
+                                    
+                                    <div class="text-muted">Qty: {{ $item['quantity'] ?? 'N/A' }}</div>
+                                    <div class="text-muted">Price: Rp{{ number_format($item['price'] ?? 0, 0, ',', '.') }}
+                                    </div>
                                 </div>
                                 <div class="fw-bold text-dark">
-                                    Total: Rp{{ number_format($item->price * $item->order_details_quantity, 0, ',', '.') }}
+                                    Total:
+                                    Rp{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
                                 </div>
                             </div>
                         @endforeach
