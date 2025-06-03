@@ -53,6 +53,8 @@ class Product extends Model
     }
 
 
+
+
     public function averageRating()
     {
         return $this->ratings()->avg('rating');

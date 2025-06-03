@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Rating;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +20,7 @@ class OrderController extends Controller
             ->map(function ($order) {
                 return [
                     'orders_id' => $order->orders_id,
-                    'orders_number' => $order->orders_id, // or any other order number logic
+                    'orders_number' => $order->orders_id,
                     'orders_status' => $order->orders_status,
                     'created_at' => $order->created_at,
                     'total' => $order->total,
@@ -28,7 +29,6 @@ class OrderController extends Controller
                         $productImage = 'no-image.png';
 
                         if ($detail->product) {
-
                             $productName = $detail->product->products_name;
                             $productImage = $detail->product->products_image;
                         } else {
@@ -36,11 +36,12 @@ class OrderController extends Controller
                         }
 
                         return [
-
+                            'product_id'    => $detail->products_id,
                             'product_name'  => $productName,
                             'price'         => $detail->price,
                             'quantity'      => $detail->order_details_quantity,
                             'product_image' => $productImage,
+                            'is_rated'      => Rating::where('user_id', Auth::id())->where('product_id', $detail->products_id)->exists(),
                         ];
                     })->toArray(),
                     'customer' => [
@@ -68,39 +69,40 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with('orderDetails.product')
-            ->where('orders_id', $id)
-            ->where('users_id', Auth::id())
-            ->first();
+        $order = Order::with(['orderDetails.product'])
+        ->where('orders_id', $id)
+        ->where('users_id', Auth::id())
+        ->firstOrFail();
 
         if (!$order) {
             return redirect()->route('orders.index')->with('error', 'Order not found.');
         }
+
+        $ratedProductIds = Rating::where('user_id', Auth::id())->pluck('product_id')->toArray();
 
         $formattedOrder = [
             'id' => $order->orders_id,
             'order_number' => $order->orders_id,
             'created_at' => $order->created_at->format('Y-m-d H:i:s'),
             'status' => $order->orders_status,
-            'items' => $order->orderDetails->map(function ($detail) {
+            'items' => $order->orderDetails->map(function ($detail) use ($ratedProductIds) {
                 $productName = 'Unknown Product';
                 $productImage = 'no-image.png';
-
 
                 if ($detail->product) {
                     $productName = $detail->product->products_name;
                     $productImage = $detail->product->products_image;
                 } else {
-
                     Log::warning('Product not loaded for OrderDetail ID: ' . $detail->getKey() . ' (OrderDetail uses products_id FK: ' . $detail->products_id . ')');
                 }
 
                 return [
-
-                    'name'           => $productName,
-                    'price'          => $detail->price,
-                    'quantity'       => $detail->order_details_quantity,
+                    'product_id' => $detail->products_id,
+                    'name' => $productName,
+                    'price' => $detail->price,
+                    'quantity' => $detail->order_details_quantity,
                     'image_filename' => $productImage,
+                    'is_rated' => in_array($detail->products_id, $ratedProductIds),
                 ];
             })->toArray(),
             'customer' => [

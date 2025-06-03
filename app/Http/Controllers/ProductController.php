@@ -68,8 +68,12 @@ class ProductController extends Controller
     {
         $product = Product::with('category')->findOrFail($id);
 
-        return view('customer.product_details', compact('product'));
+    $averageRating = $product->rating; // Ambil dari kolom `rating` di table products
+    $reviewCount = \App\Models\Rating::where('product_id', $product->products_id)->count();
+
+    return view('customer.product_details', compact('product', 'averageRating', 'reviewCount'));
     }
+
     public function wishlist()
     {
          $wishlistItems = Wishlist::with('product')
@@ -116,6 +120,7 @@ class ProductController extends Controller
         $products = Product::limit(8)->get();
         return view('customer.home', compact('products'));
     }
+
 
     public function toggleWishlist($productId)
     {
