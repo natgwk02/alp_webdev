@@ -813,7 +813,7 @@
                                     @endfor
                                 </div>
                             </div>
-                            <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST">
+                            <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST" class="add-to-cart-form">
                             @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->products_id }}">
                                 <input type="hidden" name="quantity" value="1">
@@ -1047,6 +1047,19 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        @if (session('is_guest'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.add-to-cart-form').forEach(form => {
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        alert("You must sign in to add products to the cart.");
+                    });
+                });
+            });
+        </script>
+        @endif
+
         $(document).ready(function() {
             // Auto-hide success alert after 5 seconds
             if ($('#successAlert').length) {

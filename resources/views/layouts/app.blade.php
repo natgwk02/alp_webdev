@@ -30,6 +30,15 @@
     <!-- Footer -->
     @include('includes.footer')
 
+    @if (session('error'))
+        <script>
+            window.onload = function () {
+                alert("{{ session('error') }}");
+            };
+        </script>
+    @endif
+
 </body>
+
 
 </html>

@@ -70,6 +70,10 @@ class CartController extends Controller
         }
 
         return back()->with('success', 'Item added to cart.');
+
+        if (session()->has('is_guest')) {
+        return response()->json(['message' => 'Guests cannot add to cart.'], 403);
+    }
     }
 
     /**

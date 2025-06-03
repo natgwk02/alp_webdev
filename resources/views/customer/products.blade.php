@@ -352,7 +352,22 @@
             $(this).remove();
         });
     }, 3000);
-}
+    }
+
+    @if (session('is_guest'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.add-to-cart-form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    // Pop-up styled alert
+                    alert("Please sign in to add items to cart.");
+                });
+            });
+        });
+    </script>
+    @endif
+
         $(document).on('click', '.wishlist-btn', function (e) {
             e.preventDefault();
             const productId = $(this).data('product-id');

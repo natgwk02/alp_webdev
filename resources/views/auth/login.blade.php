@@ -12,7 +12,7 @@
     body {
       background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
       font-family: 'Segoe UI', sans-serif;
-      padding: 40px 20px;
+      padding: 20px;
       margin: 0;
     }
 
@@ -23,23 +23,18 @@
       background-color: white;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       overflow: hidden;
+      border-radius: 12px;
+      flex-direction: row;
     }
 
     .left-panel, .right-panel {
       width: 50%;
     }
 
-    .carousel,
-    .carousel-inner,
-    .carousel-item {
-      height: 100%;
-    }
-
     .carousel-item img {
       height: 100%;
       width: 100%;
       object-fit: cover;
-      display: block;
     }
 
     .carousel-caption-overlay {
@@ -58,18 +53,6 @@
       bottom: 20px;
       left: 20px;
       color: white;
-    }
-
-    .carousel-indicators [data-bs-target] {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: white;
-      opacity: 0.6;
-    }
-
-    .carousel-indicators .active {
-      opacity: 1;
     }
 
     .right-panel {
@@ -117,13 +100,21 @@
       text-decoration: none;
     }
 
+    /* Responsive */
     @media (max-width: 992px) {
       .login-wrapper {
         flex-direction: column;
       }
 
       .left-panel {
+        width: 100%;
         height: 250px;
+        display: block;
+      }
+
+      .carousel-item img {
+        object-fit: cover;
+        height: 100%;
       }
 
       .right-panel {
@@ -170,13 +161,12 @@
         <h4 class="fw-bold mb-2" style="color: #052659;">Welcome Back to Chillé Mart!</h4>
         <p class="text-muted mb-3">Sign in to continue</p>
 
-            @if ($errors->has('users_email'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ $errors->first('users_email') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-
+        @if ($errors->has('users_email'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ $errors->first('users_email') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
 
         <form action="{{ route('login.auth') }}" method="POST">
           @csrf
@@ -209,6 +199,12 @@
         <div class="text-center mt-3">
           <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-link">Register</a></span>
         </div>
+
+        <div class="text-center mt-2">
+          <span class="text-muted">or </span><a href="{{ route('guest.login') }}" class="text-link">Sign in as Guest</a>
+        </div>
+
+
       </div>
     </div>
   </div>

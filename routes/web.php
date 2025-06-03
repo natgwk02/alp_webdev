@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
@@ -96,15 +97,22 @@ Route::middleware('auth')->group(function () {
 });
 Route::middleware('auth:sanctum')->get('/badge-counts', 'App\Http\Controllers\BadgeController@getCounts');
 
-
+Route::get('/guest', function () {
+    Session::put('is_guest', true);
+    return redirect()->route('home');
+})->name('guest.login');
 
 Route::get('/about', function () {
     return view('customer.about');
 })->name('about');
 
-// Route::get('/profile', function () {
-//     return view('customer.profile');
-// })->name('profile');
+Route::middleware(['auth', 'guest.block'])->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+});
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 // Profile Routes
