@@ -13,60 +13,66 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    public function dashboard()
-    {
-        $lowStockThreshold = 20;
+   public function dashboard()
+{
+    // Hitung statistik yang diperlukan
+    $stats = [
+        'total_orders' => Order::count(),
+        'total_revenue' => Order::where('orders_status', 'completed')->sum('orders_total_price'),
+        'total_products' => Product::where('status_del', 0)->count()
+    ];
 
-        // Basic Stats
-        $stats = [
-            'total_orders' => Order::count(),
-            'total_products' => Product::count(),
-            'total_active_products' => Product::where('status_del', 0)->count(),
-            'total_revenue' => Order::sum('orders_total_price'),
-        ];
+    // Get low stock products - use the product's own threshold or default to 10
+    $stockAlertProducts = Product::with('category')
+        ->where('status_del', 0)
+        ->where(function($query) {
+            $query->where('products_stock', '<=', 0)
+                  ->orWhere(function($q) {
+                      $q->where('products_stock', '>', 0)
+                        ->whereRaw('products_stock <= IFNULL(low_stock_threshold, 10)');
+                  });
+        })
+        ->orderBy('products_stock', 'asc')
+        ->get();
 
-        $recentOrders = Order::with('user')
-            ->latest('orders_date')
-            ->take(5)
-            ->get();
+    // Get recent orders
+    $recentOrders = Order::with('user')
+        ->orderBy('orders_date', 'desc')
+        ->take(5)
+        ->get();
 
-        // Get low stock products based on category type
-        $stockAlertProducts = Product::with('category')
-            ->where('status_del', 0)
-            ->where(function ($query) {
-                $query->whereIn(DB::raw('(SELECT categories_name FROM categories WHERE categories_id = products.categories_id)'), $this->fastMovingCategories)
-                    ->where('products_stock', '<=', 20)
-                    ->orWhereIn(DB::raw('(SELECT categories_name FROM categories WHERE categories_id = products.categories_id)'), $this->slowMovingCategories)
-                    ->where('products_stock', '<=', 10);
-            })
-            ->orderBy('products_stock', 'asc')
-            ->take(5)
-            ->get();
+    // Get order status overview
+    $orderStatusOverview = Order::selectRaw('orders_status as name, count(*) as count')
+        ->groupBy('orders_status')
+        ->get()
+        ->map(function ($item) {
+            $item->badge_class = $this->getStatusBadgeClass($item->name);
+            return $item;
+        });
 
-        $orderStatusCounts = Order::query()
-            ->selectRaw('orders_status, count(*) as total_count')
-            ->groupBy('orders_status')
-            ->pluck('total_count', 'orders_status');
+    return view('admin.dashboard', compact(
+        'stats',
+        'stockAlertProducts',
+        'recentOrders',
+        'orderStatusOverview'
+    ));
+}
 
-        $definedOrderStatuses = [
-            'Pending'    => ['badge_class' => 'bg-secondary', 'name' => 'Pending'],
-            'Processing' => ['badge_class' => 'bg-warning text-dark', 'name' => 'Processing'],
-            'Shipped'    => ['badge_class' => 'bg-info', 'name' => 'Shipped'],
-            'Delivered'  => ['badge_class' => 'bg-success', 'name' => 'Delivered'],
-            'Cancelled'  => ['badge_class' => 'bg-danger', 'name' => 'Cancelled'],
-        ];
-
-        $orderStatusOverview = [];
-        foreach ($definedOrderStatuses as $statusKey => $statusData) {
-            $orderStatusOverview[] = (object)[
-                'name' => $statusData['name'],
-                'count' => $orderStatusCounts->get($statusKey, 0),
-                'badge_class' => $statusData['badge_class']
-            ];
-        }
-
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'stockAlertProducts', 'lowStockThreshold', 'orderStatusOverview'));
+private function getStatusBadgeClass($status)
+{
+    switch (strtolower($status)) {
+        case 'completed':
+            return 'bg-success';
+        case 'processing':
+            return 'bg-primary';
+        case 'pending':
+            return 'bg-warning text-dark';
+        case 'cancelled':
+            return 'bg-danger';
+        default:
+            return 'bg-secondary';
     }
+}
 
     public function products(Request $request)
     {

@@ -173,7 +173,7 @@
         </div>
 
         {{-- Pagination --}}
-        <div class="d-flex justify-content-between align-items-center my-4">
+        {{-- <div class="d-flex justify-content-between align-items-center my-4">
             <div>
                 @if ($orders->total() > 0)
                     <p class="mb-0">Showing {{ $orders->firstItem() }} to
@@ -185,6 +185,58 @@
             <nav aria-label="Page navigation">
                 {{ $orders->links() }}
             </nav>
+        </div> --}}
+
+        {{-- Pagination --}}
+        <div class="row mt-4">
+            <div class="col-md-6">
+                @if ($orders->total() > 0)
+                    <p class="text-muted mb-0">Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} of
+                        {{ $orders->total() }} results</p>
+                @else
+                    <p class="text-muted mb-0">No records found</p>
+                @endif
+            </div>
+            <div class="col-md-6">
+                <nav aria-label="Page navigation" class="float-md-end">
+                    <ul class="pagination pagination-sm justify-content-end mb-0">
+                        {{-- Previous Page Link --}}
+                        @if ($orders->onFirstPage())
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $orders->previousPageUrl() }}" rel="prev">Previous</a>
+                            </li>
+                        @endif
+
+                        {{-- Pagination Elements --}}
+                        @foreach ($orders->getUrlRange(1, $orders->lastPage()) as $page => $url)
+                            @if ($page == $orders->currentPage())
+                                <li class="page-item active" aria-current="page">
+                                    <span class="page-link">{{ $page }}</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+
+                        {{-- Next Page Link --}}
+                        @if ($orders->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $orders->nextPageUrl() }}" rel="next">Next</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                        @endif
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 @endsection

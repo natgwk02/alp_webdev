@@ -36,17 +36,10 @@ Route::POST('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
-// Customer Routes
-// Route::middleware(['auth', 'customer'])->group(function () {
+
 Route::get('/', [HomeController::class, 'showHome'])->name('home');
 Route::get('/products', action: [ProductController::class, 'index'])->name('products');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
-// Route::post('/checkout/place-order', [CartController::class, 'placeOrder'])->name('checkout.placeOrder');
-Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
-Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
-Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
-Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
-// });
 
 // Admin Routes
 
@@ -78,6 +71,7 @@ Route::middleware('web')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
+    Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
     Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
     Route::post('wishlist/add/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::post('wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
@@ -86,14 +80,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/add/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
+    Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
     Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout.process');
     Route::post('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
-    Route::get('/terms-and-conditions', [CheckoutController::class, 'terms'] )->name('terms');
+    Route::get('/terms-and-conditions', [CheckoutController::class, 'terms'])->name('terms');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::get('/counts', [ CartController::class, 'getCounts'])->name('counts');
-
+    Route::get('/counts', [CartController::class, 'getCounts'])->name('counts');
 });
 Route::middleware('auth:sanctum')->get('/badge-counts', 'App\Http\Controllers\BadgeController@getCounts');
 

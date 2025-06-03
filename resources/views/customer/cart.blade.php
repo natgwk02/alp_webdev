@@ -65,7 +65,7 @@
                                                         </td>
                                                         <td class="text-center align-middle">
                                                             <form
-                                                                action="{{ route('cart.update', ['productId' => $item->products_id]) }}"
+                                                                action="{{ route('cart.update', ['productId' => $item->product_id]) }}"
                                                                 method="POST">
                                                                 @csrf
                                                                 <input type="number" name="quantity"
@@ -82,7 +82,7 @@
                                                         </td>
                                                         <td class="align-middle text-center">
                                                             <form
-                                                                action="{{ route('cart.remove', ['productId' => $item->products_id]) }}"
+                                                                action="{{ route('cart.remove', ['productId' => $item->product_id]) }}"
                                                                 method="POST">
                                                                 @csrf
                                                                 <button type="submit"

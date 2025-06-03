@@ -76,6 +76,22 @@ class CartController extends Controller
     }
     }
 
+    if (!Auth::check()) {
+        return response()->json(['success' => false, 'message' => 'Please login.'], 403);
+    }
+
+    $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+    $cartItem = CartItem::firstOrNew([
+        'cart_id' => $cart->id,
+        'product_id' => $productId
+    ]);
+
+    $cartItem->quantity += (int) $request->input('quantity', 1);
+    $cartItem->save();
+
+    return response()->json(['success' => true, 'message' => 'Item added to cart.']);
+}
+
     /**
      * Remove a product from the cart.
      */
@@ -90,7 +106,7 @@ class CartController extends Controller
         $cart = Cart::where('users_id', Auth::id())->first();
 
         // Remove the product from the cart
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
         if ($cartItem) {
             $cartItem->delete();
         }
@@ -115,7 +131,7 @@ class CartController extends Controller
         $cart = Cart::where('users_id', Auth::id())->first();
 
         // Update the quantity of the product in the cart
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
         if ($cartItem) {
             $cartItem->quantity = $quantity;
             $cartItem->save();
