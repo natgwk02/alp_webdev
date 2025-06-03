@@ -19,7 +19,7 @@
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="text-uppercase fw-semibold mb-1">Total Orders</h6>
-                                <h2 class="fw-bold mb-0">{{ $stats['total_orders'] }}</h2>
+<h2 class="fw-bold mb-0">{{ $stats['total_orders'] ?? 0 }}</h2>
                             </div>
                             <div class="icon-circle">
                                 <i class="fas fa-shopping-bag fa-lg"></i>
@@ -52,7 +52,7 @@
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="text-uppercase fw-semibold mb-1">Total Products</h6>
-                                <h2 class="fw-bold mb-0">{{ $stats['total_products'] }}</h2>
+ <h2 class="fw-bold mb-0">{{ $stats['total_products'] ?? 0 }}</h2>
                             </div>
                             <div class="icon-circle">
                                 <i class="fas fa-box-open fa-lg"></i>
@@ -110,43 +110,42 @@
             </div>
 
             {{-- Stock Alert Products --}}
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Stock Alert Products</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            @forelse ($stockAlertProducts as $product)
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    {{ $product->products_name }}
-                                    @php
-                                        $stock = $product->products_stock;
-                                        $badgeClass = '';
-
-                                        if ($stock <= 0) {
-                                            $badgeClass = 'bg-secondary';
-                                        } elseif ($stock < 10) {
-                                            $badgeClass = 'bg-danger';
-                                        } elseif ($stock <= $lowStockThreshold) {
-                                            $badgeClass = 'bg-warning text-dark';
-                                        }
-                                    @endphp
-                                    <span class="badge {{ $badgeClass }}">
-                                        {{ $stock }} left
-                                    </span>
-                                </li>
-                            @empty
-                                <li class="list-group-item text-center">No low stock products currently.</li>
-                            @endforelse
-                        </ul>
-                        <a href="{{ route('admin.products') }}" class="btn btn-sm btn-outline-primary mt-3">Manage
-                            Products</a>
-                    </div>
-                </div>
-            </div>
+            {{-- Stock Alert Products --}}
+<div class="col-md-4 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Stock Alert Products</h5>
         </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                @forelse ($stockAlertProducts as $product)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $product->products_name }}
+                        @php
+                            $stock = $product->products_stock;
+                            $threshold = $product->low_stock_threshold ?? 10; // Use product's threshold or default to 10
+                            $badgeClass = '';
 
+                            if ($stock <= 0) {
+                                $badgeClass = 'bg-secondary';
+                            } elseif ($stock < 5) { // Critical low stock
+                                $badgeClass = 'bg-danger';
+                            } elseif ($stock <= $threshold) { // Low stock but not critical
+                                $badgeClass = 'bg-warning text-dark';
+                            }
+                        @endphp
+                        <span class="badge {{ $badgeClass }}">
+                            {{ $stock }} left
+                        </span>
+                    </li>
+                @empty
+                    <li class="list-group-item text-center">No low stock products currently.</li>
+                @endforelse
+            </ul>
+            <a href="{{ route('admin.products') }}" class="btn btn-sm btn-outline-primary mt-3">Manage Products</a>
+        </div>
+    </div>
+</div>
         {{-- Example: Assuming you have a row for other info like Stock Alerts --}}
         {{-- <div class="row"> --}}
         {{-- <div class="col-md-6 mb-4"> --}}
