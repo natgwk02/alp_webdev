@@ -1,6 +1,8 @@
 <?php
 
+use App\Mail\TestEmail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
@@ -99,6 +101,15 @@ Route::get('/about', function () {
 // Route::get('/profile', function () {
 //     return view('customer.profile');
 // })->name('profile');
+Route::post('/verify-otp-step', [AuthController::class, 'verifyOtpStep'])->name('password.otp.step');
+Route::get('/reset-password-form', function () {
+    if (!session('otp_verified')) {
+        return redirect()->route('password.request');
+    }
+    return view('auth.reset');
+})->name('password.reset.form');
+
+Route::post('/reset-password-step', [AuthController::class, 'resetPassword'])->name('password.update.step');
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 // Profile Routes

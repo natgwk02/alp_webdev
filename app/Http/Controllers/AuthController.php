@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -65,7 +66,7 @@ class AuthController extends Controller
                         'required',
                         'email',
                         'unique:users,users_email',
-                        'regex:/@mail\.com$/i' 
+                        'regex:/@(mail\.com|gmail\.com)$/i' 
                     ],            
             'users_password' => 'required|string|min:8|confirmed', 
             'users_address' => 'required|string|max:255', // Pastikan address tervalidasi
@@ -122,26 +123,30 @@ public function sendResetLink(Request $request)
         'email' => 'required|email|exists:users,users_email',
     ]);
 
-    $token = Str::random(64);
+    $otp = rand(100000, 999999); // Generate 6-digit OTP
 
-    DB::table('password_resets')->updateOrInsert(
+    DB::table('password_reset_tokens')->updateOrInsert(
         ['email' => $request->email],
         [
-            'token' => $token,
+            'token' => $otp,
             'created_at' => Carbon::now()
         ]
     );
 
-    $link = url("/reset-password/{$token}");
-
-    
-    return back()->with('status', $link);
+    // Send email
+    Mail::raw("Your Chille Mart password reset OTP is: $otp\nThis code will expire in 10 minutes.", function ($message) use ($request) {
+        $message->to($request->email)
+                ->subject('Your OTP Code for Password Reset');
+    });
+    return back()
+    ->with('status', 'A 6-digit OTP has been sent to your email. Please check your inbox.')
+    ->with('otp_sent', true)
+    ->with('email', $request->email);
 }
 
-// Tampilkan form reset password
 public function showResetForm($token)
 {
-    $reset = DB::table('password_resets')->where('token', $token)->first();
+    $reset = DB::table('password_reset_tokens')->where('token', $token)->first();
 
     if (!$reset) {
         return redirect()->route('password.request')->with('error', 'Token tidak ditemukan atau sudah kadaluarsa.');
@@ -153,29 +158,55 @@ public function showResetForm($token)
 // Simpan password baru
 public function resetPassword(Request $request)
 {
-    $request->validate([
-        'email' => 'required|email|exists:users,users_email',
+        $request->validate([
         'password' => 'required|min:8|confirmed',
-        'token' => 'required',
     ]);
 
-    $reset = DB::table('password_resets')
-        ->where('email', $request->email)
-        ->where('token', $request->token)
-        ->first();
-
-    if (!$reset) {
-        return back()->with('error', 'Token tidak valid atau sudah kadaluarsa.');
+    if (!session('otp_verified') || !session('email_verified')) {
+        return redirect()->route('password.request')->with('error', 'Unauthorized access.');
     }
 
-    $user = User::where('users_email', $request->email)->first();
+    $email = session('email_verified');
+
+    $user = User::where('users_email', $email)->first();
+    if (!$user) {
+        return redirect()->route('password.request')->with('error', 'User not found.');
+    }
+
     $user->users_password = bcrypt($request->password);
     $user->save();
 
-    DB::table('password_resets')->where('email', $request->email)->delete();
+    // Hapus token dan clear session
+    DB::table('password_reset_tokens')->where('email', $email)->delete();
+    session()->forget(['otp_verified', 'email_verified']);
 
-    return redirect()->route('login')->with('success', 'Password berhasil direset. Silakan login kembali.');
+    return redirect()->route('login')->with('success', 'Your password has been successfully reset.');
+
 }
-    
+   public function verifyOtpStep(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email|exists:users,users_email',
+        'otp' => 'required|digits:6',
+    ]);
+
+    // Cek OTP
+    $record = DB::table('password_reset_tokens')
+        ->where('email', $request->email)
+        ->where('token', $request->otp)
+        ->first();
+
+    if (!$record) {
+        return back()->withErrors(['otp' => 'The OTP code is invalid or has expired.']);
+    }
+
+    // OTP valid, simpan ke session untuk akses halaman reset
+    session([
+        'otp_verified' => true,
+        'email_verified' => $request->email,
+    ]);
+
+    return redirect()->route('password.reset.form');
+}
 
 }

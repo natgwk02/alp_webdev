@@ -80,33 +80,49 @@
 
 <div class="auth-wrapper">
     <div class="auth-card">
-        {{-- Logo or image --}}
         <img src="/assets/forget-imagee.png" alt="Forgot Password Illustration">
 
         <h4>Forgot Password</h4>
-        <p class="mb-4 text-muted">Enter your email address to receive a password reset link.</p>
+        <p class="mb-4 text-muted">Enter your email to receive a 6-digit OTP code.</p>
 
-        {{-- Success message (including clickable reset link) --}}
         @if (session('status'))
             <div class="alert alert-success text-start">
-                <strong>Reset link:</strong><br>
-                <a href="{{ session('status') }}" class="text-link truncate-link">{{ session('status') }}</a>
+                {{ session('status') }}
             </div>
         @endif
 
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
+        @if (!session('otp_sent'))
+            {{-- Step 1: Request OTP --}}
+            <form method="POST" action="{{ route('password.email') }}">
+                @csrf
 
-            <input type="email" id="email" name="email"
-                   class="form-control @error('email') is-invalid @enderror"
-                   placeholder="Email Address" value="{{ old('email') }}" required>
+                <input type="email" name="email"
+                       class="form-control @error('email') is-invalid @enderror"
+                       placeholder="Email Address" value="{{ old('email') }}" required>
 
-            @error('email')
-                <div class="invalid-feedback text-start">{{ $message }}</div>
-            @enderror
+                @error('email')
+                    <div class="invalid-feedback text-start">{{ $message }}</div>
+                @enderror
 
-            <button type="submit" class="btn-blue">Send Reset Password Link</button>
-        </form>
+                <button type="submit" class="btn-blue">Send OTP Code</button>
+            </form>
+        @else
+            {{-- Step 2: Enter OTP Only --}}
+            <form method="POST" action="{{ route('password.otp.step') }}">
+                @csrf
+                <input type="hidden" name="email" value="{{ session('email') }}">
+
+                <input type="text" name="otp"
+                       class="form-control @error('otp') is-invalid @enderror"
+                       placeholder="Enter OTP Code" required>
+
+                @error('otp')
+                    <div class="invalid-feedback text-start">{{ $message }}</div>
+                @enderror
+
+                <button type="submit" class="btn-blue">Verify OTP</button>
+            </form>
+        @endif
 
         <div class="mt-3">
             <a href="{{ route('login') }}" class="text-link">← Back to Login</a>

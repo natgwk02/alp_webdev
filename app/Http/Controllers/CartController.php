@@ -64,7 +64,7 @@ class CartController extends Controller
     $cartItem->quantity += (int) $request->input('quantity', 1);
     $cartItem->save();
 
-    return response()->json(['success' => true, 'message' => 'Item added to cart.']);
+    return redirect()->back()->with('success', 'Product added to cart.');
 }
 
     /**
