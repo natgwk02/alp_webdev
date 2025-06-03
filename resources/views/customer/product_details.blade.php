@@ -128,31 +128,45 @@
                 <div class="product-details">
                     <h1>{{ $product->products_name }}</h1>
                     @if ($product->category)
-                 <div class="category-badge">{{ $product->category->categories_name }}</div>
+                        <div class="category-badge">{{ $product->category->categories_name }}</div>
                     @endif
 
-                    @if (isset($product['rating']))
-                        <div class="rating-stars mb-2">
-                            @php
-                                $rating = $product['rating'];
-                                $fullStars = floor($rating);
-                                $halfStar = $rating - $fullStars >= 0.5;
-                                $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
-                            @endphp
+                    <div class="rating-stars mb-2">
+                        @php
+                            $rating = round($product->averageRating(), 1);
+                            $fullStars = floor($rating);
+                            $halfStar = $rating - $fullStars >= 0.5;
+                            $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                        @endphp
 
-                            @for ($i = 0; $i < $fullStars; $i++)
-                                <i class="bi bi-star-fill"></i>
-                            @endfor
+                        @for ($i = 0; $i < $fullStars; $i++)
+                            <i class="bi bi-star-fill"></i>
+                        @endfor
 
-                            @if ($halfStar)
-                                <i class="bi bi-star-half"></i>
-                            @endif
+                        @if ($halfStar)
+                            <i class="bi bi-star-half"></i>
+                        @endif
 
-                            @for ($i = 0; $i < $emptyStars; $i++)
-                                <i class="bi bi-star"></i>
-                            @endfor
-                        </div>
-                    @endif
+                        @for ($i = 0; $i < $emptyStars; $i++)
+                            <i class="bi bi-star"></i>
+                        @endfor
+                    </div>
+
+                    {{-- Rating Form (authenticated only) --}}
+                    @auth
+                        <form action="{{ route('ratings.store') }}" method="POST" class="mb-3">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->products_id }}">
+                            <label for="rating" class="form-label">Give Your Rating</label>
+                            <select name="rating" id="rating" class="form-control" required>
+                                <option value="">Select</option>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                            </select>
+                            <button type="submit" class="btn btn-primary mt-2">Submit Rating</button>
+                        </form>
+                    @endauth
 
                     <div class="price">Rp {{ number_format($product->orders_price, 0, ',', '.') }}</div>
 

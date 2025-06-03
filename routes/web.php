@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UtilityController;
@@ -48,7 +49,7 @@ Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->na
 
 // Admin Routes
 
-
+Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
 Route::get('/dashboard', [AdminController::class, 'dashboard'])
     ->middleware(['auth'])
     ->name('admin.dashboard'); // ✅ tambahkan ini

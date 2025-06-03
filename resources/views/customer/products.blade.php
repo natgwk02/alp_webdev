@@ -137,8 +137,8 @@
                                 method="POST" class="position-absolute top-0 end-0 m-2 z-3">
                                 @csrf
                                 @if (in_array($product->products_id ?? $product['id'], $wishlistProductIds))
-        @method('DELETE')
-    @endif
+                                    @method('DELETE')
+                                @endif
                                 <button type="submit" class="btn btn-light btn-sm border-0 wishlist-btn"
                                     data-product-id="{{ $product->products_id }}">
                                     <i
@@ -155,30 +155,38 @@
                                         alt="{{ $product->products_name }} Hover" class="img-fluid hover-img" />
                                 @endif
                             </div>
+                                <div class="card-body px-4 pb-4 d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h5 class="card-title fw-bold text-dark mb-0">{{ $product->products_name }}</h5>
+                                        <div class="rating-stars d-flex">
+                                            @php
+                                                $rating = $product->averageRating();
+                                            @endphp
 
-                            <div class="card-body px-4 pb-4 d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h5 class="card-title fw-bold text-dark mb-0">{{ $product->products_name }}</h5>
-                                    <div class="rating-stars d-flex">
-                                        @php
-                                            $rating = $product->rating ?? 0;
-                                            $fullStars = floor($rating);
-                                            $halfStar = $rating - $fullStars >= 0.5;
-                                            $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
-                                        @endphp
+                                            @if ($rating > 0)
+                                                @php
+                                                    $fullStars = floor($rating);
+                                                    $halfStar = $rating - $fullStars >= 0.5;
+                                                    $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                                                @endphp
 
-                                        @for ($i = 0; $i < $fullStars; $i++)
-                                            <i class="bi bi-star-fill text-warning small"></i>
-                                        @endfor
+                                                @for ($i = 0; $i < $fullStars; $i++)
+                                                    <i class="bi bi-star-fill text-warning small"></i>
+                                                @endfor
 
-                                        @if ($halfStar)
-                                            <i class="bi bi-star-half text-warning small"></i>
-                                        @endif
+                                                @if ($halfStar)
+                                                    <i class="bi bi-star-half text-warning small"></i>
+                                                @endif
 
-                                        @for ($i = 0; $i < $emptyStars; $i++)
-                                            <i class="bi bi-star text-warning small"></i>
-                                        @endfor
-                                    </div>
+                                                @for ($i = 0; $i < $emptyStars; $i++)
+                                                    <i class="bi bi-star text-warning small"></i>
+                                                @endfor
+                                            @else
+                                                @for ($i = 0; $i < 5; $i++)
+                                                    <i class="bi bi-star text-secondary small"></i> {{-- abu-abu kosong --}}
+                                                @endfor
+                                            @endif
+                                        </div>
                                 </div>
 
                                 <p class="text-secondary small mb-1">{{ $product->product_category }}</p>
