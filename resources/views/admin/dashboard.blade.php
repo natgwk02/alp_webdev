@@ -151,37 +151,37 @@
         {{-- <div class="col-md-6 mb-4"> --}}
         {{-- Existing Stock Alerts Panel --}}
         {{-- </div> --}}
-
-        {{--  Order Status Overview --}}
-        <div class="col-md-3 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Order Status Overview</h5>
-                </div>
-                <div class="card-body">
-                    @if (!empty($orderStatusOverview))
-                        <ul class="list-group list-group-flush">
-                            @foreach ($orderStatusOverview as $statusData)
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <a href="{{ route('admin.orders', ['status' => $statusData->name]) }}"
-                                        class="text-decoration-none link-dark">
-                                        {{ $statusData->name }} <i class="fas fa-link fa-xs ms-1"></i>
-                                    </a>
-                                    <span class="badge {{ $statusData->badge_class }} rounded-pill">
-
-                                        {{ $statusData->count }}
-                                    </span>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text-center">No order status data available.</p>
-                    @endif
-                </div>
-            </div>
+{{-- Order Status Overview --}}
+<div class="col-12 col-md-6 col-lg-3 mb-4">
+    <div class="card shadow-sm h-100">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Order Status Overview</h5>
         </div>
-        {{-- </div> --}}
+        <div class="card-body p-0">
+            @if (!empty($orderStatusOverview))
+                <ul class="list-group list-group-flush">
+                    @foreach ($orderStatusOverview as $statusData)
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-3 py-2">
+                            <a href="{{ route('admin.orders', ['status' => $statusData->name]) }}"
+                               class="text-decoration-none link-dark text-truncate"
+                               title="{{ $statusData->name }}">
+                                {{ $statusData->name }}
+                                <i class="fas fa-link fa-xs ms-1"></i>
+                            </a>
+                            <span class="badge {{ $statusData->badge_class }} rounded-pill ms-2">
+                                {{ $statusData->count }}
+                            </span>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <div class="text-center p-3">
+                    <p class="text-muted mb-0">No order status data available.</p>
+                </div>
+            @endif
+        </div>
     </div>
+</div>
 
     @push('styles')
         <style>
