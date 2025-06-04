@@ -74,7 +74,6 @@ class CartController extends Controller
         if (session()->has('is_guest')) {
         return response()->json(['message' => 'Guests cannot add to cart.'], 403);
     }
-    }
 
     if (!Auth::check()) {
         return response()->json(['success' => false, 'message' => 'Please login.'], 403);
@@ -106,7 +105,7 @@ class CartController extends Controller
         $cart = Cart::where('users_id', Auth::id())->first();
 
         // Remove the product from the cart
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
         if ($cartItem) {
             $cartItem->delete();
         }
@@ -131,7 +130,7 @@ class CartController extends Controller
         $cart = Cart::where('users_id', Auth::id())->first();
 
         // Update the quantity of the product in the cart
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
         if ($cartItem) {
             $cartItem->quantity = $quantity;
             $cartItem->save();

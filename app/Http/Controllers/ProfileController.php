@@ -24,37 +24,36 @@ class ProfileController extends Controller
 
     // Mengupdate informasi profil
     public function update(Request $request)
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    $validated = $request->validate([
-        'users_name'    => 'required|string|max:255',
-        'users_email' => 'required|email|unique:users,users_email,' . $user->users_id . ',users_id',
-        'phone'         => 'nullable|string|max:20',
-        'birthdate'     => 'nullable|date',
-        'address'       => 'nullable|string|max:255',
-        'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+        $validated = $request->validate([
+            'users_name'    => 'required|string|max:255',
+            'users_email' => 'required|email|unique:users,users_email,' . $user->users_id . ',users_id',
+            'phone'         => 'nullable|string|max:20',
+            'birthdate'     => 'nullable|date',
+            'address'       => 'nullable|string|max:255',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    // Jika ada file baru, upload dan simpan path-nya
-    if ($request->hasFile('profile_photo')) {
-        // Hapus foto lama jika ada
-        if ($user->profile_photo && Storage::exists($user->profile_photo)) {
-            Storage::delete($user->profile_photo);
+        // Jika ada file baru, upload dan simpan path-nya
+        if ($request->hasFile('profile_photo')) {
+            // Hapus foto lama jika ada
+            if ($user->profile_photo && Storage::exists($user->profile_photo)) {
+                Storage::delete($user->profile_photo);
+            }
+
+            // Simpan foto baru
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $validated['profile_photo'] = $path;
         }
 
-        // Simpan foto baru
-        $path = $request->file('profile_photo')->store('profile_photos', 'public');
-        $validated['profile_photo'] = $path;
-    }
+        $validated['users_email'] = $request->users_email;
 
-    $validated['users_email'] = $request->users_email;
+        // Update user
+        $user->update($validated);
 
-    // Update user
-    $user->update($validated);
-
-    return redirect()->route('profile')->with('success', 'Profile berhasil diperbarui.');
-
+        return redirect()->route('profile')->with('success', 'Profile berhasil diperbarui.');
     }
 
     // Mengupdate password user

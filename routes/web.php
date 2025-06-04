@@ -84,8 +84,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.applyVoucher');
     Route::get('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.removeVoucher');
-    Route::post('/checkout-process', [OrderController::class, 'processCheckout'])->name('checkout.process');
-    Route::post('/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
+    Route::post('/checkout/process', [OrderController::class, 'processCheckout'])->name('checkout.process');
+    Route::match(['get', 'post'], '/checkout', [OrderController::class, 'showCheckoutForm'])->name('checkout.form');
     Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/terms-and-conditions', [CheckoutController::class, 'terms'])->name('terms');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');

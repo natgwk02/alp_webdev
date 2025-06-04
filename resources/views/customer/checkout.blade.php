@@ -3,24 +3,34 @@
 
 @section('content')
 
-<style>
-    .order-summary-sticky .card {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 5.6vw;
-        align-self: flex-start;
-    }
-
-    @media (max-width: 767.98px) {
+    <style>
         .order-summary-sticky .card {
-            position: static;
-            align-self: auto;
+            position: -webkit-sticky;
+            position: sticky;
+            top: 5.6vw;
+            align-self: flex-start;
         }
-    }
-</style>
+
+        @media (max-width: 767.98px) {
+            .order-summary-sticky .card {
+                position: static;
+                align-self: auto;
+            }
+        }
+    </style>
 
 
     <div class="container py-4">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <h5 class="alert-heading">Please correct the following errors:</h5>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form id="checkout-form" action="{{ route('checkout.process') }}" method="POST">
             @csrf
             <div class="row">
@@ -49,16 +59,6 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email *</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                    id="email" name="email" value="{{ old('email', $defaultData['email']) }}"
-                                    required>
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
                             </div>
 
                             <div class="mb-3">
@@ -276,7 +276,7 @@
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <input type="hidden" name="selected_items" id="selected-items" value="">
+                            <input type="hidden" name="selected_items" id="selected-items">
                             <button type="submit" class="btn btn-primary w-100 py-3">
                                 Place Order
                             </button>
@@ -286,63 +286,212 @@
             </div>
         </form>
     @endsection
+
     @section('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                console.log('Checkout form JavaScript loading...');
+
+                // Safely get DOM elements with null checks
                 const checkoutForm = document.getElementById('checkout-form');
                 const hiddenInput = document.getElementById('selected-items');
-
-                const selectedProductIds = {!! json_encode(array_column($filteredItems, 'id')) !!};
-                hiddenInput.value = JSON.stringify(selectedProductIds);
-                console.log("Selected items initialized: ", hiddenInput.value);
-
                 const termsCheckbox = document.getElementById('termsAgreement');
-
-                checkoutForm.addEventListener('submit', function(event) {
-                    if (!termsCheckbox.checked) {
-                        event.preventDefault();
-                        alert('You must agree to the Terms and Conditions to proceed.');
-                        return;
-                    }
-
-                    if (!hiddenInput.value || hiddenInput.value === '[]') {
-                        event.preventDefault();
-                        alert('Please select at least one item to proceed to checkout.');
-                    } else {
-                        console.log("Form submitted with selected items: ", hiddenInput.value);
-                    }
-                });
-
                 const notesTextarea = document.getElementById('sellerNotes');
                 const notesCounter = document.getElementById('notesCounter');
+                const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+                const creditCardForm = document.getElementById('creditCardForm');
 
+                // Check if essential elements exist
+                if (!checkoutForm) {
+                    console.error('Checkout form not found');
+                    return;
+                }
+
+                console.log('Checkout form found:', checkoutForm);
+
+                if (!hiddenInput) {
+                    console.error('Hidden input for selected items not found');
+                    return;
+                }
+
+                console.log('Hidden input found:', hiddenInput);
+
+                // Initialize selected items - Fix the PHP syntax issue
+                try {
+                    // Get the filtered items data from PHP
+                    @if (isset($filteredItems) && !empty($filteredItems))
+                        const selectedProductIds = {!! json_encode(array_column($filteredItems, 'id')) !!};
+                        console.log('Selected product IDs from PHP:', selectedProductIds);
+
+                        if (selectedProductIds && selectedProductIds.length > 0) {
+                            hiddenInput.value = JSON.stringify(selectedProductIds);
+                            console.log("Selected items initialized:", hiddenInput.value);
+                        } else {
+                            console.warn('No selected product IDs found');
+                            hiddenInput.value = JSON.stringify([]);
+                        }
+                    @else
+                        console.warn('No filtered items available');
+                        hiddenInput.value = JSON.stringify([]);
+                    @endif
+                } catch (error) {
+                    console.error('Error initializing selected items:', error);
+                    hiddenInput.value = JSON.stringify([]);
+                }
+
+                // Form submission handler - CRITICAL FIX
+                if (checkoutForm) {
+                    checkoutForm.addEventListener('submit', function(event) {
+                        console.log('Form submission triggered');
+
+                        // Check terms agreement first
+                        if (!termsCheckbox || !termsCheckbox.checked) {
+                            event.preventDefault();
+                            console.log('Terms checkbox not checked');
+                            alert('You must agree to the Terms and Conditions to proceed.');
+                            return false;
+                        }
+
+                        // Check selected items
+                        const selectedItemsValue = hiddenInput.value;
+                        console.log('Selected items value:', selectedItemsValue);
+
+                        if (!selectedItemsValue || selectedItemsValue === '[]' || selectedItemsValue === '') {
+                            event.preventDefault();
+                            console.log('No items selected');
+                            alert('Please select at least one item to proceed to checkout.');
+                            return false;
+                        }
+
+                        // Validate payment method
+                        const selectedPaymentMethod = document.querySelector(
+                            'input[name="paymentMethod"]:checked');
+                        if (!selectedPaymentMethod) {
+                            event.preventDefault();
+                            console.log('No payment method selected');
+                            alert('Please select a payment method.');
+                            return false;
+                        }
+
+                        // If credit card is selected, validate credit card fields
+                        if (selectedPaymentMethod.value === 'creditCard') {
+                            const cardNumber = document.getElementById('cardNumber');
+                            const expiryDate = document.getElementById('expiryDate');
+                            const cvv = document.getElementById('cvv');
+                            const cardName = document.getElementById('cardName');
+
+                            if (!cardNumber || !cardNumber.value.trim() ||
+                                !expiryDate || !expiryDate.value.trim() ||
+                                !cvv || !cvv.value.trim() ||
+                                !cardName || !cardName.value.trim()) {
+                                event.preventDefault();
+                                console.log('Credit card fields incomplete');
+                                alert('Please fill in all credit card details.');
+                                return false;
+                            }
+                        }
+
+                        // Basic form validation
+                        const requiredFields = checkoutForm.querySelectorAll(
+                            'input[required], select[required], textarea[required]');
+                        let isValid = true;
+
+                        requiredFields.forEach(field => {
+                            if (!field.value.trim()) {
+                                field.classList.add('is-invalid');
+                                isValid = false;
+                            } else {
+                                field.classList.remove('is-invalid');
+                            }
+                        });
+
+                        if (!isValid) {
+                            event.preventDefault();
+                            console.log('Required fields not filled');
+                            alert('Please fill in all required fields.');
+                            return false;
+                        }
+
+                        // If we reach here, allow form submission
+                        console.log("Form validation passed. Submitting form...");
+                        console.log("Form action:", checkoutForm.action);
+                        console.log("Form method:", checkoutForm.method);
+
+                        // Show loading state
+                        const submitButton = checkoutForm.querySelector('button[type="submit"]');
+                        if (submitButton) {
+                            submitButton.disabled = true;
+                            submitButton.innerHTML =
+                                '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+                        }
+
+                        // Allow form to submit normally
+                        return true;
+                    });
+                }
+
+                // Notes character counter
                 if (notesTextarea && notesCounter) {
-                    notesTextarea.addEventListener('input', function() {
-                        const count = this.value.length;
+                    const updateCounter = function() {
+                        const count = notesTextarea.value.length;
                         notesCounter.textContent = count;
 
                         if (count > 200) {
                             notesCounter.classList.add('text-danger');
+                            notesCounter.classList.remove('text-success');
                         } else {
                             notesCounter.classList.remove('text-danger');
+                            notesCounter.classList.add('text-success');
                         }
-                    });
+                    };
 
-                    notesCounter.textContent = notesTextarea.value.length;
+                    updateCounter();
+                    notesTextarea.addEventListener('input', updateCounter);
                 }
 
-                const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
-                const creditCardForm = document.getElementById('creditCardForm');
+                // Payment method toggle
+                if (paymentRadios.length > 0 && creditCardForm) {
+                    paymentRadios.forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            console.log('Payment method changed to:', this.value);
 
-                paymentRadios.forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        if (this.id === 'creditCard') {
-                            creditCardForm.classList.remove('d-none');
-                        } else {
-                            creditCardForm.classList.add('d-none');
-                        }
+                            if (this.id === 'creditCard' && this.checked) {
+                                creditCardForm.classList.remove('d-none');
+                            } else if (this.checked) {
+                                creditCardForm.classList.add('d-none');
+                            }
+                        });
                     });
-                });
+
+                    // Initialize credit card form visibility
+                    const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+                    if (selectedPayment && selectedPayment.id === 'creditCard') {
+                        creditCardForm.classList.remove('d-none');
+                    } else {
+                        creditCardForm.classList.add('d-none');
+                    }
+                }
+
+                // Add input formatting
+                const phoneInput = document.getElementById('phone');
+                if (phoneInput) {
+                    phoneInput.addEventListener('input', function() {
+                        let value = this.value.replace(/\D/g, '');
+                        if (value.length > 15) {
+                            value = value.substring(0, 15);
+                        }
+                        this.value = value;
+                    });
+                }
+
+                const zipInput = document.getElementById('zip');
+                if (zipInput) {
+                    zipInput.addEventListener('input', function() {
+                        this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+                    });
+                }
+
+                console.log('Checkout form JavaScript initialized successfully');
             });
         </script>
     @endsection

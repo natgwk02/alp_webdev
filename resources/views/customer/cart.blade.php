@@ -39,7 +39,7 @@
                                                     <tr>
                                                         <td class="align-middle">
                                                             <input type="checkbox" class="select-product"
-                                                                name="selected_items[]" value="{{ $item->id }}"
+                                                                name="selected_items[]" value="{{ $item->products_id }}"
                                                                 data-price="{{ $item->product->orders_price }}"
                                                                 data-quantity="{{ $item->quantity }}"
                                                                 data-index="{{ $index }}"
@@ -65,7 +65,7 @@
                                                         </td>
                                                         <td class="text-center align-middle">
                                                             <form
-                                                                action="{{ route('cart.update', ['productId' => $item->product_id]) }}"
+                                                                action="{{ route('cart.update', ['productId' => $item->products_id]) }}"
                                                                 method="POST">
                                                                 @csrf
                                                                 <input type="number" name="quantity"
@@ -82,7 +82,7 @@
                                                         </td>
                                                         <td class="align-middle text-center">
                                                             <form
-                                                                action="{{ route('cart.remove', ['productId' => $item->product_id]) }}"
+                                                                action="{{ route('cart.remove', ['productId' => $item->products_id]) }}"
                                                                 method="POST">
                                                                 @csrf
                                                                 <button type="submit"
@@ -435,7 +435,7 @@
                     if (!selectedItemsInput) {
                         console.error(
                             'CRITICAL ERROR: selectedItemsInput element NOT FOUND. Preventing submission.'
-                            );
+                        );
                         e.preventDefault();
                         alert('An error occurred with the checkout form. Please refresh and try again.');
                         return false;

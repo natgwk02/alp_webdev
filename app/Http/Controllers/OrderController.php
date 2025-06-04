@@ -8,6 +8,7 @@ use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Cart;
 
 class OrderController extends Controller
 {
@@ -70,9 +71,9 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::with(['orderDetails.product'])
-        ->where('orders_id', $id)
-        ->where('users_id', Auth::id())
-        ->firstOrFail();
+            ->where('orders_id', $id)
+            ->where('users_id', Auth::id())
+            ->firstOrFail();
 
         if (!$order) {
             return redirect()->route('orders.index')->with('error', 'Order not found.');
@@ -129,60 +130,88 @@ class OrderController extends Controller
 
     public function showCheckoutForm(Request $request)
     {
-        // Debug: Log the incoming request data
-        Log::info('Checkout form request data:', $request->all());
+        Log::info('--- Checkout: showCheckoutForm START ---');
+        Log::info('Checkout: Request method:', [$request->getMethod()]);
 
-        // 1. Get selected product IDs from the request
-        $selectedProductIds = $request->input('selected_items', []);
+        $rawSelectedItems = $request->input('selected_items');
+        Log::info('Checkout: Raw selected_items from request:', [$rawSelectedItems]);
 
-        // Handle different input formats
-        if (is_string($selectedProductIds) && !empty($selectedProductIds)) {
-            $selectedProductIds = explode(',', $selectedProductIds);
+        $selectedProductIds = [];
+        if (is_string($rawSelectedItems) && !empty($rawSelectedItems)) {
+            $selectedProductIds = explode(',', $rawSelectedItems);
+        } elseif (is_array($rawSelectedItems)) {
+            $selectedProductIds = $rawSelectedItems;
         }
+        Log::info('Checkout: Selected IDs after initial processing (explode/assign):', $selectedProductIds);
 
         // Remove empty values and ensure we have integers
         $selectedProductIds = array_filter($selectedProductIds, function ($id) {
-            return !empty($id) && is_numeric($id);
+            return !empty($id) && is_numeric(trim($id));
         });
         $selectedProductIds = array_map('intval', $selectedProductIds);
+        Log::info('Checkout: Processed selected product IDs from request (after filter/map):', $selectedProductIds);
 
-        Log::info('Processed selected product IDs:', $selectedProductIds);
+        $source_of_ids = 'request';
 
-        // If empty from request, try to get from session
+        // If empty from request processing, try to get from session
         if (empty($selectedProductIds) && session()->has('checkout_selected_ids_temp')) {
+            Log::warning('Checkout: IDs from request were empty/invalid. Attempting session fallback.');
+            Log::info('Checkout: Session checkout_selected_ids_temp (before fallback):', [session('checkout_selected_ids_temp')]);
             $selectedProductIds = session('checkout_selected_ids_temp');
+            $source_of_ids = 'session_fallback';
+            Log::info('Checkout: Using selected product IDs from session fallback:', $selectedProductIds);
         }
 
+        // Critical check: If still no IDs, redirect back to cart.
         if (empty($selectedProductIds)) {
-            Log::warning('No items selected for checkout');
+            Log::error('Checkout: No items selected for checkout (even after potential session fallback). Redirecting to cart.');
+            session()->forget('checkout_selected_ids_temp');
             return redirect()->route('cart.index')->with('error', 'No items selected for checkout. Please select items from your cart.');
         }
 
-        // Store these IDs in session temporarily
+        // Store the *actually used* IDs in session for checkout page refreshes.
         session(['checkout_selected_ids_temp' => $selectedProductIds]);
+        Log::info('Checkout: Stored/Updated checkout_selected_ids_temp in session with final IDs:', $selectedProductIds);
+        Log::info('Checkout: Source of final IDs for this page load:', [$source_of_ids]);
 
-        // 2. Get cart items from database instead of session (since you're using database cart)
+        // 2. Get cart items from database
         if (!Auth::check()) {
+            Log::warning('Checkout: User not authenticated. Redirecting to login.');
             return redirect()->route('login')->with('error', 'You must be logged in to checkout.');
         }
 
-        $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
+        $cart = Cart::where('users_id', Auth::id())->first();
         if (!$cart) {
+            Log::error('Checkout: Cart not found for user_id: ' . Auth::id() . '. Redirecting to cart index.');
+            session()->forget('checkout_selected_ids_temp');
             return redirect()->route('cart.index')->with('error', 'Cart not found.');
         }
 
-        // Get cart items that match selected product IDs
+        // FIXED: Use consistent field name - check your CartItem model to confirm the correct field name
+        // If your CartItem model uses 'product_id', use that. If it uses 'products_id', use that.
+        // I'm assuming 'products_id' based on your other code, but verify this!
         $cartItems = $cart->items()->with('product')->whereIn('products_id', $selectedProductIds)->get();
 
         if ($cartItems->isEmpty()) {
+            Log::warning('Checkout: Selected items not found in cart for user_id: ' . Auth::id() . '. IDs:', $selectedProductIds);
             session()->forget('checkout_selected_ids_temp');
             return redirect()->route('cart.index')->with('error', 'Selected items not found in cart. Please try again.');
         }
 
-        // Convert cart items to the format expected by the checkout view
+        // FIXED: Convert cart items to the format expected by the checkout view
         $filteredItems = $cartItems->map(function ($cartItem) {
+            if (!$cartItem->product) {
+                Log::error('Checkout: Product data missing for cart item ID: ' . $cartItem->id . ', products_id: ' . $cartItem->products_id);
+                return [
+                    'id' => $cartItem->products_id, // FIXED: Use consistent field name
+                    'name' => 'Error: Product Not Found',
+                    'price' => 0,
+                    'quantity' => $cartItem->quantity,
+                    'image' => 'no-image.png',
+                ];
+            }
             return [
-                'id' => $cartItem->products_id,
+                'id' => $cartItem->products_id, // FIXED: Use the product ID consistently
                 'name' => $cartItem->product->products_name ?? 'Unknown Product',
                 'price' => $cartItem->product->orders_price ?? 0,
                 'quantity' => $cartItem->quantity,
@@ -190,12 +219,14 @@ class OrderController extends Controller
             ];
         })->toArray();
 
+        Log::info('Checkout: Filtered items for view:', $filteredItems);
+
         // 3. Calculate totals based on these items
         $subtotal = collect($filteredItems)->sum(function ($item) {
             return ($item['price'] ?? 0) * ($item['quantity'] ?? 0);
         });
 
-        $shippingFee = 5000; // Or your dynamic shipping logic
+        $shippingFee = 5000;
         $tax = round($subtotal * 0.1);
         $voucherDiscount = session('voucher_discount', 0);
         $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
@@ -204,32 +235,31 @@ class OrderController extends Controller
         $defaultData = [
             'firstName' => '',
             'lastName' => '',
-            'email' => '',
             'phone' => '',
             'address' => '',
             'city' => '',
             'zip' => '',
-            'country' => 'Chile', // Default country
+            'country' => 'Indonesia',
         ];
 
         if (Auth::check()) {
             $user = Auth::user();
             $nameParts = explode(' ', $user->users_name ?? '', 2);
             $defaultData['firstName'] = old('firstName', $nameParts[0] ?? '');
-            $defaultData['lastName'] = old('lastName', $nameParts[1] ?? '');
+            $defaultData['lastName'] = old('lastName', $nameParts[1] ?? ($nameParts[0] && count($nameParts) == 1 ? '' : ''));
             $defaultData['email'] = old('email', $user->users_email ?? '');
             $defaultData['phone'] = old('phone', $user->users_phone ?? '');
             $defaultData['address'] = old('address', $user->users_address ?? '');
             $defaultData['city'] = old('city', $user->users_city ?? '');
             $defaultData['zip'] = old('zip', $user->users_zip ?? '');
-            $defaultData['country'] = old('country', $user->users_country ?? 'Chile');
+            $defaultData['country'] = old('country', $user->users_country ?? 'Indonesia');
         } else {
             foreach ($defaultData as $key => $value) {
                 $defaultData[$key] = old($key, $value);
             }
         }
 
-        Log::info('Checkout form data prepared successfully');
+        Log::info('Checkout: --- showCheckoutForm END (Data prepared for view) ---');
 
         return view('customer.checkout', compact(
             'filteredItems',
@@ -244,10 +274,12 @@ class OrderController extends Controller
 
     public function processCheckout(Request $request)
     {
+        Log::info('--- processCheckout START ---');
+        Log::info('Request Data for processCheckout:', $request->all());
+
         $request->validate([
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
             'phone' => 'required|string|max:255',
             'address' => 'required|string',
             'city' => 'required|string|max:255',
@@ -256,6 +288,7 @@ class OrderController extends Controller
             'paymentMethod' => 'required|string',
             'selected_items' => 'required|json',
             'sellerNotes' => 'nullable|string|max:65535',
+            'termsAgreement' => 'required',
         ]);
 
         $selectedProductIds = json_decode($request->input('selected_items'));
@@ -326,7 +359,7 @@ class OrderController extends Controller
 
         // return redirect()->route('order.confirmation', ['id' => $order->orders_id])
         //     ->with('success', 'Checkout completed! Your order has been placed.');
-        return view('customer.order_confirmation', ['id' => $order->orders_id])
+        return redirect()->route('order.detail', ['id' => $order->orders_id])
             ->with('success', 'Checkout completed! Your order has been placed.');
     }
 }
