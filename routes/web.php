@@ -46,9 +46,9 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.
 // Admin Routes
 
 Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
-Route::get('/dashboard', [AdminController::class, 'dashboard'])
-    ->middleware(['auth'])
-    ->name('admin.dashboard'); // ✅ tambahkan ini
+Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['auth'])->name('admin.dashboard');
+
+Route::get('/admin/sales-trend-data', [AdminController::class, 'getSalesTrendData'])->name('admin.salesTrendData');
 
 //  Product Management
 Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');

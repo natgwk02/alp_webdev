@@ -10,69 +10,135 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-   public function dashboard()
-{
-    // Hitung statistik yang diperlukan
-    $stats = [
-        'total_orders' => Order::count(),
-        'total_revenue' => Order::where('orders_status', 'completed')->sum('orders_total_price'),
-        'total_products' => Product::where('status_del', 0)->count()
-    ];
+    public function dashboard()
+    {
+        // Hitung statistik yang diperlukan
+        $stats = [
+            'total_orders' => Order::count(),
+            'total_revenue' => Order::where('orders_status', '!=', 'cancelled')->sum('orders_total_price'),
+            'total_products' => Product::where('status_del', 0)->count()
+        ];
 
-    // Get low stock products - use the product's own threshold or default to 10
-    $stockAlertProducts = Product::with('category')
-        ->where('status_del', 0)
-        ->where(function($query) {
-            $query->where('products_stock', '<=', 0)
-                  ->orWhere(function($q) {
-                      $q->where('products_stock', '>', 0)
-                        ->whereRaw('products_stock <= IFNULL(low_stock_threshold, 10)');
-                  });
-        })
-        ->orderBy('products_stock', 'asc')
-        ->get();
+        // Get low stock products - use the product's own threshold or default to 10
+        $stockAlertProducts = Product::with('category')
+            ->where('status_del', 0)
+            ->where(function ($query) {
+                $query->where('products_stock', '<=', 0)
+                    ->orWhere(function ($q) {
+                        $q->where('products_stock', '>', 0)
+                            ->whereRaw('products_stock <= IFNULL(low_stock_threshold, 10)');
+                    });
+            })
+            ->orderBy('products_stock', 'asc')
+            ->get();
 
-    // Get recent orders
-    $recentOrders = Order::with('user')
-        ->orderBy('orders_date', 'desc')
-        ->take(5)
-        ->get();
+        // Get recent orders
+        $recentOrders = Order::with('user')
+            ->orderBy('orders_date', 'desc')
+            ->take(5)
+            ->get();
 
-    // Get order status overview
-    $orderStatusOverview = Order::selectRaw('orders_status as name, count(*) as count')
-        ->groupBy('orders_status')
-        ->get()
-        ->map(function ($item) {
-            $item->badge_class = $this->getStatusBadgeClass($item->name);
-            return $item;
-        });
+        // Get order status overview
+        $orderStatusOverview = Order::selectRaw('orders_status as name, count(*) as count')
+            ->groupBy('orders_status')
+            ->get()
+            ->map(function ($item) {
+                $item->badge_class = $this->getStatusBadgeClass($item->name);
+                return $item;
+            });
 
-    return view('admin.dashboard', compact(
-        'stats',
-        'stockAlertProducts',
-        'recentOrders',
-        'orderStatusOverview'
-    ));
-}
+        $periodStartDate = Carbon::now()->subDays(30); // Example: Last 30 days
+        $periodEndDate = Carbon::now();
+        $topLimit = 5; // Or 10, as per your preference
 
-private function getStatusBadgeClass($status)
-{
-    switch (strtolower($status)) {
-        case 'completed':
-            return 'bg-success';
-        case 'processing':
-            return 'bg-primary';
-        case 'pending':
-            return 'bg-warning text-dark';
-        case 'cancelled':
-            return 'bg-danger';
-        default:
-            return 'bg-secondary';
+        // Top products by REVENUE
+        $topProductsByRevenue = DB::table('order_details')
+            ->join('products', 'order_details.products_id', '=', 'products.products_id')
+            ->join('orders', 'order_details.orders_id', '=', 'orders.orders_id')
+            ->select('products.products_name', DB::raw('SUM(order_details.order_details_quantity * price) as total_revenue'))
+            // ->where('orders.orders_status', 'completed') // Consider revenue from completed orders
+            ->where('orders_status', '!=', 'cancelled') // Exclude cancelled orders
+            ->whereBetween('orders.orders_date', [$periodStartDate, $periodEndDate])
+            ->where('products.status_del', 0) // Only active products
+            ->groupBy('products.products_id', 'products.products_name')
+            ->orderByDesc('total_revenue')
+            ->take($topLimit)
+            ->get();
+
+        // Top products by QUANTITY SOLD
+        $topProductsByQuantity = DB::table('order_details')
+            ->join('products', 'order_details.products_id', '=', 'products.products_id')
+            ->join('orders', 'order_details.orders_id', '=', 'orders.orders_id')
+            ->select('products.products_name', DB::raw('SUM(order_details.order_details_quantity) as total_quantity'))
+            // ->where('orders.orders_status', 'completed') // Optional: uncomment if quantity should also be from completed orders
+            ->whereBetween('orders.orders_date', [$periodStartDate, $periodEndDate])
+            ->where('products.status_del', 0) // Only active products
+            ->groupBy('products.products_id', 'products.products_name')
+            ->orderByDesc('total_quantity')
+            ->take($topLimit)
+            ->get();
+
+        $salesTrendDays = 30;
+        $trendEndDate = Carbon::now()->endOfDay();
+        $trendStartDate = Carbon::now()->subDays($salesTrendDays - 1)->startOfDay();
+
+        $dailyRevenue = Order::select(
+            DB::raw('DATE(orders_date) as date'),
+            DB::raw('SUM(orders_total_price) as total_revenue')
+        )
+            ->where('orders_status', '!=', 'cancelled')
+            ->whereBetween('orders_date', [$trendStartDate, $trendEndDate])
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get()
+            ->keyBy('date');
+
+        $salesTrendLabels = [];
+        $salesTrendRevenueData = [];
+        $currentDateIterator = $trendStartDate->copy();
+
+        while ($currentDateIterator <= $trendEndDate) {
+            $dateString = $currentDateIterator->toDateString();
+            $salesTrendLabels[] = $currentDateIterator->format('M d');
+            $salesTrendRevenueData[] = $dailyRevenue->has($dateString) ? $dailyRevenue[$dateString]->total_revenue : 0;
+            $currentDateIterator->addDay();
+        }
+
+        return view('admin.dashboard', compact(
+            'stats',
+            'stockAlertProducts',
+            'recentOrders',
+            'orderStatusOverview',
+            'topProductsByRevenue',
+            'topProductsByQuantity',
+            'topLimit',
+            'periodStartDate',
+            'periodEndDate',
+            'salesTrendLabels',
+            'salesTrendRevenueData',
+
+        ));
     }
-}
+
+    private function getStatusBadgeClass($status)
+    {
+        switch (strtolower($status)) {
+            case 'completed':
+                return 'bg-success';
+            case 'processing':
+                return 'bg-primary';
+            case 'pending':
+                return 'bg-warning text-dark';
+            case 'cancelled':
+                return 'bg-danger';
+            default:
+                return 'bg-secondary';
+        }
+    }
 
     public function products(Request $request)
     {
@@ -91,22 +157,22 @@ private function getStatusBadgeClass($status)
             $query->where('categories_id', $request->category);
         }
 
-       if ($request->filled('status')) {
-    $status = $request->status;
+        if ($request->filled('status')) {
+            $status = $request->status;
 
-    if ($status === 'In Stock') {
-        $query->where(function($q) {
-            $q->where('products_stock', '>', DB::raw('IFNULL(low_stock_threshold, 10)'));
-        });
-    } elseif ($status === 'Low Stock') {
-        $query->where(function($q) {
-            $q->where('products_stock', '>', 0)
-              ->where('products_stock', '<=', DB::raw('IFNULL(low_stock_threshold, 10)'));
-        });
-    } elseif ($status === 'Out of Stock') {
-        $query->where('products_stock', '<=', 0);
-    }
-}
+            if ($status === 'In Stock') {
+                $query->where(function ($q) {
+                    $q->where('products_stock', '>', DB::raw('IFNULL(low_stock_threshold, 10)'));
+                });
+            } elseif ($status === 'Low Stock') {
+                $query->where(function ($q) {
+                    $q->where('products_stock', '>', 0)
+                        ->where('products_stock', '<=', DB::raw('IFNULL(low_stock_threshold, 10)'));
+                });
+            } elseif ($status === 'Out of Stock') {
+                $query->where('products_stock', '<=', 0);
+            }
+        }
 
         $products = $query->paginate(10);
         $categories = Category::pluck('categories_name', 'categories_id')->all();
@@ -131,7 +197,7 @@ private function getStatusBadgeClass($status)
             'products_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'hover_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'orders_price' => 'required|integer|min:0',
-                    'low_stock_threshold' => 'required|integer|min:1'
+            'low_stock_threshold' => 'required|integer|min:1'
 
         ]);
 
@@ -143,7 +209,7 @@ private function getStatusBadgeClass($status)
         $product->categories_id = $validatedData['categories_id'];
         $product->orders_price = $validatedData['orders_price'];
         $product->status_del = 0;
-            $product->low_stock_threshold = $validatedData['low_stock_threshold'];
+        $product->low_stock_threshold = $validatedData['low_stock_threshold'];
 
 
         // Handle Image Upload
@@ -190,7 +256,7 @@ private function getStatusBadgeClass($status)
         $product->categories_id = $validatedData['categories_id'];
         $product->orders_price = $validatedData['orders_price'];
         $product->status_del = 0;
-    $product->low_stock_threshold = $validatedData['low_stock_threshold']; // This should be present
+        $product->low_stock_threshold = $validatedData['low_stock_threshold']; // This should be present
 
         // Handle Image Upload (Optional Update)
         if ($request->hasFile('products_image')) {
@@ -232,7 +298,7 @@ private function getStatusBadgeClass($status)
             'unit_price' => $product->unit_price,
             'orders_price' => $product->orders_price,
             'products_stock' => $product->products_stock,
-                    'low_stock_threshold' => $product->low_stock_threshold, 
+            'low_stock_threshold' => $product->low_stock_threshold,
 
             'products_description' => $product->products_description,
             'products_image' => $product->products_image,
@@ -279,15 +345,122 @@ private function getStatusBadgeClass($status)
                 ->with('error', 'Could not restore product. ' . $e->getMessage());
         }
     }
-public function editData($productId)
-{
-    $product = Product::with('category')->findOrFail($productId);
-    
-    return response()
-        ->json($product)
-        ->header('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
-        ->header('Pragma', 'no-cache')
-        ->header('Expires', '0');
-}
-}
 
+    public function editData($productId)
+    {
+        $product = Product::with('category')->findOrFail($productId);
+
+        return response()
+            ->json($product)
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+    }
+
+     public function getSalesTrendData(Request $request)
+    {
+        $periodInput = $request->input('period', '30d');
+        $dataType = $request->input('dataType', 'revenue');
+
+        $labels = [];
+        $dataValues = [];
+        $datasetLabel = '';
+        $pointFormat = 'Y-m-d'; // Default for daily grouping
+        $labelFormat = 'M d';   // Default for daily labels
+
+        $endDate = Carbon::now()->endOfDay();
+
+        if ($periodInput === '7d') {
+            $days = 7;
+            $startDate = Carbon::now()->subDays($days - 1)->startOfDay();
+            $datasetLabelSuffix = 'Last 7 Days';
+        } elseif ($periodInput === '30d') {
+            $days = 30;
+            $startDate = Carbon::now()->subDays($days - 1)->startOfDay();
+            $datasetLabelSuffix = 'Last 30 Days';
+        } elseif (str_starts_with($periodInput, 'monthly_')) {
+            $numberOfMonths = (int) str_replace('monthly_', '', $periodInput);
+            if ($numberOfMonths <= 0) $numberOfMonths = 6; // Default to 6 months if invalid
+
+            $datasetLabelSuffix = "Last {$numberOfMonths} Months";
+            $labelFormat = 'M Y';
+
+            for ($i = $numberOfMonths - 1; $i >= 0; $i--) {
+                $monthCarbon = Carbon::now()->subMonths($i);
+                $labels[] = $monthCarbon->format($labelFormat);
+
+                if ($dataType === 'revenue') {
+                    $value = Order::where('orders_status', '!=','cancelled') 
+                        ->whereYear('orders_date', $monthCarbon->year)
+                        ->whereMonth('orders_date', $monthCarbon->month)
+                        ->sum('orders_total_price');
+                } else { // 'orders'
+                    $value = Order::whereYear('orders_date', $monthCarbon->year)
+                        ->whereMonth('orders_date', $monthCarbon->month)
+                        ->count();
+                }
+                $dataValues[] = $value;
+            }
+
+            $datasetLabel = ($dataType === 'revenue' ? 'Revenue' : 'Orders') . " ({$datasetLabelSuffix})";
+            return response()->json([
+                'labels' => $labels,
+                'datasets' => [[
+                    'label' => $datasetLabel,
+                    'data' => $dataValues,
+                    'borderColor' => $dataType === 'revenue' ? 'rgb(54, 162, 235)' : 'rgb(255, 99, 132)',
+                    'backgroundColor' => $dataType === 'revenue' ? 'rgba(54, 162, 235, 0.2)' : 'rgba(255, 99, 132, 0.2)',
+                    'tension' => 0.2, 'fill' => true,
+                ]],
+                'dataType' => $dataType,
+                'period' => $periodInput
+            ]);
+        } else { // Default to 30d if period is unrecognized
+            $days = 30;
+            $startDate = Carbon::now()->subDays($days - 1)->startOfDay();
+            $datasetLabelSuffix = 'Last 30 Days';
+        }
+
+
+        // Daily aggregation for 7d and 30d
+        $queryBase = Order::select(DB::raw("DATE(orders_date) as point"));
+
+        if ($dataType === 'revenue') {
+            $queryBase->addSelect(DB::raw('SUM(orders_total_price) as total_value'))
+                      ->where('orders_status', '!=','cancelled'); // Exclude cancelled orders
+            $datasetLabel = "Revenue ({$datasetLabelSuffix})";
+        } else { // 'orders'
+            $queryBase->addSelect(DB::raw('COUNT(*) as total_value'));
+            $datasetLabel = "Orders ({$datasetLabelSuffix})";
+        }
+
+        $queryData = $queryBase->whereBetween('orders_date', [$startDate, $endDate])
+            ->groupBy('point')
+            ->orderBy('point', 'ASC')
+            ->get()
+            ->keyBy(function ($item) {
+                return Carbon::parse($item->point)->format('Y-m-d');
+            });
+
+        $currentDateIterator = $startDate->copy();
+        while ($currentDateIterator <= $endDate) {
+            $dateString = $currentDateIterator->format('Y-m-d');
+            $labels[] = $currentDateIterator->format($labelFormat);
+            $dataValues[] = $queryData->has($dateString) ? $queryData[$dateString]->total_value : 0;
+            $currentDateIterator->addDay();
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'datasets' => [[
+                'label' => $datasetLabel,
+                'data' => $dataValues,
+                'borderColor' => $dataType === 'revenue' ? 'rgb(54, 162, 235)' : 'rgb(255, 99, 132)',
+                'backgroundColor' => $dataType === 'revenue' ? 'rgba(54, 162, 235, 0.2)' : 'rgba(255, 99, 132, 0.2)',
+                'tension' => 0.2, 'fill' => true,
+            ]],
+            'dataType' => $dataType,
+            'period' => $periodInput
+        ]);
+    }
+}
