@@ -34,7 +34,7 @@ class ProductController extends Controller
         $query->where('orders_price', '<=', $request->max_price);
     }
 
-    $products = $query->get();
+    $products = $query->with(['category', 'ratings'])->paginate(12);
 
     // Wishlist
     $wishlistProductIds = Auth::check()
