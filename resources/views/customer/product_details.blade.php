@@ -129,7 +129,6 @@
                 @if ($product->category)
                     <div class="category-badge">{{ $product->category->categories_name }}</div>
                 @endif
-
                 <div class="rating-stars d-flex align-items-center mb-2">
                     @php
                         $fullStars = $averageRating ? floor($averageRating) : 0;
@@ -137,39 +136,45 @@
                         $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
                     @endphp
 
+                    @for ($i = 0; $i < $fullStars; $i++)
+                            <i class="bi bi-star-fill text-warning"></i>
+                        @endfor
 
-    @for ($i = 0; $i < $fullStars; $i++)
-            <i class="bi bi-star-fill text-warning"></i>
-        @endfor
+                                @if ($halfStar)
+                                    <i class="bi bi-star-half text-warning"></i>
+                                @endif
 
-                @if ($halfStar)
-                    <i class="bi bi-star-half text-warning"></i>
-                @endif
+                                @for ($i = 0; $i < $emptyStars; $i++)
+                                    <i class="bi bi-star text-secondary"></i>
+                                @endfor
 
-                @for ($i = 0; $i < $emptyStars; $i++)
-                    <i class="bi bi-star text-secondary"></i>
-                @endfor
-
-                <small class="text-muted d-block mt-1">
-                    Customer Reviews: ({{ $reviewCount }})
-                </small>
+                                <small class="text-muted ms-2">
+                                    Customer Reviews: ({{ $reviewCount }})
+                                </small>
                 </div>
 
                 {{-- Rating Form --}}
                 @auth
-                <form action="{{ route('ratings.store') }}" method="POST" class="d-flex align-items-center gap-2 mb-3">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->products_id }}">
-                    <label for="rating" class="form-label mb-0 small text-muted">Your Rating:</label>
-                    <select name="rating" id="rating" class="form-select form-select-sm w-auto" required>
-                        <option value="">Select</option>
-                        @for ($i = 1; $i <= 5; $i++)
-                            <option value="{{ $i }}">{{ $i }}</option>
-                        @endfor
-                    </select>
-                    <button type="submit" class="btn btn-sm btn-primary">Submit</button>
-                </form>
+                    @if ($hasCompletedOrder && ! $hasRated)
+                        <form action="{{ route('ratings.store') }}" method="POST" class="d-flex align-items-center gap-2 mb-3">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->products_id }}">
+                            <label for="rating" class="form-label mb-0 small text-muted">Your Rating:</label>
+                            <select name="rating" id="rating" class="form-select form-select-sm w-auto" required>
+                                <option value="">Select</option>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                        </form>
+                    @elseif ($hasRated)
+                        <p class="text-muted small fst-italic mb-3">You have already rated this product.</p>
+                    @elseif (! $hasCompletedOrder)
+                        <p class="text-muted small fst-italic mb-3">You can only rate this product after completing a purchase.</p>
+                    @endif
                 @endauth
+
 
                 <div class="price">Rp {{ number_format($product->orders_price, 0, ',', '.') }}</div>
 

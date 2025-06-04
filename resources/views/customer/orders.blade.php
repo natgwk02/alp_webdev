@@ -45,14 +45,38 @@
                                     <div class="fw-semibold fs-6">
                                         {{ \Illuminate\Support\Str::limit($item['product_name'] ?? 'Unknown Product', 50) }}
                                     </div>
-                                    
+
                                     <div class="text-muted">Qty: {{ $item['quantity'] ?? 'N/A' }}</div>
-                                    <div class="text-muted">Price: Rp{{ number_format($item['price'] ?? 0, 0, ',', '.') }}
-                                    </div>
+                                    <div class="text-muted">Price: Rp{{ number_format($item['price'] ?? 0, 0, ',', '.') }}</div>
+
+                                    @if ($order['orders_status'] === 'Delivered')
+                                        @php
+                                            $alreadyRated = \App\Models\Rating::where('user_id', Auth::id())
+                                                ->where('product_id', $item['product_id'])
+                                                ->exists();
+                                        @endphp
+
+                                        @if (!$alreadyRated)
+                                            <form action="{{ route('ratings.store') }}" method="POST" class="d-flex align-items-center gap-2 mt-2">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
+                                                <label for="rating" class="form-label mb-0 small">Rating:</label>
+                                                <select name="rating" class="form-select form-select-sm w-auto" required>
+                                                    <option value="">Select</option>
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                                <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                                            </form>
+                                        @else
+                                            <div class="text-success small mt-2">You already rated this product.</div>
+                                        @endif
+                                    @endif
                                 </div>
+
                                 <div class="fw-bold text-dark">
-                                    Total:
-                                    Rp{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
+                                    Total: Rp{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
                                 </div>
                             </div>
                         @endforeach

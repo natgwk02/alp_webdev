@@ -68,11 +68,37 @@ class ProductController extends Controller
     {
         $product = Product::with('category')->findOrFail($id);
 
-    $averageRating = $product->rating; // Ambil dari kolom `rating` di table products
-    $reviewCount = \App\Models\Rating::where('product_id', $product->products_id)->count();
+        $averageRating = $product->rating; // dari kolom 'rating' di tabel products
+        $reviewCount = \App\Models\Rating::where('product_id', $product->products_id)->count();
 
-    return view('customer.product_details', compact('product', 'averageRating', 'reviewCount'));
+        $userId = Auth::id();
+
+        // Cek apakah user sudah menyelesaikan pesanan produk ini
+        $hasCompletedOrder = false;
+        $hasRated = false;
+        
+        if (Auth::check()) {
+            $hasCompletedOrder = \App\Models\OrderDetail::where('products_id', $product->products_id)
+                ->whereHas('order', function ($query) use ($userId) {
+                    $query->where('users_id', $userId)
+                        ->where('orders_status', 'Delivered');
+                })
+                ->exists();
+
+            $hasRated = \App\Models\Rating::where('user_id', $userId)
+                ->where('product_id', $product->products_id)
+                ->exists();
+        }
+
+        return view('customer.product_details', compact(
+            'product',
+            'averageRating',
+            'reviewCount',
+            'hasCompletedOrder',
+            'hasRated'
+        ));
     }
+
 
     public function wishlist()
     {
