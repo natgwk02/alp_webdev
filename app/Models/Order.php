@@ -53,7 +53,7 @@ class Order extends Model
         return $this->belongsTo(User::class, 'users_id', 'users_id');
     }
 
-    public function orderDetails(): HasMany{
+    public function items(): HasMany{
         return $this->hasMany(OrderDetail::class, 'orders_id', 'orders_id');
     }
 

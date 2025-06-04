@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Order #' . $order['order_number'] . ' - Chile Mart Admin')
+@section('title', 'Order #' . $order['orders_id'] . ' - Chile Mart Admin')
 
 @section('content')
     <div class="container-fluid">
@@ -22,11 +22,11 @@
                         <li class="breadcrumb-item">
                             <a href="{{ route('admin.orders') }}" class="text-decoration-none text-secondary">Orders</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Order #{{ $order['order_number'] }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">Order #{{ $order['orders_id'] }}</li>
                     </ol>
                 </nav>
                 <div class="d-flex justify-content-between align-items-center">
-                    <h1 class="fw-bold">Order #{{ $order['order_number'] }}</h1>
+                    <h1 class="fw-bold">Order #{{ $order['orders_id'] }}</h1>
 
                     {{-- Cancel Order Form --}}
                     <form action="{{ route('admin.orders.updateStatus', $order->orders_id) }}" method="POST"
@@ -40,7 +40,7 @@
                         </button>
                     </form>
                 </div>
-                <p class="text-muted">Placed on {{ $order['order_date'] }}</p>
+                <p class="text-muted">Placed on {{ $order['orders_date'] }}</p>
             </div>
         </div>
 
@@ -62,23 +62,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($order['items'] as $item)
+                                    @foreach ($order->items as $item)
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('images/products-img/' . ($item['image'] ?? 'no-image.png')) }}"
+                                                    <img src="{{ asset('images/products-img/' . ($item->product->products_image ?? 'no-image.png')) }}"
                                                         class="img-thumbnail me-3" width="60"
-                                                        alt="{{ $item['name'] ?? 'Unknown Product' }}">
+                                                        alt="{{ $item['products_name'] ?? 'Unknown Product' }}">
                                                     <div>
-                                                        <h6 class="mb-0">{{ $item['name'] ?? 'Unknown Product' }}</h6>
+                                                        <h6 class="mb-0">{{ $item->product->products_name ?? 'Unknown Product' }}</h6>
                                                         <small class="text-muted">SKU:
-                                                            CM-{{ $item['id'] ?? 'Unknown' }}</small>
+                                                            CM-{{ $item['products_id'] ?? 'Unknown' }}</small>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>Rp.{{ number_format($item['price'] ?? 0, 2, ',', '.') }}</td>
-                                            <td>{{ $item['quantity'] ?? 1 }}</td>
-                                            <td>Rp.{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 2, ',', '.') }}
+                                            <td>{{ $item['orders_details_quantity'] ?? 1 }}</td>
+                                            <td>Rp.{{ number_format(($item['price'] ?? 0) * ($item['orders_details_quantity'] ?? 1), 2, ',', '.') }}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -98,8 +98,8 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <h6>Customer Information</h6>
-                            <p class="mb-1"><strong>{{ $order['customer_name'] }}</strong></p>
-                            <p class="mb-1">{{ $order['customer_email'] ?? '-' }}</p>
+                            <p class="mb-1"><strong>{{ $order['first_name'] }}</strong></p>
+                            <p class="mb-1">{{ $order['users_email'] ?? '-' }}</p>
                             <a href="#" class="small">View customer profile</a>
                         </div>
 
@@ -107,7 +107,7 @@
 
                         <div class="mb-3">
                             <h6>Shipping Address</h6>
-                            <p class="mb-0">{{ $order['shipping_address'] ?? '-' }}</p>
+                            <p class="mb-0">{{ $order['address'] ?? '-' }}</p>
                         </div>
 
                         <div class="mb-3">
@@ -118,7 +118,7 @@
                         <div class="mb-3">
                             <h6>Customer Notes</h6>
                             <p class="mb-0">
-                                {{ $order['customer']['notes'] ?? '-' }}
+                                {{ $order['notes'] ?? '-' }}
                             </p>
                         </div>
 
@@ -138,15 +138,15 @@
                             <div class="mb-3">
                                 <h6>Order Status</h6>
                                 <select name="status" class="form-select mb-2" required>
-                                    <option value="Pending" {{ $order['status'] == 'Pending' ? 'selected' : '' }}>Pending
+                                    <option value="Pending" {{ $order->orders_status  == 'Pending' ? 'selected' : '' }}>Pending
                                     </option>
-                                    <option value="Processing" {{ $order['status'] == 'Processing' ? 'selected' : '' }}>
+                                    <option value="Processing" {{ $order->orders_status  == 'Processing' ? 'selected' : '' }}>
                                         Processing</option>
-                                    <option value="Shipped" {{ $order['status'] == 'Shipped' ? 'selected' : '' }}>Shipped
+                                    <option value="Shipped" {{ $order->orders_status  == 'Shipped' ? 'selected' : '' }}>Shipped
                                     </option>
-                                    <option value="Delivered" {{ $order['status'] == 'Delivered' ? 'selected' : '' }}>
+                                    <option value="Delivered" {{$order->orders_status  == 'Delivered' ? 'selected' : '' }}>
                                         Delivered</option>
-                                    <option value="Cancelled" {{ $order['status'] == 'Cancelled' ? 'selected' : '' }}>
+                                    <option value="Cancelled" {{$order->orders_status  == 'Cancelled' ? 'selected' : '' }}>
                                         Cancelled</option>
                                 </select>
                                 <button type="submit" class="btn btn-primary w-100">Update Status</button>
