@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Container\Attributes\Log;
 
 class AdminOrderController extends Controller
 {
@@ -75,5 +76,22 @@ class AdminOrderController extends Controller
         // $order->payment_status = ucfirst($order->payment_status ?? 'Unpaid');
 
         return view('admin.orders.show', compact('order'));
+    }
+    public function updateStatus(Request $request, $id)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'status' => 'required|string|in:Pending,Processing,Shipped,Delivered,Canceled', // Adjust statuses as needed
+        ]);
+
+        // Find the order by its ID
+        $order = Order::findOrFail($id);
+
+        // Update the order's status
+        $order->orders_status = $request->status;
+        $order->save();
+
+        // Redirect back with a success message
+        return redirect()->route('admin.orders')->with('success', 'Order status updated successfully.');
     }
 }

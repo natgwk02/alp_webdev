@@ -73,7 +73,7 @@ Route::middleware('web')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.detail');
-    Route::post('/order/{id}/received', [OrderController::class, 'markAsReceived'])->name('order.received');
+    Route::post('/order/{id}/received', [OrderController::class, 'orderReceived'])->name('order.received');
     Route::get('/wishlist', [ProductController::class, 'wishlist'])->name('wishlist');
     Route::post('wishlist/add/{productId}', [ProductController::class, 'addToWishlist'])->name('wishlist.add');
     Route::post('wishlist/remove/{productId}', [ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
