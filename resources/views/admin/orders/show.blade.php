@@ -76,7 +76,6 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <img src="{{ asset('images/products-img/' . ($item->product->products_image ?? 'no-image.png')) }}"
-                                                    <img src="{{ asset('images/products-img/' . ($item->product->products_image ?? 'no-image.png')) }}"
                                                         class="img-thumbnail me-3" width="60"
                                                         alt="{{ $item->product->products_name ?? 'Unknown Product' }}">
                                                     <div>
