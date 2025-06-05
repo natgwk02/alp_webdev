@@ -169,6 +169,7 @@
                     </a>
                 </li>
 
+                @auth
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false" onclick="event.preventDefault();">
@@ -188,13 +189,22 @@
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="fa fa-sign-out-alt me-2"></i> Sign Out
                             </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                style="display: none;">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
                             </form>
                         </li>
                     </ul>
                 </li>
+                @endauth
+
+                @guest
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('login') }}">
+                        <i class="bi bi-person-fill fs-3"></i>
+                    </a>
+                </li>
+                @endguest
+
             </ul>
         </div>
     </div>
