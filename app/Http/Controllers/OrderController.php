@@ -86,7 +86,7 @@ class OrderController extends Controller
             'order_number' => $order->orders_id,
             'created_at' => $order->created_at->format('Y-m-d H:i:s'),
             'status' => $order->orders_status,
-            'items' => $order->orderDetails->map(function ($detail) use ($ratedProductIds) {
+            'items' => $order->items->map(function ($detail) use ($ratedProductIds) {
                 $productName = 'Unknown Product';
                 $productImage = 'no-image.png';
 

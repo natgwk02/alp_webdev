@@ -45,7 +45,7 @@
                     </form>
                     @endif
                 </div>
-                <p class="text-muted">Placed on {{ $order['orders_date'] }}</p>
+                {{-- <p class="text-muted">Placed on {{ $order['orders_date'] }}</p> --}}
                 {{-- Use Carbon instance for date formatting --}}
                 <p class="text-muted">Placed on {{ $order->orders_date->format('F j, Y, g:i a') }}</p>
             </div>
@@ -70,8 +70,6 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($order->items as $item)
-                                    {{-- Use the 'orderDetails' relationship and object access --}}
-                                    @forelse ($order->orderDetails as $item)
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -90,11 +88,10 @@
                                             <td>{{ $item->order_details_quantity ?? 1 }}</td>
                                             <td>Rp.{{ number_format($item->total ?? 0, 0, ',', '.') }}</td>
                                         </tr>
-                                    @empty
-                                        <tr>
+                                        @endforeach
+                                        {{-- <tr>
                                             <td colspan="4" class="text-center">No items in this order.</td>
-                                        </tr>
-                                    @endforelse
+                                        </tr> --}}
                                 </tbody>
                             </table>
                         </div>
@@ -175,11 +172,11 @@
                                 <h6>Order Status</h6>
                                 <select name="status" class="form-select mb-2" required {{ strtolower($order->orders_status) === 'delivered' || strtolower($order->orders_status) === 'cancelled' ? 'disabled' : '' }}>
                                     {{-- Use object access for current status --}}
-                                    <option value="Pending" {{ strtolower($order->orders_status) == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="Processing" {{ strtolower($order->orders_status) == 'processing' ? 'selected' : '' }}>Processing</option>
-                                    <option value="Shipped" {{ strtolower($order->orders_status) == 'shipped' ? 'selected' : '' }}>Shipped</option>
-                                    <option value="Delivered" {{ strtolower($order->orders_status) == 'delivered' ? 'selected' : '' }}>Delivered</option>
-                                    <option value="Cancelled" {{ strtolower($order->orders_status) == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    <option value="Pending" {{ ($order->orders_status) == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="Processing" {{ ($order->orders_status) == 'Processing' ? 'selected' : '' }}>Processing</option>
+                                    <option value="Shipped" {{ strtolower($order->orders_status) == 'Shipped' ? 'selected' : '' }}>Shipped</option>
+                                    <option value="Delivered" {{ strtolower($order->orders_status) == 'Delivered' ? 'selected' : '' }}>Delivered</option>
+                                    <option value="Cancelled" {{ strtolower($order->orders_status) == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
                                 </select>
                                 @if(strtolower($order->orders_status) !== 'delivered' && strtolower($order->orders_status) !== 'cancelled')
                                 <button type="submit" class="btn btn-primary w-100">Update Status</button>

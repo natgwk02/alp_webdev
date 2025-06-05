@@ -66,9 +66,26 @@ class AdminOrderController extends Controller
 
     public function show($id) // Assuming $id is orders_id
     {
-        $order = Order::with(['user', 'orderDetails.product']) // 'user' for customer, 'details' for order items, 'details.product' to get product info for each item
+        $order = Order::with(['user', 'items.product']) // 'user' for customer, 'details' for order items, 'details.product' to get product info for each item
             ->findOrFail($id); // $id is the orders_id
 
         return view('admin.orders.show', compact('order'));
+    }
+    public function updateStatus(Request $request, $id)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'status' => 'required|string|in:Pending,Processing,Shipped,Delivered,Cancelled', // Adjust statuses as needed
+        ]);
+
+        // Find the order by its ID
+        $order = Order::findOrFail($id);
+
+        // Update the order's status
+        $order->orders_status = $request->status;
+        $order->save();
+
+        // Redirect back with a success message
+        return redirect()->route('admin.orders')->with('success', 'Order status updated successfully.');
     }
 }
