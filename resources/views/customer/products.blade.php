@@ -367,49 +367,49 @@
     </script>
     @endif
 
-        $(document).on('click', '.wishlist-btn', function (e) {
-            e.preventDefault();
-            const productId = $(this).data('product-id');
-            const icon = $(this).find('.heart-icon');
+        // $(document).on('click', '.wishlist-btn', function (e) {
+        //     e.preventDefault();
+        //     const productId = $(this).data('product-id');
+        //     const icon = $(this).find('.heart-icon');
 
-            icon.toggleClass('text-dark text-danger');
+        //     icon.toggleClass('text-dark text-danger');
 
-            $.ajax({
-                url: '/wishlist/toggle/' + productId,
-                type: 'GET',
-                success: function (response) {
-                    showSuccessAlert(response.message);
+        //     $.ajax({
+        //         url: '/wishlist/toggle/' + productId,
+        //         type: 'GET',
+        //         success: function (response) {
+        //             showSuccessAlert(response.message);
                     
-                },
-                error: function (xhr) {
-                    alert('Failed to update wishlist.');
-                    console.error(xhr.responseText);
-                }
-            });
-        });
+        //         },
+        //         error: function (xhr) {
+        //             alert('Failed to update wishlist.');
+        //             console.error(xhr.responseText);
+        //         }
+        //     });
+        // });
 
         
-        $(document).on('submit', 'form.add-to-cart-form', function (e) {
-            e.preventDefault();
-            const form = $(this);
-            const productId = form.find('input[name="product_id"]').val();
+        // $(document).on('submit', 'form.add-to-cart-form', function (e) {
+        //     e.preventDefault();
+        //     const form = $(this);
+        //     const productId = form.find('input[name="product_id"]').val();
 
-            $.ajax({
-                url: '/cart/add/' + productId,
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    product_id: productId
-                },
-                success: function () {
-                    showSuccessAlert('Product added to cart.');
-                },
-                error: function (xhr) {
-                    alert('Failed to add to cart.');
-                    console.error(xhr.responseText);
-                }
-            });
-        });
+        //     $.ajax({
+        //         url: '/cart/add/' + productId,
+        //         method: 'POST',
+        //         data: {
+        //             _token: '{{ csrf_token() }}',
+        //             product_id: productId
+        //         },
+        //         success: function () {
+        //             showSuccessAlert('Product added to cart.');
+        //         },
+        //         error: function (xhr) {
+        //             alert('Failed to add to cart.');
+        //             console.error(xhr.responseText);
+        //         }
+        //     });
+        // });
 
     });
 </script>
