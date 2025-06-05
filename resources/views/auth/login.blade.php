@@ -132,7 +132,7 @@
       <div id="carouselExample" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="4000">
         <div class="carousel-inner h-100">
           <div class="carousel-item active position-relative h-100">
-            <img src="{{ asset('images/chille 23.jpeg') }}" alt="Slide 1">
+            <img src="{{ asset('images/chille5.png') }}" alt="Slide 1">
             <div class="carousel-caption-overlay"></div>
             <div class="carousel-caption-text">
               <h5 class="fw-bold">Delivered fresh, right to your freezer</h5>
@@ -140,7 +140,7 @@
             </div>
           </div>
           <div class="carousel-item position-relative h-100">
-            <img src="{{ asset('images/chille 24.jpeg') }}" alt="Slide 2">
+            <img src="{{ asset('images/chille6.jpg') }}" alt="Slide 2">
             <div class="carousel-caption-overlay"></div>
             <div class="carousel-caption-text">
               <h5 class="fw-bold">Shop. Chill. Repeat</h5>

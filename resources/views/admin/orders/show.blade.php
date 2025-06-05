@@ -45,6 +45,7 @@
                     </form>
                     @endif
                 </div>
+                <p class="text-muted">Placed on {{ $order['orders_date'] }}</p>
                 {{-- Use Carbon instance for date formatting --}}
                 <p class="text-muted">Placed on {{ $order->orders_date->format('F j, Y, g:i a') }}</p>
             </div>
@@ -68,11 +69,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($order->items as $item)
                                     {{-- Use the 'orderDetails' relationship and object access --}}
                                     @forelse ($order->orderDetails as $item)
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
+                                                    <img src="{{ asset('images/products-img/' . ($item->product->products_image ?? 'no-image.png')) }}"
                                                     <img src="{{ asset('images/products-img/' . ($item->product->products_image ?? 'no-image.png')) }}"
                                                         class="img-thumbnail me-3" width="60"
                                                         alt="{{ $item->product->products_name ?? 'Unknown Product' }}">

@@ -177,6 +177,11 @@
                         </div>
                     </div>
                 @endforeach
+               <div class="d-flex justify-content-end align-items-center gap-3 mt-4">
+                <div>
+                    {{ $products->withQueryString()->links() }}
+                </div>
+            </div>
             @else
                 <div class="col-12 text-center py-5">
                     <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
@@ -191,6 +196,27 @@
     </div>
 
     <style>
+
+    .pagination .page-link {
+        padding: 0.4rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .pagination .active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: white;
+    }
+
+    @media (max-width: 576px) {
+        .d-flex.justify-content-end {
+            flex-direction: column;
+            align-items: center !important;
+            gap: 0.5rem;
+        }
+    }
+
         .product-card:hover {
             transform: translateY(-5px);
             transition: transform 0.3s ease-in-out;

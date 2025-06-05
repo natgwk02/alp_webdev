@@ -17,6 +17,8 @@ return new class extends Migration
         $table->foreignId('product_id')->constrained()->onDelete('cascade');
         $table->float('rating', 2, 1); // contoh: 4.5
         $table->timestamps();
+        $table->unique(['user_id', 'product_id']);
+
     });
     }
 

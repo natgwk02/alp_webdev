@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Container\Attributes\Log;
 
 class AdminOrderController extends Controller
 {
@@ -69,48 +70,5 @@ class AdminOrderController extends Controller
             ->findOrFail($id); // $id is the orders_id
 
         return view('admin.orders.show', compact('order'));
-    }
-
-    public function updateStatus(Request $request, Order $order)
-    {
-        // Define valid statuses
-        $validStatuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
-
-        $request->validate([
-            'status' => ['required', Rule::in($validStatuses)],
-        ]);
-
-        $newStatus = $request->input('status');
-
-        // Optional: Add logic here if certain status transitions are not allowed
-        // For example, you might not allow changing status from 'Delivered' or 'Cancelled'
-        // without specific conditions or permissions.
-        if (in_array(strtolower($order->orders_status), ['delivered', 'cancelled']) && strtolower($order->orders_status) !== strtolower($newStatus) ) {
-             // Allow changing from cancelled back to pending perhaps? Or disallow any change from delivered/cancelled.
-             // This is a business logic decision. For now, let's allow it but you might refine this.
-             // if ($newStatus !== 'Pending' && strtolower($order->orders_status) === 'cancelled') {
-             // return back()->with('error', 'Cancelled orders cannot be changed to ' . $newStatus . ' directly.');
-             // }
-        }
-
-        $order->orders_status = $newStatus;
-
-        // If the order is being marked as 'Delivered' or 'Shipped', you might want to set a delivery/shipping date.
-        // if ($newStatus === 'Delivered' && is_null($order->delivered_at)) {
-        //     $order->delivered_at = now();
-        // }
-        // if ($newStatus === 'Shipped' && is_null($order->shipped_at)) {
-        //     $order->shipped_at = now();
-        // }
-
-        // If an order is cancelled, you might want to adjust stock levels (this is more complex logic)
-        // if ($newStatus === 'Cancelled' && $oldStatus !== 'Cancelled') {
-        //     // Logic to return items to stock
-        // }
-
-        $order->save();
-
-        return redirect()->route('admin.orders.show', $order->orders_id)
-                         ->with('success', 'Order status successfully updated to ' . $newStatus . '.');
     }
 }

@@ -14,7 +14,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders_query_result = Order::with('orderDetails.product')
+        $orders_query_result = Order::with('items.product')
             ->where('users_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get()
@@ -362,4 +362,14 @@ class OrderController extends Controller
         return redirect()->route('order.detail', ['id' => $order->orders_id])
             ->with('success', 'Checkout completed! Your order has been placed.');
     }
+    public function orderReceived($id)
+{
+    $order = Order::findOrFail($id); // Get the order by ID
+
+    // Update the order status to "Completed" (or any status you need)
+    $order->orders_status = 'Completed';
+    $order->save();
+
+    return redirect()->route('orders.index')->with('success', 'Order status updated to Completed.');
+}
 }
