@@ -31,7 +31,7 @@
                 </ul>
             </div>
         @endif
-        <form id="checkout-form" action="{{ route('checkout.process') }}" method="POST">
+        <form id="checkout-form" action="{{ route('checkout.store') }}" method="POST">
             @csrf
             <div class="row">
                 <div class="col-md-8">
@@ -103,14 +103,23 @@
                                     <label for="country" class="form-label">Country *</label>
                                     <select class="form-select @error('country') is-invalid @enderror" id="country"
                                         name="country" required>
-                                        <option value="Chile"
-                                            {{ old('country', $defaultData['country']) == 'Chile' ? 'selected' : '' }}>
-                                            Chile</option>
-                                        <option value="Argentina"
-                                            {{ old('country', $defaultData['country']) == 'Argentina' ? 'selected' : '' }}>
-                                            Argentina</option>
-                                        <option value="Peru"
-                                            {{ old('country', $defaultData['country']) == 'Peru' ? 'selected' : '' }}>Peru
+                                        <option value="Indonesia"
+                                            {{ old('country', $defaultData['country']) == 'Indonesia' ? 'selected' : '' }}>
+                                            Indonesia</option>
+                                        <option value="Malaysia"
+                                            {{ old('country', $defaultData['country']) == 'Malaysia' ? 'selected' : '' }}>
+                                            Malaysia</option>
+                                        <option value="Singapore"
+                                            {{ old('country', $defaultData['country']) == 'Singapore' ? 'selected' : '' }}>
+                                            Singapore
+                                        </option>
+                                        <option value="Philippines"
+                                            {{ old('country', $defaultData['country']) == 'Philippines' ? 'selected' : '' }}>
+                                            Philippines
+                                        </option>
+                                        <option value="Myanmar"
+                                            {{ old('country', $defaultData['country']) == 'Myanmar' ? 'selected' : '' }}>
+                                            Myanmar
                                         </option>
                                     </select>
                                     @error('country')
