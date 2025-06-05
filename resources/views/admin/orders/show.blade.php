@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Order #' . $order['orders_id'] . ' - Chile Mart Admin')
+{{-- Use object access for order ID in title --}}
+@section('title', 'Order #' . $order->orders_id . ' - Chile Mart Admin')
 
 @section('content')
     <div class="container-fluid">
@@ -22,13 +23,16 @@
                         <li class="breadcrumb-item">
                             <a href="{{ route('admin.orders') }}" class="text-decoration-none text-secondary">Orders</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Order #{{ $order['orders_id'] }}</li>
+                        {{-- Use object access for order ID --}}
+                        <li class="breadcrumb-item active" aria-current="page">Order #{{ $order->orders_id }}</li>
                     </ol>
                 </nav>
                 <div class="d-flex justify-content-between align-items-center">
-                    <h1 class="fw-bold">Order #{{ $order['orders_id'] }}</h1>
+                    {{-- Use object access for order ID --}}
+                    <h1 class="fw-bold">Order #{{ $order->orders_id }}</h1>
 
-                    {{-- Cancel Order Form --}}
+                    {{-- Cancel Order Form - Ensure this status update is handled correctly by your controller --}}
+                    @if(strtolower($order->orders_status) !== 'cancelled' && strtolower($order->orders_status) !== 'delivered')
                     <form action="{{ route('admin.orders.updateStatus', $order->orders_id) }}" method="POST"
                         onsubmit="return confirm('Are you sure you want to cancel this order?');">
                         @csrf
@@ -39,8 +43,11 @@
                             <span>Cancel Order</span>
                         </button>
                     </form>
+                    @endif
                 </div>
                 <p class="text-muted">Placed on {{ $order['orders_date'] }}</p>
+                {{-- Use Carbon instance for date formatting --}}
+                <p class="text-muted">Placed on {{ $order->orders_date->format('F j, Y, g:i a') }}</p>
             </div>
         </div>
 
@@ -63,26 +70,31 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($order->items as $item)
+                                    {{-- Use the 'orderDetails' relationship and object access --}}
+                                    @forelse ($order->orderDetails as $item)
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <img src="{{ asset('images/products-img/' . ($item->product->products_image ?? 'no-image.png')) }}"
                                                         class="img-thumbnail me-3" width="60"
-                                                        alt="{{ $item['products_name'] ?? 'Unknown Product' }}">
+                                                        alt="{{ $item->product->products_name ?? 'Unknown Product' }}">
                                                     <div>
                                                         <h6 class="mb-0">{{ $item->product->products_name ?? 'Unknown Product' }}</h6>
-                                                        <small class="text-muted">SKU:
-                                                            CM-{{ $item['products_id'] ?? 'Unknown' }}</small>
+                                                        {{-- Assuming SKU is products_id or you have a dedicated SKU field in Product model --}}
+                                                        <small class="text-muted">SKU: CM-{{ $item->product->products_id ?? 'N/A' }}</small>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>Rp.{{ number_format($item['price'] ?? 0, 2, ',', '.') }}</td>
-                                            <td>{{ $item['orders_details_quantity'] ?? 1 }}</td>
-                                            <td>Rp.{{ number_format(($item['price'] ?? 0) * ($item['orders_details_quantity'] ?? 1), 2, ',', '.') }}
-                                            </td>
+                                            {{-- Access item properties with object syntax --}}
+                                            <td>Rp.{{ number_format($item->price ?? 0, 0, ',', '.') }}</td>
+                                            <td>{{ $item->order_details_quantity ?? 1 }}</td>
+                                            <td>Rp.{{ number_format($item->total ?? 0, 0, ',', '.') }}</td>
                                         </tr>
-                                    @endforeach
-
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center">No items in this order.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -98,37 +110,61 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <h6>Customer Information</h6>
-                            <p class="mb-1"><strong>{{ $order['first_name'] }}</strong></p>
-                            <p class="mb-1">{{ $order['users_email'] ?? '-' }}</p>
-                            <a href="#" class="small">View customer profile</a>
+                            {{-- Use user relationship or direct order fields --}}
+                            <p class="mb-1">
+                                <strong>
+                                    @if($order->user)
+                                        {{ $order->user->users_name }}
+                                    @else
+                                        {{ $order->first_name }} {{ $order->last_name }}
+                                    @endif
+                                </strong>
+                            </p>
+                            <p class="mb-1">
+                                @if($order->user)
+                                    {{ $order->user->email ?? 'No email provided' }}
+                                @else
+                                    No registered user account
+                                @endif
+                            </p>
+                            @if($order->user)
+                                {{-- <a href="#" class="small">View customer profile</a> --}} {{-- Implement this route if needed --}}
+                            @endif
                         </div>
 
                         <hr>
 
                         <div class="mb-3">
                             <h6>Shipping Address</h6>
-                            <p class="mb-0">{{ $order['address'] ?? '-' }}</p>
+                            {{-- Assuming these fields are directly on the Order model --}}
+                            <p class="mb-0">{{ $order->address ?? '-' }}, {{ $order->city ?? '' }}</p>
+                            <p class="mb-0">{{ $order->zip ?? '' }}, {{ $order->country ?? '' }}</p>
+                            <p class="mb-0">Phone: {{ $order->phone ?? '-' }}</p>
                         </div>
 
-                        <div class="mb-3">
+                        {{-- Billing address might be same as shipping or different --}}
+                        {{-- <div class="mb-3">
                             <h6>Billing Address</h6>
-                            <p class="mb-0">{{ $order['billing_address'] ?? '-' }}</p>
-                        </div>
+                            <p class="mb-0">{{ $order->billing_address ?? 'Same as shipping' }}</p>
+                        </div> --}}
 
+                        @if($order->notes)
                         <div class="mb-3">
                             <h6>Customer Notes</h6>
-                            <p class="mb-0">
-                                {{ $order['notes'] ?? '-' }}
+                            <p class="mb-0 text-muted">
+                                {{ $order->notes }}
                             </p>
                         </div>
+                        @endif
 
                         <hr>
 
                         <div class="mb-3">
                             <h6>Payment Method</h6>
                             <p class="mb-0">
-                                {{ $order['payment_method'] ?? 'Unknown' }}
-                                <span class="badge bg-success">{{ $order['payment_status'] ?? 'Unknown' }}</span>
+                                {{ Str::title(str_replace('_', ' ', $order->payment_method ?? 'Unknown')) }}
+                                {{-- Use the status_badge_class accessor for payment_status if appropriate, or specific logic --}}
+                                <span class="badge {{ $order->payment_status == 'paid' ? 'bg-success' : 'bg-warning text-dark' }}">{{ Str::title($order->payment_status ?? 'Unknown') }}</span>
                             </p>
                         </div>
 
@@ -137,46 +173,50 @@
                             @method('PUT')
                             <div class="mb-3">
                                 <h6>Order Status</h6>
-                                <select name="status" class="form-select mb-2" required>
-                                    <option value="Pending" {{ $order->orders_status  == 'Pending' ? 'selected' : '' }}>Pending
-                                    </option>
-                                    <option value="Processing" {{ $order->orders_status  == 'Processing' ? 'selected' : '' }}>
-                                        Processing</option>
-                                    <option value="Shipped" {{ $order->orders_status  == 'Shipped' ? 'selected' : '' }}>Shipped
-                                    </option>
-                                    <option value="Delivered" {{$order->orders_status  == 'Delivered' ? 'selected' : '' }}>
-                                        Delivered</option>
-                                    <option value="Cancelled" {{$order->orders_status  == 'Cancelled' ? 'selected' : '' }}>
-                                        Cancelled</option>
+                                <select name="status" class="form-select mb-2" required {{ strtolower($order->orders_status) === 'delivered' || strtolower($order->orders_status) === 'cancelled' ? 'disabled' : '' }}>
+                                    {{-- Use object access for current status --}}
+                                    <option value="Pending" {{ strtolower($order->orders_status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="Processing" {{ strtolower($order->orders_status) == 'processing' ? 'selected' : '' }}>Processing</option>
+                                    <option value="Shipped" {{ strtolower($order->orders_status) == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                    <option value="Delivered" {{ strtolower($order->orders_status) == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                    <option value="Cancelled" {{ strtolower($order->orders_status) == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                                 </select>
+                                @if(strtolower($order->orders_status) !== 'delivered' && strtolower($order->orders_status) !== 'cancelled')
                                 <button type="submit" class="btn btn-primary w-100">Update Status</button>
+                                @else
+                                <button type="submit" class="btn btn-primary w-100" disabled>Update Status</button>
+                                @endif
                             </div>
                         </form>
 
                         <hr>
 
                         <div class="order-totals">
-                            <div class="d-flex justify-content-between mb-2">
+                            {{-- Use object access for order totals --}}
+                            <div class="d-flex justify-content-between mb-1">
                                 <span>Subtotal:</span>
-                                <span>Rp {{ number_format($order['subtotal'] ?? 0, 2) }}</span>
+                                <span>Rp {{ number_format($order->subtotal ?? 0, 0, ',', '.') }}</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
+                            <div class="d-flex justify-content-between mb-1">
                                 <span>Shipping:</span>
-                                <span>Rp {{ number_format($order['shipping_fee'] ?? 0, 2) }}</span>
+                                <span>Rp {{ number_format($order->shipping_fee ?? 0, 0, ',', '.') }}</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
+                             @if(isset($order->tax) && $order->tax > 0)
+                            <div class="d-flex justify-content-between mb-1">
                                 <span>Tax:</span>
-                                <span>Rp {{ number_format($order['tax'], 2) }}</span>
+                                <span>Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
                             </div>
-                            @if ($order['voucher_discount'] > 0)
-                                <div class="d-flex justify-content-between mb-2 text-success">
+                            @endif
+                            @if (isset($order->voucher_discount) && $order->voucher_discount > 0)
+                                <div class="d-flex justify-content-between mb-1 text-success">
                                     <span>Voucher Discount:</span>
-                                    <span>- Rp {{ number_format($order['voucher_discount'] ?? 0, 2) }}</span>
+                                    <span>- Rp {{ number_format($order->voucher_discount, 0, ',', '.') }}</span>
                                 </div>
                             @endif
-                            <div class="d-flex justify-content-between fw-bold">
+                            <div class="d-flex justify-content-between fw-bold mt-2 pt-2 border-top">
                                 <span>Total:</span>
-                                <span>Rp {{ number_format($order['total'] ?? 0, 2) }}</span>
+                                {{-- Use 'total' or 'orders_total_price' from your Order model --}}
+                                <span>Rp {{ number_format($order->total ?? $order->orders_total_price ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Container\Attributes\Log;
 
 class AdminOrderController extends Controller
@@ -22,7 +24,7 @@ class AdminOrderController extends Controller
     public function index(Request $request)
     {
         $query = Order::with('user')
-                       ->orderBy('orders_date', 'desc');
+            ->orderBy('orders_date', 'desc');
 
         if ($request->filled('order_id')) {
             $query->where('orders_id', 'like', '%' . $request->order_id . '%');
@@ -51,7 +53,7 @@ class AdminOrderController extends Controller
             $query->where('orders_total_price', '<=', $request->amount_max);
         }
         if ($request->filled('amount_more_than') && $request->filled('amount_min')) {
-             $query->where('orders_total_price', '>', $request->amount_min);
+            $query->where('orders_total_price', '>', $request->amount_min);
         }
 
         $orders = $query->paginate(10)->withQueryString();
@@ -64,34 +66,9 @@ class AdminOrderController extends Controller
 
     public function show($id) // Assuming $id is orders_id
     {
-        // Eager load user and order items
-        // **ASSUMPTION**: You have an 'items' relationship in your Order model
-        // for order details/products
-        $order = Order::with(['user', 'items', 'items.product']) // Example: items.product to get product name
-                      ->where('orders_id', $id) // Use your actual order ID column
-                      ->firstOrFail(); // Fails with 404 if not found
-
-        // You might not need to manually set these if your models/accessors handle them
-        // $order->customer_name = $order->user ? $order->user->users_name : 'Unknown Customer';
-        // $order->payment_status = ucfirst($order->payment_status ?? 'Unpaid');
+        $order = Order::with(['user', 'orderDetails.product']) // 'user' for customer, 'details' for order items, 'details.product' to get product info for each item
+            ->findOrFail($id); // $id is the orders_id
 
         return view('admin.orders.show', compact('order'));
-    }
-    public function updateStatus(Request $request, $id)
-    {
-        // Validate the incoming request
-        $request->validate([
-            'status' => 'required|string|in:Pending,Processing,Shipped,Delivered,Canceled', // Adjust statuses as needed
-        ]);
-
-        // Find the order by its ID
-        $order = Order::findOrFail($id);
-
-        // Update the order's status
-        $order->orders_status = $request->status;
-        $order->save();
-
-        // Redirect back with a success message
-        return redirect()->route('admin.orders')->with('success', 'Order status updated successfully.');
     }
 }

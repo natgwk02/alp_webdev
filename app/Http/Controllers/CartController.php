@@ -44,34 +44,9 @@ class CartController extends Controller
         ));
     }
 
-    public function addToCart(Request $request)
-    {
-        $productId = $request->input('product_id');
-        // Get the product details from the database
-        $product = Product::find($productId);
-
-        if (!$product) {
-            return redirect()->back()->with('error', 'Product not found.');
-        }
-
-        // Get the current user's cart, or create one if it doesn't exist
-        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
-
-        $cartItem = CartItem::firstOrNew([
-            'cart_id' => $cart->id,
-            'products_id' => $productId
-        ]);
-
-        $cartItem->quantity += (int) $request->input('quantity', 1);
-        $cartItem->save();
-
-        if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Item added to cart.']);
-        }
-
-        return back()->with('success', 'Item added to cart.');
-
-        if (session()->has('is_guest')) {
+public function addToCart(Request $request, $productId)
+{
+    if (session()->has('is_guest')) {
         return response()->json(['message' => 'Guests cannot add to cart.'], 403);
     }
 
@@ -79,16 +54,39 @@ class CartController extends Controller
         return response()->json(['success' => false, 'message' => 'Please login.'], 403);
     }
 
+    // Ambil product_id dari route atau form input
+    $productId = $productId ?? $request->input('product_id');
+
+    // Cek apakah produk ada
+    $product = Product::find($productId);
+    if (!$product) {
+        return response()->json(['success' => false, 'message' => 'Product not found.'], 404);
+    }
+
+    // Ambil cart user atau buat baru
     $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+
+    // Tambahkan item ke cart
     $cartItem = CartItem::firstOrNew([
         'cart_id' => $cart->id,
-        'product_id' => $productId
+        'products_id' => $productId,
     ]);
 
+    // Atur jumlah quantity awal jika belum ada
+    if (!$cartItem->exists) {
+        $cartItem->quantity = 0;
+    }
+
     $cartItem->quantity += (int) $request->input('quantity', 1);
+    $cartItem->products_id = $productId; // Pastikan field ini terisi
     $cartItem->save();
 
-    return redirect()->back()->with('success', 'Product added to cart.');
+    // Respon berbeda tergantung apakah dari AJAX atau tidak
+    if ($request->ajax()) {
+        return response()->json(['success' => true, 'message' => 'Item added to cart.']);
+    }
+
+    return back()->with('success', 'Item added to cart.');
 }
 
     /**
@@ -156,6 +154,9 @@ class CartController extends Controller
      */
     private function calculateSubtotal($cart)
     {
+        if (!$cart || !$cart->relationLoaded('items')) {
+        $cart->load('items.product'); 
+    }
         return $cart->items->sum(function ($item) {
 
             if ($item->product && isset($item->product->orders_price)) {
@@ -173,6 +174,7 @@ class CartController extends Controller
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'You must be logged in to apply a voucher.');
         }
+        
 
         $validVouchers = [
             'CHILLBRO' => ['min' => 200000, 'discount' => 50000],
@@ -181,35 +183,35 @@ class CartController extends Controller
         ];
 
         $code = strtoupper($request->input('voucher_code'));
-        $cart = Cart::where('users_id', Auth::id())->first();
-        $subtotal = $this->calculateSubtotal($cart); // Subtotal for voucher validation (whole cart)
+        $cart = Cart::with('items.product')->where('users_id', Auth::id())->first();
+        $selectedItems = explode(',', $request->input('selected_items_voucher', ''));
+        $subtotal = $cart->items->filter(function ($item) use ($selectedItems) {
+        return in_array((string) $item->products_id, $selectedItems);
+    })->sum(function ($item) {
+        return $item->product->orders_price * $item->quantity;
+    });
 
-        // Get selected items from the form to flash back for UI persistence
-        $selectedItemsForRedirect = [];
-        if ($request->has('selected_items_voucher') && !empty($request->input('selected_items_voucher'))) {
-            $selectedItemsForRedirect = explode(',', $request->input('selected_items_voucher'));
-        }
+    if (!array_key_exists($code, $validVouchers)) {
+        return back()->withInput()->with('voucher_error', 'Invalid voucher code.')
+            ->with('selected_items_on_load', $selectedItems);
+    }
 
-        if (!array_key_exists($code, $validVouchers)) {
-            return back()->withInput()->with('voucher_error', 'Invalid voucher code.')
-                ->with('selected_items_on_load', $selectedItemsForRedirect);
-        }
+    $voucher = $validVouchers[$code];
 
-        $voucher = $validVouchers[$code];
+    if (isset($voucher['min']) && $subtotal < $voucher['min']) {
+        return back()->withInput()->with('voucher_error', 'Voucher ' . $code . ' requires minimum purchase of Rp' . number_format($voucher['min'], 0, ',', '.'))
+            ->with('selected_items_on_load', $selectedItems);
+    }
 
-        if (isset($voucher['min']) && $subtotal < $voucher['min']) {
-            return back()->withInput()->with('voucher_error', 'Voucher ' . $code . ' requires minimum purchase of Rp' . number_format($voucher['min'], 0, ',', '.'))
-                ->with('selected_items_on_load', $selectedItemsForRedirect);
-        }
+    // Simpan selected items juga ke session (optional)
+    session([
+        'voucher_code' => $code,
+        'voucher_discount' => $voucher['discount'],
+        'selected_items_on_load' => $selectedItems, // supaya ke-load lagi setelah redirect
+    ]);
 
-        // Store voucher info in regular session for display and calculation
-        session([
-            'voucher_code' => $code,
-            'voucher_discount' => $voucher['discount']
-        ]);
-
-        return back()->with('voucher_success', 'Voucher applied successfully!') // This message is generic
-            ->with('selected_items_on_load', $selectedItemsForRedirect);
+    return back()->with('voucher_success', 'Voucher applied successfully!')
+        ->with('selected_items_on_load', $selectedItems);
     }
 
     public function removeVoucher(Request $request)

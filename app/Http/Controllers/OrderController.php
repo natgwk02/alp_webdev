@@ -25,7 +25,7 @@ class OrderController extends Controller
                     'orders_status' => $order->orders_status,
                     'created_at' => $order->created_at,
                     'total' => $order->total,
-                    'items' => $order->orderDetails->map(function ($detail) {
+                    'items' => $order->items->map(function ($detail) {
                         $productName = 'Unknown Product';
                         $productImage = 'no-image.png';
 
@@ -70,7 +70,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with(['orderDetails.product'])
+        $order = Order::with(['items.product'])
             ->where('orders_id', $id)
             ->where('users_id', Auth::id())
             ->firstOrFail();
