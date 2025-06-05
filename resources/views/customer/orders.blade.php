@@ -57,22 +57,21 @@
                                         @endphp
 
                                         @if (!$alreadyRated)
-                                            <form action="{{ route('ratings.store') }}" method="POST" class="d-flex align-items-center gap-2 mt-2">
+                                            <form action="{{ route('ratings.store') }}" method="POST" class="ms-auto d-flex align-items-center mt-2">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
-                                                <label for="rating" class="form-label mb-0 small">Rating:</label>
-                                                <select name="rating" class="form-select form-select-sm w-auto" required>
-                                                    <option value="">Select</option>
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
-                                                    @endfor
-                                                </select>
-                                                <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                                                <span class="me-2 small text-muted">Beri Rating:</span>
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <button type="submit" name="rating" value="{{ $i }}" class="btn btn-link p-0 border-0">
+                                                        <i class="bi bi-star text-warning fs-5"></i>
+                                                    </button>
+                                                @endfor
                                             </form>
                                         @else
                                             <div class="text-success small mt-2">You already rated this product.</div>
                                         @endif
                                     @endif
+
                                 </div>
 
                                 <div class="fw-bold text-dark">

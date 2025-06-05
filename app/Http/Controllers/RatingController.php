@@ -21,10 +21,10 @@ class RatingController extends Controller
         $productId = $request->product_id;
 
         // ✅ Cek apakah user pernah menyelesaikan pesanan untuk produk ini
-        $hasCompletedOrder = OrderDetail::where('product_id', $productId)
+        $hasCompletedOrder = OrderDetail::where('products_id', $productId)
             ->whereHas('order', function ($query) use ($userId) {
-                $query->where('user_id', $userId)
-                      ->where('status', 'completed'); // sesuaikan dengan nama status kamu
+                $query->where('users_id', $userId)
+                      ->where('orders_status', 'Delivered'); // sesuaikan dengan nama status kamu
             })
             ->exists();
 
