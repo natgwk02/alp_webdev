@@ -17,9 +17,6 @@ public function checkStatus(Order $order)
 
     public function updateStatus(Request $request, Order $order)
     {
-        // Logika untuk memperbarui status pembayaran
-        // Misalnya dari callback payment gateway
-        
         $order->update(['status' => $request->status]);
         
         return redirect()->route('payment.status', $order)
