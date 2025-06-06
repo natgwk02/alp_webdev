@@ -46,9 +46,9 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.
 
 
 // Admin Routes
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['auth'])->name('admin.dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('/admin/sales-trend-data', [AdminController::class, 'getSalesTrendData'])->name('admin.salesTrendData');
 

@@ -62,7 +62,7 @@ class User extends Authenticatable
     {
         return match ($this->role) {
             'admin' => '/dashboard',
-            default => '/home',
+            'customer' => '/home',
         };
     }
 

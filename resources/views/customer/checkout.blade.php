@@ -162,72 +162,7 @@
                         </div>
                     </div>
 
-                    <div class="card shadow-sm" style="background-color: white;">
-                        <div class="card-header bg-white">
-                            <h4 class="mb-0">Payment Method *</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input @error('paymentMethod') is-invalid @enderror"
-                                        type="radio" name="paymentMethod" id="creditCard" value="creditCard"
-                                        {{ old('paymentMethod', 'creditCard') == 'creditCard' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="creditCard">
-                                        <i class="fab fa-cc-visa me-2"></i>Credit Card
-                                    </label>
-                                </div>
-                                <div id="creditCardForm"
-                                    class="mt-3 {{ old('paymentMethod', 'creditCard') != 'creditCard' ? 'd-none' : '' }}">
-                                    <div class="row">
-                                        <div class="col-12 mb-3">
-                                            <label for="cardNumber" class="form-label">Card Number</label>
-                                            <input type="text" class="form-control" id="cardNumber"
-                                                placeholder="1234 5678 9012 3456">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="expiryDate" class="form-label">Expiry Date</label>
-                                            <input type="text" class="form-control" id="expiryDate"
-                                                placeholder="MM/YY">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="cvv" class="form-label">CVV</label>
-                                            <input type="text" class="form-control" id="cvv" placeholder="123">
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <label for="cardName" class="form-label">Name on Card</label>
-                                            <input type="text" class="form-control" id="cardName"
-                                                placeholder="John Doe">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input @error('paymentMethod') is-invalid @enderror"
-                                        type="radio" name="paymentMethod" id="paypal" value="paypal"
-                                        {{ old('paymentMethod') == 'paypal' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="paypal">
-                                        <i class="fab fa-paypal me-2"></i>PayPal
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input @error('paymentMethod') is-invalid @enderror"
-                                        type="radio" name="paymentMethod" id="bankTransfer" value="bankTransfer"
-                                        {{ old('paymentMethod') == 'bankTransfer' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="bankTransfer">
-                                        <i class="fas fa-university me-2"></i>Bank Transfer
-                                    </label>
-                                </div>
-                            </div>
-                            @error('paymentMethod')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
                 </div>
                 <div class="col-md-4 order-summary-sticky">
                     <div class="card shadow-sm" style="background-color: white;">
