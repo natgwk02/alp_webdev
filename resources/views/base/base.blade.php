@@ -18,15 +18,26 @@
 </head>
 
 <body>
-    @if (!Request::is('login') && !Request::is('register') && !Request::is('forgot-password'))
+   @if (
+        !Request::is('login') &&
+        !Request::is('register') &&
+        !Request::is('forgot-password') &&
+        !Request::is('reset-password-form')
+    )
         @include('includes.header')
     @endif
 
     @yield('content')
 
-    @if (!Request::is('login') && !Request::is('register') && !Request::is('forgot-password'))
+    @if (
+        !Request::is('login') &&
+        !Request::is('register') &&
+        !Request::is('forgot-password') &&
+        !Request::is('reset-password-form')
+    )
         @include('includes.footer')
     @endif
+
 
 
 </body>

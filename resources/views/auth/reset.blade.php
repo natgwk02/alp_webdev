@@ -11,12 +11,17 @@
     body {
       background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
       font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
       margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .login-wrapper {
-      max-width: 960px;
-      margin: auto;
+      width: 960px;
+      height: 750px;
       display: flex;
       background-color: white;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -24,14 +29,18 @@
       border-radius: 12px;
       flex-direction: row;
     }
+
     .left-panel, .right-panel {
       width: 50%;
+      height: 100%;
     }
+
     .carousel-item img {
       height: 100%;
       width: 100%;
       object-fit: cover;
     }
+
     .carousel-caption-overlay {
       background-color: rgba(0, 0, 0, 0.3);
       position: absolute;
@@ -41,6 +50,7 @@
       height: 100%;
       z-index: 1;
     }
+
     .carousel-caption-text {
       z-index: 2;
       position: absolute;
@@ -48,6 +58,7 @@
       left: 20px;
       color: white;
     }
+
     .right-panel {
       padding: 50px 40px;
       display: flex;
@@ -55,10 +66,20 @@
       justify-content: center;
       align-items: center;
     }
+
     .form-control {
       border-radius: 10px;
       padding: 12px 15px;
+      background-color: #f8fbff;
+      border: 1px solid #ccddee;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
+
+    .form-control:focus {
+      border-color: #84b8ff;
+      box-shadow: 0 0 0 3px rgba(118, 174, 241, 0.2);
+    }
+
     .btn-blue {
       background-color: #052659;
       color: #fff;
@@ -67,17 +88,22 @@
       font-weight: 600;
       width: 100%;
       border: none;
+      transition: background-color 0.3s ease;
     }
+
     .btn-blue:hover {
       background-color: #084c8b;
     }
+
     .text-link {
       color: #052659;
       text-decoration: underline;
     }
+
     .text-link:hover {
       text-decoration: none;
     }
+
     .toggle-password {
       position: absolute;
       right: 15px;
@@ -88,20 +114,45 @@
       cursor: pointer;
       z-index: 2;
     }
+
+    .toggle-password:hover {
+      color: #052659;
+    }
+
     .password-wrapper {
       position: relative;
     }
+
     .password-wrapper .form-control {
       padding-right: 45px;
     }
+
     @media (max-width: 992px) {
-      .login-wrapper { flex-direction: column; }
-      .left-panel { width: 100%; height: 250px; display: block; }
-      .carousel-item img { object-fit: cover; height: 100%; }
-      .right-panel { width: 100%; padding: 30px 20px; }
+      body {
+        display: block;
+      }
+
+      .login-wrapper {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .left-panel {
+        width: 100%;
+        height: 250px;
+      }
+
+      .right-panel {
+        width: 100%;
+        padding: 30px 20px;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="login-wrapper">
     <!-- LEFT: Carousel -->
@@ -134,29 +185,33 @@
 
     <!-- RIGHT: Reset Password Form -->
     <div class="right-panel">
-      <div class="text-center w-100" style="max-width: 360px;">
-        <h4 class="fw-bold mb-2" style="color: #052659;">Reset Your Password</h4>
+      <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="max-width: 400px;">
+        <img src="{{ asset('images/securitylock.png') }}" alt="Reset Password" style="width: 80px; margin-bottom: 20px;">
+        <h3 class="fw-bold text-center mb-2" style="color: #052659;">Reset Your Password</h3>
+        <p class="text-muted text-center mb-4" style="font-size: 0.95rem;">
+          Set a new secure password for your account below.
+        </p>
 
         @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
+          <div class="alert alert-danger w-100">{{ session('error') }}</div>
         @endif
 
-        <form method="POST" action="{{ route('password.update.step') }}">
+        <form method="POST" action="{{ route('password.update.step') }}" class="w-100">
           @csrf
           <input type="hidden" name="email" value="{{ session('email_verified') }}">
 
-          <div class="mb-3 text-start">
+          <div class="mb-3">
             <label for="password" class="form-label">New Password</label>
             <div class="password-wrapper">
               <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="New password" required>
               <i class="fa fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
               @error('password')
-              <div class="invalid-feedback">{{ $message }}</div>
+                <div class="invalid-feedback">{{ $message }}</div>
               @enderror
             </div>
           </div>
 
-          <div class="mb-3 text-start">
+          <div class="mb-3">
             <label for="password_confirmation" class="form-label">Confirm Password</label>
             <div class="password-wrapper">
               <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm password" required>
@@ -164,10 +219,10 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-blue">Reset Password</button>
+          <button type="submit" class="btn-blue w-100 mt-2">Reset Password</button>
         </form>
 
-        <div class="mt-3 text-center">
+        <div class="mt-3">
           <a href="{{ route('login') }}" class="text-link">&larr; Back to Login</a>
         </div>
       </div>

@@ -12,6 +12,7 @@
       background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
       font-family: 'Segoe UI', sans-serif;
       padding: 20px;
+      min-height: 100vh; 
       margin: 0;
     }
     .login-wrapper {
@@ -117,51 +118,60 @@
       </div>
     </div>
 
-    <!-- RIGHT: Forgot Password Form -->
-    <div class="right-panel">
-      <div class="text-center w-100" style="max-width: 360px;">
-        <img src="/assets/forget-imagee.png" alt="Forgot Password Illustration" class="forgot-image">
+    <!-- RIGHT: Forgot Password Form (tanpa card) -->
+<div class="right-panel">
+  <div class="w-100" style="max-width: 400px;">
+    <div class="text-center mb-4">
+      <img src="/assets/forget-imagee.png" alt="Forgot Illustration" class="forgot-image" style="width: 180px; margin-bottom: 20px;">
+      <h4 class="fw-bold" style="color: #052659;">Forgot Your Password?</h4>
+      <p class="text-muted small mb-4">We'll send a 6-digit OTP to your email address</p>
+    </div>
 
-        <h4 class="fw-bold mb-2" style="color: #052659;">Forgot Your Password?</h4>
-        <p class="text-muted mb-3">Enter your email to receive a 6-digit OTP code.</p>
+    @if (session('status'))
+      <div class="alert alert-success text-sm">{{ session('status') }}</div>
+    @endif
 
-        @if (session('status'))
-        <div class="alert alert-success">{{ session('status') }}</div>
-        @endif
-
-        @if (!session('otp_sent'))
-        <form method="POST" action="{{ route('password.email') }}">
-          @csrf
-          <div class="mb-3 text-start">
-            <label for="email" class="form-label">Email address</label>
-            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
-            @error('email')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-          </div>
-          <button type="submit" class="btn-blue">Send OTP Code</button>
-        </form>
-        @else
-        <form method="POST" action="{{ route('password.otp.step') }}">
-          @csrf
-          <input type="hidden" name="email" value="{{ session('email') }}">
-          <div class="mb-3 text-start">
-            <label for="otp" class="form-label">Enter OTP Code</label>
-            <input type="text" name="otp" class="form-control @error('otp') is-invalid @enderror" required>
-            @error('otp')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-          </div>
-          <button type="submit" class="btn-blue">Verify OTP</button>
-        </form>
-        @endif
-
-        <div class="mt-3 text-center">
-          <a href="{{ route('login') }}" class="text-link">&larr; Back to Login</a>
+    @if (!session('otp_sent'))
+    <!-- Send OTP form -->
+    <form method="POST" action="{{ route('password.email') }}">
+      @csrf
+      <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fa fa-envelope text-secondary"></i></span>
+          <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Enter your email" required value="{{ old('email') }}">
         </div>
+        @error('email')
+        <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
       </div>
+      <button type="submit" class="btn-blue w-100">Send OTP Code</button>
+    </form>
+    @else
+    <!-- OTP Verification -->
+    <form method="POST" action="{{ route('password.otp.step') }}">
+      @csrf
+      <input type="hidden" name="email" value="{{ session('email') }}">
+      <div class="mb-3">
+        <label for="otp" class="form-label">Enter OTP Code</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fa fa-key text-secondary"></i></span>
+          <input type="text" name="otp" class="form-control @error('otp') is-invalid @enderror" placeholder="6-digit code" required>
+        </div>
+        @error('otp')
+        <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+      </div>
+      <button type="submit" class="btn-blue w-100">Verify OTP</button>
+    </form>
+    @endif
+
+    <div class="text-center mt-4">
+      <a href="{{ route('login') }}" class="text-link small">&larr; Back to Login</a>
     </div>
   </div>
+</div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
