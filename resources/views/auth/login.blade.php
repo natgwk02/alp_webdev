@@ -164,7 +164,7 @@
     <div class="right-panel">
       <div class="w-100" style="max-width: 360px; margin: auto;">
         <h4 class="fw-bold mb-2" style="color: #052659;">Welcome Back to Chillé Mart!</h4>
-        <p class="text-muted mb-3">Sign in to continue</p>
+        <p class="text-muted mb-3">Sign in to explore fresh picks just for you</p>
 
         @if ($errors->has('users_email'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">

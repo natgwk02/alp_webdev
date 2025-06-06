@@ -203,8 +203,10 @@
           <div class="mb-3">
             <label for="password" class="form-label">New Password</label>
             <div class="password-wrapper">
-              <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="New password" required>
-              <i class="fa fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+              <input type="password" id="password" name="password"
+                     class="form-control @error('password') is-invalid @enderror"
+                     placeholder="New password" required>
+              <i class="fa fa-eye toggle-password" id="togglePasswordIcon" onclick="togglePassword('password', this)"></i>
               @error('password')
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror
@@ -214,7 +216,8 @@
           <div class="mb-3">
             <label for="password_confirmation" class="form-label">Confirm Password</label>
             <div class="password-wrapper">
-              <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm password" required>
+              <input type="password" id="password_confirmation" name="password_confirmation"
+                     class="form-control" placeholder="Confirm password" required>
               <i class="fa fa-eye toggle-password" onclick="togglePassword('password_confirmation', this)"></i>
             </div>
           </div>
@@ -242,6 +245,23 @@
         icon.classList.replace("fa-eye-slash", "fa-eye");
       }
     }
+
+    function handlePasswordInput() {
+      const field = document.getElementById("password");
+      const icon = document.getElementById("togglePasswordIcon");
+
+      if (field.classList.contains("is-invalid")) {
+        icon.style.display = "none";
+      } else {
+        icon.style.display = field.value.length > 0 ? "block" : "none";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const passwordField = document.getElementById("password");
+      passwordField.addEventListener("input", handlePasswordInput);
+      handlePasswordInput(); // initial
+    });
   </script>
 </body>
 @endsection

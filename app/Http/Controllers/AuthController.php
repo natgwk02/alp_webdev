@@ -184,29 +184,35 @@ public function resetPassword(Request $request)
 
 }
    public function verifyOtpStep(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email|exists:users,users_email',
-        'otp' => 'required|digits:6',
-    ]);
+    {
+        // Gabungkan array otp menjadi string
+        $otpCode = implode('', $request->input('otp'));
 
-    // Cek OTP
-    $record = DB::table('password_reset_tokens')
-        ->where('email', $request->email)
-        ->where('token', $request->otp)
-        ->first();
+        // Validasi
+        $request->validate([
+            'email' => 'required|email|exists:users,users_email',
+            'otp' => ['required', 'array', 'size:6'],
+            'otp.*' => ['required', 'digits:1'], // Setiap input wajib angka 1 digit
+        ]);
 
-    if (!$record) {
-        return back()->withErrors(['otp' => 'The OTP code is invalid or has expired.']);
+        // Cek OTP di database
+        $record = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $otpCode)
+            ->first();
+
+        if (!$record) {
+            return back()->withErrors(['otp' => 'The OTP code is invalid or has expired.']);
+        }
+
+        // OTP valid, simpan session
+        session([
+            'otp_verified' => true,
+            'email_verified' => $request->email,
+        ]);
+
+        return redirect()->route('password.reset.form');
     }
 
-    // OTP valid, simpan ke session untuk akses halaman reset
-    session([
-        'otp_verified' => true,
-        'email_verified' => $request->email,
-    ]);
-
-    return redirect()->route('password.reset.form');
 }
 
-}
