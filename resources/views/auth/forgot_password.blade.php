@@ -1,132 +1,168 @@
 @extends('base.base')
-@section('title', 'Forgot Password')
 
 @section('content')
-<style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password - Chillé Mart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
     body {
-        background: url('/images/background.jpg') no-repeat center center fixed;
-        background-size: cover;
-        font-family: 'Segoe UI', sans-serif;
-        margin: 0;
+      background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      margin: 0;
     }
-
-    .auth-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
+    .login-wrapper {
+      max-width: 960px;
+      margin: auto;
+      display: flex;
+      background-color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      border-radius: 12px;
+      flex-direction: row;
     }
-
-    .auth-card {
-        background-color: rgba(255, 255, 255, 0.95);
-        padding: 40px 30px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 420px;
-        text-align: center;
+    .left-panel, .right-panel {
+      width: 50%;
     }
-
-    .auth-card img {
-        width: 100px;
-        margin-bottom: 20px;
+    .carousel-item img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
     }
-
-    .auth-card h4 {
-        font-weight: bold;
-        color: #052659;
-        margin-bottom: 10px;
+    .carousel-caption-overlay {
+      background-color: rgba(0, 0, 0, 0.3);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
     }
-
+    .carousel-caption-text {
+      z-index: 2;
+      position: absolute;
+      bottom: 20px; left: 20px;
+      color: white;
+    }
+    .right-panel {
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
     .form-control {
-        border-radius: 12px;
-        padding: 12px 15px;
-        font-size: 0.95rem;
-        margin-bottom: 20px;
+      border-radius: 10px;
+      padding: 12px 15px;
     }
-
     .btn-blue {
-        background-color: #052659;
-        color: white;
-        padding: 12px;
-        border: none;
-        border-radius: 12px;
-        font-weight: 600;
-        width: 100%;
-        transition: 0.3s;
+      background-color: #052659;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 600;
+      width: 100%;
+      border: none;
     }
-
     .btn-blue:hover {
-        background-color: #c1e8ff;
-        color: #052659;
+      background-color: #084c8b;
     }
-
     .text-link {
-        font-size: 0.9rem;
-        color: #052659;
-        text-decoration: none;
+      color: #052659;
+      text-decoration: underline;
     }
-
     .text-link:hover {
-        text-decoration: underline;
+      text-decoration: none;
     }
-
-    .truncate-link {
-        word-break: break-word;
-        font-size: 0.9rem;
+    .forgot-image {
+      width: 150px;
+      margin-bottom: 20px;
     }
-</style>
+    @media (max-width: 992px) {
+      .login-wrapper { flex-direction: column; }
+      .left-panel { width: 100%; height: 250px; display: block; }
+      .carousel-item img { object-fit: cover; height: 100%; }
+      .right-panel { width: 100%; padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <!-- LEFT: Carousel -->
+    <div class="left-panel">
+      <div id="carouselExample" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-inner h-100">
+          <div class="carousel-item active position-relative h-100">
+            <img src="{{ asset('images/chille5.png') }}" alt="Slide 1">
+            <div class="carousel-caption-overlay"></div>
+            <div class="carousel-caption-text">
+              <h5 class="fw-bold">Delivered fresh, right to your freezer</h5>
+              <p class="mb-0 small">Schedule your visit in just a few clicks</p>
+            </div>
+          </div>
+          <div class="carousel-item position-relative h-100">
+            <img src="{{ asset('images/chille6.jpg') }}" alt="Slide 2">
+            <div class="carousel-caption-overlay"></div>
+            <div class="carousel-caption-text">
+              <h5 class="fw-bold">Shop. Chill. Repeat</h5>
+              <p class="mb-0 small">Your daily chill starts here</p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-indicators position-absolute bottom-0 start-0 ms-4 mb-4 z-2">
+          <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></button>
+          <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1"></button>
+        </div>
+      </div>
+    </div>
 
-<div class="auth-wrapper">
-    <div class="auth-card">
-        <img src="/assets/forget-imagee.png" alt="Forgot Password Illustration">
+    <!-- RIGHT: Forgot Password Form -->
+    <div class="right-panel">
+      <div class="text-center w-100" style="max-width: 360px;">
+        <img src="/assets/forget-imagee.png" alt="Forgot Password Illustration" class="forgot-image">
 
-        <h4>Forgot Password</h4>
-        <p class="mb-4 text-muted">Enter your email to receive a 6-digit OTP code.</p>
+        <h4 class="fw-bold mb-2" style="color: #052659;">Forgot Your Password?</h4>
+        <p class="text-muted mb-3">Enter your email to receive a 6-digit OTP code.</p>
 
         @if (session('status'))
-            <div class="alert alert-success text-start">
-                {{ session('status') }}
-            </div>
+        <div class="alert alert-success">{{ session('status') }}</div>
         @endif
 
         @if (!session('otp_sent'))
-            {{-- Step 1: Request OTP --}}
-            <form method="POST" action="{{ route('password.email') }}">
-                @csrf
-
-                <input type="email" name="email"
-                       class="form-control @error('email') is-invalid @enderror"
-                       placeholder="Email Address" value="{{ old('email') }}" required>
-
-                @error('email')
-                    <div class="invalid-feedback text-start">{{ $message }}</div>
-                @enderror
-
-                <button type="submit" class="btn-blue">Send OTP Code</button>
-            </form>
+        <form method="POST" action="{{ route('password.email') }}">
+          @csrf
+          <div class="mb-3 text-start">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
+            @error('email')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+          <button type="submit" class="btn-blue">Send OTP Code</button>
+        </form>
         @else
-            {{-- Step 2: Enter OTP Only --}}
-            <form method="POST" action="{{ route('password.otp.step') }}">
-                @csrf
-                <input type="hidden" name="email" value="{{ session('email') }}">
-
-                <input type="text" name="otp"
-                       class="form-control @error('otp') is-invalid @enderror"
-                       placeholder="Enter OTP Code" required>
-
-                @error('otp')
-                    <div class="invalid-feedback text-start">{{ $message }}</div>
-                @enderror
-
-                <button type="submit" class="btn-blue">Verify OTP</button>
-            </form>
+        <form method="POST" action="{{ route('password.otp.step') }}">
+          @csrf
+          <input type="hidden" name="email" value="{{ session('email') }}">
+          <div class="mb-3 text-start">
+            <label for="otp" class="form-label">Enter OTP Code</label>
+            <input type="text" name="otp" class="form-control @error('otp') is-invalid @enderror" required>
+            @error('otp')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+          <button type="submit" class="btn-blue">Verify OTP</button>
+        </form>
         @endif
 
-        <div class="mt-3">
-            <a href="{{ route('login') }}" class="text-link">← Back to Login</a>
+        <div class="mt-3 text-center">
+          <a href="{{ route('login') }}" class="text-link">&larr; Back to Login</a>
         </div>
+      </div>
     </div>
-</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 @endsection

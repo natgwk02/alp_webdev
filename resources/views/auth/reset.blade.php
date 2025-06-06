@@ -1,153 +1,192 @@
 @extends('base.base')
-@section('title', 'Reset Password')
 
 @section('content')
-<style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password - Chillé Mart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
     body {
-        background: url('/images/background.jpg') no-repeat center center fixed;
-        background-size: cover;
-        font-family: 'Segoe UI', sans-serif;
-        margin: 0;
+      background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      margin: 0;
     }
-
-    .forgot-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
+    .login-wrapper {
+      max-width: 960px;
+      margin: auto;
+      display: flex;
+      background-color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      border-radius: 12px;
+      flex-direction: row;
     }
-
-    .forgot-card {
-        background-color: rgba(240, 240, 240, 0.95);
-        padding: 40px;
-        border-radius: 18px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 420px;
-        text-align: center;
+    .left-panel, .right-panel {
+      width: 50%;
     }
-
-    .forgot-card h2 {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #224488;
-        margin-bottom: 20px;
+    .carousel-item img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
     }
-
+    .carousel-caption-overlay {
+      background-color: rgba(0, 0, 0, 0.3);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    .carousel-caption-text {
+      z-index: 2;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: white;
+    }
+    .right-panel {
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
     .form-control {
-        border-radius: 10px;
-        padding: 12px 15px;
-        font-size: 0.95rem;
-        margin-bottom: 20px;
-        border: 1px solid #ccddee;
-        background-color: #f8fbff;
+      border-radius: 10px;
+      padding: 12px 15px;
     }
-
     .btn-blue {
-        background-color: #224488;
-        color: white;
-        padding: 12px;
-        width: 100%;
-        border: none;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: 0.3s;
+      background-color: #052659;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 600;
+      width: 100%;
+      border: none;
     }
-
     .btn-blue:hover {
-        background-color: #C1E8FF;
-        color: #224488;
+      background-color: #084c8b;
     }
-
-    .back-link {
-        display: block;
-        margin-top: 20px;
-        color: #224488;
-        font-size: 0.9rem;
-        text-decoration: none;
+    .text-link {
+      color: #052659;
+      text-decoration: underline;
     }
-
-    .back-link:hover {
-        text-decoration: underline;
+    .text-link:hover {
+      text-decoration: none;
     }
-
-    .password-wrapper {
-        position: relative;
-    }
-
     .toggle-password {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 1rem;
-        color: #888;
-        cursor: pointer;
-        z-index: 2;
-        height: 20px;
-        width: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      color: #888;
+      cursor: pointer;
+      z-index: 2;
     }
-
+    .password-wrapper {
+      position: relative;
+    }
     .password-wrapper .form-control {
-        padding-right: 45px;
+      padding-right: 45px;
     }
-</style>
+    @media (max-width: 992px) {
+      .login-wrapper { flex-direction: column; }
+      .left-panel { width: 100%; height: 250px; display: block; }
+      .carousel-item img { object-fit: cover; height: 100%; }
+      .right-panel { width: 100%; padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <!-- LEFT: Carousel -->
+    <div class="left-panel">
+      <div id="carouselExample" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-inner h-100">
+          <div class="carousel-item active position-relative h-100">
+            <img src="{{ asset('images/chille5.png') }}" alt="Slide 1">
+            <div class="carousel-caption-overlay"></div>
+            <div class="carousel-caption-text">
+              <h5 class="fw-bold">Delivered fresh, right to your freezer</h5>
+              <p class="mb-0 small">Schedule your visit in just a few clicks</p>
+            </div>
+          </div>
+          <div class="carousel-item position-relative h-100">
+            <img src="{{ asset('images/chille6.jpg') }}" alt="Slide 2">
+            <div class="carousel-caption-overlay"></div>
+            <div class="carousel-caption-text">
+              <h5 class="fw-bold">Shop. Chill. Repeat</h5>
+              <p class="mb-0 small">Your daily chill starts here</p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-indicators position-absolute bottom-0 start-0 ms-4 mb-4 z-2">
+          <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></button>
+          <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1"></button>
+        </div>
+      </div>
+    </div>
 
-<div class="forgot-wrapper">
-    <div class="forgot-card">
-        <h2>Reset Your Password</h2>
+    <!-- RIGHT: Reset Password Form -->
+    <div class="right-panel">
+      <div class="text-center w-100" style="max-width: 360px;">
+        <h4 class="fw-bold mb-2" style="color: #052659;">Reset Your Password</h4>
 
         @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+        <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
         <form method="POST" action="{{ route('password.update.step') }}">
-            @csrf
-            <input type="hidden" name="email" value="{{ session('email_verified') }}">
+          @csrf
+          <input type="hidden" name="email" value="{{ session('email_verified') }}">
 
-            <div class="mb-3 text-start">
-                <label for="password" class="form-label">New Password</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password" name="password"
-                        class="form-control @error('password') is-invalid @enderror"
-                        placeholder="New password" required>
-                    <i class="fa fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
-                </div>
-                @error('password')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+          <div class="mb-3 text-start">
+            <label for="password" class="form-label">New Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="New password" required>
+              <i class="fa fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+              @error('password')
+              <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
+          </div>
 
-            <div class="mb-3 text-start">
-                <label for="password_confirmation" class="form-label">Confirm Password</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password_confirmation" name="password_confirmation"
-                        class="form-control" placeholder="Confirm password" required>
-                    <i class="fa fa-eye toggle-password" onclick="togglePassword('password_confirmation', this)"></i>
-                </div>
+          <div class="mb-3 text-start">
+            <label for="password_confirmation" class="form-label">Confirm Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm password" required>
+              <i class="fa fa-eye toggle-password" onclick="togglePassword('password_confirmation', this)"></i>
             </div>
+          </div>
 
-            <button type="submit" class="btn-blue">Reset Password</button>
+          <button type="submit" class="btn-blue">Reset Password</button>
         </form>
 
-        <a href="{{ route('login') }}" class="back-link">← Back to Login</a>
+        <div class="mt-3 text-center">
+          <a href="{{ route('login') }}" class="text-link">&larr; Back to Login</a>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
     function togglePassword(fieldId, el) {
-        const input = document.getElementById(fieldId);
-        if (input.type === "password") {
-            input.type = "text";
-            el.classList.replace("fa-eye", "fa-eye-slash");
-        } else {
-            input.type = "password";
-            el.classList.replace("fa-eye-slash", "fa-eye");
-        }
+      const input = document.getElementById(fieldId);
+      const icon = el.querySelector('i') || el;
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
     }
-</script>
+  </script>
+</body>
 @endsection
