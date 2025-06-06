@@ -84,8 +84,8 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="city" class="form-label">City *</label>
                                     <input type="text" class="form-control @error('city') is-invalid @enderror"
-                                        id="city" name="city" value="{{ old('city', $defaultData['city']) }}"
-                                        required>
+                                        id="city" name="city" pattern="[A-Za-z\s]+" title="Hanya huruf diperbolehkan"
+                                        value="{{ old('city', $defaultData['city']) }}" required>
                                     @error('city')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -93,8 +93,8 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="zip" class="form-label">ZIP Code *</label>
                                     <input type="text" class="form-control @error('zip') is-invalid @enderror"
-                                        id="zip" name="zip" value="{{ old('zip', $defaultData['zip']) }}"
-                                        required>
+                                        id="zip" name="zip" maxlength="5" pattern="\d{5}" title="Masukkan maksimal 5 angka"
+                                        value="{{ old('zip', $defaultData['zip']) }}" required>
                                     @error('zip')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -483,5 +483,13 @@
                     updateShippingAndTotal(); // Initial call
                 }
             });
+            document.getElementById('zip').addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '').slice(0, 5); // hanya angka, maksimal 5
+            });
+
+            document.getElementById('city').addEventListener('input', function () {
+                this.value = this.value.replace(/[^A-Za-z\s]/g, ''); // hanya huruf dan spasi
+            });
+
         </script>
     @endsection
