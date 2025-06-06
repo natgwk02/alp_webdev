@@ -11,13 +11,16 @@
     body {
       background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
       font-family: 'Segoe UI', sans-serif;
+      margin: 0;
       padding: 20px;
       min-height: 100vh; 
-      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .login-wrapper {
-      max-width: 960px;
-      margin: auto;
+      width: 960px;
+      height: 750px;
       display: flex;
       background-color: white;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);

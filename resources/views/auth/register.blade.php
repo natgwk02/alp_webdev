@@ -12,13 +12,17 @@
     body {
       background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
       font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
       margin: 0;
+      padding: 20px;
+      min-height: 100vh; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .register-wrapper {
-      max-width: 960px;
-      margin: auto;
+      width: 960px;
+      height: 750px;
       display: flex;
       background-color: white;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
