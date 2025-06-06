@@ -33,6 +33,7 @@ class Order extends Model
         'total',
         'notes',
         'status_del',
+        'invoice_number',
     ];
 
     protected $casts = [
@@ -70,5 +71,11 @@ class Order extends Model
             }
         );
     }
+
+    public function getRouteKeyName()
+{
+    return 'orders_id';
+}
+
 
 }

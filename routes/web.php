@@ -17,7 +17,7 @@ use App\Http\Controllers\UtilityController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
-
+use App\Http\Controllers\PaymentController;
 
 // Authentication Routes
 
@@ -42,6 +42,8 @@ Route::POST('/logout', function () {
 Route::get('/', [HomeController::class, 'showHome'])->name('home');
 Route::get('/products', action: [ProductController::class, 'index'])->name('products');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
+
+
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -92,6 +94,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/counts', [CartController::class, 'getCounts'])->name('counts');
+    Route::post('/midtrans-callback', [CheckoutController::class, 'handleCallback'])->name('midtrans.callback');
+    Route::get('/payment/status/{order}', [PaymentController::class, 'checkStatus'])->name('payment.status');
 });
 Route::middleware('auth:sanctum')->get('/badge-counts', 'App\Http\Controllers\BadgeController@getCounts');
 

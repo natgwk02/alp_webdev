@@ -261,6 +261,17 @@ class OrderController extends Controller
 
         Log::info('Checkout: --- showCheckoutForm END (Data prepared for view) ---');
 
+        session([
+            'checkout_data' => [
+                'items' => $filteredItems,
+                'subtotal' => $subtotal,
+                'shipping' => $shippingFee,
+                'tax' => $tax,
+                'voucher_discount' => $voucherDiscount,
+                'created_at' => now(),
+            ]
+        ]);
+
         return view('customer.checkout', compact(
             'filteredItems',
             'subtotal',
@@ -363,13 +374,13 @@ class OrderController extends Controller
             ->with('success', 'Checkout completed! Your order has been placed.');
     }
     public function orderReceived($id)
-{
-    $order = Order::findOrFail($id); // Get the order by ID
+    {
+        $order = Order::findOrFail($id); // Get the order by ID
 
-    // Update the order status to "Completed" (or any status you need)
-    $order->orders_status = 'Completed';
-    $order->save();
+        // Update the order status to "Completed" (or any status you need)
+        $order->orders_status = 'Completed';
+        $order->save();
 
-    return redirect()->route('orders.index')->with('success', 'Order status updated to Completed.');
-}
+        return redirect()->route('orders.index')->with('success', 'Order status updated to Completed.');
+    }
 }
