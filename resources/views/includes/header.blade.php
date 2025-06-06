@@ -150,22 +150,18 @@
                 <li class="nav-item position-relative">
                     <a id="wishlistLink" class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
                         <i class="bi bi-bookmark-heart-fill fs-5"></i>
-                        @if (!empty($wishlistCount) && $wishlistCount > 0)
-                            <span id='wishlistBadge' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                {{ $wishlistCount }}
+                            <span id='wishlistBadge' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger {{ ($wishlistCount ?? 0) == 0 ? 'd-none' : '' }}">
+                            {{ $wishlistCount ?? 0 }}
                             </span>
-                        @endif
                     </a>
                 </li>
 
                 <li class="nav-item position-relative">
                     <a id="cartLink" class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
                         <i class="fas fa-cart-shopping fs-5"></i>
-                        @if (!empty($cartCount) && $cartCount > 0)
-                            <span id='cartBadge' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                {{ $cartCount }}
+                            <span id='cartBadge' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger {{ ($cartCount ?? 0) == 0 ? 'd-none' : '' }}">
+                            {{ $cartCount ?? 0 }}
                             </span>
-                        @endif
                     </a>
                 </li>
 

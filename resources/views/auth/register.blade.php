@@ -1,291 +1,233 @@
 @extends('base.base')
 
 @section('content')
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Chillé Mart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- ✅ SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<style>
+  <style>
     body {
-        background: url('/images/background.jpg') no-repeat center center fixed;
-        background-size: cover;
+      background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      margin: 0;
     }
 
     .register-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        padding-top: 100px;
-        padding-bottom: 60px;
+      max-width: 960px;
+      margin: auto;
+      display: flex;
+      background-color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      border-radius: 12px;
+      flex-direction: row;
     }
 
-    .register-card {
-        background-color: rgba(240, 240, 240, 0.85);
-        padding: 40px;
-        border-radius: 18px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 500px;
+    .left-panel, .right-panel {
+      width: 50%;
     }
 
-    .register-card h4 {
-        text-align: center;
-        margin-bottom: 10px;
-        color: #224488;
-        font-weight: bold;
+    .carousel-item img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
     }
 
-    .register-card p {
-        text-align: center;
-        color: #555;
-        margin-bottom: 25px;
-        font-size: 0.95rem;
+    .carousel-caption-overlay {
+      background-color: rgba(0, 0, 0, 0.3);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .carousel-caption-text {
+      z-index: 2;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: white;
+    }
+
+    .right-panel {
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .form-control {
-        border-radius: 10px;
-        background-color: #f8fbff;
-        padding: 12px 15px;
-        border: 1px solid #ccddee;
-        margin-bottom: 15px;
-        padding-right: 45px;
-        background-color: #eef4ff;
-        box-sizing: border-box;
+      border-radius: 10px;
+      padding: 12px 15px;
+      background-color: #eef4ff;
+      border: 1px solid #ccddee;
     }
 
-    .btn-blue {
-        background-color: #224488;
-        color: white;
-        border: none;
-        padding: 12px;
-        border-radius: 10px;
-        width: 100%;
-        font-weight: 600;
+    .form-control:focus {
+      box-shadow: none;
     }
 
-    .btn-blue:hover {
-        background-color: #C1E8FF;
-        color: #224488;
+    .btn-register {
+      background-color: #052659;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 600;
+      width: 100%;
+      border: none;
+    }
+
+    .btn-register:hover {
+      background-color: #084c8b;
     }
 
     .text-link {
-        color: #224488;
-        text-decoration: none;
-        font-size: 0.9rem;
+      color: #052659;
+      text-decoration: underline;
     }
 
     .text-link:hover {
-        text-decoration: underline;
-    }
-
-    .text-muted {
-        font-size: 0.9rem;
-    }
-
-    .form-group {
-        position: relative;
+      text-decoration: none;
     }
 
     .toggle-password {
-        position: absolute;
-        top: 50%;
-        right: 15px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        z-index: 2;
-        color: #888;
-        transition: opacity 0.2s ease;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888;
+      z-index: 2;
     }
 
-    input.is-invalid {
-        border-color: #dc3545 !important;
+    @media (max-width: 992px) {
+      .register-wrapper {
+        flex-direction: column;
+      }
+
+      .left-panel {
+        width: 100%;
+        height: 250px;
+      }
+
+      .right-panel {
+        width: 100%;
+        padding: 30px 20px;
+      }
     }
+  </style>
+</head>
 
-    .text-danger {
-        font-size: 0.85rem;
-    }
+<body>
+  <div class="register-wrapper">
+    <!-- LEFT: Carousel -->
+    <div class="left-panel">
+      <div id="carouselExample" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-inner h-100">
+          <div class="carousel-item active position-relative h-100">
+            <img src="{{ asset('images/chille5.png') }}" alt="Slide 1">
+            <div class="carousel-caption-overlay"></div>
+            <div class="carousel-caption-text">
+              <h5 class="fw-bold">Delivered fresh, right to your freezer</h5>
+              <p class="mb-0 small">Schedule your visit in just a few clicks</p>
+            </div>
+          </div>
+          <div class="carousel-item position-relative h-100">
+            <img src="{{ asset('images/chille6.jpg') }}" alt="Slide 2">
+            <div class="carousel-caption-overlay"></div>
+            <div class="carousel-caption-text">
+              <h5 class="fw-bold">Shop. Chill. Repeat</h5>
+              <p class="mb-0 small">Your daily chill starts here</p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-indicators position-absolute bottom-0 start-0 ms-4 mb-4 z-2">
+          <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></button>
+          <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1"></button>
+        </div>
+      </div>
+    </div>
 
-    .position-relative {
-        position: relative;
-    }
-</style>
-
-<div class="register-wrapper">
-    <div class="register-card">
-
-        <h4>Create an Account</h4>
-        <p>Start shopping your frozen favorites with Chillé Mart!</p>
+    <!-- RIGHT: Register Form -->
+    <div class="right-panel">
+      <div class="w-100" style="max-width: 360px; margin: auto;">
+        <h4 class="fw-bold mb-2" style="color: #052659;">Create an Account</h4>
+        <p class="text-muted mb-3">Start shopping your frozen favorites with Chillé Mart!</p>
 
         <form action="{{ route('register.submit') }}" method="POST" onsubmit="return validatePasswordMatch();">
-            @csrf
+          @csrf
 
-            <div class="mb-3">
-                <input type="text" class="form-control @error('users_name') is-invalid @enderror"
-                       name="users_name" value="{{ old('users_name') }}" placeholder="Full Name" required>
-                @error('users_name')
-                    <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-            </div>
+          <input type="text" name="users_name" class="form-control mb-3 @error('users_name') is-invalid @enderror" placeholder="Full Name" required value="{{ old('users_name') }}">
+          @error('users_name')<div class="text-danger small">{{ $message }}</div>@enderror
 
-            <div class="mb-3">
-                <input type="email" class="form-control @error('users_email') is-invalid @enderror"
-                       name="users_email" value="{{ old('users_email') }}" placeholder="Email" required>
-                @error('users_email')
-                    <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-            </div>
+          <input type="email" name="users_email" class="form-control mb-3 @error('users_email') is-invalid @enderror" placeholder="Email" required value="{{ old('users_email') }}">
+          @error('users_email')<div class="text-danger small">{{ $message }}</div>@enderror
 
-            <div class="mb-3">
-                <input type="text" class="form-control @error('users_phone') is-invalid @enderror"
-                       name="users_phone" value="{{ old('users_phone') }}" placeholder="Phone Number"
-                       pattern="[0-9]+" maxlength="15"
-                       oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                @error('users_phone')
-                    <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-            </div>
+          <input type="text" name="users_phone" class="form-control mb-3 @error('users_phone') is-invalid @enderror" placeholder="Phone Number" pattern="[0-9]+" maxlength="15" required value="{{ old('users_phone') }}">
+          @error('users_phone')<div class="text-danger small">{{ $message }}</div>@enderror
 
-            <div class="mb-3">
-                <input type="text" class="form-control @error('users_address') is-invalid @enderror"
-                       name="users_address" value="{{ old('users_address') }}" placeholder="Address" required>
-                @error('users_address')
-                    <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-            </div>
+          <input type="text" name="users_address" class="form-control mb-3 @error('users_address') is-invalid @enderror" placeholder="Address" required value="{{ old('users_address') }}">
+          @error('users_address')<div class="text-danger small">{{ $message }}</div>@enderror
 
-            <div class="form-group position-relative mb-3">
-                <input type="password"
-                       id="password"
-                       name="users_password"
-                       class="form-control @error('users_password') is-invalid @enderror"
-                       placeholder="Password (min. 8 characters)"
-                       minlength="8"
-                       required
-                       oninput="handlePasswordFieldInput(this)">
-                <span class="toggle-password" id="toggle-password" onclick="togglePassword('password', this)">
-                    <i class="fa fa-eye"></i>
-                </span>
-                @error('users_password')
-                    <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
-            </div>
+          <div class="position-relative mb-3">
+            <input type="password" id="password" name="users_password" class="form-control @error('users_password') is-invalid @enderror" placeholder="Password (min. 8 characters)" minlength="8" required>
+            <span class="toggle-password" onclick="togglePassword('password', this)"><i class="fa fa-eye"></i></span>
+            @error('users_password')<div class="text-danger small">{{ $message }}</div>@enderror
+          </div>
 
-            <div class="form-group position-relative mb-3">
-                <input type="password"
-                       id="password_confirmation"
-                       class="form-control @error('users_password_confirmation') is-invalid @enderror"
-                       name="users_password_confirmation"
-                       placeholder="Confirm Password"
-                       required
-                       oninput="handlePasswordInput(this)">
-                <span class="toggle-password" id="toggle-password-confirm"
-                      onclick="togglePassword('password_confirmation', this)">
-                    <i class="fa fa-eye"></i>
-                </span>
-                <div class="text-danger small mt-1" id="confirm-password-error" style="display: none;"></div>
-                @error('users_password_confirmation')
-                    <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-            </div>
+          <div class="position-relative mb-3">
+            <input type="password" id="password_confirmation" name="users_password_confirmation" class="form-control @error('users_password_confirmation') is-invalid @enderror" placeholder="Confirm Password" required>
+            <span class="toggle-password" onclick="togglePassword('password_confirmation', this)"><i class="fa fa-eye"></i></span>
+            <div class="text-danger small" id="confirm-password-error" style="display:none;"></div>
+            @error('users_password_confirmation')<div class="text-danger small">{{ $message }}</div>@enderror
+          </div>
 
-            <button type="submit" class="btn btn-blue w-100 mt-3">Register</button>
-
-            @if(session('success'))
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Registration Successful!',
-                        text: '{{ session('success') }}',
-                        confirmButtonColor: '#224488'
-                    });
-                });
-            </script>
-            @endif
-
+          <button type="submit" class="btn btn-register mb-3">Register</button>
         </form>
 
         <div class="text-center mt-3">
-            <span class="text-muted">Already have an account?
-                <a href="{{ route('login') }}" class="text-link">Sign In</a>
-            </span>
+          <span class="text-muted">Already have an account?
+            <a href="{{ route('login') }}" class="text-link">Sign In</a>
+          </span>
         </div>
-
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-    function togglePassword(fieldId, iconElement) {
-        const input = document.getElementById(fieldId);
-        const icon = iconElement.querySelector('i');
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
-        }
-    }
-
-    function handlePasswordFieldInput(inputElement) {
-        const icon = document.getElementById('toggle-password');
-        if (inputElement.value.trim() === '') {
-            icon.style.display = 'none';
-        } else {
-            icon.style.display = 'inline';
-        }
-    }
-
-    function handlePasswordInput(inputElement) {
-        const icon = document.getElementById('toggle-password-confirm');
-        if (inputElement.value.trim() === '') {
-            icon.style.display = 'none';
-        } else {
-            icon.style.display = 'inline';
-        }
-
-        inputElement.classList.remove('is-invalid');
-        document.getElementById('confirm-password-error').style.display = 'none';
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function togglePassword(fieldId, el) {
+      const input = document.getElementById(fieldId);
+      const icon = el.querySelector('i');
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
     }
 
     function validatePasswordMatch() {
-        const password = document.getElementById('password');
-        const confirm = document.getElementById('password_confirmation');
-        const errorText = document.getElementById('confirm-password-error');
-        const iconPass = document.getElementById('toggle-password');
-        const iconConfirm = document.getElementById('toggle-password-confirm');
+      const pass = document.getElementById('password');
+      const confirm = document.getElementById('password_confirmation');
+      const errorText = document.getElementById('confirm-password-error');
 
-        if (password.value !== confirm.value) {
-            errorText.textContent = "Password and confirmation do not match.";
-            errorText.style.display = "block";
+      if (pass.value !== confirm.value) {
+        errorText.textContent = "Password and confirmation do not match.";
+        errorText.style.display = "block";
+        return false;
+      }
 
-            password.type = "password";
-            confirm.type = "password";
-            iconPass.style.display = "none";
-            iconConfirm.style.display = "none";
-
-            confirm.classList.add('is-invalid');
-            return false;
-        }
-
-        errorText.style.display = "none";
-        iconPass.style.display = "inline";
-        iconConfirm.style.display = "inline";
-        confirm.classList.remove('is-invalid');
-        return true;
+      errorText.style.display = "none";
+      return true;
     }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const confirmInput = document.getElementById('password_confirmation');
-        const passInput = document.getElementById('password');
-        const iconConfirm = document.getElementById('toggle-password-confirm');
-        const iconPass = document.getElementById('toggle-password');
-
-        if (confirmInput.value.trim() === '') iconConfirm.style.display = 'none';
-        if (passInput.value.trim() === '') iconPass.style.display = 'none';
-    });
-</script>
+  </script>
+</body>
 @endsection

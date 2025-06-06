@@ -22,7 +22,9 @@
                                         <th>Price</th>
                                         <th>Quantity</th>
                                         <th>Total</th>
-                                        <th>Rate</th>
+                                        @if (($order['orders_status'] ?? '') === 'Delivered')
+                                            <th>Rate</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -38,7 +40,7 @@
                                             <td>{{ $item['quantity'] ?? 0 }}</td>
                                             <td>Rp {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}</td>
                                             <td>
-                                                @if (!empty($item['product_id']) && empty($item['is_rated']))
+                                                @if (!empty($item['product_id']) && empty($item['is_rated']) && ($order['orders_status'] ?? '') === 'Delivered')
                                                     <form method="POST" action="{{ route('ratings.store') }}">
                                                         @csrf
                                                         <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">

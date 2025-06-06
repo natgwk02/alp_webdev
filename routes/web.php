@@ -46,25 +46,26 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.
 
 
 // Admin Routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['auth'])->name('admin.dashboard');
 
-Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
-Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['auth'])->name('admin.dashboard');
+    Route::get('/admin/sales-trend-data', [AdminController::class, 'getSalesTrendData'])->name('admin.salesTrendData');
 
-Route::get('/admin/sales-trend-data', [AdminController::class, 'getSalesTrendData'])->name('admin.salesTrendData');
+    //  Product Management
+    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit-data');
+    Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+    Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
+    Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
+    Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
 
-//  Product Management
-Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
-Route::put('/admin/products/{product}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-Route::get('/admin/products/{product}/edit-data', [AdminController::class, 'getProductData'])->name('admin.products.edit-data');
-Route::delete('admin/products/delete/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-Route::post('/product/create', [AdminController::class, 'insertProduct'])->name('admin.products.create');
-Route::get('/admin/products/trash', [AdminController::class, 'trash'])->name('admin.products.trash');
-Route::post('/admin/products/{product}/restore', [AdminController::class, 'restore'])->name('admin.products.restore');
-
-// Order Management
-Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    // Order Management
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::put('admin/orders/status/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+});
 
 // Home Route
 Route::middleware('web')->group(function () {

@@ -12,9 +12,14 @@
     body {
       background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
       font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
       margin: 0;
+      padding: 20px;
+      min-height: 100vh; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
 
     .login-wrapper {
       max-width: 960px;
