@@ -16,6 +16,7 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
+            
         /** @var \App\Models\User $user An instance of your User model */
         $user = Auth::user();
 

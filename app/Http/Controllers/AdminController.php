@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         // Hitung statistik yang diperlukan
         $stats = [
