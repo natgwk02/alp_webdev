@@ -101,17 +101,38 @@
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="country" class="form-label">Country *</label>
-                                   <select class="form-select @error('country') is-invalid @enderror" id="country" name="country" required>
-                                        <option value="Indonesia" {{ old('country', $defaultData['country']) == 'Indonesia' ? 'selected' : '' }}>Indonesia</option>
-                                        <option value="Malaysia" {{ old('country', $defaultData['country']) == 'Malaysia' ? 'selected' : '' }}>Malaysia</option>
-                                        <option value="Singapore" {{ old('country', $defaultData['country']) == 'Singapore' ? 'selected' : '' }}>Singapore</option>
-                                        <option value="Thailand" {{ old('country', $defaultData['country']) == 'Thailand' ? 'selected' : '' }}>Thailand</option>
-                                        <option value="Vietnam" {{ old('country', $defaultData['country']) == 'Vietnam' ? 'selected' : '' }}>Vietnam</option>
-                                        <option value="Philippines" {{ old('country', $defaultData['country']) == 'Philippines' ? 'selected' : '' }}>Philippines</option>
-                                        <option value="Brunei Darussalam" {{ old('country', $defaultData['country']) == 'Brunei Darussalam' ? 'selected' : '' }}>Brunei Darussalam</option>
-                                        <option value="Cambodia" {{ old('country', $defaultData['country']) == 'Cambodia' ? 'selected' : '' }}>Cambodia</option>
-                                        <option value="Laos" {{ old('country', $defaultData['country']) == 'Laos' ? 'selected' : '' }}>Laos</option>
-                                        <option value="Myanmar" {{ old('country', $defaultData['country']) == 'Myanmar' ? 'selected' : '' }}>Myanmar</option>
+                                    <select class="form-select @error('country') is-invalid @enderror" id="country"
+                                        name="country" required>
+                                        <option value="Indonesia"
+                                            {{ old('country', $defaultData['country']) == 'Indonesia' ? 'selected' : '' }}>
+                                            Indonesia</option>
+                                        <option value="Malaysia"
+                                            {{ old('country', $defaultData['country']) == 'Malaysia' ? 'selected' : '' }}>
+                                            Malaysia</option>
+                                        <option value="Singapore"
+                                            {{ old('country', $defaultData['country']) == 'Singapore' ? 'selected' : '' }}>
+                                            Singapore</option>
+                                        <option value="Thailand"
+                                            {{ old('country', $defaultData['country']) == 'Thailand' ? 'selected' : '' }}>
+                                            Thailand</option>
+                                        <option value="Vietnam"
+                                            {{ old('country', $defaultData['country']) == 'Vietnam' ? 'selected' : '' }}>
+                                            Vietnam</option>
+                                        <option value="Philippines"
+                                            {{ old('country', $defaultData['country']) == 'Philippines' ? 'selected' : '' }}>
+                                            Philippines</option>
+                                        <option value="Brunei Darussalam"
+                                            {{ old('country', $defaultData['country']) == 'Brunei Darussalam' ? 'selected' : '' }}>
+                                            Brunei Darussalam</option>
+                                        <option value="Cambodia"
+                                            {{ old('country', $defaultData['country']) == 'Cambodia' ? 'selected' : '' }}>
+                                            Cambodia</option>
+                                        <option value="Laos"
+                                            {{ old('country', $defaultData['country']) == 'Laos' ? 'selected' : '' }}>Laos
+                                        </option>
+                                        <option value="Myanmar"
+                                            {{ old('country', $defaultData['country']) == 'Myanmar' ? 'selected' : '' }}>
+                                            Myanmar</option>
                                     </select>
                                     @error('country')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -188,12 +209,13 @@
                                     <span>Tax (10%):</span>
                                     <span id="taxDisplay">Rp{{ number_format($tax, 0, ',', '.') }}</span>
                                 </div>
-                                    @if ($voucherDiscount > 0)
+                                @if ($voucherDiscount > 0)
                                     <div class="d-flex justify-content-between mb-2 text-success">
                                         <span>Voucher Discount:</span>
-                                        <span id="voucherDisplay">- Rp{{ number_format($voucherDiscount, 0, ',', '.') }}</span>
+                                        <span id="voucherDisplay">-
+                                            Rp{{ number_format($voucherDiscount, 0, ',', '.') }}</span>
                                     </div>
-                                    @endif
+                                @endif
                                 <div class="d-flex justify-content-between fw-bold">
                                     <span>Total:</span>
                                     <span id="totalDisplay">Rp{{ number_format($total, 0, ',', '.') }}</span>
@@ -234,7 +256,7 @@
                 const termsCheckbox = document.getElementById('termsAgreement');
                 const notesTextarea = document.getElementById('sellerNotes');
                 const notesCounter = document.getElementById('notesCounter');
-                const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+                // const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
                 const creditCardForm = document.getElementById('creditCardForm');
 
                 // Check if essential elements exist
@@ -300,32 +322,32 @@
                         }
 
                         // Validate payment method
-                        const selectedPaymentMethod = document.querySelector(
-                            'input[name="paymentMethod"]:checked');
-                        if (!selectedPaymentMethod) {
-                            event.preventDefault();
-                            console.log('No payment method selected');
-                            alert('Please select a payment method.');
-                            return false;
-                        }
+                        // const selectedPaymentMethod = document.querySelector(
+                        //     'input[name="paymentMethod"]:checked');
+                        // if (!selectedPaymentMethod) {
+                        //     event.preventDefault();
+                        //     console.log('No payment method selected');
+                        //     alert('Please select a payment method.');
+                        //     return false;
+                        // }
 
                         // If credit card is selected, validate credit card fields
-                        if (selectedPaymentMethod.value === 'creditCard') {
-                            const cardNumber = document.getElementById('cardNumber');
-                            const expiryDate = document.getElementById('expiryDate');
-                            const cvv = document.getElementById('cvv');
-                            const cardName = document.getElementById('cardName');
+                        // if (selectedPaymentMethod.value === 'creditCard') {
+                        //     const cardNumber = document.getElementById('cardNumber');
+                        //     const expiryDate = document.getElementById('expiryDate');
+                        //     const cvv = document.getElementById('cvv');
+                        //     const cardName = document.getElementById('cardName');
 
-                            if (!cardNumber || !cardNumber.value.trim() ||
-                                !expiryDate || !expiryDate.value.trim() ||
-                                !cvv || !cvv.value.trim() ||
-                                !cardName || !cardName.value.trim()) {
-                                event.preventDefault();
-                                console.log('Credit card fields incomplete');
-                                alert('Please fill in all credit card details.');
-                                return false;
-                            }
-                        }
+                        //     if (!cardNumber || !cardNumber.value.trim() ||
+                        //         !expiryDate || !expiryDate.value.trim() ||
+                        //         !cvv || !cvv.value.trim() ||
+                        //         !cardName || !cardName.value.trim()) {
+                        //         event.preventDefault();
+                        //         console.log('Credit card fields incomplete');
+                        //         alert('Please fill in all credit card details.');
+                        //         return false;
+                        //     }
+                        // }
 
                         // Basic form validation
                         const requiredFields = checkoutForm.querySelectorAll(
@@ -386,27 +408,27 @@
                 }
 
                 // Payment method toggle
-                if (paymentRadios.length > 0 && creditCardForm) {
-                    paymentRadios.forEach(radio => {
-                        radio.addEventListener('change', function() {
-                            console.log('Payment method changed to:', this.value);
+                // if (paymentRadios.length > 0 && creditCardForm) {
+                //     paymentRadios.forEach(radio => {
+                //         radio.addEventListener('change', function() {
+                //             console.log('Payment method changed to:', this.value);
 
-                            if (this.id === 'creditCard' && this.checked) {
-                                creditCardForm.classList.remove('d-none');
-                            } else if (this.checked) {
-                                creditCardForm.classList.add('d-none');
-                            }
-                        });
-                    });
+                //             if (this.id === 'creditCard' && this.checked) {
+                //                 creditCardForm.classList.remove('d-none');
+                //             } else if (this.checked) {
+                //                 creditCardForm.classList.add('d-none');
+                //             }
+                //         });
+                //     });
 
-                    // Initialize credit card form visibility
-                    const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
-                    if (selectedPayment && selectedPayment.id === 'creditCard') {
-                        creditCardForm.classList.remove('d-none');
-                    } else {
-                        creditCardForm.classList.add('d-none');
-                    }
-                }
+                //     // Initialize credit card form visibility
+                //     const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+                //     if (selectedPayment && selectedPayment.id === 'creditCard') {
+                //         creditCardForm.classList.remove('d-none');
+                //     } else {
+                //         creditCardForm.classList.add('d-none');
+                //     }
+                // }
 
                 // Add input formatting
                 const phoneInput = document.getElementById('phone');
@@ -430,7 +452,7 @@
                 console.log('Checkout form JavaScript initialized successfully');
             });
 
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 const countrySelect = document.getElementById('country');
                 const shippingDisplay = document.getElementById('shippingCostDisplay');
                 const shippingInput = document.getElementById('shippingFee');
@@ -461,6 +483,5 @@
                     updateShippingAndTotal(); // Initial call
                 }
             });
-
         </script>
     @endsection

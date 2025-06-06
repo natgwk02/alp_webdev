@@ -90,7 +90,7 @@ class CheckoutController extends Controller
             'city' => $validated['city'],
             'zip' => $validated['zip'],
             'country' => $validated['country'],
-            'payment_method' => $validated['paymentMethod'],
+            // 'payment_method' => $validated['paymentMethod'],
             'payment_status' => 'pending',
             'subtotal' => $checkoutData['subtotal'],
             'shipping_fee' => $checkoutData['shipping'],
@@ -117,10 +117,10 @@ class CheckoutController extends Controller
         }
 
         // MIDTRANS CONFIG
-        // Config::$serverKey = config('midtrans.server_key');
-        // Config::$isProduction = config('midtrans.is_production');
-        // Config::$isSanitized = true;
-        // Config::$is3ds = true;
+        Config::$serverKey = config('midtrans.server_key');
+        Config::$isProduction = config('midtrans.is_production');
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
 
         $params = [
             'transaction_details' => [
@@ -159,7 +159,7 @@ class CheckoutController extends Controller
             'city' => 'required|string|max:100',
             'zip' => 'required|string|max:20',
             'country' => 'required|string|max:100',
-            'paymentMethod' => 'required|string|in:creditCard,paypal,bankTransfer',
+            // 'paymentMethod' => 'required|string|in:creditCard,paypal,bankTransfer',
             'termsAgreement' => 'required|accepted'
         ]);
     }
@@ -167,7 +167,6 @@ class CheckoutController extends Controller
     public function checkout(Request $request)
     {
         $cart = session('cart', []);
-
         if (empty($cart)) {
             return redirect()->back()->with('error', 'Your cart is empty!');
         }
@@ -232,7 +231,8 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Checkout gagal: ' . $e->getMessage());
+            // return redirect()->back()->with('error', 'Checkout gagal: ' . $e->getMessage());
+            return redirect()->with('error', 'Checkout gagal: ' . $e->getMessage());
         }
     }
 
