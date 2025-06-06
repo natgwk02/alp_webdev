@@ -47,7 +47,7 @@ class CartController extends Controller
 public function addToCart(Request $request, $productId)
 {
     if (session()->has('is_guest')) {
-        return response()->json(['message' => 'Guests cannot add to cart.'], 403);
+        return redirect()->route('login')->with('error', 'Please login to add items to cart.');
     }
 
     if (!Auth::check()) {

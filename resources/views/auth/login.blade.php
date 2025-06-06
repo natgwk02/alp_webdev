@@ -22,8 +22,8 @@
 
 
     .login-wrapper {
-      max-width: 960px;
-      margin: auto;
+      width: 960px;
+      height: 750px;
       display: flex;
       background-color: white;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
