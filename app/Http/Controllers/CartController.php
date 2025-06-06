@@ -23,20 +23,16 @@ class CartController extends Controller
         $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
         $cartItems = $cart->items()->with('product')->get();
 
-
-
         $subtotal = $this->calculateSubtotal($cart);
-        $shippingFee = 5000;
         $tax = round($subtotal * 0.1);
         $voucherDiscount = session('voucher_discount', 0);
-        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+        $total = $subtotal + $tax - $voucherDiscount;
 
         $selectedItemsOnLoad = session('selected_items_on_load', []);
 
         return view('customer.cart', compact(
             'cartItems',
             'subtotal',
-            'shippingFee',
             'tax',
             'total',
             'voucherDiscount',
@@ -135,14 +131,12 @@ public function addToCart(Request $request, $productId)
         }
 
         $subtotal = $this->calculateSubtotal($cart);
-        $shippingFee = 5000;
         $tax = round($subtotal * 0.1);
         $voucherDiscount = session('voucher_discount', 0);
-        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+        $total = $subtotal + $tax - $voucherDiscount;
 
         return redirect()->route('cart.index')->with([
             'subtotal' => $subtotal,
-            'shippingFee' => $shippingFee,
             'tax' => $tax,
             'total' => $total,
             'voucherDiscount' => $voucherDiscount,

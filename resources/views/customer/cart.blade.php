@@ -165,11 +165,11 @@
                                             <span
                                                 id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                                         </div>
-                                        <div class="d-flex justify-content-between mb-2">
+                                        {{-- <div class="d-flex justify-content-between mb-2">
                                             <span>Shipping Fee:</span>
                                             <span
                                                 id="shipping-display">Rp{{ number_format($shippingFee, 0, ',', '.') }}</span>
-                                        </div>
+                                        </div> --}}
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>Tax (10%):</span>
                                             <span id="tax-display">Rp{{ number_format($tax, 0, ',', '.') }}</span>
@@ -271,50 +271,37 @@
             }
 
             function updateSummary() {
-                console.log('updateSummary called.');
-                let subtotal = 0;
-                document.querySelectorAll('.select-product:checked').forEach(checkbox => {
-                    const price = parseFloat(checkbox.getAttribute('data-price'));
-                    const quantity = parseInt(checkbox.getAttribute('data-quantity'));
-                    if (!isNaN(price) && !isNaN(quantity)) {
-                        subtotal += price * quantity;
-                    }
-                });
+    console.log('updateSummary called.');
+    let subtotal = 0;
+    document.querySelectorAll('.select-product:checked').forEach(checkbox => {
+        const price = parseFloat(checkbox.getAttribute('data-price'));
+        const quantity = parseInt(checkbox.getAttribute('data-quantity'));
+        if (!isNaN(price) && !isNaN(quantity)) {
+            subtotal += price * quantity;
+        }
+    });
 
-                const shippingDisplay = document.getElementById('shipping-display');
-                const taxDisplay = document.getElementById('tax-display');
-                const totalDisplay = document.getElementById('total-display');
-                const voucherDisplaySpan = document.getElementById('voucher-display');
-                const subtotalDisplay = document.getElementById('subtotal-display');
+    const taxDisplay = document.getElementById('tax-display');
+    const totalDisplay = document.getElementById('total-display');
+    const voucherDisplaySpan = document.getElementById('voucher-display');
+    const subtotalDisplay = document.getElementById('subtotal-display');
 
-                // Ensure default shippingFee if element not found or text is unparseable
-                let shippingFee = 5000; // Default shipping fee
-                if (shippingDisplay && shippingDisplay.textContent) {
-                    const parsedShipping = parseFloat(shippingDisplay.textContent.replace(/[^\d]/g, ''));
-                    if (!isNaN(parsedShipping)) {
-                        shippingFee = parsedShipping;
-                    }
-                } else {
-                    console.warn('Shipping display element not found or empty, using default shipping fee.');
-                }
+    const tax = Math.round(subtotal * 0.1);
+    let voucherDiscount = 0;
+    if (voucherDisplaySpan && voucherDisplaySpan.textContent) {
+        const parsedVoucher = parseFloat(voucherDisplaySpan.textContent.replace(/[^\d]/g, ''));
+        if (!isNaN(parsedVoucher)) {
+            voucherDiscount = parsedVoucher;
+        }
+    }
 
-                const tax = Math.round(subtotal * 0.1);
-                let voucherDiscount = 0;
-                if (voucherDisplaySpan && voucherDisplaySpan.textContent) {
-                    const parsedVoucher = parseFloat(voucherDisplaySpan.textContent.replace(/[^\d]/g, ''));
-                    if (!isNaN(parsedVoucher)) {
-                        voucherDiscount = parsedVoucher;
-                    }
-                }
+    const total = subtotal + tax - voucherDiscount;
 
-                const total = subtotal + shippingFee + tax - voucherDiscount;
-
-                if (subtotalDisplay) subtotalDisplay.textContent = 'Rp' + subtotal.toLocaleString('id-ID');
-                if (taxDisplay) taxDisplay.textContent = 'Rp' + tax.toLocaleString('id-ID');
-                if (shippingDisplay) shippingDisplay.textContent = 'Rp' + shippingFee.toLocaleString('id-ID');
-                if (totalDisplay) totalDisplay.textContent = 'Rp' + total.toLocaleString('id-ID');
-                console.log('Summary updated: Subtotal=', subtotal, 'Total=', total);
-            }
+    if (subtotalDisplay) subtotalDisplay.textContent = 'Rp' + subtotal.toLocaleString('id-ID');
+    if (taxDisplay) taxDisplay.textContent = 'Rp' + tax.toLocaleString('id-ID');
+    if (totalDisplay) totalDisplay.textContent = 'Rp' + total.toLocaleString('id-ID');
+    console.log('Summary updated: Subtotal=', subtotal, 'Total=', total);
+}
 
             function updateSelectedItems() {
                 console.log('updateSelectedItems called.');
