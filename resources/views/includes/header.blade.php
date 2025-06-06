@@ -147,24 +147,23 @@
 
             <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
 
-                <li class="nav-item position-relative">
-                    <a id="wishlistLink" class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
-                        <i class="bi bi-bookmark-heart-fill fs-5"></i>
-                            <span id='wishlistBadge' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger {{ ($wishlistCount ?? 0) == 0 ? 'd-none' : '' }}">
-                            {{ $wishlistCount ?? 0 }}
-                            </span>
-                    </a>
-                </li>
+<li class="nav-item position-relative">
+    <a id="wishlistLink" class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
+        <i class="bi bi-bookmark-heart-fill fs-5"></i>
+        @if ($wishlistCount > 0)
+            <span id="wishlistBadge">{{ $wishlistCount }}</span>
+        @endif
+    </a>
+</li>
 
-                <li class="nav-item position-relative">
-                    <a id="cartLink" class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
-                        <i class="fas fa-cart-shopping fs-5"></i>
-                            <span id='cartBadge' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger {{ ($cartCount ?? 0) == 0 ? 'd-none' : '' }}">
-                            {{ $cartCount ?? 0 }}
-                            </span>
-                    </a>
-                </li>
-
+<li class="nav-item position-relative">
+    <a id="cartLink" class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
+        <i class="fas fa-cart-shopping fs-5"></i>
+        @if ($cartCount > 0)
+            <span id="cartBadge">{{ $cartCount }}</span>
+        @endif
+    </a>
+</li>
                 @auth
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
