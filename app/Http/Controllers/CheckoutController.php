@@ -35,6 +35,13 @@ class CheckoutController extends Controller
             'country' => 'Chile'
         ];
 
+        $shippingFee = ($defaultData['country'] === 'Indonesia') ? 50000 : 150000;
+
+        $subtotal = $checkoutData['subtotal'];
+        $tax = $checkoutData['tax'];
+        $voucherDiscount = $checkoutData['voucher_discount'];
+        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+
         return view('customer.checkout', [
             'cartItems' => $checkoutData['items'],
             'subtotal' => $checkoutData['subtotal'],
@@ -55,6 +62,17 @@ class CheckoutController extends Controller
         }
 
         $checkoutData = session('checkout_data');
+        $country = $request->input('country');
+
+        // Override shipping fee berdasarkan negara
+        $shippingFee = ($country === 'Indonesia') ? 50000 : 150000;
+
+        // Hitung ulang total
+        $subtotal = $checkoutData['subtotal'];
+        $tax = $checkoutData['tax'];
+        $voucherDiscount = $checkoutData['voucher_discount'];
+        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+
         $userId = Auth::id();
 
         // Generate Order ID secara otomatis oleh DB
@@ -99,10 +117,10 @@ class CheckoutController extends Controller
         }
 
         // MIDTRANS CONFIG
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
+        // Config::$serverKey = config('midtrans.server_key');
+        // Config::$isProduction = config('midtrans.is_production');
+        // Config::$isSanitized = true;
+        // Config::$is3ds = true;
 
         $params = [
             'transaction_details' => [

@@ -101,26 +101,17 @@
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="country" class="form-label">Country *</label>
-                                    <select class="form-select @error('country') is-invalid @enderror" id="country"
-                                        name="country" required>
-                                        <option value="Indonesia"
-                                            {{ old('country', $defaultData['country']) == 'Indonesia' ? 'selected' : '' }}>
-                                            Indonesia</option>
-                                        <option value="Malaysia"
-                                            {{ old('country', $defaultData['country']) == 'Malaysia' ? 'selected' : '' }}>
-                                            Malaysia</option>
-                                        <option value="Singapore"
-                                            {{ old('country', $defaultData['country']) == 'Singapore' ? 'selected' : '' }}>
-                                            Singapore
-                                        </option>
-                                        <option value="Philippines"
-                                            {{ old('country', $defaultData['country']) == 'Philippines' ? 'selected' : '' }}>
-                                            Philippines
-                                        </option>
-                                        <option value="Myanmar"
-                                            {{ old('country', $defaultData['country']) == 'Myanmar' ? 'selected' : '' }}>
-                                            Myanmar
-                                        </option>
+                                   <select class="form-select @error('country') is-invalid @enderror" id="country" name="country" required>
+                                        <option value="Indonesia" {{ old('country', $defaultData['country']) == 'Indonesia' ? 'selected' : '' }}>Indonesia</option>
+                                        <option value="Malaysia" {{ old('country', $defaultData['country']) == 'Malaysia' ? 'selected' : '' }}>Malaysia</option>
+                                        <option value="Singapore" {{ old('country', $defaultData['country']) == 'Singapore' ? 'selected' : '' }}>Singapore</option>
+                                        <option value="Thailand" {{ old('country', $defaultData['country']) == 'Thailand' ? 'selected' : '' }}>Thailand</option>
+                                        <option value="Vietnam" {{ old('country', $defaultData['country']) == 'Vietnam' ? 'selected' : '' }}>Vietnam</option>
+                                        <option value="Philippines" {{ old('country', $defaultData['country']) == 'Philippines' ? 'selected' : '' }}>Philippines</option>
+                                        <option value="Brunei Darussalam" {{ old('country', $defaultData['country']) == 'Brunei Darussalam' ? 'selected' : '' }}>Brunei Darussalam</option>
+                                        <option value="Cambodia" {{ old('country', $defaultData['country']) == 'Cambodia' ? 'selected' : '' }}>Cambodia</option>
+                                        <option value="Laos" {{ old('country', $defaultData['country']) == 'Laos' ? 'selected' : '' }}>Laos</option>
+                                        <option value="Myanmar" {{ old('country', $defaultData['country']) == 'Myanmar' ? 'selected' : '' }}>Myanmar</option>
                                     </select>
                                     @error('country')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -186,25 +177,26 @@
                             <div class="order-totals mb-3">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Subtotal:</span>
-                                    <span>Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
+                                    <span id="subtotalDisplay">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Shipping:</span>
-                                    <span>Rp{{ number_format($shippingFee, 0, ',', '.') }}</span>
+                                    <span id="shippingCostDisplay">Rp{{ number_format($shippingFee, 0, ',', '.') }}</span>
                                 </div>
+                                <input type="hidden" name="shippingFee" id="shippingFee" value="{{ $shippingFee }}">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Tax (10%):</span>
-                                    <span>Rp{{ number_format($tax, 0, ',', '.') }}</span>
+                                    <span id="taxDisplay">Rp{{ number_format($tax, 0, ',', '.') }}</span>
                                 </div>
-                                @if ($voucherDiscount > 0)
+                                    @if ($voucherDiscount > 0)
                                     <div class="d-flex justify-content-between mb-2 text-success">
                                         <span>Voucher Discount:</span>
-                                        <span>- Rp{{ number_format($voucherDiscount, 0, ',', '.') }}</span>
+                                        <span id="voucherDisplay">- Rp{{ number_format($voucherDiscount, 0, ',', '.') }}</span>
                                     </div>
-                                @endif
+                                    @endif
                                 <div class="d-flex justify-content-between fw-bold">
                                     <span>Total:</span>
-                                    <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
+                                    <span id="totalDisplay">Rp{{ number_format($total, 0, ',', '.') }}</span>
                                 </div>
                             </div>
 
@@ -437,5 +429,38 @@
 
                 console.log('Checkout form JavaScript initialized successfully');
             });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const countrySelect = document.getElementById('country');
+                const shippingDisplay = document.getElementById('shippingCostDisplay');
+                const shippingInput = document.getElementById('shippingFee');
+                const voucherDisplay = document.getElementById('voucherDisplay');
+                const totalDisplay = document.getElementById('totalDisplay');
+
+                const subtotal = {{ $subtotal }};
+                const tax = {{ $tax }};
+                const voucher = {{ $voucherDiscount }};
+
+                function updateShippingAndTotal() {
+                    const selectedCountry = countrySelect.value;
+                    const fee = selectedCountry === "Indonesia" ? 50000 : 150000;
+
+                    // Update shipping display
+                    shippingDisplay.innerText = 'Rp' + fee.toLocaleString('id-ID');
+                    if (shippingInput) shippingInput.value = fee;
+
+                    // Update total
+                    const total = subtotal + tax + fee - voucher;
+                    if (totalDisplay) {
+                        totalDisplay.innerText = 'Rp' + total.toLocaleString('id-ID');
+                    }
+                }
+
+                if (countrySelect) {
+                    countrySelect.addEventListener('change', updateShippingAndTotal);
+                    updateShippingAndTotal(); // Initial call
+                }
+            });
+
         </script>
     @endsection
