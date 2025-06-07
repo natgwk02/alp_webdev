@@ -37,7 +37,6 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if (!$user) {
@@ -45,39 +44,40 @@ class ProfileController extends Controller
         }
 
         $validated = $request->validate([
-            'users_name'    => 'required|string|max:255',
-            // Use Rule::unique to make it cleaner, especially with primary key considerations
-            'users_email'   => [
+            'users_name'     => 'required|string|max:255',
+            'users_email'    => [
                 'required',
                 'email',
-                Rule::unique('users', 'users_email')->ignore($user->{$user->getKeyName()}, $user->getKeyName()),
+                Rule::unique('users', 'users_email')->ignore($user->getKey(), 'users_id'),
             ],
-            'phone'         => 'nullable|string|max:20',
-            'birthdate'     => 'nullable|date',
-            'address'       => 'nullable|string|max:255',
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // 2MB max
+            'users_phone'    => 'nullable|string|max:20',
+            'users_address'  => 'nullable|string|max:255',
+            'profile_photo'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Handle profile photo upload
         if ($request->hasFile('profile_photo')) {
-            // Delete old photo if it exists
             if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
                 Storage::disk('public')->delete($user->profile_photo);
             }
-            // Store new photo in 'public/profile_photos' directory
-            // The path stored will be 'profile_photos/filename.ext'
+
             $path = $request->file('profile_photo')->store('profile_photos', 'public');
             $validated['profile_photo'] = $path;
         }
 
-        // The line `$validated['users_email'] = $request->users_email;` was redundant
-        // as $request->validate() already includes validated 'users_email'.
+        $user->users_name = $validated['users_name'];
+        $user->users_email = $validated['users_email'];
+        $user->users_phone = $validated['users_phone'] ?? null;
+        $user->users_address = $validated['users_address'] ?? null;
 
-        // Update user attributes
-        $user->update($validated);
+        if (isset($validated['profile_photo'])) {
+            $user->profile_photo = $validated['profile_photo'];
+        }
 
-        return redirect()->route('profile')->with('success', 'Profile berhasil diperbarui.');
+        $user->save();
+
+        return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui.');
     }
+
 
     /**
      * Update the user's password.
