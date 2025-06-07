@@ -99,7 +99,7 @@ class CheckoutController extends Controller
             'total' => $total,
             'orders_total_price' => $total,
             'notes' => $request->input('sellerNotes'),
-                'invoice_number' => $invoiceNumber,
+            'invoice_number' => $invoiceNumber,
 
             'status_del' => false,
         ]);
@@ -116,6 +116,19 @@ class CheckoutController extends Controller
             ]);
         }
 
+        // Ambil semua products_id yang telah di-checkout
+        $checkedOutProductIds = collect($checkoutData['items'])->pluck('id')->toArray();
+
+        // Hapus item dari cart setelah checkout
+        $cart = \App\Models\Cart::where('users_id', $userId)->first();
+        if ($cart) {
+            \App\Models\CartItem::where('cart_id', $cart->id)
+                ->whereIn('products_id', $checkedOutProductIds)
+                ->delete();
+        }
+
+         session()->forget('checkout_data');
+         
         // MIDTRANS CONFIG
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
