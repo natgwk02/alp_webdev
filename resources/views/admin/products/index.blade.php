@@ -222,18 +222,13 @@
                                     <i class="fa fa-pencil"></i>
                                 </button>
                                 {{-- Pastikan ini men-trigger modal dan JS Anda set action form --}}
-                                <form id="deleteProductForm_{{ $product->products_id }}"
-                                    action="{{ route('admin.products.delete', ['product' => $product->products_id]) }}"
-                                    method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-sm btn-outline-danger action-btn"
-                                        data-bs-toggle="modal" data-bs-target="#deleteProductModal"
-                                        data-product-id="{{ $product->products_id }}"
-                                        data-product-name="{{ $product->products_name }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-sm btn-outline-danger action-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteProductModal"
+                                    data-product-id="{{ $product->products_id }}"
+                                    data-product-name="{{ $product->products_name }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -517,32 +512,6 @@
     </div>
 </div>
 
-        <!-- Delete Product - Modal -->
-        <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete <strong id="deleteProductName"></strong>?</p>
-                        <p class="text-danger mb-0">This action cannot be undone.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <!-- Form action will be set dynamically by JavaScript -->
-                        <form id="deleteProductForm" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete Product</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Bootstrap JS Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -727,16 +696,16 @@ if (editProductModal) {
 }
 
             // Delete Product Modal
-            const deleteProductModal = document.getElementById('deleteProductModal');
-            deleteProductModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const productId = button.getAttribute('data-product-id');
-                const productName = button.getAttribute('data-product-name');
+                const deleteProductModal = document.getElementById('deleteProductModal');
+                deleteProductModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const productId = button.getAttribute('data-product-id');
+                    const productName = button.getAttribute('data-product-name');
 
-                document.getElementById('deleteProductName').textContent = productName;
-                const form = document.getElementById('deleteProductForm');
-                form.action = `/admin/products/delete/${productId}`;
-            });
+                    document.getElementById('deleteProductName').textContent = productName;
+                    const form = document.getElementById('deleteProductForm');
+                    form.action = `/admin/products/delete/${productId}`;
+                });
 
             // Search and filter functionality
             const resetBtn = document.getElementById('resetBtn');
@@ -747,3 +716,31 @@ if (editProductModal) {
             });
         </script>
     @endsection
+    
+        <!-- Delete Product - Modal -->
+            <form id="deleteProductForm" method="POST">
+                @csrf
+                @method('DELETE')
+
+                <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete <strong id="deleteProductName"></strong>?</p>
+                                <p class="text-danger mb-0">This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Delete Product</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+    
