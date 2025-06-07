@@ -63,20 +63,25 @@ public function addToCart(Request $request, $productId)
     $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
 
     // Tambahkan item ke cart
-    $cartItem = CartItem::firstOrNew([
+    $cartItem = CartItem::where('cart_id', $cart->id)
+    ->where('products_id', $productId)
+    ->first();
+
+if ($cartItem) {
+    // Tambahkan quantity jika sudah ada
+    $cartItem->quantity += (int) $request->input('quantity', 1);
+} else {
+    // Buat item baru jika belum ada
+    $cartItem = new CartItem([
         'cart_id' => $cart->id,
         'products_id' => $productId,
+        'quantity' => (int) $request->input('quantity', 1),
     ]);
+}
+$cartItem->save();
 
-    // Atur jumlah quantity awal jika belum ada
-    if (!$cartItem->exists) {
-        $cartItem->quantity = 0;
-    }
 
-    $cartItem->quantity += (int) $request->input('quantity', 1);
-    $cartItem->products_id = $productId; // Pastikan field ini terisi
-    $cartItem->save();
-
+    
     // Respon berbeda tergantung apakah dari AJAX atau tidak
     if ($request->ajax()) {
         return response()->json(['success' => true, 'message' => 'Item added to cart.']);
@@ -223,7 +228,7 @@ public function addToCart(Request $request, $productId)
 
         if (Auth::check()) {
             $cart = Cart::where('users_id', Auth::id())->first();
-            $cartCount = $cart ? $cart->items()->count() : 0;
+          $cartCount = $cart ? $cart->items()->distinct('products_id')->count('products_id') : 0;
 
             $wishlistCount = \App\Models\Wishlist::where('users_id', Auth::id())->count();
         }
