@@ -47,7 +47,8 @@
                                     </div>
 
                                     <div class="text-muted">Qty: {{ $item['quantity'] ?? 'N/A' }}</div>
-                                    <div class="text-muted">Price: Rp{{ number_format($item['price'] ?? 0, 0, ',', '.') }}</div>
+                                    <div class="text-muted">Price: Rp{{ number_format($item['price'] ?? 0, 0, ',', '.') }}
+                                    </div>
 
                                     @if ($order['orders_status'] === 'Delivered')
                                         @php
@@ -57,12 +58,14 @@
                                         @endphp
 
                                         @if (!$alreadyRated)
-                                            <form action="{{ route('ratings.store') }}" method="POST" class="ms-auto d-flex align-items-center mt-2">
+                                            <form action="{{ route('ratings.store') }}" method="POST"
+                                                class="ms-auto d-flex align-items-center mt-2">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
                                                 <span class="me-2 small text-muted">Beri Rating:</span>
                                                 @for ($i = 1; $i <= 5; $i++)
-                                                    <button type="submit" name="rating" value="{{ $i }}" class="btn btn-link p-0 border-0">
+                                                    <button type="submit" name="rating" value="{{ $i }}"
+                                                        class="btn btn-link p-0 border-0">
                                                         <i class="bi bi-star text-warning fs-5"></i>
                                                     </button>
                                                 @endfor
@@ -75,7 +78,8 @@
                                 </div>
 
                                 <div class="fw-bold text-dark">
-                                    Total: Rp{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
+                                    Total:
+                                    Rp{{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
                                 </div>
                             </div>
                         @endforeach

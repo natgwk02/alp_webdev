@@ -62,10 +62,10 @@
         display: inline-flex;
         align-items: center;
         color: inherit;
-        padding: 0.5rem 0.75rem; 
+        padding: 0.5rem 0.75rem;
     }
 
-    
+
     .nav-item.position-relative {
         display: flex;
         align-items: center;
@@ -78,8 +78,9 @@
         align-items: center;
         justify-content: center;
     }
-    
-    #wishlistBadge, #cartBadge {
+
+    #wishlistBadge,
+    #cartBadge {
         position: absolute !important;
         top: -5px !important;
         right: -2px !important;
@@ -97,11 +98,11 @@
         border-radius: 50% !important;
         font-weight: bold !important;
         border: 2px solid white !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
         min-width: 18px !important;
     }
 
-    
+
     .badge-spacing-alt #wishlistBadge,
     .badge-spacing-alt #cartBadge {
         top: -8px !important;
@@ -112,7 +113,9 @@
     }
 
     @media (max-width: 768px) {
-        #wishlistBadge, #cartBadge {
+
+        #wishlistBadge,
+        #cartBadge {
             top: -3px !important;
             right: 0px !important;
         }
@@ -147,57 +150,58 @@
 
             <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
 
-<li class="nav-item position-relative">
-    <a id="wishlistLink" class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
-        <i class="bi bi-bookmark-heart-fill fs-5"></i>
-        @if ($wishlistCount > 0)
-            <span id="wishlistBadge">{{ $wishlistCount }}</span>
-        @endif
-    </a>
-</li>
-
-<li class="nav-item position-relative">
-    <a id="cartLink" class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
-        <i class="fas fa-cart-shopping fs-5"></i>
-        @if ($cartCount > 0)
-            <span id="cartBadge">{{ $cartCount }}</span>
-        @endif
-    </a>
-</li>
-                @auth
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false" onclick="event.preventDefault();">
-                        <i class="bi bi-person-fill fs-3"></i>
+                <li class="nav-item position-relative">
+                    <a id="wishlistLink" class="nav-link custom-wishlist-color" href="{{ route('wishlist') }}">
+                        <i class="bi bi-bookmark-heart-fill fs-5"></i>
+                        @if ($wishlistCount > 0)
+                            <span id="wishlistBadge">{{ $wishlistCount }}</span>
+                        @endif
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('profile') }}">
-                                <i class="fa fa-user me-2"></i> Edit Profile
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="#"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="fa fa-sign-out-alt me-2"></i> Sign Out
-                            </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
-                    </ul>
                 </li>
+
+                <li class="nav-item position-relative">
+                    <a id="cartLink" class="nav-link custom-cart-color" href="{{ route('cart.index') }}">
+                        <i class="fas fa-cart-shopping fs-5"></i>
+                        @if ($cartCount > 0)
+                            <span id="cartBadge">{{ $cartCount }}</span>
+                        @endif
+                    </a>
+                </li>
+                @auth
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" onclick="event.preventDefault();">
+                            <i class="bi bi-person-fill fs-3"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('profile') }}">
+                                    <i class="fa fa-user me-2"></i> Edit Profile
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="#"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-sign-out-alt me-2"></i> Sign Out
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    style="display: none;">
+                                    @csrf
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                 @endauth
 
                 @guest
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">
-                        <i class="bi bi-person-fill fs-3"></i>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">
+                            <i class="bi bi-person-fill fs-3"></i>
+                        </a>
+                    </li>
                 @endguest
 
             </ul>

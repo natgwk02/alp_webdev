@@ -38,15 +38,20 @@
                                             </td>
                                             <td>Rp {{ number_format($item['price'] ?? 0, 0, ',', '.') }}</td>
                                             <td>{{ $item['quantity'] ?? 0 }}</td>
-                                            <td>Rp {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}</td>
+                                            <td>Rp
+                                                {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
+                                            </td>
                                             <td>
                                                 @if (!empty($item['product_id']) && empty($item['is_rated']) && ($order['orders_status'] ?? '') === 'Delivered')
                                                     <form method="POST" action="{{ route('ratings.store') }}">
                                                         @csrf
-                                                        <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
+                                                        <input type="hidden" name="product_id"
+                                                            value="{{ $item['product_id'] }}">
                                                         <div class="d-flex">
                                                             @for ($i = 1; $i <= 5; $i++)
-                                                                <button type="submit" name="rating" value="{{ $i }}" class="btn btn-link p-0 border-0">
+                                                                <button type="submit" name="rating"
+                                                                    value="{{ $i }}"
+                                                                    class="btn btn-link p-0 border-0">
                                                                     <i class="bi bi-star"></i>
                                                                 </button>
                                                             @endfor
