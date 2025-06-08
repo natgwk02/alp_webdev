@@ -46,25 +46,26 @@
             </div>
 
             @if (!empty($status_message))
-                <div class="alert 
+                <div
+                    class="alert 
                    @if ($order->payment_status == 'paid') bg-success
-@elseif($order->payment_status == 'pending') bg-warning
-@elseif($order->payment_status == 'failed') bg-danger
-@else bg-secondary @endif
+                    @elseif($order->payment_status == 'pending') bg-warning
+                    @elseif($order->payment_status == 'failed') bg-danger
+                    @else bg-secondary @endif">
 
-                        {{ $status_message }}
-                    </div>
-@endif
-
-                <div class="d-flex
-                    justify-content-between mt-4">
-                    <a href="{{ route('payment.status', ['order' => $order]) }}" class="btn btn-secondary">
-                        <i class="fas fa-sync-alt"></i> Check Status Again
-                    </a>
-                    <a href="{{ route('orders.index') }}" class="btn btn-primary">
-                        <i class="fas fa-list"></i> View My Orders
-                    </a>
+                    {{ $status_message }}
                 </div>
+            @endif
+
+            <div class="d-flex
+                    justify-content-between mt-4">
+                <a href="{{ route('payment.status', ['order' => $order]) }}" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Check Status Again
+                </a>
+                <a href="{{ route('orders.index') }}" class="btn btn-primary">
+                    <i class="fas fa-list"></i> View My Orders
+                </a>
+            </div>
         </div>
     </div>
     </div>
