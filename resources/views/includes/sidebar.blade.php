@@ -113,7 +113,7 @@
         </li>
         <li class="nav-item">
             <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
-                <i class="bi bi-house-door"></i> Home
+                <i class="bi bi-house-door"></i> Home Page
             </a>
         </li>
     </ul>
