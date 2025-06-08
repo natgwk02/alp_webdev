@@ -82,7 +82,7 @@
                             {{ $order['customer']['country'] ?? 'Unknown Country' }}<br>
                             Phone: {{ $order['customer']['phone'] ?? 'Unknown Phone' }}
                         </p>
-                        <p><strong>Payment Method:</strong> {{ ucfirst($order['payment_method'] ?? 'Unknown') }}</p>
+        
                         <p><strong>Payment Status:</strong> {{ ucfirst($order['payment_status'] ?? 'Unpaid') }}</p>
 
                         <hr>
