@@ -182,6 +182,17 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
+                            @can('viewAdminDashboard')
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                        <i class="bi bi-gear-fill me-2"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                <hr class="dropdown-divider">
+                                </li>
+                            @endcan
+
                             <li>
                                 <a class="dropdown-item text-danger" href="#"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

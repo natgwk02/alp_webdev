@@ -94,20 +94,26 @@
     <ul class="nav flex-column px-2">
         <li class="nav-item">
             <a href="{{ route('admin.dashboard') }}"
-                class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+               class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
         </li>
+
         <li class="nav-item">
             <a href="{{ route('admin.products') }}"
-                class="nav-link {{ request()->routeIs('admin.products') ? 'active' : '' }}">
+               class="nav-link {{ request()->routeIs('admin.products') ? 'active' : '' }}">
                 <i class="bi bi-box-seam"></i> Products
             </a>
         </li>
         <li class="nav-item">
             <a href="{{ route('admin.orders') }}"
-                class="nav-link {{ request()->routeIs('admin.orders') ? 'active' : '' }}">
+               class="nav-link {{ request()->routeIs('admin.orders') ? 'active' : '' }}">
                 <i class="bi bi-cart3"></i> Orders
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                <i class="bi bi-house-door"></i> Home
             </a>
         </li>
     </ul>
@@ -116,7 +122,7 @@
         <form action="{{ route('logout') }}" method="POST" class="w-100">
             @csrf
             <button type="submit"
-                class="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 w-100 justify-content-center logout-btn">
+                    class="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 w-100 justify-content-center logout-btn">
                 <i class="bi bi-box-arrow-left"></i>
                 <span>Sign Out</span>
             </button>
