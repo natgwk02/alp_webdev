@@ -9,7 +9,7 @@ class CartItem extends Model
     use HasFactory;
 
     // Kolom yang bisa diisi melalui mass assignment
-    protected $fillable = ['cart_id', 'product_id', 'quantity'];
+    protected $fillable = ['cart_id', 'products_id', 'quantity'];
 
     /**
      * Relasi Many-to-One antara CartItem dan Cart

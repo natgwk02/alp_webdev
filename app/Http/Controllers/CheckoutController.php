@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use id;
 use Midtrans\Snap;
 use Midtrans\Config;
 use App\Models\Order;
