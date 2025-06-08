@@ -95,8 +95,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/counts', [CartController::class, 'getCounts'])->name('counts');
-    Route::post('/midtrans-callback', [MidtransController::class, 'callback'])->name('midtrans.callback');
     Route::get('/payment/status/{order}', [PaymentController::class, 'checkStatus'])->name('payment.status');
+    Route::get('/payment/return/{order}', [PaymentController::class, 'handleReturn'])->name('payment.return');
 });
 Route::middleware('auth:sanctum')->get('/badge-counts', 'App\Http\Controllers\BadgeController@getCounts');
 

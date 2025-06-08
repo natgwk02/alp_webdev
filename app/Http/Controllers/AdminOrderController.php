@@ -45,7 +45,6 @@ class AdminOrderController extends Controller
             $query->where('payment_method', $request->payment_method);
         }
 
-
         if ($request->filled('amount_min') && !$request->filled('amount_more_than')) {
             $query->where('orders_total_price', '>=', $request->amount_min);
         }

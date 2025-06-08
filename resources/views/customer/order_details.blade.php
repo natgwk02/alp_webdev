@@ -88,7 +88,15 @@
                             Phone: {{ $order['customer']['phone'] ?? 'Unknown Phone' }}
                         </p>
                         <p><strong>Payment Method:</strong> {{ ucfirst($order['payment_method'] ?? 'Unknown') }}</p>
-                        <p><strong>Payment Status:</strong> {{ ucfirst($order['payment_status'] ?? 'Unpaid') }}</p>
+                        <p><strong>Payment Status:</strong>
+                            <span id="payment-status-text" class="badge 
+                            @if ($order['payment_status'] === 'paid') bg-success
+                            @elseif ($order['payment_status'] === 'pending') bg-warning text-dark
+                            @elseif ($order['payment_status'] === 'failed') bg-danger
+                            @else bg-secondary @endif">
+                            {{ ucfirst($order['payment_status']) }}
+                            </span>
+                        </p>
 
                         <hr>
                         <div>
@@ -116,9 +124,19 @@
                             </div>
                         </div>
                         <hr>
+                        <div class="mt-3 d-grid gap-2">
+                        <a href="{{ $order['payment_url'] }}" class="btn btn-success w-100">
+                        <i class="bi bi-wallet2"></i> Pay Now
+                        </a>
+<div class="mt-3">
+    <a href="{{ route('orders.index') }}" class="btn btn-secondary w-100">
+        <i class="fas fa-arrow-left"></i> Back to My Orders
+    </a>
+</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+

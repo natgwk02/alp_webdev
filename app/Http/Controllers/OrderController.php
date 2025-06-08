@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
+use Midtrans\Snap;
+use Midtrans\Config;
 
 class OrderController extends Controller
 {
@@ -118,6 +120,7 @@ class OrderController extends Controller
             ],
             'payment_method' => $order->payment_method,
             'payment_status' => $order->payment_status,
+            'payment_url' => $order->payment_url,
             'subtotal' => $order->subtotal,
             'shipping_fee' => $order->shipping_fee,
             'tax' => $order->tax,
@@ -351,6 +354,34 @@ class OrderController extends Controller
             'orders_total_price' => $finalTotal,
             'orders_status' => 'Pending',
         ]);
+        Config::$serverKey = config('midtrans.server_key');
+Config::$isProduction = config('midtrans.is_production');
+Config::$isSanitized = true;
+Config::$is3ds = true;
+
+// Prepare Midtrans transaction params
+$params = [
+    'transaction_details' => [
+        'order_id' => $order->orders_id,
+        'gross_amount' => $finalTotal,
+    ],
+    'customer_details' => [
+        'first_name' => $request->firstName,
+        'last_name' => $request->lastName,
+        'email' => Auth::user()->users_email ?? 'guest@example.com',
+        'phone' => $request->phone,
+    ],
+];
+
+// Create transaction and get Snap URL
+try {
+    $snap = Snap::createTransaction($params);
+    $order->payment_url = $snap->redirect_url;
+    $order->save();
+} catch (\Exception $e) {
+    Log::error('Midtrans transaction creation failed: ' . $e->getMessage());
+}
+        
 
         foreach ($checkoutItems as $cartItem) {
             OrderDetail::create([

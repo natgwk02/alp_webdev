@@ -53,33 +53,31 @@ class CheckoutController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $this->validateRequest($request);
+{
+    $validated = $this->validateRequest($request);
 
-        if (!session()->has('checkout_data')) {
-            return redirect()->route('cart.index')->with('error', 'Sesi checkout telah kadaluarsa.');
-        }
+    if (!session()->has('checkout_data')) {
+        return redirect()->route('cart.index')->with('error', 'Sesi checkout telah kadaluarsa.');
+    }
 
-        $checkoutData = session('checkout_data');
-        $country = $request->input('country');
+    $checkoutData = session('checkout_data');
+    $userId = Auth::id();
+    $user = Auth::user();
 
-        // Override shipping fee berdasarkan negara
-        $shippingFee = ($country === 'Indonesia') ? 50000 : 150000;
+    $shippingFee = ($validated['country'] === 'Indonesia') ? 50000 : 150000;
+    $subtotal = $checkoutData['subtotal'];
+    $tax = $checkoutData['tax'];
+    $voucherDiscount = $checkoutData['voucher_discount'];
+    $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
 
-        // Hitung ulang total
-        $subtotal = $checkoutData['subtotal'];
-        $tax = $checkoutData['tax'];
-        $voucherDiscount = $checkoutData['voucher_discount'];
-        $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
+    DB::beginTransaction();
 
-        $userId = Auth::id();
-
-        // Generate Order ID secara otomatis oleh DB
-        $total = $checkoutData['subtotal'] + $checkoutData['shipping'] + $checkoutData['tax'] - $checkoutData['voucher_discount'];
+    try {
         $invoiceNumber = 'INV-' . date('Ymd') . '-' . strtoupper(uniqid());
 
         $order = Order::create([
             'users_id' => $userId,
+            'invoice_number' => $invoiceNumber,
             'orders_date' => now(),
             'orders_status' => 'pending',
             'first_name' => $validated['firstName'],
@@ -89,46 +87,40 @@ class CheckoutController extends Controller
             'city' => $validated['city'],
             'zip' => $validated['zip'],
             'country' => $validated['country'],
-            // 'payment_method' => $validated['paymentMethod'],
             'payment_status' => 'pending',
-            'subtotal' => $checkoutData['subtotal'],
-            'shipping_fee' => $checkoutData['shipping'],
-            'tax' => $checkoutData['tax'],
-            'voucher_discount' => $checkoutData['voucher_discount'],
+            'subtotal' => $subtotal,
+            'shipping_fee' => $shippingFee,
+            'tax' => $tax,
+            'voucher_discount' => $voucherDiscount,
             'total' => $total,
             'orders_total_price' => $total,
             'notes' => $request->input('sellerNotes'),
-            'invoice_number' => $invoiceNumber,
-
             'status_del' => false,
+            'payment_url' => null,
         ]);
 
-        // Simpan semua item ke order_details
         foreach ($checkoutData['items'] as $item) {
             OrderDetail::create([
                 'orders_id' => $order->orders_id,
                 'products_id' => $item['id'],
                 'order_details_quantity' => $item['quantity'],
                 'price' => $item['price'],
-                'total' => $item['quantity'] * $item['price'],
+                'total' => $item['price'] * $item['quantity'],
                 'status_del' => false,
             ]);
         }
 
-        // Ambil semua products_id yang telah di-checkout
-        $checkedOutProductIds = collect($checkoutData['items'])->pluck('id')->toArray();
-
-        // Hapus item dari cart setelah checkout
+        // Bersihkan item cart user
         $cart = \App\Models\Cart::where('users_id', $userId)->first();
         if ($cart) {
             \App\Models\CartItem::where('cart_id', $cart->id)
-                ->whereIn('products_id', $checkedOutProductIds)
+                ->whereIn('products_id', collect($checkoutData['items'])->pluck('id'))
                 ->delete();
         }
 
-         session()->forget('checkout_data');
-         
-        // MIDTRANS CONFIG
+        session()->forget('checkout_data');
+
+        // Midtrans Config
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized = true;
@@ -136,30 +128,33 @@ class CheckoutController extends Controller
 
         $params = [
             'transaction_details' => [
-                'order_id' => 'ORDER-' . $order->orders_id,
-                'gross_amount' => $order->total,
+                'order_id' => $invoiceNumber,
+                'gross_amount' => $total,
             ],
             'customer_details' => [
                 'first_name' => $validated['firstName'],
                 'last_name' => $validated['lastName'],
-                //'email' => $validated['email'],
+                'email' => $user->email,
                 'phone' => $validated['phone'],
+            ],
+            'callbacks' => [
+                'finish' => route('payment.return', ['order' => $order->orders_id]),
             ],
         ];
 
-        try {
-            $snapToken = Snap::getSnapToken($params);
+        $snapUrl = Snap::createTransaction($params)->redirect_url;
 
-            // Redirect ke view Midtrans dengan Snap Token
-            return view('customer.midtrans-payment', [
-                'snapToken' => $snapToken,
-                'orderId' => $order->orders_id,
-                'paymentStatusUrl' => route('payment.status', ['order' => $order->orders_id]),
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->route('cart.index')->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
-        }
+        $order->payment_url = $snapUrl;
+        $order->save();
+
+        DB::commit();
+
+        return redirect($snapUrl);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->route('cart.index')->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
     }
+}
     private function validateRequest(Request $request)
     {
         return $request->validate([
@@ -253,58 +248,58 @@ class CheckoutController extends Controller
         return view('terms-and-conditions');
     }
 
-    public function handleCallback(Request $request)
-    {
-        // Ambil notifikasi dari Midtrans
-        $serverKey = config('midtrans.server_key');
-        $json = file_get_contents("php://input");
-        $notification = json_decode($json);
+    // public function handleCallback(Request $request)
+    // {
+    //     // Ambil notifikasi dari Midtrans
+    //     $serverKey = config('midtrans.server_key');
+    //     $json = file_get_contents("php://input");
+    //     $notification = json_decode($json);
 
-        // Verifikasi tanda tangan
-        $signatureKey = $notification->signature_key ?? '';
-        $orderId = $notification->order_id ?? '';
-        $statusCode = $notification->status_code ?? '';
-        $grossAmount = $notification->gross_amount ?? '';
-        $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+    //     // Verifikasi tanda tangan
+    //     $signatureKey = $notification->signature_key ?? '';
+    //     $orderId = $notification->order_id ?? '';
+    //     $statusCode = $notification->status_code ?? '';
+    //     $grossAmount = $notification->gross_amount ?? '';
+    //     $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
 
-        if ($signatureKey !== $expectedSignature) {
-            Log::warning('Invalid Midtrans signature for order: ' . $orderId);
-            return response()->json(['message' => 'Invalid signature'], 403);
-        }
+    //     if ($signatureKey !== $expectedSignature) {
+    //         Log::warning('Invalid Midtrans signature for order: ' . $orderId);
+    //         return response()->json(['message' => 'Invalid signature'], 403);
+    //     }
 
-        // Hapus prefix jika perlu (misalnya "ORDER-123" → ambil 123)
-        $orderId = str_replace('ORDER-', '', $orderId);
+    //     // Hapus prefix jika perlu (misalnya "ORDER-123" → ambil 123)
+    //     $orderId = str_replace('ORDER-', '', $orderId);
 
-        $order = Order::where('orders_id', $orderId)->first();
+    //     $order = Order::where('orders_id', $orderId)->first();
 
-        if (!$order) {
-            Log::error('Order not found: ' . $orderId);
-            return response()->json(['message' => 'Order not found'], 404);
-        }
+    //     if (!$order) {
+    //         Log::error('Order not found: ' . $orderId);
+    //         return response()->json(['message' => 'Order not found'], 404);
+    //     }
 
-        // Update status berdasarkan notifikasi
-        switch ($notification->transaction_status) {
-            case 'capture':
-            case 'settlement':
-                $order->orders_status = 'completed';
-                $order->payment_status = 'paid';
-                break;
-            case 'pending':
-                $order->orders_status = 'pending';
-                $order->payment_status = 'pending';
-                break;
-            case 'deny':
-            case 'cancel':
-            case 'expire':
-                $order->orders_status = 'failed';
-                $order->payment_status = 'failed';
-                break;
-        }
+    //     // Update status berdasarkan notifikasi
+    //     switch ($notification->transaction_status) {
+    //         case 'capture':
+    //         case 'settlement':
+    //             $order->orders_status = 'completed';
+    //             $order->payment_status = 'paid';
+    //             break;
+    //         case 'pending':
+    //             $order->orders_status = 'pending';
+    //             $order->payment_status = 'pending';
+    //             break;
+    //         case 'deny':
+    //         case 'cancel':
+    //         case 'expire':
+    //             $order->orders_status = 'failed';
+    //             $order->payment_status = 'failed';
+    //             break;
+    //     }
 
-        $order->save();
+    //     $order->save();
 
-        Log::info('Payment status updated from Midtrans callback for order: ' . $order->orders_id);
+    //     Log::info('Payment status updated from Midtrans callback for order: ' . $order->orders_id);
 
-        return response()->json(['message' => 'Callback processed successfully']);
-    }
+    //     return response()->json(['message' => 'Callback processed successfully']);
+    // }
 }
