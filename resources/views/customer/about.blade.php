@@ -107,20 +107,29 @@
             <div class="row justify-content-center mb-4 gy-4">
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/manda.jpeg" alt="Amanda" class="rounded-circle team-img mb-3">
-                        <h6 class="fw-semibold">Amanda Michelle Darwis</h6>
+                        <a href="https://www.linkedin.com/in/amanda-michelle-darwis-1734b42a1/" target="_blank"
+                            class="text-decoration-none">
+                            <img src="/images/aboutus/manda.jpeg" alt="Amanda" class="rounded-circle team-img mb-3">
+                            <h6 class="fw-semibold">Amanda Michelle Darwis</h6>
+                        </a>
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/anne.jpg" alt="Anne" class="rounded-circle team-img mb-3">
-                        <h6 class="fw-semibold">Anne Tantan</h6>
+                        <a href="https://www.linkedin.com/in/anne-tantan-30a36932b/" target="_blank"
+                            class="text-decoration-none">
+                            <img src="/images/aboutus/anne.jpg" alt="Anne" class="rounded-circle team-img mb-3">
+                            <h6 class="fw-semibold">Anne Tantan</h6>
+                        </a>
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/jessi.jpg" alt="Jessica" class="rounded-circle team-img mb-3">
-                        <h6 class="fw-semibold">Jessica Laurentia Tedja</h6>
+                        <a href="https://www.linkedin.com/in/jessica-laurentia-tedja-0b209732a/" target="_blank"
+                            class="text-decoration-none">
+                            <img src="/images/aboutus/jessi.jpg" alt="Jessica" class="rounded-circle team-img mb-3">
+                            <h6 class="fw-semibold">Jessica Laurentia Tedja</h6>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -128,14 +137,20 @@
             <div class="row justify-content-center gy-4">
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/nat.jpeg" alt="Natalie" class="rounded-circle team-img mb-3">
-                        <h6 class="fw-semibold">Natalie Grace Widjaja Kuswanto</h6>
+                        <a href="https://www.linkedin.com/in/natalie-grace-w-k-83a41b272/" target="_blank"
+                            class="text-decoration-none">
+                            <img src="/images/aboutus/nat.jpeg" alt="Natalie" class="rounded-circle team-img mb-3">
+                            <h6 class="fw-semibold">Natalie Grace Widjaja Kuswanto</h6>
+                        </a>
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/sharon.jpeg" alt="Sharon" class="rounded-circle team-img mb-3">
-                        <h6 class="fw-semibold">Sharon Tan</h6>
+                        <a href="https://www.linkedin.com/in/shasatanjaya/" target="_blank"
+                            class="text-decoration-none">
+                            <img src="/images/aboutus/sharon.jpeg" alt="Sharon" class="rounded-circle team-img mb-3">
+                            <h6 class="fw-semibold">Sharon Tan</h6>
+                        </a>
                     </div>
                 </div>
             </div>
