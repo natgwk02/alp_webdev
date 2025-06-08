@@ -113,7 +113,7 @@
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/kamari.jpg" alt="Anne" class="rounded-circle team-img mb-3">
+                        <img src="/images/aboutus/anne.jpg" alt="Anne" class="rounded-circle team-img mb-3">
                         <h6 class="fw-semibold">Anne Tantan</h6>
                     </div>
                 </div>
