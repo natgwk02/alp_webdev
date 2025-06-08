@@ -2,116 +2,240 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
+use App\Models\CartItem;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    // Show the cart
-    public function index()
+
+    /**
+     * Show the current user's cart.
+     */
+    public function index(Request $request)
     {
-        // Hardcoded cart items
-        $cartItems = [
-            [
-                'product_id' => 1,
-                'product_name' => 'Chilean Sea Bass Fillet',
-                'price' => 24.99,
-                'quantity' => 2,
-                'image' => 'sea-bass.jpg',
-                'stock' => 10
-            ],
-            [
-                'product_id' => 2,
-                'product_name' => 'Argentinian Red Shrimp',
-                'price' => 18.99,
-                'quantity' => 1,
-                'image' => 'red-shrimp.jpg',
-                'stock' => 15
-            ]
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to view your cart.');
+        }
+
+        $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+        $cartItems = $cart->items()->with('product')->get();
+
+        $subtotal = $this->calculateSubtotal($cart);
+        $tax = round($subtotal * 0.1);
+        $voucherDiscount = session('voucher_discount', 0);
+        $total = $subtotal + $tax - $voucherDiscount;
+
+        $selectedItemsOnLoad = session('selected_items_on_load', []);
+
+        return view('customer.cart', compact(
+            'cartItems',
+            'subtotal',
+            'tax',
+            'total',
+            'voucherDiscount',
+            'selectedItemsOnLoad'
+        ));
+    }
+
+public function addToCart(Request $request, $productId)
+{
+    if (session()->has('is_guest')) {
+        return redirect()->route('login')->with('error', 'Please login to add items to cart.');
+    }
+
+    if (!Auth::check()) {
+        return response()->json(['success' => false, 'message' => 'Please login.'], 403);
+    }
+
+    // Ambil product_id dari route atau form input
+    $productId = $productId ?? $request->input('product_id');
+
+    // Cek apakah produk ada
+    $product = Product::find($productId);
+    if (!$product) {
+        return response()->json(['success' => false, 'message' => 'Product not found.'], 404);
+    }
+
+    // Ambil cart user atau buat baru
+    $cart = Cart::firstOrCreate(['users_id' => Auth::id()]);
+
+    // Tambahkan item ke cart
+    $cartItem = CartItem::where('cart_id', $cart->id)
+    ->where('products_id', $productId)
+    ->first();
+
+if ($cartItem) {
+    // Tambahkan quantity jika sudah ada
+    $cartItem->quantity += (int) $request->input('quantity', 1);
+} else {
+    // Buat item baru jika belum ada
+    $cartItem = new CartItem([
+        'cart_id' => $cart->id,
+        'products_id' => $productId,
+        'quantity' => (int) $request->input('quantity', 1),
+    ]);
+}
+$cartItem->save();
+
+
+    
+    // Respon berbeda tergantung apakah dari AJAX atau tidak
+    if ($request->ajax()) {
+        return response()->json(['success' => true, 'message' => 'Item added to cart.']);
+    }
+
+    return back()->with('success', 'Item added to cart.');
+}
+
+    /**
+     * Remove a product from the cart.
+     */
+    public function removeFromCart(Request $request, $productId)
+    {
+        // Check if the user is logged in
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to remove items from the cart.');
+        }
+
+        // Get the current user's cart
+        $cart = Cart::where('users_id', Auth::id())->first();
+
+        // Remove the product from the cart
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
+        if ($cartItem) {
+            $cartItem->delete();
+        }
+
+        return redirect()->route('cart.index')->with('success', 'Product removed from cart.');
+    }
+
+    /**
+     * Update the quantity of a product in the cart.
+     */
+    public function updateCart(Request $request, $productId)
+    {
+        // Check if the user is logged in
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to update the quantity.');
+        }
+
+        // Get the new quantity from the form
+        $quantity = max(1, (int) $request->input('quantity', 1));
+
+        // Get the current user's cart
+        $cart = Cart::where('users_id', Auth::id())->first();
+
+        // Update the quantity of the product in the cart
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('products_id', $productId)->first();
+        if ($cartItem) {
+            $cartItem->quantity = $quantity;
+            $cartItem->save();
+        }
+
+        $subtotal = $this->calculateSubtotal($cart);
+        $tax = round($subtotal * 0.1);
+        $voucherDiscount = session('voucher_discount', 0);
+        $total = $subtotal + $tax - $voucherDiscount;
+
+        return redirect()->route('cart.index')->with([
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total' => $total,
+            'voucherDiscount' => $voucherDiscount,
+        ]);
+    }
+
+    /**
+     * Calculate the subtotal of the cart.
+     */
+    private function calculateSubtotal($cart)
+    {
+        if (!$cart || !$cart->relationLoaded('items')) {
+        $cart->load('items.product'); 
+    }
+        return $cart->items->sum(function ($item) {
+
+            if ($item->product && isset($item->product->orders_price)) {
+                return $item->product->orders_price * $item->quantity;
+            }
+            return 0;
+        });
+    }
+
+    /**
+     * Apply a voucher to the cart.
+     */
+    public function applyVoucher(Request $request)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to apply a voucher.');
+        }
+        
+
+        $validVouchers = [
+            'CHILLBRO' => ['min' => 200000, 'discount' => 50000],
+            'COOLMAN' => ['discount' => 20000],
+            'GOODDAY' => ['discount' => 10000]
         ];
 
-        // Calculate the total number of items in the cart
-        $totalItems = array_reduce($cartItems, function($carry, $item) {
-            return $carry + $item['quantity'];
-        }, 0);
+        $code = strtoupper($request->input('voucher_code'));
+        $cart = Cart::with('items.product')->where('users_id', Auth::id())->first();
+        $selectedItems = explode(',', $request->input('selected_items_voucher', ''));
+        $subtotal = $cart->items->filter(function ($item) use ($selectedItems) {
+        return in_array((string) $item->products_id, $selectedItems);
+    })->sum(function ($item) {
+        return $item->product->orders_price * $item->quantity;
+    });
 
-        // Calculate subtotal, shipping fee, tax, and total
-        $subtotal = array_reduce($cartItems, function($carry, $item) {
-            return $carry + ($item['price'] * $item['quantity']);
-        }, 0);
-
-        $shippingFee = 5.00;
-        $tax = $subtotal * 0.1; // 10% tax
-        $total = $subtotal + $shippingFee + $tax;
-
-        // Return data to the view
-        return view('customer.cart', compact('cartItems', 'totalItems', 'subtotal', 'shippingFee', 'tax', 'total'));
+    if (!array_key_exists($code, $validVouchers)) {
+        return back()->withInput()->with('voucher_error', 'Invalid voucher code.')
+            ->with('selected_items_on_load', $selectedItems);
     }
 
-    // Add a product to the cart
-    public function addToCart(Request $request, $productId)
-    {
-        // In a real application, this would add item to the cart
-        return redirect()->route('cart')
-            ->with('success', 'Product added to cart successfully');
+    $voucher = $validVouchers[$code];
+
+    if (isset($voucher['min']) && $subtotal < $voucher['min']) {
+        return back()->withInput()->with('voucher_error', 'Voucher ' . $code . ' requires minimum purchase of Rp' . number_format($voucher['min'], 0, ',', '.'))
+            ->with('selected_items_on_load', $selectedItems);
     }
 
-    // Update cart quantities
-    public function updateCart(Request $request)
-    {
-        // In a real application, this would update cart quantities
-        $productId = $request->input('product_id');
-       $quantity = $request->input('quantity');
-        return redirect()->route('cart')
-            ->with('success', 'Cart updated successfully');
+    // Simpan selected items juga ke session (optional)
+    session([
+        'voucher_code' => $code,
+        'voucher_discount' => $voucher['discount'],
+        'selected_items_on_load' => $selectedItems, // supaya ke-load lagi setelah redirect
+    ]);
+
+    return back()->with('voucher_success', 'Voucher applied successfully!')
+        ->with('selected_items_on_load', $selectedItems);
     }
 
-    // Remove a product from the cart
-    public function removeFromCart($productId)
+    public function removeVoucher(Request $request)
     {
-        // In a real application, this would remove item from the cart
-        return redirect()->route('cart')
-            ->with('success', 'Product removed from cart');
+        session()->forget(['voucher_code', 'voucher_discount']);
+        // To preserve selection, you might need to get current selection via JS before submitting this form
+        // For now, let's keep it simple and let the default selection (all items) apply on next page load
+        return back()->with('voucher_success', 'Voucher removed successfully.');
     }
 
-    // Show the wishlist
-    public function wishlist()
+    public function getCounts()
     {
-        // Hardcoded wishlist items
-        $wishlistItems = [
-            [
-                'product_id' => 3,
-                'product_name' => 'Alaskan King Crab Legs',
-                'price' => 39.99,
-                'image' => 'sea-bass.jpg',
-                'in_stock' => true
-            ],
-            [
-                'product_id' => 4,
-                'product_name' => 'Patagonian Scallops',
-                'price' => 29.99,
-                'image' => 'sea-bass.jpg',
-                'in_stock' => false
-            ]
-        ];
+        $cartCount = 0;
+        $wishlistCount = 0;
 
-        // Return wishlist view
-        return view('customer.wishlist', compact('wishlistItems'));
-    }
+        if (Auth::check()) {
+            $cart = Cart::where('users_id', Auth::id())->first();
+          $cartCount = $cart ? $cart->items()->distinct('products_id')->count('products_id') : 0;
 
-    // Add a product to the wishlist
-    public function addToWishlist($productId)
-    {
-        // In a real application, this would add item to wishlist
-        return redirect()->route('wishlist')
-            ->with('success', 'Product added to wishlist');
-    }
+            $wishlistCount = \App\Models\Wishlist::where('users_id', Auth::id())->count();
+        }
 
-    // Remove a product from the wishlist
-    public function removeFromWishlist($productId)
-    {
-        // In a real application, this would remove item from wishlist
-        return redirect()->route('wishlist')
-            ->with('success', 'Product removed from wishlist');
+        return response()->json([
+            'cart' => $cartCount,
+            'wishlist' => $wishlistCount,
+        ]);
     }
 }

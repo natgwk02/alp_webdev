@@ -2,180 +2,180 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    private function products()
+
+    public function index(Request $request)
     {
-        return [
-            [
-                'id' => 1,
-                'name' => 'Chilean Sea Bass Fillet',
-                'price' => 200000,
-                'image' => 'sea-bass.jpg',
-                'category' => 'Fish',
-                'description' => 'Premium Chilean sea bass fillets, wild-caught from the cold waters of Chile.',
-                'weight' => '1 lb',
-                'origin' => 'Chile',
-                'nutrition' => [
-                    'calories' => 200,
-                    'protein' => '20g',
-                    'fat' => '13g',
-                ],
-                'reviews' => [
-                    [
-                        'user' => 'John D.',
-                        'rating' => 5,
-                        'comment' => 'Excellent quality fish! Will order again.',
-                    ]
-                ]
-            ],
-            [
-                'id' => 2,
-                'name' => 'Argentinian Red Shrimp',
-                'price' => 220000,
-                'image' => 'red-shrimp.jpg',
-                'category' => 'Shellfish',
-                'description' => 'Large, sweet Argentinian red shrimp, perfect for grilling or sautéing.',
-                'weight' => '500g',
-                'origin' => 'Argentina',
-                'nutrition' => [
-                    'calories' => 180,
-                    'protein' => '23g',
-                    'fat' => '9g',
-                ],
-                'reviews' => []
-            ],
-            [
-                'id' => 3,
-                'name' => 'Kanzler Nugget Crispy',
-                'price' => 50000,
-                'image' => 'kanzler-nugget.jpg',
-                'category' => 'Chicken Nugget',
-                'description' => 'Crispy and flavorful chicken nuggets, perfect for quick meals or party snacks.',
-                'weight' => '400g',
-                'origin' => 'Indonesia',
-                'nutrition' => [
-                    'calories' => 250,
-                    'protein' => '15g',
-                    'fat' => '17g',
-                ],
-                'reviews' => []
-            ],
-            [
-                'id' => 4,
-                'name' => 'Ready Meal Fiesta Beef Bulgogi With Rice',
-                'price' => 26999,
-                'image' => 'rm-fiesta-bulgogi.jpg',
-                'category' => 'Ready Meals',
-                'description' => 'Tender beef in a savory bulgogi marinade, perfectly paired with fluffy rice, ideal for a quick and delicious meal.',
-                'weight' => '300g',
-                'origin' => 'Korea',
-                'nutrition' => [
-                    'calories' => 350,
-                    'protein' => '20g',
-                    'fat' => '12g',
-                ],
-                'reviews' => []
-            ],
-            [
-                'id' => 5,
-                'name' => 'Gorton\'s Classic Grilled Salmon',
-                'price' => 56000,
-                'image' => 'fish-grilled-salmon.jpg',
-                'category' => 'Fish',
-                'description' => 'Grilled salmon fillets seasoned and ready to enjoy.',
-                'weight' => '200g',
-                'origin' => 'USA',
-                'nutrition' => [
-                    'calories' => 210,
-                    'protein' => '22g',
-                    'fat' => '12g',
-                ],
-                'reviews' => []
-            ],
-            [
-            'id' => 6,
-            'name' => 'Fiesta Chicken Karaage 500gr',
-            'price' => 48000,
-            'image' => 'chicken-fiesta-karage.jpg',
-            'category' => 'Chicken',
-            'description' => 'Crispy Japanese-style chicken karaage, made from tender chicken thigh meat. Ready to fry.',
-            'weight' => '500g',
-            'origin' => 'Indonesia',
-            'nutrition' => [
-            'calories' => 290,
-            'protein' => '18g',
-            'fat' => '20g',
-            ],
-            'reviews' => []
-            ],
-            [
-            'id' => 7,
-            'name' => 'Good Value Mixed Fruit',
-            'price' => 32000,
-            'image' => 'gv-mixed-fruit.jpg',
-            'category' => 'Frozen Fruit',
-            'description' => 'A convenient mix of frozen strawberries, blueberries, mango, and pineapple. Perfect for smoothies or desserts.',
-            'weight' => '400g',
-            'origin' => 'Indonesia',
-            'nutrition' => [
-            'calories' => 160,
-            'protein' => '1g',
-            'fat' => '0g',
-           ],
-           'reviews' => []
-        ],
-        [
-         'id' => 8,
-         'name' => 'Golden Farm Mixed Vegetable',
-         'price' => 25000,
-         'image' => 'gf-mixedvegetables.jpg',
-         'category' => 'Frozen Vegetables',
-         'description' => 'A healthy blend of frozen carrots, corn, green beans, and peas. Great for stir-fries or soups.',
-         'weight' => '500g',
-         'origin' => 'Indonesia',
-         'nutrition' => [
-         'calories' => 90,
-         'protein' => '3g',
-         'fat' => '0.5g',
-          ],
-         'reviews' => []
-        ],
-        [
-       'id' => 9,
-       'name' => 'Fiesta Siomay',
-       'price' => 34000,
-       'image' => 'fiesta-siomay.jpg',
-       'category' => 'Frozen Dim Sum',
-       'description' => 'Delicious and ready-to-steam chicken siomay, perfect for snacks or side dishes.',
-       'weight' => '250g',
-       'origin' => 'Indonesia',
-        'nutrition' => [
-        'calories' => 190,
-        'protein' => '8g',
-        'fat' => '9g',
-    ],
-    'reviews' => []
-       ]
-        ];
+    $query = Product::query();
+
+    // Filter: Search by name
+    if ($request->filled('search')) {
+        $query->where('products_name', 'like', '%' . $request->search . '%');
     }
 
-    public function index()
-    {
-        $products = $this->products();
-        return view('customer.products', compact('products'));
+    // Filter: Category
+    if ($request->filled('category')) {
+        $query->where('categories_id', $request->category);
+    }
+
+    // Filter: Price range
+    if ($request->filled('min_price')) {
+        $query->where('orders_price', '>=', $request->min_price);
+    }
+
+    if ($request->filled('max_price')) {
+        $query->where('orders_price', '<=', $request->max_price);
+    }
+
+    $products = $query->with(['category', 'ratings'])->paginate(12);
+
+    // Wishlist
+    $wishlistProductIds = Auth::check()
+        ? Wishlist::where('users_id', Auth::id())->pluck('products_id')->toArray()
+        : [];
+
+    $wishlistCount = Auth::check()
+        ? Wishlist::where('users_id', Auth::id())->count()
+        : 0;
+
+    // Cart Count
+    $cartCount = 0;
+    if (Auth::check()) {
+        $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
+        $cartCount = $cart ? $cart->items()->count() : 0;
+    }
+
+    // Get distinct product categories
+    $categories = DB::table('categories')->pluck('categories_name', 'categories_id')->toArray();
+
+    return view('customer.products', compact(
+        'products',
+        'wishlistProductIds',
+        'wishlistCount',
+        'cartCount',
+        'categories'
+    ));
     }
 
     public function show($id)
     {
-        $product = collect($this->products())->firstWhere('id', $id);
+        $product = Product::with('category')->findOrFail($id);
 
-        if (!$product) {
-            abort(404, 'Product not found');
+        $averageRating = $product->rating; // dari kolom 'rating' di tabel products
+        $reviewCount = \App\Models\Rating::where('product_id', $product->products_id)->count();
+
+        $userId = Auth::id();
+
+        // Cek apakah user sudah menyelesaikan pesanan produk ini
+        $hasCompletedOrder = false;
+        $hasRated = false;
+        
+        if (Auth::check()) {
+            $hasCompletedOrder = \App\Models\OrderDetail::where('products_id', $product->products_id)
+                ->whereHas('order', function ($query) use ($userId) {
+                    $query->where('users_id', $userId)
+                        ->where('orders_status', 'Delivered');
+                })
+                ->exists();
+
+            $hasRated = \App\Models\Rating::where('user_id', $userId)
+                ->where('product_id', $product->products_id)
+                ->exists();
         }
 
-        return view('customer.product_details', compact('product'));
+        return view('customer.product_details', compact(
+            'product',
+            'averageRating',
+            'reviewCount',
+            'hasCompletedOrder',
+            'hasRated'
+        ));
+    }
+
+
+    public function wishlist()
+    {
+         $wishlistItems = Wishlist::with('product')
+        ->where('users_id', Auth::id())
+        ->get()
+        ->map(function ($item) {
+            return [
+                'products_id' => $item->product->products_id,
+                'products_name' => $item->product->product_name,
+                'price' => $item->product->price,
+                'products_image' => $item->product->products_image,
+                'products_stock' => $item->product->products_stock > 0,
+                'orders_price' => $item->product->orders_price, 
+                'categories_name'=> optional($item->product->category)->categories_name
+            ];
+        });
+        
+
+    return view('customer.wishlist', compact('wishlistItems'));
+    }
+
+
+    public function addToWishlist(Request $request, $productId)
+    {
+        Wishlist::firstOrCreate([
+        'users_id' => Auth::id(),
+        'products_id' => $productId,
+    ]);
+
+    return redirect()->back()->with('success', 'Product added to wishlist');
+    }
+
+    public function removeFromWishlist(Request $request, $productId)
+    {
+         Wishlist::where('users_id', Auth::id())
+            ->where('products_id', $productId)
+            ->delete();
+
+    return redirect()->back()->with('success', 'Product removed from wishlist');
+    }
+
+    public function showHome()
+    {
+        $products = Product::limit(8)->get();
+        return view('customer.home', compact('products'));
+    }
+
+
+    public function toggleWishlist($productId)
+    {
+        if (!Auth::check()) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $product = \App\Models\Product::find($productId);
+    if (!$product) {
+        return response()->json(['message' => 'Product not found'], 404);
+    }
+
+    $wishlist = \App\Models\Wishlist::where('users_id', Auth::id())
+                ->where('products_id', $productId)
+                ->first();
+
+    if ($wishlist) {
+        $wishlist->delete();
+        $message = 'Product removed from wishlist';
+    } else {
+        \App\Models\Wishlist::create([
+            'users_id' => Auth::id(),
+            'products_id' => $productId,
+        ]);
+        $message = 'Product added to wishlist';
+    }
+
+    return response()->json(['message' => $message]);
+
     }
 }
+

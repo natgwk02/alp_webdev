@@ -2,96 +2,90 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Container\Attributes\Log;
 
 class AdminOrderController extends Controller
 {
-    public function index()
+
+    public function dashboard()
     {
-        // Hardcoded orders data
-        $orders = [
-            [
-                'id' => 1001,
-                'order_number' => 'CHILE-2025-1001',
-                'customer_name' => 'John Doe',
-                'order_date' => '2025-05-10',
-                'total_amount' => 89.97,
-                'status' => 'Processing',
-                'payment_method' => 'Credit Card'
-            ],
-            [
-                'id' => 1002,
-                'order_number' => 'CHILE-2025-1002',
-                'customer_name' => 'Jane Smith',
-                'order_date' => '2025-05-11',
-                'total_amount' => 124.95,
-                'status' => 'Shipped',
-                'payment_method' => 'PayPal'
-            ],
-            [
-                'id' => 1003,
-                'order_number' => 'CHILE-2025-1003',
-                'customer_name' => 'Robert Johnson',
-                'order_date' => '2025-05-12',
-                'total_amount' => 64.98,
-                'status' => 'Delivered',
-                'payment_method' => 'Bank Transfer'
-            ]
+        $stats = [
+            'total_orders' => \App\Models\Order::count(),
+            // kamu bisa tambah statistik lainnya juga
         ];
 
-        return view('admin.orders.index', compact('orders'));
+        return view('admin.dashboard', compact('stats'));
     }
 
-    public function show($id)
+    public function index(Request $request)
     {
-        // Hardcoded order details
-        $order = [
-            'id' => $id,
-            'order_number' => 'CHILE-2025-' . $id,
-            'customer_name' => 'John Doe',
-            'customer_email' => 'john.doe@example.com',
-            'order_date' => '2025-05-10 14:30:00',
-            'status' => 'Processing',
-            'payment_method' => 'Credit Card',
-            'payment_status' => 'Paid',
-            'shipping_address' => '123 Main St, Santiago, Chile',
-            'billing_address' => '123 Main St, Santiago, Chile',
-            'subtotal' => 89.97,
-            'shipping_fee' => 5.00,
-            'tax' => 8.99,
-            'total_amount' => 103.96,
-            'items' => [
-                [
-                    'product_id' => 1,
-                    'product_name' => 'Chilean Sea Bass Fillet',
-                    'quantity' => 2,
-                    'price' => 24.99,
-                    'total' => 49.98
-                ],
-                [
-                    'product_id' => 2,
-                    'product_name' => 'Argentinian Red Shrimp',
-                    'quantity' => 1,
-                    'price' => 18.99,
-                    'total' => 18.99
-                ],
-                [
-                    'product_id' => 3,
-                    'product_name' => 'Alaskan King Crab Legs',
-                    'quantity' => 1,
-                    'price' => 39.99,
-                    'total' => 39.99
-                ]
-            ]
-        ];
+        $query = Order::with('user')
+            ->orderBy('orders_date', 'desc');
+
+        if ($request->filled('order_id')) {
+            $query->where('orders_id', 'like', '%' . $request->order_id . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('orders_status', $request->status);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('orders_date', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('orders_date', ' <=', $request->date_to);
+        }
+
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->payment_method);
+        }
+
+
+        if ($request->filled('amount_min') && !$request->filled('amount_more_than')) {
+            $query->where('orders_total_price', '>=', $request->amount_min);
+        }
+        if ($request->filled('amount_max') && !$request->filled('amount_more_than')) {
+            $query->where('orders_total_price', '<=', $request->amount_max);
+        }
+        if ($request->filled('amount_more_than') && $request->filled('amount_min')) {
+            $query->where('orders_total_price', '>', $request->amount_min);
+        }
+
+        $orders = $query->paginate(10)->withQueryString();
+
+        return view('admin.orders.index', [
+            'orders' => $orders,
+            // The request helper in the view can still get current filter values
+        ]);
+    }
+
+    public function show($id) // Assuming $id is orders_id
+    {
+        $order = Order::with(['user', 'items.product']) // 'user' for customer, 'details' for order items, 'details.product' to get product info for each item
+            ->findOrFail($id); // $id is the orders_id
 
         return view('admin.orders.show', compact('order'));
     }
-
     public function updateStatus(Request $request, $id)
     {
-        // In a real application, this would update the order status
-        return redirect()->route('admin.orders.show', $id)
-            ->with('success', 'Order status updated successfully');
+        // Validate the incoming request
+        $request->validate([
+            'status' => 'required|string|in:Pending,Processing,Shipped,Delivered,Cancelled', // Adjust statuses as needed
+        ]);
+
+        // Find the order by its ID
+        $order = Order::findOrFail($id);
+
+        // Update the order's status
+        $order->orders_status = $request->status;
+        $order->save();
+
+        // Redirect back with a success message
+        return redirect()->route('admin.orders')->with('success', 'Order status updated successfully.');
     }
 }

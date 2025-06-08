@@ -13,18 +13,19 @@ class CategoriesSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('categories')->delete();
+        DB::statement('ALTER TABLE categories AUTO_INCREMENT = 1');
+
+        // Insert 8 kategori baru
         DB::table('categories')->insert([
-            ['categories_name' => 'Frozen Food', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Seafood', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Desserts', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Bakery', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Beverages', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Ready to Cook', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Meat', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Vegetarian', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Snacks', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
-            ['categories_name' => 'Sauces', 'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['categories_name' => 'Ready Meals',        'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['categories_name' => 'Frozen Vegetable',   'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['categories_name' => 'Frozen Dimsum',      'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['categories_name' => 'Frozen Meat',        'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['categories_name' => 'Frozen Nugget',      'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['categories_name' => 'Frozen Fruit',       'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['categories_name' => 'Frozen Seafood',     'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
+            ['categories_name' => 'Dessert',            'created_at' => now(), 'updated_at' => now(), 'status_del' => false],
         ]);
-        
     }
 }

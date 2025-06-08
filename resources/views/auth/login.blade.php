@@ -1,159 +1,241 @@
 @extends('base.base')
 
 @section('content')
-@if (session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: '{{ session('success') }}',
-            timer: 2000,
-            showConfirmButton: false
-        });
-    </script>
-@endif
 
-<style>
-    body {
-        background: url('/images/background.jpg') no-repeat center center fixed;
-        background-size: cover;
-        margin: 0;
-        padding: 0;
-        font-family: 'Segoe UI', sans-serif;
-    }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login - Chillé Mart</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    .login-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        padding-top: 100px;
-        padding-bottom: 60px;
-    }
-
-    .login-card {
-        background-color: rgba(240, 240, 240, 0.8);
-        padding: 40px;
-        border-radius: 18px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        width: 100%;
-        max-width: 420px;
-    }
-
-    .login-card h4 {
-        text-align: center;
-        margin-bottom: 10px;
-        color: #224488;
-        font-weight: bold;
-    }
-
-    .login-card p {
-        text-align: center;
-        color: #555;
-        margin-bottom: 25px;
-        font-size: 0.95rem;
-    }
-
-    .form-control {
-        border-radius: 10px;
-        background-color: #f8fbff;
-        padding: 12px 15px;
-        border: 1px solid #ccddee;
-        margin-bottom: 15px;
-    }
-
-    .btn-blue {
-        background-color: #224488;
-        color: white;
-        border: none;
-        padding: 12px;
-        border-radius: 10px;
-        width: 100%;
-        font-weight: 600;
-    }
-
-    .btn-blue:hover {
-        background-color: #C1E8FF;
-    }
-
-    .form-check-label,
-    .text-muted,
-    .text-link {
-        font-size: 0.9rem;
-    }
-
-    .text-link {
-        color: #224488;
-        text-decoration: none;
-    }
-
-    .text-link:hover {
-        text-decoration: underline;
-    }
-</style>
-
-<div class="login-wrapper">
-    <div class="login-card">
-
-        <h4>Welcome Back!</h4>
-        <p>Sign in to your Account</p>
-
-        @if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+        <style>
+            body {
+                background: linear-gradient(to bottom, #f6fbff, #d9ecfa);
+                font-family: 'Segoe UI', sans-serif;
+                margin: 0;
+                padding: 20px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
 
-        <form method="POST" action="{{ route('login.auth') }}">
-            @csrf
+            .login-wrapper {
+                width: 960px;
+                height: 750px;
+                display: flex;
+                background-color: white;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                border-radius: 12px;
+                flex-direction: row;
+            }
 
-            <input type="text" name="email" class="form-control" placeholder="Email Address" required>
+            .left-panel,
+            .right-panel {
+                width: 50%;
+            }
 
-            <div class="position-relative">
-            <input type="password" name="password" id="password" class="form-control pe-5" placeholder="Password" required>
+            .carousel-item img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
 
-            <span onclick="togglePassword('password', this)"
-                class="position-absolute end-0 top-50 translate-middle-y me-3"
-                style="cursor: pointer; z-index: 2;">
-                <i class="fa fa-eye" id="toggleIcon"></i>
-            </span>
-            </div>
+            .carousel-caption-overlay {
+                background-color: rgba(0, 0, 0, 0.3);
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+            }
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                    <label class="form-check-label" for="remember">Remember Me</label>
+            .carousel-caption-text {
+                z-index: 2;
+                position: absolute;
+                bottom: 20px;
+                left: 20px;
+                color: white;
+            }
+
+            .right-panel {
+                padding: 50px 40px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .form-control {
+                border-radius: 10px;
+                padding: 12px 15px;
+            }
+
+            .input-group-text {
+                background-color: #edf4ff;
+                border: none;
+                border-radius: 0 10px 10px 0;
+            }
+
+            .form-control:focus {
+                box-shadow: none;
+            }
+
+            .btn-login {
+                background-color: #052659;
+                color: #fff;
+                border-radius: 10px;
+                padding: 12px;
+                font-weight: 600;
+                width: 100%;
+                border: none;
+            }
+
+            .btn-login:hover {
+                background-color: #084c8b;
+            }
+
+            .text-link {
+                color: #052659;
+                text-decoration: underline;
+            }
+
+            .text-link:hover {
+                text-decoration: none;
+            }
+
+            /* Responsive */
+            @media (max-width: 992px) {
+                .login-wrapper {
+                    flex-direction: column;
+                }
+
+                .left-panel {
+                    width: 100%;
+                    height: 250px;
+                    display: block;
+                }
+
+                .carousel-item img {
+                    object-fit: cover;
+                    height: 100%;
+                }
+
+                .right-panel {
+                    width: 100%;
+                    padding: 30px 20px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="login-wrapper">
+            <!-- LEFT: Carousel -->
+            <div class="left-panel">
+                <div id="carouselExample" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="4000">
+                    <div class="carousel-inner h-100">
+                        <div class="carousel-item active position-relative h-100">
+                            <img src="{{ asset('images/chille5.png') }}" alt="Slide 1">
+                            <div class="carousel-caption-overlay"></div>
+                            <div class="carousel-caption-text">
+                                <h5 class="fw-bold">Delivered fresh, right to your freezer</h5>
+                                <p class="mb-0 small">Schedule your visit in just a few clicks</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item position-relative h-100">
+                            <img src="{{ asset('images/chille6.jpg') }}" alt="Slide 2">
+                            <div class="carousel-caption-overlay"></div>
+                            <div class="carousel-caption-text">
+                                <h5 class="fw-bold">Shop. Chill. Repeat</h5>
+                                <p class="mb-0 small">Your daily chill starts here</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-indicators position-absolute bottom-0 start-0 ms-4 mb-4 z-2">
+                        <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0"
+                            class="active"></button>
+                        <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1"></button>
+                    </div>
                 </div>
-                <a href="forgot-password" class="text-link">Forgot Password?</a>
             </div>
 
-            <button type="submit" class="btn btn-blue">Sign In</button>
-        </form>
+            <!-- RIGHT: Login Form -->
+            <div class="right-panel">
+                <div class="w-100" style="max-width: 360px; margin: auto;">
+                    <h4 class="fw-bold mb-2" style="color: #052659;">Welcome Back to Chillé Mart!</h4>
+                    <p class="text-muted mb-3">Sign in to explore fresh picks just for you</p>
 
-        <div class="text-center mt-3">
-            <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-link">Sign Up</a></span>
+                    @if ($errors->has('users_email'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ $errors->first('users_email') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('login.auth') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Your Email</label>
+                            <input type="email" name="users_email" class="form-control" value="{{ old('users_email') }}"
+                                required placeholder="Enter your email">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <input type="password" id="password" name="users_password" class="form-control" required
+                                    placeholder="Enter your password">
+                                <span class="input-group-text" onclick="togglePassword('password', this)"
+                                    style="cursor:pointer;">
+                                    <i class="fa fa-eye text-secondary"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="remember">
+                                <label for="remember" class="form-check-label">Remember Me</label>
+                            </div>
+                            <a href="{{ route('password.request') }}" class="text-link">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn-login mb-3">Sign In</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <span class="text-muted">Don't have an account? <a href="{{ route('register') }}"
+                                class="text-link">Register</a></span>
+                    </div>
+
+                    <div class="text-center mt-2">
+                        <span class="text-muted">or </span><a href="{{ route('guest.login') }}" class="text-link">Sign in as
+                            Guest</a>
+                    </div>
+
+
+                </div>
+            </div>
         </div>
 
-    </div>
-</div>
+        <!-- JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function togglePassword(fieldId, el) {
+                const input = document.getElementById(fieldId);
+                const icon = el.querySelector('i');
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.replace("fa-eye", "fa-eye-slash");
+                } else {
+                    input.type = "password";
+                    icon.classList.replace("fa-eye-slash", "fa-eye");
+                }
+            }
+        </script>
+    </body>
 @endsection
-
-<script>
-function togglePassword(fieldId, el) {
-    const input = document.getElementById(fieldId);
-    const icon = el.querySelector('i');
-
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
-    } else {
-        input.type = "password";
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
-    }
-}
-</script>
-
-

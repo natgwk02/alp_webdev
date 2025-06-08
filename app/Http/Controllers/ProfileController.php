@@ -2,67 +2,112 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User; // Ensure this is your User model
 use Illuminate\Http\Request;
-
-class ProfileController extends Controller
-{
-    //
-    <?php
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule; // For more complex validation rules
 
 class ProfileController extends Controller
 {
+    /**
+     * Display the user's profile page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function show()
     {
-        return view('profile');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        // If for some reason Auth::user() could be null and not caught by middleware
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'You must be logged in to view this page.');
+        }
+
+        return view('customer.profile', compact('user'));
     }
 
+    /**
+     * Update the user's profile information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request)
     {
-        $user = auth()->user();
-        
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Authentication session expired. Please log in again.');
+        }
+
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$user->id,
-            'phone' => 'nullable|string|max:20',
-            'birthdate' => 'nullable|date',
-            'profile_photo' => 'nullable|image|max:2048'
+            'users_name'     => 'required|string|max:255',
+            'users_email'    => [
+                'required',
+                'email',
+                Rule::unique('users', 'users_email')->ignore($user->getKey(), 'users_id'),
+            ],
+            'users_phone'    => 'nullable|string|max:20',
+            'users_address'  => 'nullable|string|max:255',
+            'profile_photo'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Handle profile photo upload
         if ($request->hasFile('profile_photo')) {
-            // Delete old photo if exists
-            if ($user->profile_photo) {
-                Storage::delete($user->profile_photo);
+            if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
+                Storage::disk('public')->delete($user->profile_photo);
             }
-            
-            $path = $request->file('profile_photo')->store('profile-photos');
+
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
             $validated['profile_photo'] = $path;
         }
 
-        $user->update($validated);
+        $user->users_name = $validated['users_name'];
+        $user->users_email = $validated['users_email'];
+        $user->users_phone = $validated['users_phone'] ?? null;
+        $user->users_address = $validated['users_address'] ?? null;
 
-        return back()->with('success', 'Profile updated successfully!');
+        if (isset($validated['profile_photo'])) {
+            $user->profile_photo = $validated['profile_photo'];
+        }
+
+        $user->save();
+
+        return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui.');
     }
 
+
+    /**
+     * Update the user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'current_password' => 'required|current_password',
-            'new_password' => ['required', 'confirmed', Password::defaults()],
+            'current_password' => ['required', 'string'],
+            'new_password'     => ['required', 'string', 'min:8', 'confirmed'], // 'confirmed' checks for 'new_password_confirmation' field
         ]);
 
-        auth()->user()->update([
-            'password' => Hash::make($request->new_password)
-        ]);
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        return back()->with('success', 'Password updated successfully!');
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Authentication session expired. Please log in again.');
+        }
+
+        // Check if the current password matches
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'Kata sandi saat ini salah.']);
+        }
+
+        // Update to the new password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->route('profile')->with('success', 'Kata sandi berhasil diperbarui!');
     }
-}
 }
