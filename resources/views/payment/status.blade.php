@@ -31,9 +31,9 @@
                         <p><strong>Payment Status:</strong>
                             <span
                                 class="badge 
-        @if ($order->payment_status == 'paid') bg-success
-        @elseif($order->payment_status == 'pending') bg-warning
-        @elseif($order->payment_status == 'failed') bg-danger
+        @if ($order->payment_status == 'Paid') bg-success
+        @elseif($order->payment_status == 'Pending') bg-warning
+        @elseif($order->payment_status == 'Failed') bg-danger
         @else bg-secondary @endif">
                                 {{ ucfirst($order->payment_status) }}
                             </span>
