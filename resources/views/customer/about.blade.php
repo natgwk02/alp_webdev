@@ -107,7 +107,7 @@
             <div class="row justify-content-center mb-4 gy-4">
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/ameena.jpg" alt="Amanda" class="rounded-circle team-img mb-3">
+                        <img src="/images/aboutus/manda.jpeg" alt="Amanda" class="rounded-circle team-img mb-3">
                         <h6 class="fw-semibold">Amanda Michelle Darwis</h6>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/cipung.jpg" alt="Jessica" class="rounded-circle team-img mb-3">
+                        <img src="/images/aboutus/jessi.jpg" alt="Jessica" class="rounded-circle team-img mb-3">
                         <h6 class="fw-semibold">Jessica Laurentia Tedja</h6>
                     </div>
                 </div>
@@ -128,13 +128,13 @@
             <div class="row justify-content-center gy-4">
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/Abe Cekut.jpg" alt="Natalie" class="rounded-circle team-img mb-3">
+                        <img src="/images/aboutus/nat.jpeg" alt="Natalie" class="rounded-circle team-img mb-3">
                         <h6 class="fw-semibold">Natalie Grace Widjaja Kuswanto</h6>
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <img src="/images/aboutus/el.jpg" alt="Sharon" class="rounded-circle team-img mb-3">
+                        <img src="/images/aboutus/sharon.jpeg" alt="Sharon" class="rounded-circle team-img mb-3">
                         <h6 class="fw-semibold">Sharon Tan</h6>
                     </div>
                 </div>
