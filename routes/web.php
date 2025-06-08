@@ -74,9 +74,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/counts', [CartController::class, 'getCounts'])->name('counts');
     Route::get('/payment/status/{order}', [PaymentController::class, 'checkStatus'])->name('payment.status');
     Route::get('/payment/return/{order}', [PaymentController::class, 'handleReturn'])->name('payment.return');
+    Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
 
     Route::middleware([\App\Http\Middleware\IsAdminMiddleware::class])->group(function () {
-        Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
         Route::get('/admin/sales-trend-data', [AdminController::class, 'getSalesTrendData'])->name('admin.salesTrendData');
