@@ -619,7 +619,7 @@
 
     <section class="hero-section">
         <video autoplay muted loop playsinline class="bg-video">
-            <source src="{{ asset('videos/chille video.mp4') }}" type="video/mp4">
+            <source src="{{ asset('videos/chillevideo.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
 
