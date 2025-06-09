@@ -14,6 +14,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::query();
+        $query->where('status_del', 0);
 
         // Filter: Search by name
         if ($request->filled('search')) {
