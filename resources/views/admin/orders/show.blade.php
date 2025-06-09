@@ -142,7 +142,7 @@
                             <p class="mb-0">
                                 {{ Str::title(str_replace('_', ' ', $order->payment_method ?? 'Unknown')) }}
                                 <span
-                                    class="badge {{ $order->payment_status == 'paid' ? 'bg-success' : 'bg-warning text-dark' }}">{{ Str::title($order->payment_status ?? 'Unknown') }}</span>
+                                    class="badge {{ $order->payment_status == 'Paid' ? 'bg-success' : 'bg-warning text-dark' }}">{{ Str::title($order->payment_status ?? 'Unknown') }}</span>
                             </p>
                         </div>
 
@@ -154,9 +154,9 @@
                                 <select name="status" class="form-select mb-2" required
                                     {{ strtolower($order->orders_status) === 'delivered' || strtolower($order->orders_status) === 'cancelled' ? 'disabled' : '' }}>
                                     <option value="Pending" {{ $order->orders_status == 'Pending' ? 'selected' : '' }}>
-                                        Pending</option>
+                                        Pending Delivery</option>
                                     <option value="Processing"
-                                        {{ $order->orders_status == 'Processing' ? 'selected' : '' }}>Processing</option>
+                                        {{ $order->orders_status == 'Processing' ? 'selected' : '' }}>Processing Delivery</option>
                                     <option value="Shipped"
                                         {{ strtolower($order->orders_status) == 'Shipped' ? 'selected' : '' }}>Shipped
                                     </option>

@@ -170,8 +170,7 @@
 
                                             </div>
                                             <small class="text-muted mt-1">Customer Reviews:
-                                                ({{ $product->ratings()->count() }})
-                                            </small>
+                                                ({{ $product->ratings()->count() }})</small>
                                         </div>
                                         <h5 class="text-primary fw-semibold mb-4">
                                             Rp {{ number_format($product->orders_price, 0, ',', '.') }}
@@ -353,11 +352,11 @@
                         $('#successAlertClient').remove();
 
                         const alertHtml = `
-        <div id="successAlertClient" class="alert alert-success alert-dismissible fade show shadow-sm d-inline-block"
+            <div id="successAlertClient" class="alert alert-success alert-dismissible fade show shadow-sm d-inline-block"
             role="alert" style="min-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`;
+            </div>`;
                         $('#customAlertContainer').html(alertHtml);
 
                         setTimeout(() => {
@@ -368,10 +367,12 @@
                     }
 
                     @if (session('is_guest'))
+
                         document.addEventListener('DOMContentLoaded', function() {
                             document.querySelectorAll('.add-to-cart-form').forEach(form => {
                                 form.addEventListener('submit', function(e) {
                                     e.preventDefault();
+                                    // Pop-up styled alert
                                     alert("Please sign in to add items to cart.");
                                 });
                             });
@@ -381,4 +382,5 @@
             </script>
         @endsection
     </div>
-@endsection
+    
+

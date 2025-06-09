@@ -63,11 +63,11 @@ class Order extends Model
     {
         return Attribute::make(
             get: fn() => match (strtolower($this->orders_status)) {
-                'processing' => 'bg-warning text-dark',
+                'processing delivery' => 'bg-warning text-dark',
                 'shipped' => 'bg-info',
-                'delivered' => 'bg-success',
+                'selivered' => 'bg-success',
                 'cancelled' => 'bg-danger',
-                'pending' => 'bg-secondary',
+                'pending delivery' => 'bg-secondary',
                 default => 'bg-light text-dark',
             }
         );

@@ -78,7 +78,7 @@ class CheckoutController extends Controller
                 'users_id' => $userId,
                 'invoice_number' => $invoiceNumber,
                 'orders_date' => now(),
-                'orders_status' => 'pending',
+                'orders_status' => 'Pending Delivery',
                 'first_name' => $validated['firstName'],
                 'last_name' => $validated['lastName'],
                 'phone' => $validated['phone'],

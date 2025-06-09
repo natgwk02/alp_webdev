@@ -19,7 +19,7 @@ class AdminController extends Controller
 
         $stats = [
             'total_orders' => Order::count(),
-            'total_revenue' => Order::where('orders_status', '!=', 'cancelled')->sum('orders_total_price'),
+            'total_revenue' => Order::where('orders_status', '!=', 'Cancelled')->sum('orders_total_price'),
             'total_products' => Product::where('status_del', 0)->count()
         ];
 
@@ -58,7 +58,7 @@ class AdminController extends Controller
             ->join('products', 'order_details.products_id', '=', 'products.products_id')
             ->join('orders', 'order_details.orders_id', '=', 'orders.orders_id')
             ->select('products.products_name', DB::raw('SUM(order_details.order_details_quantity * price) as total_revenue'))
-            ->where('orders_status', '!=', 'cancelled')
+            ->where('orders_status', '!=', 'Cancelled')
             ->whereBetween('orders.orders_date', [$periodStartDate, $periodEndDate])
             ->where('products.status_del', 0)
             ->groupBy('products.products_id', 'products.products_name')
@@ -86,7 +86,7 @@ class AdminController extends Controller
             DB::raw('DATE(orders_date) as date'),
             DB::raw('SUM(orders_total_price) as total_revenue')
         )
-            ->where('orders_status', '!=', 'cancelled')
+            ->where('orders_status', '!=', 'Cancelled')
             ->whereBetween('orders_date', [$trendStartDate, $trendEndDate])
             ->groupBy('date')
             ->orderBy('date', 'ASC')
@@ -125,9 +125,9 @@ class AdminController extends Controller
         switch (strtolower($status)) {
             case 'completed':
                 return 'bg-success';
-            case 'processing':
+            case 'processing delivery':
                 return 'bg-primary';
-            case 'pending':
+            case 'pending delivery':
                 return 'bg-warning text-dark';
             case 'cancelled':
                 return 'bg-danger';
@@ -380,7 +380,7 @@ class AdminController extends Controller
                 $labels[] = $monthCarbon->format($labelFormat);
 
                 if ($dataType === 'revenue') {
-                    $value = Order::where('orders_status', '!=', 'cancelled')
+                    $value = Order::where('orders_status', '!=', 'Cancelled')
                         ->whereYear('orders_date', $monthCarbon->year)
                         ->whereMonth('orders_date', $monthCarbon->month)
                         ->sum('orders_total_price');
@@ -416,7 +416,7 @@ class AdminController extends Controller
 
         if ($dataType === 'revenue') {
             $queryBase->addSelect(DB::raw('SUM(orders_total_price) as total_value'))
-                ->where('orders_status', '!=', 'cancelled');
+                ->where('orders_status', '!=', 'Cancelled');
             $datasetLabel = "Revenue ({$datasetLabelSuffix})";
         } else {
             $queryBase->addSelect(DB::raw('COUNT(*) as total_value'));

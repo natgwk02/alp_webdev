@@ -528,7 +528,7 @@
                                     data: {
                                         labels: responseData.labels,
                                         datasets: responseData.datasets.map(dataset => ({
-                                            ...dataset, / // Start with all properties from the original 'dataset'
+                                            ...dataset, // Start with all properties from the original 'dataset'
                                             pointBackgroundColor: dataset.borderColor ||
                                                 'rgb(54, 162, 235)',
                                             pointBorderColor: '#fff',

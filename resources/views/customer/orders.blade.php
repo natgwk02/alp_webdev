@@ -16,10 +16,10 @@
                             @php
                                 $statusClass = match ($order['orders_status']) {
                                     'Delivered' => 'badge bg-success',
-                                    'Processing' => 'badge bg-warning text-white',
+                                    'Processing Delivery' => 'badge bg-warning text-white',
                                     'Cancelled' => 'badge bg-danger',
                                     'Shipped' => 'badge bg-info',
-                                    'Pending' => 'badge bg-secondary',
+                                    'Pending Delivery' => 'badge bg-secondary',
                                     'Completed' => 'badge bg-success',
                                     default => 'badge bg-secondary',
                                 };
