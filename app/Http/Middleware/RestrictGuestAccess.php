@@ -11,12 +11,10 @@ class RestrictGuestAccess
     public function handle(Request $request, Closure $next): Response
     {
         if (session('is_guest')) {
-            // Untuk AJAX request
             if ($request->ajax()) {
                 return response()->json(['message' => 'Please sign in to use this feature.'], 401);
             }
 
-            // Untuk normal web request
             return redirect()->route('login')->with('error', 'Please sign in to use this feature.');
         }
 

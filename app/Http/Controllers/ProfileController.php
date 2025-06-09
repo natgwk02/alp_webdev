@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User; // Ensure this is your User model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule; // For more complex validation rules
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile page.
+     * Display the user's profile page
      *
      * @return \Illuminate\View\View
      */
@@ -21,7 +20,6 @@ class ProfileController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // If for some reason Auth::user() could be null and not caught by middleware
         if (!$user) {
             return redirect()->route('login')->with('error', 'You must be logged in to view this page.');
         }
@@ -30,13 +28,14 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Update the user's profile information
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if (!$user) {

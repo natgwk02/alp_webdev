@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\OrderDetail;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Container\Attributes\Log;
 
 class AdminOrderController extends Controller
 {
@@ -15,7 +12,6 @@ class AdminOrderController extends Controller
     {
         $stats = [
             'total_orders' => \App\Models\Order::count(),
-            // kamu bisa tambah statistik lainnya juga
         ];
 
         return view('admin.dashboard', compact('stats'));
@@ -59,32 +55,28 @@ class AdminOrderController extends Controller
 
         return view('admin.orders.index', [
             'orders' => $orders,
-            // The request helper in the view can still get current filter values
         ]);
     }
 
-    public function show($id) // Assuming $id is orders_id
+    public function show($id)
     {
-        $order = Order::with(['user', 'items.product']) // 'user' for customer, 'details' for order items, 'details.product' to get product info for each item
-            ->findOrFail($id); // $id is the orders_id
+        $order = Order::with(['user', 'items.product'])
+            ->findOrFail($id);
 
         return view('admin.orders.show', compact('order'));
     }
+    
     public function updateStatus(Request $request, $id)
     {
-        // Validate the incoming request
         $request->validate([
-            'status' => 'required|string|in:Pending,Processing,Shipped,Delivered,Cancelled', // Adjust statuses as needed
+            'status' => 'required|string|in:Pending,Processing,Shipped,Delivered,Cancelled',
         ]);
 
-        // Find the order by its ID
         $order = Order::findOrFail($id);
 
-        // Update the order's status
         $order->orders_status = $request->status;
         $order->save();
 
-        // Redirect back with a success message
         return redirect()->route('admin.orders')->with('success', 'Order status updated successfully.');
     }
 }

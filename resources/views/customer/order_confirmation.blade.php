@@ -23,7 +23,8 @@
                         </div>
 
                         <p>Kami telah mengirimkan detail pesanan ke email
-                            <strong>{{ $order['customer']['email'] }}</strong>.</p>
+                            <strong>{{ $order['customer']['email'] }}</strong>.
+                        </p>
 
                         <a href="{{ route('products.index') }}" class="btn btn-primary mt-3">
                             <i class="bi bi-arrow-left"></i> Kembali ke Beranda

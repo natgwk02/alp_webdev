@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class Product extends Model
 {
     use HasFactory;
-    // Define the fillable attributes
-    //
     protected $table = 'products';
     protected $primaryKey = 'products_id';
 
@@ -35,13 +33,11 @@ class Product extends Model
 
     ];
 
-    // Relationship to the Category model (each product belongs to one category)
     public function category()
     {
         return $this->belongsTo(Category::class, 'categories_id');
     }
 
-    // Optional: Relationship to CartItems (if each product can appear in many cart items)
     public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class, 'products_id');
@@ -52,16 +48,11 @@ class Product extends Model
         return $this->hasMany(Rating::class, 'product_id', 'products_id');
     }
 
-
-
-
     public function averageRating()
     {
         return $this->ratings()->avg('rating');
     }
 
-
-    // Optional: Method to check if the product is in stock
     public function isInStock(): bool
     {
         return $this->stock > 0;
@@ -69,8 +60,6 @@ class Product extends Model
 
     public function orderDetails(): HasMany
     {
-        // Assumes 'products_id' is the foreign key in 'order_details' table
-        // and 'products_id' is the primary key of this Product model
         return $this->hasMany(OrderDetail::class, 'products_id', 'products_id');
     }
 
@@ -79,25 +68,21 @@ class Product extends Model
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
- /**
- * @return \Illuminate\Database\Eloquent\Casts\Attribute
- */
-protected function status(): Attribute
-{
-    return Attribute::make(
-        get: function ($value) {
-            $stock = $this->products_stock;
-            $threshold = $this->low_stock_threshold ?? 10; // Default threshold if not set
-            
-            if ($stock <= 0) {
-                return 'Out of Stock';
-            } elseif ($stock <= $threshold) {
-                return 'Low Stock';
-            } else {
-                return 'In Stock';
-            }
-        }
-    );
-}
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                $stock = $this->products_stock;
+                $threshold = $this->low_stock_threshold ?? 10;
 
+                if ($stock <= 0) {
+                    return 'Out of Stock';
+                } elseif ($stock <= $threshold) {
+                    return 'Low Stock';
+                } else {
+                    return 'In Stock';
+                }
+            }
+        );
+    }
 }

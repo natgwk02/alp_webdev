@@ -54,28 +54,27 @@ class Order extends Model
         return $this->belongsTo(User::class, 'users_id', 'users_id');
     }
 
-    public function items(): HasMany{
+    public function items(): HasMany
+    {
         return $this->hasMany(OrderDetail::class, 'orders_id', 'orders_id');
     }
 
     protected function statusBadgeClass(): Attribute
     {
         return Attribute::make(
-            get: fn () => match (strtolower($this->orders_status)) {
-                'processing' => 'bg-warning text-dark',
+            get: fn() => match (strtolower($this->orders_status)) {
+                'processing delivery' => 'bg-warning text-dark',
                 'shipped' => 'bg-info',
-                'delivered' => 'bg-success',
+                'selivered' => 'bg-success',
                 'cancelled' => 'bg-danger',
-                'pending' => 'bg-secondary',
+                'pending delivery' => 'bg-secondary',
                 default => 'bg-light text-dark',
             }
         );
     }
 
     public function getRouteKeyName()
-{
-    return 'orders_id';
-}
-
-
+    {
+        return 'orders_id';
+    }
 }
