@@ -164,29 +164,29 @@
         <h4 class="fw-bold mb-2" style="color: #052659;">Create an Account</h4>
         <p class="text-muted mb-3">Start shopping your frozen favorites with Chillé Mart!</p>
 
-        <form action="{{ route('register.submit') }}" method="POST" onsubmit="return validatePasswordMatch();">
+        <form action="{{ route('register.submit') }}" method="POST" onsubmit="return validatePasswordMatch();" autocomplete="off">
           @csrf
 
-          <input type="text" name="users_name" class="form-control mb-3 @error('users_name') is-invalid @enderror" placeholder="Full Name" required value="{{ old('users_name') }}">
+          <input type="text" name="users_name" autocomplete="off" class="form-control mb-3 @error('users_name') is-invalid @enderror" placeholder="Full Name" required>
           @error('users_name')<div class="text-danger small">{{ $message }}</div>@enderror
 
-          <input type="email" name="users_email" class="form-control mb-3 @error('users_email') is-invalid @enderror" placeholder="Email" required value="{{ old('users_email') }}">
+          <input type="email" name="users_email" autocomplete="off" class="form-control mb-3 @error('users_email') is-invalid @enderror" placeholder="Email" required>
           @error('users_email')<div class="text-danger small">{{ $message }}</div>@enderror
 
-          <input type="text" name="users_phone" class="form-control mb-3 @error('users_phone') is-invalid @enderror" placeholder="Phone Number" pattern="[0-9]+" maxlength="15" required value="{{ old('users_phone') }}">
+          <input type="text" name="users_phone" autocomplete="off" class="form-control mb-3 @error('users_phone') is-invalid @enderror" placeholder="Phone Number" pattern="[0-9]+" maxlength="15" required>
           @error('users_phone')<div class="text-danger small">{{ $message }}</div>@enderror
 
-          <input type="text" name="users_address" class="form-control mb-3 @error('users_address') is-invalid @enderror" placeholder="Address" required value="{{ old('users_address') }}">
+          <input type="text" name="users_address" autocomplete="off" class="form-control mb-3 @error('users_address') is-invalid @enderror" placeholder="Address" required>
           @error('users_address')<div class="text-danger small">{{ $message }}</div>@enderror
 
           <div class="position-relative mb-3">
-            <input type="password" id="password" name="users_password" class="form-control @error('users_password') is-invalid @enderror" placeholder="Password (min. 8 characters)" minlength="8" required>
+            <input type="password" id="password" name="users_password" autocomplete="new-password" class="form-control @error('users_password') is-invalid @enderror" placeholder="Password (min. 8 characters)" minlength="8" required>
             <span class="toggle-password" onclick="togglePassword('password', this)"><i class="fa fa-eye"></i></span>
             @error('users_password')<div class="text-danger small">{{ $message }}</div>@enderror
           </div>
 
           <div class="position-relative mb-3">
-            <input type="password" id="password_confirmation" name="users_password_confirmation" class="form-control @error('users_password_confirmation') is-invalid @enderror" placeholder="Confirm Password" required>
+            <input type="password" id="password_confirmation" name="users_password_confirmation" autocomplete="new-password" class="form-control @error('users_password_confirmation') is-invalid @enderror" placeholder="Confirm Password" required>
             <span class="toggle-password" onclick="togglePassword('password_confirmation', this)"><i class="fa fa-eye"></i></span>
             <div class="text-danger small" id="confirm-password-error" style="display:none;"></div>
             @error('users_password_confirmation')<div class="text-danger small">{{ $message }}</div>@enderror
@@ -194,6 +194,7 @@
 
           <button type="submit" class="btn btn-register mb-3">Register</button>
         </form>
+
 
         <div class="text-center mt-3">
           <span class="text-muted">Already have an account?
