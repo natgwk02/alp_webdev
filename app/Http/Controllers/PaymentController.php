@@ -11,7 +11,6 @@ class PaymentController extends Controller
 {
     public function handleReturn(Order $order)
     {
-        // Midtrans Config
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
 
@@ -35,7 +34,7 @@ class PaymentController extends Controller
             $order->save();
 
             return redirect()->route('order.detail', ['id' => $order->orders_id])
-            ->with('success', 'Payment status updated.');
+                ->with('success', 'Payment status updated.');
         } catch (\Exception $e) {
             return redirect()->route('payment.status', $order->id)
                 ->with('error', 'Auto-check failed: ' . $e->getMessage());
@@ -43,50 +42,48 @@ class PaymentController extends Controller
     }
 
     public function checkStatus(Order $order, Request $request)
-{
-    Config::$serverKey = config('midtrans.server_key');
-    Config::$isProduction = config('midtrans.is_production');
+    {
+        Config::$serverKey = config('midtrans.server_key');
+        Config::$isProduction = config('midtrans.is_production');
 
-    try {
-        $status = \Midtrans\Transaction::status($order->invoice_number);
+        try {
+            $status = \Midtrans\Transaction::status($order->invoice_number);
 
-        $statusMap = [
-            'settlement' => 'paid',
-            'capture'    => 'paid',
-            'pending'    => 'pending',
-            'expire'     => 'expired',
-            'cancel'     => 'cancelled',
-            'deny'       => 'failed',
-        ];
+            $statusMap = [
+                'settlement' => 'paid',
+                'capture'    => 'paid',
+                'pending'    => 'pending',
+                'expire'     => 'expired',
+                'cancel'     => 'cancelled',
+                'deny'       => 'failed',
+            ];
 
-        $transactionStatus = $status->transaction_status ?? 'unknown';
-        $order->payment_status = array_key_exists($transactionStatus, $statusMap)
-            ? $statusMap[$transactionStatus]
-            : $transactionStatus;
+            $transactionStatus = $status->transaction_status ?? 'unknown';
+            $order->payment_status = array_key_exists($transactionStatus, $statusMap)
+                ? $statusMap[$transactionStatus]
+                : $transactionStatus;
 
-        $order->payment_method = $status->payment_type ?? 'unknown';
-        $order->save();
+            $order->payment_method = $status->payment_type ?? 'unknown';
+            $order->save();
 
-        // Tambahkan respon jika AJAX (untuk tombol "Check Status")
-        if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'status' => $order->payment_status,
-                'badge_class' => match ($order->payment_status) {
-                    'paid' => 'badge bg-success',
-                    'pending' => 'badge bg-warning text-dark',
-                    'failed', 'cancelled', 'expired' => 'badge bg-danger',
-                    default => 'badge bg-secondary'
-                },
-            ]);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => $order->payment_status,
+                    'badge_class' => match ($order->payment_status) {
+                        'paid' => 'badge bg-success',
+                        'pending' => 'badge bg-warning text-dark',
+                        'failed', 'cancelled', 'expired' => 'badge bg-danger',
+                        default => 'badge bg-secondary'
+                    },
+                ]);
+            }
+
+            return redirect()->route('order.detail', ['id' => $order->orders_id])
+                ->with('success', 'Payment status updated.');
+        } catch (\Exception $e) {
+            return $request->ajax()
+                ? response()->json(['error' => 'Failed to check payment status'], 500)
+                : back()->with('error', 'Failed to check payment status: ' . $e->getMessage());
         }
-
-        return redirect()->route('order.detail', ['id' => $order->orders_id])
-            ->with('success', 'Payment status updated.');
-    } catch (\Exception $e) {
-        return $request->ajax()
-            ? response()->json(['error' => 'Failed to check payment status'], 500)
-            : back()->with('error', 'Failed to check payment status: ' . $e->getMessage());
     }
-    
-}
 }

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ShareBadgeCounts
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
@@ -24,7 +24,7 @@ class ShareBadgeCounts
             $cart = Cart::where('users_id', Auth::id())->first();
             $cartCount = $cart ? $cart->items()->count() : 0;
             $wishlistCount = Wishlist::where('users_id', Auth::id())->count();
-            
+
             View::share('cartCount', $cartCount);
             View::share('wishlistCount', $wishlistCount);
         } else {

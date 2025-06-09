@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b247e8e720ac064d2aedbb75d68e24ce",
+    "content-hash": "d2b5892ac72241623cd5c28c4008878d",
     "packages": [
         {
             "name": "brick/math",
@@ -2066,6 +2066,58 @@
                 "source": "https://github.com/Midtrans/midtrans-php/tree/v2.6.2"
             },
             "time": "2025-03-18T06:30:17+00:00"
+        },
+        {
+            "name": "midtrans/snap",
+            "version": "2.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Midtrans/Midtrans-Magento2.git",
+                "reference": "fa0809f70368da7b3c1683b33d17a96594938330"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Midtrans/Midtrans-Magento2/zipball/fa0809f70368da7b3c1683b33d17a96594938330",
+                "reference": "fa0809f70368da7b3c1683b33d17a96594938330",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5 || ^7.0 || ^8.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Midtrans\\Snap\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Zaki Ibrahim",
+                    "email": "zaki.ibrahim@midtrans.com",
+                    "homepage": "https://midtrans.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Midtrans Accept Online Payment Magento 2 module",
+            "keywords": [
+                "magento 2",
+                "magento2",
+                "midtrans",
+                "midtrans snap",
+                "snap"
+            ],
+            "support": {
+                "issues": "https://github.com/Midtrans/Midtrans-Magento2/issues",
+                "source": "https://github.com/Midtrans/Midtrans-Magento2/tree/v2.7.3"
+            },
+            "time": "2024-07-02T08:17:14+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -9068,12 +9120,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

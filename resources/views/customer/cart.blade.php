@@ -117,14 +117,12 @@
                                                 </div>
                                                 <form action="{{ route('cart.removeVoucher') }}" method="GET"
                                                     class="ms-2" style="margin-bottom: 0;">
-                                                    {{-- Consider changing to POST with @csrf for remove actions if preferred --}}
                                                     <button type="submit"
                                                         class="btn btn-sm btn-danger py-1 px-2">Remove</button>
                                                 </form>
                                             </div>
                                         </div>
                                     @else
-                                        {{-- Only show form if no voucher is active --}}
                                         <form id="voucher-form" action="{{ route('cart.applyVoucher') }}" method="POST">
                                             @csrf
                                             <div class="mb-3">
@@ -157,25 +155,18 @@
                                         </div>
                                     @endif
 
-
-                                    {{-- Summary Details (Subtotal, Shipping, Tax, etc.) --}}
                                     <div class="mt-3">
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>Subtotal:</span>
                                             <span
                                                 id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                                         </div>
-                                        {{-- <div class="d-flex justify-content-between mb-2">
-                                            <span>Shipping Fee:</span>
-                                            <span
-                                                id="shipping-display">Rp{{ number_format($shippingFee, 0, ',', '.') }}</span>
-                                        </div> --}}
+
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>Tax (10%):</span>
                                             <span id="tax-display">Rp{{ number_format($tax, 0, ',', '.') }}</span>
                                         </div>
 
-                                        {{-- This part correctly displays the applied voucher discount --}}
                                         @if (session('voucher_discount') && session('voucher_discount') > 0)
                                             <div class="d-flex justify-content-between mb-2 text-success">
                                                 <span>Voucher Discount:</span>
@@ -223,7 +214,7 @@
             console.log('Checkboxes found:', checkboxes.length);
             console.log('selectedItemsInput element:', selectedItemsInput);
             console.log('selectedItemsVoucherInput element:',
-                selectedItemsVoucherInput); // Will be null when voucher is active
+                selectedItemsVoucherInput);
             console.log('checkoutForm element:', checkoutForm);
             console.log('checkoutButton element:', checkoutButton);
 
@@ -271,37 +262,37 @@
             }
 
             function updateSummary() {
-    console.log('updateSummary called.');
-    let subtotal = 0;
-    document.querySelectorAll('.select-product:checked').forEach(checkbox => {
-        const price = parseFloat(checkbox.getAttribute('data-price'));
-        const quantity = parseInt(checkbox.getAttribute('data-quantity'));
-        if (!isNaN(price) && !isNaN(quantity)) {
-            subtotal += price * quantity;
-        }
-    });
+                console.log('updateSummary called.');
+                let subtotal = 0;
+                document.querySelectorAll('.select-product:checked').forEach(checkbox => {
+                    const price = parseFloat(checkbox.getAttribute('data-price'));
+                    const quantity = parseInt(checkbox.getAttribute('data-quantity'));
+                    if (!isNaN(price) && !isNaN(quantity)) {
+                        subtotal += price * quantity;
+                    }
+                });
 
-    const taxDisplay = document.getElementById('tax-display');
-    const totalDisplay = document.getElementById('total-display');
-    const voucherDisplaySpan = document.getElementById('voucher-display');
-    const subtotalDisplay = document.getElementById('subtotal-display');
+                const taxDisplay = document.getElementById('tax-display');
+                const totalDisplay = document.getElementById('total-display');
+                const voucherDisplaySpan = document.getElementById('voucher-display');
+                const subtotalDisplay = document.getElementById('subtotal-display');
 
-    const tax = Math.round(subtotal * 0.1);
-    let voucherDiscount = 0;
-    if (voucherDisplaySpan && voucherDisplaySpan.textContent) {
-        const parsedVoucher = parseFloat(voucherDisplaySpan.textContent.replace(/[^\d]/g, ''));
-        if (!isNaN(parsedVoucher)) {
-            voucherDiscount = parsedVoucher;
-        }
-    }
+                const tax = Math.round(subtotal * 0.1);
+                let voucherDiscount = 0;
+                if (voucherDisplaySpan && voucherDisplaySpan.textContent) {
+                    const parsedVoucher = parseFloat(voucherDisplaySpan.textContent.replace(/[^\d]/g, ''));
+                    if (!isNaN(parsedVoucher)) {
+                        voucherDiscount = parsedVoucher;
+                    }
+                }
 
-    const total = subtotal + tax - voucherDiscount;
+                const total = subtotal + tax - voucherDiscount;
 
-    if (subtotalDisplay) subtotalDisplay.textContent = 'Rp' + subtotal.toLocaleString('id-ID');
-    if (taxDisplay) taxDisplay.textContent = 'Rp' + tax.toLocaleString('id-ID');
-    if (totalDisplay) totalDisplay.textContent = 'Rp' + total.toLocaleString('id-ID');
-    console.log('Summary updated: Subtotal=', subtotal, 'Total=', total);
-}
+                if (subtotalDisplay) subtotalDisplay.textContent = 'Rp' + subtotal.toLocaleString('id-ID');
+                if (taxDisplay) taxDisplay.textContent = 'Rp' + tax.toLocaleString('id-ID');
+                if (totalDisplay) totalDisplay.textContent = 'Rp' + total.toLocaleString('id-ID');
+                console.log('Summary updated: Subtotal=', subtotal, 'Total=', total);
+            }
 
             function updateSelectedItems() {
                 console.log('updateSelectedItems called.');
@@ -310,7 +301,7 @@
                     .map(cb => cb.value);
                 console.log('IDs selected by checkboxes for hidden input:', selected);
 
-                // Always update checkout input (this should always exist)
+                // Always update checkout input
                 if (selectedItemsInput) {
                     selectedItemsInput.value = selected.join(',');
                     console.log('Populated selectedItemsInput (checkout) with:', selectedItemsInput.value);
@@ -347,7 +338,6 @@
                 updateCheckoutButton();
             }
 
-            // --- Initial Page Load Logic ---
             let initialSelectionIdsToApply = [];
             if (selectedItemsFromServer && selectedItemsFromServer.length > 0) {
                 console.log('Using selected items from server for initial selection.');
@@ -357,14 +347,13 @@
                 initialSelectionIdsToApply = loadSelectionFromLocalStorage();
                 if (initialSelectionIdsToApply.length === 0 && checkboxes.length > 0) {
                     console.log('No localStorage selection, defaulting to NO items selected.');
-                    initialSelectionIdsToApply = []; // Default to none selected
+                    initialSelectionIdsToApply = [];
                 }
             }
             applySelectionsToCheckboxes(initialSelectionIdsToApply);
             saveSelectionToLocalStorage();
             updateAll();
 
-            // --- Event Listeners ---
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', () => {
                     console.log('Checkbox changed:', cb.value, 'Checked:', cb.checked);
@@ -386,11 +375,10 @@
                 });
             }
 
-            // Only attach voucher form listener if the form exists
             if (voucherForm) {
                 voucherForm.addEventListener('submit', function() {
                     console.log('Voucher form submitting. Updating selected items for voucher.');
-                    updateSelectedItems(); // This will handle the null check internally
+                    updateSelectedItems();
                 });
             }
 
@@ -399,14 +387,13 @@
                 checkoutForm.addEventListener('submit', function(e) {
                     console.log('Checkout form submit event TRIGGERED.');
 
-                    // Get currently selected items
+                    // Get selected items
                     const selectedIds = Array.from(checkboxes)
                         .filter(cb => cb.checked)
                         .map(cb => cb.value);
 
                     console.log('Selected IDs for checkout:', selectedIds);
 
-                    // Update the hidden input
                     if (selectedItemsInput) {
                         selectedItemsInput.value = selectedIds.join(',');
                         console.log('Updated selectedItemsInput value:', selectedItemsInput.value);
@@ -429,7 +416,6 @@
                     }
 
                     console.log('ALLOWING SUBMISSION with selected items:', selectedItemsInput.value);
-                    // Form will submit normally
                 });
             } else {
                 console.error('CRITICAL ERROR: Checkout form (checkout-form) NOT FOUND in DOM.');

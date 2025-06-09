@@ -16,33 +16,31 @@ class AdminController extends Controller
 {
     public function dashboard(Request $request)
     {
-        // Hitung statistik yang diperlukan
+
         $stats = [
             'total_orders' => Order::count(),
             'total_revenue' => Order::where('orders_status', '!=', 'cancelled')->sum('orders_total_price'),
             'total_products' => Product::where('status_del', 0)->count()
         ];
 
-        // Get low stock products - use the product's own threshold or default to 10
+
         $stockAlertProducts = Product::with('category')
             ->where('status_del', 0)
             ->where(function ($query) {
                 $query->where('products_stock', '<=', 0)
                     ->orWhere(function ($q) {
                         $q->where('products_stock', '>', 0)
-                            ->whereRaw('products_stock <= IFNULL(low_stock_threshold, 10)');
+                            ->whereRaw('products_stock <= IFNULL(low_stock_threshold, 10)'); //low stok = 10
                     });
             })
             ->orderBy('products_stock', 'asc')
             ->get();
 
-        // Get recent orders
         $recentOrders = Order::with('user')
             ->orderBy('orders_date', 'desc')
             ->take(5)
             ->get();
 
-        // Get order status overview
         $orderStatusOverview = Order::selectRaw('orders_status as name, count(*) as count')
             ->groupBy('orders_status')
             ->get()
@@ -51,19 +49,18 @@ class AdminController extends Controller
                 return $item;
             });
 
-        $periodStartDate = Carbon::now()->subDays(30); // Example: Last 30 days
+        $periodStartDate = Carbon::now()->subDays(30);
         $periodEndDate = Carbon::now();
-        $topLimit = 5; // Or 10, as per your preference
+        $topLimit = 5;
 
         // Top products by REVENUE
         $topProductsByRevenue = DB::table('order_details')
             ->join('products', 'order_details.products_id', '=', 'products.products_id')
             ->join('orders', 'order_details.orders_id', '=', 'orders.orders_id')
             ->select('products.products_name', DB::raw('SUM(order_details.order_details_quantity * price) as total_revenue'))
-            // ->where('orders.orders_status', 'completed') // Consider revenue from completed orders
-            ->where('orders_status', '!=', 'cancelled') // Exclude cancelled orders
+            ->where('orders_status', '!=', 'cancelled')
             ->whereBetween('orders.orders_date', [$periodStartDate, $periodEndDate])
-            ->where('products.status_del', 0) // Only active products
+            ->where('products.status_del', 0)
             ->groupBy('products.products_id', 'products.products_name')
             ->orderByDesc('total_revenue')
             ->take($topLimit)
@@ -74,9 +71,8 @@ class AdminController extends Controller
             ->join('products', 'order_details.products_id', '=', 'products.products_id')
             ->join('orders', 'order_details.orders_id', '=', 'orders.orders_id')
             ->select('products.products_name', DB::raw('SUM(order_details.order_details_quantity) as total_quantity'))
-            // ->where('orders.orders_status', 'completed') // Optional: uncomment if quantity should also be from completed orders
             ->whereBetween('orders.orders_date', [$periodStartDate, $periodEndDate])
-            ->where('products.status_del', 0) // Only active products
+            ->where('products.status_del', 0)
             ->groupBy('products.products_id', 'products.products_name')
             ->orderByDesc('total_quantity')
             ->take($topLimit)
@@ -258,9 +254,7 @@ class AdminController extends Controller
         $product->status_del = 0;
         $product->low_stock_threshold = $validatedData['low_stock_threshold']; // This should be present
 
-        // Handle Image Upload (Optional Update)
         if ($request->hasFile('products_image')) {
-            // Delete old image if exists
             if ($product->products_image && file_exists(public_path('images/products-img/' . $product->products_image))) {
                 unlink(public_path('images/products-img/' . $product->products_image));
             }
@@ -271,9 +265,7 @@ class AdminController extends Controller
             $product->products_image = $imageName;
         }
 
-        // Handle Hover Image Update
         if ($request->hasFile('hover_image')) {
-            // Delete old hover image if exists
             if ($product->hover_image && file_exists(public_path('images/hoverproducts-img/' . $product->hover_image))) {
                 unlink(public_path('images/hoverproducts-img/' . $product->hover_image));
             }
@@ -357,7 +349,7 @@ class AdminController extends Controller
             ->header('Expires', '0');
     }
 
-     public function getSalesTrendData(Request $request)
+    public function getSalesTrendData(Request $request)
     {
         $periodInput = $request->input('period', '30d');
         $dataType = $request->input('dataType', 'revenue');
@@ -365,8 +357,7 @@ class AdminController extends Controller
         $labels = [];
         $dataValues = [];
         $datasetLabel = '';
-        $pointFormat = 'Y-m-d'; // Default for daily grouping
-        $labelFormat = 'M d';   // Default for daily labels
+        $labelFormat = 'M d';
 
         $endDate = Carbon::now()->endOfDay();
 
@@ -380,8 +371,7 @@ class AdminController extends Controller
             $datasetLabelSuffix = 'Last 30 Days';
         } elseif (str_starts_with($periodInput, 'monthly_')) {
             $numberOfMonths = (int) str_replace('monthly_', '', $periodInput);
-            if ($numberOfMonths <= 0) $numberOfMonths = 6; // Default to 6 months if invalid
-
+            if ($numberOfMonths <= 0) $numberOfMonths = 6;
             $datasetLabelSuffix = "Last {$numberOfMonths} Months";
             $labelFormat = 'M Y';
 
@@ -390,7 +380,7 @@ class AdminController extends Controller
                 $labels[] = $monthCarbon->format($labelFormat);
 
                 if ($dataType === 'revenue') {
-                    $value = Order::where('orders_status', '!=','cancelled') 
+                    $value = Order::where('orders_status', '!=', 'cancelled')
                         ->whereYear('orders_date', $monthCarbon->year)
                         ->whereMonth('orders_date', $monthCarbon->month)
                         ->sum('orders_total_price');
@@ -410,26 +400,25 @@ class AdminController extends Controller
                     'data' => $dataValues,
                     'borderColor' => $dataType === 'revenue' ? 'rgb(54, 162, 235)' : 'rgb(255, 99, 132)',
                     'backgroundColor' => $dataType === 'revenue' ? 'rgba(54, 162, 235, 0.2)' : 'rgba(255, 99, 132, 0.2)',
-                    'tension' => 0.2, 'fill' => true,
+                    'tension' => 0.2,
+                    'fill' => true,
                 ]],
                 'dataType' => $dataType,
                 'period' => $periodInput
             ]);
-        } else { // Default to 30d if period is unrecognized
+        } else {
             $days = 30;
             $startDate = Carbon::now()->subDays($days - 1)->startOfDay();
             $datasetLabelSuffix = 'Last 30 Days';
         }
 
-
-        // Daily aggregation for 7d and 30d
         $queryBase = Order::select(DB::raw("DATE(orders_date) as point"));
 
         if ($dataType === 'revenue') {
             $queryBase->addSelect(DB::raw('SUM(orders_total_price) as total_value'))
-                      ->where('orders_status', '!=','cancelled'); // Exclude cancelled orders
+                ->where('orders_status', '!=', 'cancelled');
             $datasetLabel = "Revenue ({$datasetLabelSuffix})";
-        } else { // 'orders'
+        } else {
             $queryBase->addSelect(DB::raw('COUNT(*) as total_value'));
             $datasetLabel = "Orders ({$datasetLabelSuffix})";
         }
@@ -457,7 +446,8 @@ class AdminController extends Controller
                 'data' => $dataValues,
                 'borderColor' => $dataType === 'revenue' ? 'rgb(54, 162, 235)' : 'rgb(255, 99, 132)',
                 'backgroundColor' => $dataType === 'revenue' ? 'rgba(54, 162, 235, 0.2)' : 'rgba(255, 99, 132, 0.2)',
-                'tension' => 0.2, 'fill' => true,
+                'tension' => 0.2,
+                'fill' => true,
             ]],
             'dataType' => $dataType,
             'period' => $periodInput

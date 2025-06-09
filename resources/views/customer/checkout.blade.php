@@ -84,8 +84,9 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="city" class="form-label">City *</label>
                                     <input type="text" class="form-control @error('city') is-invalid @enderror"
-                                        id="city" name="city" pattern="[A-Za-z\s]+" title="Hanya huruf diperbolehkan"
-                                        value="{{ old('city', $defaultData['city']) }}" required>
+                                        id="city" name="city" pattern="[A-Za-z\s]+"
+                                        title="Hanya huruf diperbolehkan" value="{{ old('city', $defaultData['city']) }}"
+                                        required>
                                     @error('city')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -93,8 +94,9 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="zip" class="form-label">ZIP Code *</label>
                                     <input type="text" class="form-control @error('zip') is-invalid @enderror"
-                                        id="zip" name="zip" maxlength="5" pattern="\d{5}" title="Masukkan maksimal 5 angka"
-                                        value="{{ old('zip', $defaultData['zip']) }}" required>
+                                        id="zip" name="zip" maxlength="5" pattern="\d{5}"
+                                        title="Masukkan maksimal 5 angka" value="{{ old('zip', $defaultData['zip']) }}"
+                                        required>
                                     @error('zip')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -249,17 +251,13 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('Checkout form JavaScript loading...');
-
-                // Safely get DOM elements with null checks
                 const checkoutForm = document.getElementById('checkout-form');
                 const hiddenInput = document.getElementById('selected-items');
                 const termsCheckbox = document.getElementById('termsAgreement');
                 const notesTextarea = document.getElementById('sellerNotes');
                 const notesCounter = document.getElementById('notesCounter');
-                // const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
                 const creditCardForm = document.getElementById('creditCardForm');
 
-                // Check if essential elements exist
                 if (!checkoutForm) {
                     console.error('Checkout form not found');
                     return;
@@ -274,9 +272,8 @@
 
                 console.log('Hidden input found:', hiddenInput);
 
-                // Initialize selected items - Fix the PHP syntax issue
                 try {
-                    // Get the filtered items data from PHP
+                    // Get the filtered items data
                     @if (isset($filteredItems) && !empty($filteredItems))
                         const selectedProductIds = {!! json_encode(array_column($filteredItems, 'id')) !!};
                         console.log('Selected product IDs from PHP:', selectedProductIds);
@@ -297,12 +294,12 @@
                     hiddenInput.value = JSON.stringify([]);
                 }
 
-                // Form submission handler - CRITICAL FIX
+                // Form submission handler
                 if (checkoutForm) {
                     checkoutForm.addEventListener('submit', function(event) {
                         console.log('Form submission triggered');
 
-                        // Check terms agreement first
+                        // Check terms agreement
                         if (!termsCheckbox || !termsCheckbox.checked) {
                             event.preventDefault();
                             console.log('Terms checkbox not checked');
@@ -321,35 +318,7 @@
                             return false;
                         }
 
-                        // Validate payment method
-                        // const selectedPaymentMethod = document.querySelector(
-                        //     'input[name="paymentMethod"]:checked');
-                        // if (!selectedPaymentMethod) {
-                        //     event.preventDefault();
-                        //     console.log('No payment method selected');
-                        //     alert('Please select a payment method.');
-                        //     return false;
-                        // }
-
-                        // If credit card is selected, validate credit card fields
-                        // if (selectedPaymentMethod.value === 'creditCard') {
-                        //     const cardNumber = document.getElementById('cardNumber');
-                        //     const expiryDate = document.getElementById('expiryDate');
-                        //     const cvv = document.getElementById('cvv');
-                        //     const cardName = document.getElementById('cardName');
-
-                        //     if (!cardNumber || !cardNumber.value.trim() ||
-                        //         !expiryDate || !expiryDate.value.trim() ||
-                        //         !cvv || !cvv.value.trim() ||
-                        //         !cardName || !cardName.value.trim()) {
-                        //         event.preventDefault();
-                        //         console.log('Credit card fields incomplete');
-                        //         alert('Please fill in all credit card details.');
-                        //         return false;
-                        //     }
-                        // }
-
-                        // Basic form validation
+                        // Validation
                         const requiredFields = checkoutForm.querySelectorAll(
                             'input[required], select[required], textarea[required]');
                         let isValid = true;
@@ -370,12 +339,10 @@
                             return false;
                         }
 
-                        // If we reach here, allow form submission
                         console.log("Form validation passed. Submitting form...");
                         console.log("Form action:", checkoutForm.action);
                         console.log("Form method:", checkoutForm.method);
 
-                        // Show loading state
                         const submitButton = checkoutForm.querySelector('button[type="submit"]');
                         if (submitButton) {
                             submitButton.disabled = true;
@@ -383,12 +350,10 @@
                                 '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
                         }
 
-                        // Allow form to submit normally
                         return true;
                     });
                 }
 
-                // Notes character counter
                 if (notesTextarea && notesCounter) {
                     const updateCounter = function() {
                         const count = notesTextarea.value.length;
@@ -407,30 +372,7 @@
                     notesTextarea.addEventListener('input', updateCounter);
                 }
 
-                // Payment method toggle
-                // if (paymentRadios.length > 0 && creditCardForm) {
-                //     paymentRadios.forEach(radio => {
-                //         radio.addEventListener('change', function() {
-                //             console.log('Payment method changed to:', this.value);
 
-                //             if (this.id === 'creditCard' && this.checked) {
-                //                 creditCardForm.classList.remove('d-none');
-                //             } else if (this.checked) {
-                //                 creditCardForm.classList.add('d-none');
-                //             }
-                //         });
-                //     });
-
-                //     // Initialize credit card form visibility
-                //     const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
-                //     if (selectedPayment && selectedPayment.id === 'creditCard') {
-                //         creditCardForm.classList.remove('d-none');
-                //     } else {
-                //         creditCardForm.classList.add('d-none');
-                //     }
-                // }
-
-                // Add input formatting
                 const phoneInput = document.getElementById('phone');
                 if (phoneInput) {
                     phoneInput.addEventListener('input', function() {
@@ -467,7 +409,7 @@
                     const selectedCountry = countrySelect.value;
                     const fee = selectedCountry === "Indonesia" ? 50000 : 150000;
 
-                    // Update shipping display
+                    // Update shipping
                     shippingDisplay.innerText = 'Rp' + fee.toLocaleString('id-ID');
                     if (shippingInput) shippingInput.value = fee;
 
@@ -480,16 +422,15 @@
 
                 if (countrySelect) {
                     countrySelect.addEventListener('change', updateShippingAndTotal);
-                    updateShippingAndTotal(); // Initial call
+                    updateShippingAndTotal(); 
                 }
             });
-            document.getElementById('zip').addEventListener('input', function () {
+            document.getElementById('zip').addEventListener('input', function() {
                 this.value = this.value.replace(/\D/g, '').slice(0, 5); // hanya angka, maksimal 5
             });
 
-            document.getElementById('city').addEventListener('input', function () {
+            document.getElementById('city').addEventListener('input', function() {
                 this.value = this.value.replace(/[^A-Za-z\s]/g, ''); // hanya huruf dan spasi
             });
-
         </script>
     @endsection
