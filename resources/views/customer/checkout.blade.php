@@ -141,15 +141,6 @@
                                     @enderror
                                 </div>
                             </div>
-
-                            @auth
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="saveAddress" name="saveAddress" checked>
-                                    <label class="form-check-label" for="saveAddress">
-                                        Save this address for future use
-                                    </label>
-                                </div>
-                            @endauth
                         </div>
                     </div>
 
@@ -422,7 +413,7 @@
 
                 if (countrySelect) {
                     countrySelect.addEventListener('change', updateShippingAndTotal);
-                    updateShippingAndTotal(); 
+                    updateShippingAndTotal();
                 }
             });
             document.getElementById('zip').addEventListener('input', function() {

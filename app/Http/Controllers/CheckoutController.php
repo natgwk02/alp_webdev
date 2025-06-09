@@ -23,6 +23,8 @@ class CheckoutController extends Controller
 
         $total = $checkoutData['subtotal'] + $checkoutData['shipping'] + $checkoutData['tax'] - $checkoutData['voucher_discount'];
 
+        
+
         $defaultData = [
             'firstName' => 'John',
             'lastName' => 'Doe',
@@ -154,6 +156,7 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
         }
     }
+
     private function validateRequest(Request $request)
     {
         return $request->validate([
