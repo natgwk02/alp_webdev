@@ -3,8 +3,65 @@
 @section('title', 'Shopping Cart - Chile Mart')
 
 @section('content')
+<style>
+    /* Make table scrollable on small screens */
+    .table-responsive {
+        overflow-x: auto;
+    }
 
-    <div class="container py-4">
+    /* Ensure checkout button width is 100% on smaller screens */
+    .btn-primary {
+        width: 100%;
+    }
+
+    /* Add responsive padding for small devices */
+    @media (max-width: 767px) {
+        .table-responsive {
+            overflow-x: scroll;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .btn-outline-danger {
+            font-size: 12px;
+        }
+
+        .table td, .table th {
+            font-size: 12px;
+        }
+
+        .fw-bold {
+            font-size: 16px;
+        }
+
+        .card-title {
+            font-size: 18px;
+        }
+
+        .input-group input,
+        .input-group button {
+            font-size: 12px;
+        }
+    }
+
+    /* For medium and larger screens */
+    @media (min-width: 768px) {
+        .card-body {
+            padding: 25px;
+        }
+
+        .fw-bold {
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-size: 20px;
+        }
+    }
+</style>
+   <div class="container py-4">
         <div class="row">
             <div class="col-12">
                 <h1 class="fw-bold mb-4">Shopping Cart</h1>
@@ -15,7 +72,7 @@
                     </div>
                 @else
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-12 col-md-8">
                             <div class="card">
                                 <div class="card-body p-0">
                                     <div class="table-responsive">
@@ -23,8 +80,7 @@
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>
-                                                        <input type="checkbox" id="select-all"
-                                                            onclick="toggleSelectAll(this)">
+                                                        <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
                                                         <label for="select-all" class="ms-2">Select All</label>
                                                     </th>
                                                     <th>Product</th>
@@ -52,21 +108,17 @@
                                                                     class="img-thumbnail me-3"
                                                                     style="width: 80px; height: 80px; object-fit: cover;">
                                                                 <div>
-                                                                    <h5 class="mb-1">{{ $item->product->products_name }}
-                                                                    </h5>
+                                                                    <h5 class="mb-1">{{ $item->product->products_name }}</h5>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td class="align-middle">
-                                                            <span class="price-column"
-                                                                data-price="{{ $item->product->orders_price }}">
+                                                            <span class="price-column" data-price="{{ $item->product->orders_price }}">
                                                                 Rp{{ number_format($item->product->orders_price, 0, ',', '.') }}
                                                             </span>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <form
-                                                                action="{{ route('cart.update', ['productId' => $item->products_id]) }}"
-                                                                method="POST">
+                                                            <form action="{{ route('cart.update', ['productId' => $item->products_id]) }}" method="POST">
                                                                 @csrf
                                                                 <input type="number" name="quantity"
                                                                     class="form-control quantity-input"
@@ -77,16 +129,12 @@
                                                             </form>
                                                         </td>
                                                         <td class="align-middle text-center">
-                                                            <span class="price-column"
-                                                                id="item-total-{{ $index }}">Rp{{ number_format($item->product->orders_price * $item->quantity, 0, ',', '.') }}</span>
+                                                            <span class="price-column" id="item-total-{{ $index }}">Rp{{ number_format($item->product->orders_price * $item->quantity, 0, ',', '.') }}</span>
                                                         </td>
                                                         <td class="align-middle text-center">
-                                                            <form
-                                                                action="{{ route('cart.remove', ['productId' => $item->products_id]) }}"
-                                                                method="POST">
+                                                            <form action="{{ route('cart.remove', ['productId' => $item->products_id]) }}" method="POST">
                                                                 @csrf
-                                                                <button type="submit"
-                                                                    class="btn btn-sm btn-outline-danger">
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
                                                             </form>
@@ -99,7 +147,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4 mt-4 mt-md-0">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title fw-bold mb-4">Order Summary</h5>
@@ -108,17 +156,13 @@
                                         <div class="alert alert-info py-2">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    Voucher <strong>{{ strtoupper(session('voucher_code')) }}</strong> is
-                                                    active.
+                                                    Voucher <strong>{{ strtoupper(session('voucher_code')) }}</strong> is active.
                                                     @if (session('voucher_discount'))
-                                                        <small class="d-block">Discount:
-                                                            Rp{{ number_format(session('voucher_discount'), 0, ',', '.') }}</small>
+                                                        <small class="d-block">Discount: Rp{{ number_format(session('voucher_discount'), 0, ',', '.') }}</small>
                                                     @endif
                                                 </div>
-                                                <form action="{{ route('cart.removeVoucher') }}" method="GET"
-                                                    class="ms-2" style="margin-bottom: 0;">
-                                                    <button type="submit"
-                                                        class="btn btn-sm btn-danger py-1 px-2">Remove</button>
+                                                <form action="{{ route('cart.removeVoucher') }}" method="GET" class="ms-2" style="margin-bottom: 0;">
+                                                    <button type="submit" class="btn btn-sm btn-danger py-1 px-2">Remove</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -126,22 +170,19 @@
                                         <form id="voucher-form" action="{{ route('cart.applyVoucher') }}" method="POST">
                                             @csrf
                                             <div class="mb-3">
-                                                <label for="voucher_code" class="form-label small">Enter Voucher
-                                                    Code:</label>
+                                                <label for="voucher_code" class="form-label small">Enter Voucher Code:</label>
                                                 <div class="input-group">
                                                     <input type="text" class="form-control form-control-sm"
                                                         id="voucher_code" name="voucher_code" placeholder="Voucher code"
                                                         required>
-                                                    <input type="hidden" name="selected_items_voucher"
-                                                        id="selected-items-voucher">
+                                                    <input type="hidden" name="selected_items_voucher" id="selected-items-voucher">
                                                     <button type="submit" class="btn btn-primary btn-sm">Apply</button>
                                                 </div>
                                             </div>
                                             @if (session('voucher_error'))
                                                 <div class="alert alert-danger alert-dismissible fade show py-2 small">
                                                     {{ session('voucher_error') }}
-                                                    <button type="button" class="btn-close btn-sm py-1 px-2"
-                                                        data-bs-dismiss="alert" aria-label="Close"></button>
+                                                    <button type="button" class="btn-close btn-sm py-1 px-2" data-bs-dismiss="alert" aria-label="Close"></button>
                                                 </div>
                                             @endif
                                         </form>
@@ -150,16 +191,14 @@
                                     @if (session('voucher_success'))
                                         <div class="alert alert-success alert-dismissible fade show mt-2 py-3 small">
                                             {{ session('voucher_success') }}
-                                            <button type="button" class="btn-close btn-sm mt-1 mx-2 py-3 px-2"
-                                                data-bs-dismiss="alert" aria-label="Close"></button>
+                                            <button type="button" class="btn-close btn-sm mt-1 mx-2 py-3 px-2" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
                                     @endif
 
                                     <div class="mt-3">
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>Subtotal:</span>
-                                            <span
-                                                id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
+                                            <span id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                                         </div>
 
                                         <div class="d-flex justify-content-between mb-2">
@@ -170,8 +209,7 @@
                                         @if (session('voucher_discount') && session('voucher_discount') > 0)
                                             <div class="d-flex justify-content-between mb-2 text-success">
                                                 <span>Voucher Discount:</span>
-                                                <span
-                                                    id="voucher-display">-Rp{{ number_format(session('voucher_discount'), 0, ',', '.') }}</span>
+                                                <span id="voucher-display">-Rp{{ number_format(session('voucher_discount'), 0, ',', '.') }}</span>
                                             </div>
                                         @endif
                                     </div>
@@ -184,10 +222,8 @@
                                     <form id="checkout-form" action="{{ route('checkout.form') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="selected_items" id="selected-items">
-                                        <button type="submit" class="btn btn-primary w-100 mt-3"
-                                            id="checkout-button">Proceed to Checkout</button>
+                                        <button type="submit" class="btn btn-primary w-100 mt-3" id="checkout-button">Proceed to Checkout</button>
                                     </form>
-
 
                                 </div>
                             </div>
