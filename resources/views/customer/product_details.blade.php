@@ -11,7 +11,6 @@
 
         .product-image-wrapper {
             width: 100%;
-            aspect-ratio: 1 / 1;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
@@ -20,7 +19,7 @@
 
         .product-image-wrapper img {
             width: 100%;
-            height: 100%;
+            height: auto;
             object-fit: contain;
             transition: transform 0.3s ease-in-out;
         }
@@ -95,16 +94,40 @@
         }
 
         @media (max-width: 768px) {
+            .product-section {
+                padding: 30px 0;
+            }
+
+            .product-details {
+                text-align: center;
+                padding: 0 20px;
+            }
+
             .product-details h1 {
-                font-size: 1.5rem;
+                 font-size: 0.95rem;
+                margin-bottom: 1.2rem;
             }
 
             .product-details .price {
                 font-size: 1.3rem;
             }
+
+            .rating-stars {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .product-image-wrapper {
+                margin-bottom: 20px;
+            }
+
+            .form-control {
+                margin: 0 auto;
+            }
         }
     </style>
 @endpush
+
 
 @section('content')
     @if (session('success'))
@@ -117,20 +140,21 @@
     @endif
 
     <div class="container product-section">
-        <div class="row justify-content-center align-items-center g-5">
-            <div class="col-lg-5 col-md-6">
+        <div class="row align-items-start">
+            <div class="col-md-6">
                 <div class="product-image-wrapper">
                     <img src="{{ asset('images/products-img/' . $product->products_image) }}"
                         alt="{{ $product->products_name }}">
                 </div>
             </div>
 
-            <div class="col-lg-6 col-md-6">
+            <div class="col-md-6 mt-4 mt-md-0">
                 <div class="product-details">
                     <h1>{{ $product->products_name }}</h1>
                     @if ($product->category)
                         <div class="category-badge">{{ $product->category->categories_name }}</div>
                     @endif
+
                     <div class="rating-stars d-flex align-items-center mb-2">
                         @php
                             $fullStars = $averageRating ? floor($averageRating) : 0;
@@ -150,16 +174,13 @@
                             <i class="bi bi-star text-secondary"></i>
                         @endfor
 
-                        <small class="text-muted ms-2">
-                            Customer Reviews: ({{ $reviewCount }})
-                        </small>
+                        <small class="text-muted ms-2">Customer Reviews: ({{ $reviewCount }})</small>
                     </div>
 
-                    {{-- Rating Form --}}
                     @auth
                         @if ($hasCompletedOrder && !$hasRated)
                             <form action="{{ route('ratings.store') }}" method="POST"
-                                class="d-flex align-items-center gap-2 mb-3">
+                                class="d-flex flex-wrap align-items-center gap-2 mb-3 justify-content-md-start justify-content-center">
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->products_id }}">
                                 <label for="rating" class="form-label mb-0 small text-muted">Your Rating:</label>
@@ -179,9 +200,7 @@
                         @endif
                     @endauth
 
-
                     <div class="price">Rp {{ number_format($product->orders_price, 0, ',', '.') }}</div>
-
                     <p class="desc">{{ $product->products_description }}</p>
 
                     <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST">
