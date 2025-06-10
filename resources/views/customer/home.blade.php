@@ -343,11 +343,37 @@
             background-color: rgba(5, 38, 89, 1);
         }
 
-        .category-carousel .carousel-control-prev-icon,
-        .category-carousel .carousel-control-next-icon {
-            width: 20px;
-            height: 20px;
-        }
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .category-item {
+        height: 320px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .category-item img {
+        height: 180px;
+        object-fit: cover;
+    }
+    
+    .category-text {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60px;
+        padding: 10px;
+        font-size: 1rem;
+    }
+    
+    .category-carousel .carousel-control-prev {
+        left: -15px;
+    }
+    
+    .category-carousel .carousel-control-next {
+        right: -15px;
+    }
+}
 
         .category-carousel .carousel-indicators {
             bottom: -50px;
@@ -598,11 +624,26 @@
             color: #052659 !important;
         }
 
-        .bi-star-fill,
-        .bi-star-half,
-        .bi-star {
-            color: #ffdd00 !important;
+        .star-group {
+            max-width: 100px;
+            margin : 0 auto;
         }
+
+        @media (max-width: 576px) {
+            .star-group {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr);
+                justify-content: center;
+                row-gap: 4px;
+            }
+
+            .star-group i {
+                font-size: 1rem;
+            }
+        }
+
+
+        
     </style>
 
     <section class="hero-section">
@@ -789,45 +830,48 @@
     </section>
 
     {{-- Top seller --}}
-    <section class="best-product py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Tasty Picks</h2>
-            <div class="row">
-                @foreach ($products as $product)
-                    <div class="col-lg-3 col-md-4 col-6 mb-4">
-                        <div class="card product-card h-100 position-relative" data-aos="zoom-in"
-                            data-aos-duration="700">
-                            @if ($product->is_on_sale)
-                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
-                            @elseif($product->is_new)
-                                <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
-                            @endif
+<section class="best-product py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Tasty Picks</h2>
+        <div class="row">
+            @foreach ($products as $product)
+                <div class="col-lg-3 col-md-4 col-6 mb-4">
+                    <div class="card product-card h-100 shadow-sm rounded-4 position-relative" data-aos="zoom-in" data-aos-duration="700">
+                        
+                        {{-- Badge Sale/New --}}
+                        @if($product->is_on_sale)
+                            <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
+                        @elseif($product->is_new)
+                            <span class="badge bg-success position-absolute top-0 end-0 m-2">New</span>
+                        @endif
 
-                            <img src="{{ asset('images/products-img/' . $product->products_image) }}"
-                                class="card-img-top" alt="{{ $product->products_name }}">
+                        {{-- Gambar Produk --}}
+                        <img src="{{ asset('images/products-img/' . $product->products_image) }}"
+                            class="card-img-top p-3" alt="{{ $product->products_name }}" style="max-height: 160px; object-fit: contain;">
 
-                            <div class="card-body d-flex flex-column h-100">
-                                <h5 class="card-title">{{ $product->products_name }}</h5>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <p class="card-text mb-0">Rp {{ number_format($product->orders_price, 0, ',', '.') }}
-                                    </p>
-                                    <div>
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            <i
-                                                class="bi {{ $i <= $product->rating ? 'bi-star-fill' : 'bi-star' }} text-warning"></i>
-                                        @endfor
-                                    </div>
-                                </div>
-                                <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}"
-                                    method="POST" class="add-to-cart-form">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->products_id }}">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
-                                        <i class="bi bi-cart-plus-fill"></i> Add to Cart
-                                    </button>
-                                </form>
+                        {{-- Informasi Produk --}}
+                        <div class="card-body d-flex flex-column text-center">
+                            <h6 class="card-title fw-bold mb-1" style="font-size: 0.95rem;">{{ $product->products_name }}</h6>
+                            <p class="card-text fw-semibold text-dark mb-1" style="font-size: 0.9rem;">
+                                Rp {{ number_format($product->orders_price, 0, ',', '.') }}
+                            </p>
+
+                            {{-- Bintang --}}
+                            <div class="star-group mb-3">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <i class="bi {{ $i <= $product->rating ? 'bi-star-fill' : 'bi-star' }} text-warning"></i>
+                                @endfor
                             </div>
+
+                            {{-- Tombol Add to Cart --}}
+                            <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->products_id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill small">
+                                    <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                                </button>
+                            </form>
                         </div>
                     </div>
                 @endforeach
@@ -838,7 +882,16 @@
                 </a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+        <div class="text-center mt-4">
+            <a href="{{ route('products') }}" class="btn text-white btn-best-product">
+                View All Products
+            </a>
+        </div>
+    </div>
+</section>
 
     {{-- why us --}}
     <section class="why-chille py-5">
@@ -994,12 +1047,12 @@
                                         <small class="text-muted d-block mb-3">Student</small>
                                         <p class="text-secondary small fst-italic">“Hemat dan enak! Produk Chillé selalu
                                             ada di kulkas saya. Cocok buat anak kos.”</p>
-                                        <div class="text-primary fs-5">
+                                        <div class="text-primary fs-5 mt-auto">
                                             <i class="bi bi-star-fill"></i>
                                             <i class="bi bi-star-fill"></i>
                                             <i class="bi bi-star-fill"></i>
                                             <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star"></i>
+                                            <i class="bi bi-star-fill"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -1007,12 +1060,12 @@
 
                             <div class="col-md-6 col-lg-3">
                                 <div class="bg-white rounded-4 shadow-sm p-4 h-100">
-                                    <div class="text-center">
+                                    <div class="text-center d-flex flex-column h-100">
+                                        <div class="text-center d-flex flex-column h-100">
                                         <i class="bi bi-chat-quote-fill fs-1 text-primary mb-3"></i>
                                         <h5 class="fw-bold text-primary mb-1">Nina Hartono</h5>
                                         <small class="text-muted d-block mb-3">Working Mom</small>
-                                        <p class="text-secondary small fst-italic">“Quick dinners made easy! The ready
-                                            meals are life-savers.”</p>
+                                        <p class="text-secondary small fst-italic">“Quick dinners made easy! These ready-to-eat meals have truly been life-savers for my busy days.”</p>
                                         <div class="text-primary fs-5">
                                             <i class="bi bi-star-fill"></i>
                                             <i class="bi bi-star-fill"></i>
