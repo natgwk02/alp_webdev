@@ -8,7 +8,7 @@
     }
 
     .logo {
-        width: 2.5%;
+        width: 4vh;
     }
 
     .profile {
