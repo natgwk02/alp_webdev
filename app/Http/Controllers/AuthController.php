@@ -65,9 +65,8 @@ class AuthController extends Controller
             'users_name' => 'required|string|max:255',
             'users_email' => [
                 'required',
-                'email',
-                'unique:users,users_email',
-                'regex:/@(mail\.com|gmail\.com)$/i'
+                'email:rfc,dns',
+                'unique:users,users_email'
             ],
             'users_password' => 'required|string|min:8|confirmed',
             'users_address' => 'required|string|max:255',
