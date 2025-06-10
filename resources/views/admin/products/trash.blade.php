@@ -101,7 +101,7 @@
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ $product->products_image ? asset('storage/products/' . $product->products_image) : 'https://via.placeholder.com/60' }}"
+                                    <img src="{{ $product->products_image ? asset('images/products-img/' . $product->products_image) : 'https://via.placeholder.com/60' }}"
                                         alt="{{ $product->products_name }}" class="product-img me-3">
                                     <div>
                                         <h6 class="mb-0">{{ $product->products_name }}</h6>
