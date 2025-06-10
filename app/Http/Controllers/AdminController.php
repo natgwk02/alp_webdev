@@ -59,6 +59,7 @@ class AdminController extends Controller
             ->join('orders', 'order_details.orders_id', '=', 'orders.orders_id')
             ->select('products.products_name', DB::raw('SUM(order_details.order_details_quantity * price) as total_revenue'))
             ->where('orders_status', '!=', 'Cancelled')
+            ->where('users_id', '!=', '12') // Exclude admin user
             ->whereBetween('orders.orders_date', [$periodStartDate, $periodEndDate])
             ->where('products.status_del', 0)
             ->groupBy('products.products_id', 'products.products_name')
@@ -73,6 +74,7 @@ class AdminController extends Controller
             ->select('products.products_name', DB::raw('SUM(order_details.order_details_quantity) as total_quantity'))
             ->whereBetween('orders.orders_date', [$periodStartDate, $periodEndDate])
             ->where('products.status_del', 0)
+            ->where('users_id', '!=', '12') // Exclude admin user
             ->groupBy('products.products_id', 'products.products_name')
             ->orderByDesc('total_quantity')
             ->take($topLimit)
@@ -416,7 +418,8 @@ class AdminController extends Controller
 
         if ($dataType === 'revenue') {
             $queryBase->addSelect(DB::raw('SUM(orders_total_price) as total_value'))
-                ->where('orders_status', '!=', 'Cancelled');
+                ->where('orders_status', '!=', 'Cancelled')
+                ->where('users_id', '!=', '12'); // Exclude admin user
             $datasetLabel = "Revenue ({$datasetLabelSuffix})";
         } else {
             $queryBase->addSelect(DB::raw('COUNT(*) as total_value'));
