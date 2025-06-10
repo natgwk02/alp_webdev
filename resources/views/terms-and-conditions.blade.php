@@ -8,7 +8,7 @@
         <p><strong>Last Updated: [May 20th, 2025]</strong></p>
 
         <p>Hello, <strong>ChillBros</strong>! Welcome to <strong>Chillé Mart</strong>. These Terms and Conditions govern
-            your use of our website <a href="https://chillemart.web.id" target="_blank">[www.chillemart.com]</a> and any
+            your use of our website <a href="https://chillemart.web.id" target="_blank">[chillemart.web.id]</a> and any
             purchases made through it. By accessing or using our site, you agree to comply with these terms. If you
             disagree, please refrain from using our services.</p>
 
