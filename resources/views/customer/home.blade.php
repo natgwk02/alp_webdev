@@ -619,15 +619,14 @@
             display: flex;
             gap: 2px;
             flex-wrap: nowrap;
+            flex-direction: row;
         }
 
         /* Responsive: Bintang 3 atas, 2 bawah */
         @media (max-width: 576px) {
             .star-group {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 2px 4px;
-                justify-items: end;
+                justify-content: start; /* atau center */
+                margin-top: 4px;
             }
 
             .star-group i {
@@ -830,11 +829,11 @@
                                 <p class="card-text mb-1 fw-semibold text-dark" style="font-size: 0.95rem;">
                                     Rp {{ number_format($product->orders_price, 0, ',', '.') }}
                                 </p>
-                                <div class="star-group mb-3">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <i class="bi {{ $i <= $product->rating ? 'bi-star-fill' : 'bi-star' }}"></i>
-                                    @endfor
-                                </div>
+                            <div class="star-group mb-2">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <i class="bi {{ $i <= $product->rating ? 'bi-star-fill' : 'bi-star' }}"></i>
+                                @endfor
+                            </div>
                             </div>
                             <form action="{{ route('cart.add', ['productId' => $product->products_id]) }}" method="POST" class="add-to-cart-form">
                             @csrf
