@@ -20,11 +20,11 @@ class RatingController extends Controller
         $userId = Auth::id();
         $productId = $request->product_id;
 
-        // ✅ Cek apakah user pernah menyelesaikan pesanan untuk produk ini
+        // Cek apakah user pernah menyelesaikan pesanan untuk produk
         $hasCompletedOrder = OrderDetail::where('products_id', $productId)
             ->whereHas('order', function ($query) use ($userId) {
                 $query->where('users_id', $userId)
-                      ->where('orders_status', 'Delivered'); // sesuaikan dengan nama status kamu
+                    ->where('orders_status', 'Delivered');
             })
             ->exists();
 
@@ -32,7 +32,6 @@ class RatingController extends Controller
             return back()->with('error', 'You can only rate products you have purchased and completed.');
         }
 
-        // ✅ Simpan atau update rating tanpa komentar
         Rating::updateOrCreate(
             [
                 'user_id' => $userId,
@@ -43,7 +42,7 @@ class RatingController extends Controller
             ]
         );
 
-        // ✅ Update rata-rata rating produk
+        // Update rata-rata rating produk
         $avg = Rating::where('product_id', $productId)->avg('rating');
         Product::where('products_id', $productId)->update(['rating' => $avg]);
 

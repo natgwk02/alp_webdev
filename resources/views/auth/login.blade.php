@@ -107,7 +107,6 @@
                 text-decoration: none;
             }
 
-            /* Responsive */
             @media (max-width: 992px) {
                 .login-wrapper {
                     flex-direction: column;
@@ -134,7 +133,6 @@
 
     <body>
         <div class="login-wrapper">
-            <!-- LEFT: Carousel -->
             <div class="left-panel">
                 <div id="carouselExample" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="4000">
                     <div class="carousel-inner h-100">
@@ -163,7 +161,6 @@
                 </div>
             </div>
 
-            <!-- RIGHT: Login Form -->
             <div class="right-panel">
                 <div class="w-100" style="max-width: 360px; margin: auto;">
                     <h4 class="fw-bold mb-2" style="color: #052659;">Welcome Back to Chillé Mart!</h4>
@@ -222,7 +219,6 @@
             </div>
         </div>
 
-        <!-- JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             function togglePassword(fieldId, el) {

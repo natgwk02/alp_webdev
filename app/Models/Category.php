@@ -14,12 +14,11 @@ class Category extends Model
     protected $fillable = [
         'categories_name', 'status_del'
     ];
-    //
+
     public function products(): HasMany
     {
-        // Ensure this FK on 'products' table is correct
         return $this->hasMany(Product::class, 'categories_id', 'categories_id');
     }
-    
+
 
 }

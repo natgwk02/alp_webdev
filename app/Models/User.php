@@ -12,13 +12,8 @@ class User extends Authenticatable
     protected $primaryKey = 'users_id';
     public $incrementing = true;
     protected $keyType = 'int';
-
-    // Nama tabel (opsional jika memang pakai tabel bernama 'users')
     protected $table = 'users';
 
-    /**
-     * Kolom yang boleh diisi massal
-     */
     protected $fillable = [
         'users_name',
         'users_email',
@@ -29,17 +24,11 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * Kolom yang tidak boleh ditampilkan (misal saat toArray atau JSON)
-     */
     protected $hidden = [
         'users_password',
         'remember_token',
     ];
 
-    /**
-     * Cast field ke tipe tertentu
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'status_del' => 'boolean',
@@ -49,10 +38,6 @@ class User extends Authenticatable
         return $this->users_id;
     }
 
-    /**
-     * Get the name of the unique identifier for the user.
-     * Untuk mengubah kolom identifier default (email) ke users_email
-     */
     public function getAuthIdentifierName()
     {
         return 'users_id';
@@ -66,37 +51,27 @@ class User extends Authenticatable
         };
     }
 
-    /**
-     * Get the password for the user.
-     * Untuk mengubah kolom password default ke users_password
-     */
     public function getAuthPassword()
     {
         return $this->users_password;
     }
 
-    /**
-     * Accessor untuk kompatibilitas dengan sistem yang mengharapkan 'email'
-     */
     public function getEmailAttribute()
     {
         return $this->users_email;
     }
 
-    /**
-     * Accessor untuk kompatibilitas dengan sistem yang mengharapkan 'name'
-     */
     public function getNameAttribute()
     {
         return $this->users_name;
     }
-    public function wishlists() {
-    return $this->hasMany(Wishlist::class);
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
     }
 
-    public function carts() {
-    return $this->hasMany(Cart::class);
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
     }
-
-    
 }

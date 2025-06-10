@@ -147,7 +147,6 @@ class OrderController extends Controller
         }
         Log::info('Checkout: Selected IDs after initial processing (explode/assign):', $selectedProductIds);
 
-        // Remove empty values and ensure we have integers
         $selectedProductIds = array_filter($selectedProductIds, function ($id) {
             return !empty($id) && is_numeric(trim($id));
         });
@@ -156,7 +155,6 @@ class OrderController extends Controller
 
         $source_of_ids = 'request';
 
-        // If empty from request processing, try to get from session
         if (empty($selectedProductIds) && session()->has('checkout_selected_ids_temp')) {
             Log::warning('Checkout: IDs from request were empty/invalid. Attempting session fallback.');
             Log::info('Checkout: Session checkout_selected_ids_temp (before fallback):', [session('checkout_selected_ids_temp')]);
@@ -165,19 +163,16 @@ class OrderController extends Controller
             Log::info('Checkout: Using selected product IDs from session fallback:', $selectedProductIds);
         }
 
-        // Critical check: If still no IDs, redirect back to cart.
         if (empty($selectedProductIds)) {
             Log::error('Checkout: No items selected for checkout (even after potential session fallback). Redirecting to cart.');
             session()->forget('checkout_selected_ids_temp');
             return redirect()->route('cart.index')->with('error', 'No items selected for checkout. Please select items from your cart.');
         }
 
-        // Store the *actually used* IDs in session for checkout page refreshes.
         session(['checkout_selected_ids_temp' => $selectedProductIds]);
         Log::info('Checkout: Stored/Updated checkout_selected_ids_temp in session with final IDs:', $selectedProductIds);
         Log::info('Checkout: Source of final IDs for this page load:', [$source_of_ids]);
 
-        // 2. Get cart items from database
         if (!Auth::check()) {
             Log::warning('Checkout: User not authenticated. Redirecting to login.');
             return redirect()->route('login')->with('error', 'You must be logged in to checkout.');
@@ -190,9 +185,6 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'Cart not found.');
         }
 
-        // FIXED: Use consistent field name - check your CartItem model to confirm the correct field name
-        // If your CartItem model uses 'product_id', use that. If it uses 'products_id', use that.
-        // I'm assuming 'products_id' based on your other code, but verify this!
         $cartItems = $cart->items()->with('product')->whereIn('products_id', $selectedProductIds)->get();
 
         if ($cartItems->isEmpty()) {
@@ -201,12 +193,11 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'Selected items not found in cart. Please try again.');
         }
 
-        // FIXED: Convert cart items to the format expected by the checkout view
         $filteredItems = $cartItems->map(function ($cartItem) {
             if (!$cartItem->product) {
                 Log::error('Checkout: Product data missing for cart item ID: ' . $cartItem->id . ', products_id: ' . $cartItem->products_id);
                 return [
-                    'id' => $cartItem->products_id, // FIXED: Use consistent field name
+                    'id' => $cartItem->products_id,
                     'name' => 'Error: Product Not Found',
                     'price' => 0,
                     'quantity' => $cartItem->quantity,
@@ -214,7 +205,7 @@ class OrderController extends Controller
                 ];
             }
             return [
-                'id' => $cartItem->products_id, // FIXED: Use the product ID consistently
+                'id' => $cartItem->products_id,
                 'name' => $cartItem->product->products_name ?? 'Unknown Product',
                 'price' => $cartItem->product->orders_price ?? 0,
                 'quantity' => $cartItem->quantity,
@@ -224,7 +215,6 @@ class OrderController extends Controller
 
         Log::info('Checkout: Filtered items for view:', $filteredItems);
 
-        // 3. Calculate totals based on these items
         $subtotal = collect($filteredItems)->sum(function ($item) {
             return ($item['price'] ?? 0) * ($item['quantity'] ?? 0);
         });
@@ -234,7 +224,6 @@ class OrderController extends Controller
         $voucherDiscount = session('voucher_discount', 0);
         $total = $subtotal + $shippingFee + $tax - $voucherDiscount;
 
-        // 4. Prepare default data for shipping form
         $defaultData = [
             'firstName' => '',
             'lastName' => '',
@@ -311,7 +300,6 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'No items were selected for checkout.');
         }
 
-        // Get cart items from database
         $cart = \App\Models\Cart::where('users_id', Auth::id())->first();
         if (!$cart) {
             return redirect()->route('cart.index')->with('error', 'Cart not found.');
@@ -323,7 +311,6 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'No items selected for checkout or cart is empty.');
         }
 
-        // Calculate totals server-side for security
         $subtotal = $checkoutItems->sum(function ($item) {
             return ($item->product->orders_price ?? 0) * $item->quantity;
         });
@@ -355,33 +342,31 @@ class OrderController extends Controller
             'orders_status' => 'Pending',
         ]);
         Config::$serverKey = config('midtrans.server_key');
-Config::$isProduction = config('midtrans.is_production');
-Config::$isSanitized = true;
-Config::$is3ds = true;
+        Config::$isProduction = config('midtrans.is_production');
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
 
-// Prepare Midtrans transaction params
-$params = [
-    'transaction_details' => [
-        'order_id' => $order->orders_id,
-        'gross_amount' => $finalTotal,
-    ],
-    'customer_details' => [
-        'first_name' => $request->firstName,
-        'last_name' => $request->lastName,
-        'email' => Auth::user()->users_email ?? 'guest@example.com',
-        'phone' => $request->phone,
-    ],
-];
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->orders_id,
+                'gross_amount' => $finalTotal,
+            ],
+            'customer_details' => [
+                'first_name' => $request->firstName,
+                'last_name' => $request->lastName,
+                'email' => Auth::user()->users_email ?? 'guest@example.com',
+                'phone' => $request->phone,
+            ],
+        ];
 
-// Create transaction and get Snap URL
-try {
-    $snap = Snap::createTransaction($params);
-    $order->payment_url = $snap->redirect_url;
-    $order->save();
-} catch (\Exception $e) {
-    Log::error('Midtrans transaction creation failed: ' . $e->getMessage());
-}
-        
+        try {
+            $snap = Snap::createTransaction($params);
+            $order->payment_url = $snap->redirect_url;
+            $order->save();
+        } catch (\Exception $e) {
+            Log::error('Midtrans transaction creation failed: ' . $e->getMessage());
+        }
+
 
         foreach ($checkoutItems as $cartItem) {
             OrderDetail::create([
@@ -393,22 +378,18 @@ try {
             ]);
         }
 
-        // Remove the checked out items from cart
         $cart->items()->whereIn('products_id', $selectedProductIds)->delete();
 
-        // Clear voucher session data
         session()->forget(['voucher_code', 'voucher_discount', 'checkout_selected_ids_temp']);
 
-        // return redirect()->route('order.confirmation', ['id' => $order->orders_id])
-        //     ->with('success', 'Checkout completed! Your order has been placed.');
         return redirect()->route('order.detail', ['id' => $order->orders_id])
             ->with('success', 'Checkout completed! Your order has been placed.');
     }
+
     public function orderReceived($id)
     {
-        $order = Order::findOrFail($id); // Get the order by ID
+        $order = Order::findOrFail($id);
 
-        // Update the order status to "Completed" (or any status you need)
         $order->orders_status = 'Completed';
         $order->save();
 

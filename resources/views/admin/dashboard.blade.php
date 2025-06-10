@@ -61,7 +61,6 @@
             </div>
         </div>
 
-        {{-- Layout Row 1: Recent Orders | Stock Alert --}}
         <div class="row">
             {{-- Recent Orders --}}
             <div class="col-lg-8 col-md-7 mb-4">
@@ -153,7 +152,6 @@
             </div>
         </div>
 
-        {{-- Layout Row 2: Order Status Overview | Top Revenue (Chart) | Top Quantity (Chart) --}}
         <div class="row">
             {{-- Order Status Overview --}}
             <div class="col-lg-4 col-md-6 mb-4">
@@ -225,7 +223,6 @@
                                 <canvas id="topQuantityChart"></canvas>
                             </div>
                         @else
-                            {{-- Vertically center placeholder text if no chart --}}
                             <p class="text-center text-muted my-auto">No sales data available.</p>
                         @endif
                     </div>
@@ -262,7 +259,6 @@
                     <div class="card-body">
                         <div style="position: relative; height:300px; width:100%;">
                             <canvas id="salesTrendChart"></canvas>
-                            {{-- Spinner for loading state --}}
                             <div id="salesTrendChartSpinner" class="text-center"
                                 style="display: none; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index:10;">
                                 <div class="spinner-border text-primary" role="status">
@@ -340,7 +336,7 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                
+
 
                 const chartColors = ['#28a745', '#007bff', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1', '#fd7e14',
                     '#20c997', '#6610f2', '#e83e8c'
@@ -423,7 +419,6 @@
                             @endforeach
                         ];
                         new Chart(topQuantityCtx, {
-                            /* ... quantity pie chart config ... */
                             type: 'pie',
                             data: {
                                 labels: topQuantityLabels,
@@ -469,7 +464,7 @@
                     }
                 @endif
 
-                // --- Sales Trend Line Chart ---
+                // Sales Trend Chart
                 let salesTrendChartInstance;
                 const salesTrendCtx = document.getElementById('salesTrendChart')?.getContext('2d');
                 const salesTrendSpinner = document.getElementById('salesTrendChartSpinner');
@@ -502,7 +497,7 @@
                                 currency: 'IDR',
                                 minimumFractionDigits: 0
                             }).format(context.parsed.y);
-                        } else { // 'orders'
+                        } else {
                             label += context.parsed.y + (context.parsed.y === 1 ? ' order' : ' orders');
                         }
                     }
@@ -514,8 +509,7 @@
                     if (salesTrendSpinner) salesTrendSpinner.style.display = 'block';
                     if (salesTrendNoData) salesTrendNoData.style.display = 'none';
                     if (salesTrendChartInstance) salesTrendChartInstance
-                .destroy(); // Destroy previous instance before fetching new data
-
+                        .destroy();
                     const url = `{{ route('admin.salesTrendData') }}?period=${period}&dataType=${dataType}`;
 
                     fetch(url)
@@ -534,8 +528,7 @@
                                     data: {
                                         labels: responseData.labels,
                                         datasets: responseData.datasets.map(dataset => ({
-                                            ...
-                                            dataset, // spread existing dataset properties from controller
+                                            ...dataset, // Start with all properties from the original 'dataset'
                                             pointBackgroundColor: dataset.borderColor ||
                                                 'rgb(54, 162, 235)',
                                             pointBorderColor: '#fff',
@@ -560,10 +553,11 @@
                                                     maxRotation: 0,
                                                     autoSkip: true,
                                                     maxTicksLimit: responseData.period.startsWith(
-                                                        'monthly') ? (responseData.labels.length > 12 ? 12 :
-                                                            responseData.labels.length) : (responseData
-                                                            .labels.length > 15 ? 15 : responseData.labels
-                                                            .length)
+                                                        'monthly') ? (responseData.labels.length > 12 ?
+                                                        12 :
+                                                        responseData.labels.length) : (responseData
+                                                        .labels.length > 15 ? 15 : responseData.labels
+                                                        .length)
                                                 }
                                             }
                                         },
@@ -612,7 +606,6 @@
                         updateSalesTrendChart(periodSelect.value, this.value);
                     });
 
-                    // Initial chart load
                     updateSalesTrendChart(periodSelect.value, dataTypeSelect.value);
                 }
             });

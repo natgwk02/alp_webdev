@@ -1,8 +1,6 @@
 <?php
 
-use App\Mail\TestEmail;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\AuthController;
@@ -14,14 +12,10 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UtilityController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\MidtransController;
-use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminOrderController;
 
 // Authentication Routes
-
 Route::post('/login', [AuthController::class, 'login_auth'])->name('login.auth');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 
@@ -74,11 +68,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/counts', [CartController::class, 'getCounts'])->name('counts');
     Route::get('/payment/status/{order}', [PaymentController::class, 'checkStatus'])->name('payment.status');
     Route::get('/payment/return/{order}', [PaymentController::class, 'handleReturn'])->name('payment.return');
+    Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
 
     Route::middleware([\App\Http\Middleware\IsAdminMiddleware::class])->group(function () {
-        Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/admin/sales-trend-data', [AdminController::class, 'getSalesTrendData'])->name('admin.salesTrendData');
 
         //  Product Management
@@ -107,9 +101,6 @@ Route::get('/about', function () {
     return view('customer.about');
 })->name('about');
 
-// Route::get('/profile', function () {
-//     return view('customer.profile');
-// })->name('profile');
 Route::post('/verify-otp-step', [AuthController::class, 'verifyOtpStep'])->name('password.otp.step');
 Route::get('/reset-password-form', function () {
     if (!session('otp_verified')) {
@@ -121,9 +112,3 @@ Route::get('/reset-password-form', function () {
 Route::post('/reset-password-step', [AuthController::class, 'resetPassword'])->name('password.update.step');
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-// Profile Routes
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-//     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
-// });

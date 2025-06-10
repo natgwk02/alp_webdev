@@ -1,6 +1,5 @@
 @extends('layouts.admin')
 
-{{-- Use object access for order ID in title --}}
 @section('title', 'Order #' . $order->orders_id . ' - Chile Mart Admin')
 
 @section('content')
@@ -23,30 +22,24 @@
                         <li class="breadcrumb-item">
                             <a href="{{ route('admin.orders') }}" class="text-decoration-none text-secondary">Orders</a>
                         </li>
-                        {{-- Use object access for order ID --}}
                         <li class="breadcrumb-item active" aria-current="page">Order #{{ $order->orders_id }}</li>
                     </ol>
                 </nav>
                 <div class="d-flex justify-content-between align-items-center">
-                    {{-- Use object access for order ID --}}
                     <h1 class="fw-bold">Order #{{ $order->orders_id }}</h1>
-
-                    {{-- Cancel Order Form - Ensure this status update is handled correctly by your controller --}}
-                    @if(strtolower($order->orders_status) !== 'cancelled' && strtolower($order->orders_status) !== 'delivered')
-                    <form action="{{ route('admin.orders.updateStatus', $order->orders_id) }}" method="POST"
-                        onsubmit="return confirm('Are you sure you want to cancel this order?');">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="status" value="Cancelled">
-                        <button type="submit" class="btn btn-outline-danger d-flex align-items-center gap-2">
-                            <i class="fas fa-trash"></i>
-                            <span>Cancel Order</span>
-                        </button>
-                    </form>
+                    @if (strtolower($order->orders_status) !== 'cancelled' && strtolower($order->orders_status) !== 'delivered')
+                        <form action="{{ route('admin.orders.updateStatus', $order->orders_id) }}" method="POST"
+                            onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="status" value="Cancelled">
+                            <button type="submit" class="btn btn-outline-danger d-flex align-items-center gap-2">
+                                <i class="fas fa-trash"></i>
+                                <span>Cancel Order</span>
+                            </button>
+                        </form>
                     @endif
                 </div>
-                {{-- <p class="text-muted">Placed on {{ $order['orders_date'] }}</p> --}}
-                {{-- Use Carbon instance for date formatting --}}
                 <p class="text-muted">Placed on {{ $order->orders_date->format('F j, Y, g:i a') }}</p>
             </div>
         </div>
@@ -77,21 +70,18 @@
                                                         class="img-thumbnail me-3" width="60"
                                                         alt="{{ $item->product->products_name ?? 'Unknown Product' }}">
                                                     <div>
-                                                        <h6 class="mb-0">{{ $item->product->products_name ?? 'Unknown Product' }}</h6>
-                                                        {{-- Assuming SKU is products_id or you have a dedicated SKU field in Product model --}}
-                                                        <small class="text-muted">SKU: CM-{{ $item->product->products_id ?? 'N/A' }}</small>
+                                                        <h6 class="mb-0">
+                                                            {{ $item->product->products_name ?? 'Unknown Product' }}</h6>
+                                                        <small class="text-muted">SKU:
+                                                            CM-{{ $item->product->products_id ?? 'N/A' }}</small>
                                                     </div>
                                                 </div>
                                             </td>
-                                            {{-- Access item properties with object syntax --}}
                                             <td>Rp.{{ number_format($item->price ?? 0, 0, ',', '.') }}</td>
                                             <td>{{ $item->order_details_quantity ?? 1 }}</td>
                                             <td>Rp.{{ number_format($item->total ?? 0, 0, ',', '.') }}</td>
                                         </tr>
-                                        @endforeach
-                                        {{-- <tr>
-                                            <td colspan="4" class="text-center">No items in this order.</td>
-                                        </tr> --}}
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -107,10 +97,9 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <h6>Customer Information</h6>
-                            {{-- Use user relationship or direct order fields --}}
                             <p class="mb-1">
                                 <strong>
-                                    @if($order->user)
+                                    @if ($order->user)
                                         {{ $order->user->users_name }}
                                     @else
                                         {{ $order->first_name }} {{ $order->last_name }}
@@ -118,14 +107,13 @@
                                 </strong>
                             </p>
                             <p class="mb-1">
-                                @if($order->user)
+                                @if ($order->user)
                                     {{ $order->user->email ?? 'No email provided' }}
                                 @else
                                     No registered user account
                                 @endif
                             </p>
-                            @if($order->user)
-                                {{-- <a href="#" class="small">View customer profile</a> --}} {{-- Implement this route if needed --}}
+                            @if ($order->user)
                             @endif
                         </div>
 
@@ -133,25 +121,18 @@
 
                         <div class="mb-3">
                             <h6>Shipping Address</h6>
-                            {{-- Assuming these fields are directly on the Order model --}}
                             <p class="mb-0">{{ $order->address ?? '-' }}, {{ $order->city ?? '' }}</p>
                             <p class="mb-0">{{ $order->zip ?? '' }}, {{ $order->country ?? '' }}</p>
                             <p class="mb-0">Phone: {{ $order->phone ?? '-' }}</p>
                         </div>
 
-                        {{-- Billing address might be same as shipping or different --}}
-                        {{-- <div class="mb-3">
-                            <h6>Billing Address</h6>
-                            <p class="mb-0">{{ $order->billing_address ?? 'Same as shipping' }}</p>
-                        </div> --}}
-
-                        @if($order->notes)
-                        <div class="mb-3">
-                            <h6>Customer Notes</h6>
-                            <p class="mb-0 text-muted">
-                                {{ $order->notes }}
-                            </p>
-                        </div>
+                        @if ($order->notes)
+                            <div class="mb-3">
+                                <h6>Customer Notes</h6>
+                                <p class="mb-0 text-muted">
+                                    {{ $order->notes }}
+                                </p>
+                            </div>
                         @endif
 
                         <hr>
@@ -160,8 +141,8 @@
                             <h6>Payment Method</h6>
                             <p class="mb-0">
                                 {{ Str::title(str_replace('_', ' ', $order->payment_method ?? 'Unknown')) }}
-                                {{-- Use the status_badge_class accessor for payment_status if appropriate, or specific logic --}}
-                                <span class="badge {{ $order->payment_status == 'paid' ? 'bg-success' : 'bg-warning text-dark' }}">{{ Str::title($order->payment_status ?? 'Unknown') }}</span>
+                                <span
+                                    class="badge {{ $order->payment_status == 'Paid' ? 'bg-success' : 'bg-warning text-dark' }}">{{ Str::title($order->payment_status ?? 'Unknown') }}</span>
                             </p>
                         </div>
 
@@ -170,18 +151,26 @@
                             @method('PUT')
                             <div class="mb-3">
                                 <h6>Order Status</h6>
-                                <select name="status" class="form-select mb-2" required {{ strtolower($order->orders_status) === 'delivered' || strtolower($order->orders_status) === 'cancelled' ? 'disabled' : '' }}>
-                                    {{-- Use object access for current status --}}
-                                    <option value="Pending" {{ ($order->orders_status) == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="Processing" {{ ($order->orders_status) == 'Processing' ? 'selected' : '' }}>Processing</option>
-                                    <option value="Shipped" {{ strtolower($order->orders_status) == 'Shipped' ? 'selected' : '' }}>Shipped</option>
-                                    <option value="Delivered" {{ strtolower($order->orders_status) == 'Delivered' ? 'selected' : '' }}>Delivered</option>
-                                    <option value="Cancelled" {{ strtolower($order->orders_status) == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                <select name="status" class="form-select mb-2" required
+                                    {{ strtolower($order->orders_status) === 'delivered' || strtolower($order->orders_status) === 'cancelled' ? 'disabled' : '' }}>
+                                    <option value="Pending" {{ $order->orders_status == 'Pending' ? 'selected' : '' }}>
+                                        Pending Delivery</option>
+                                    <option value="Processing"
+                                        {{ $order->orders_status == 'Processing' ? 'selected' : '' }}>Processing Delivery</option>
+                                    <option value="Shipped"
+                                        {{ strtolower($order->orders_status) == 'Shipped' ? 'selected' : '' }}>Shipped
+                                    </option>
+                                    <option value="Delivered"
+                                        {{ strtolower($order->orders_status) == 'Delivered' ? 'selected' : '' }}>Delivered
+                                    </option>
+                                    <option value="Cancelled"
+                                        {{ strtolower($order->orders_status) == 'Cancelled' ? 'selected' : '' }}>Cancelled
+                                    </option>
                                 </select>
-                                @if(strtolower($order->orders_status) !== 'delivered' && strtolower($order->orders_status) !== 'cancelled')
-                                <button type="submit" class="btn btn-primary w-100">Update Status</button>
+                                @if (strtolower($order->orders_status) !== 'delivered' && strtolower($order->orders_status) !== 'cancelled')
+                                    <button type="submit" class="btn btn-primary w-100">Update Status</button>
                                 @else
-                                <button type="submit" class="btn btn-primary w-100" disabled>Update Status</button>
+                                    <button type="submit" class="btn btn-primary w-100" disabled>Update Status</button>
                                 @endif
                             </div>
                         </form>
@@ -189,7 +178,6 @@
                         <hr>
 
                         <div class="order-totals">
-                            {{-- Use object access for order totals --}}
                             <div class="d-flex justify-content-between mb-1">
                                 <span>Subtotal:</span>
                                 <span>Rp {{ number_format($order->subtotal ?? 0, 0, ',', '.') }}</span>
@@ -198,11 +186,11 @@
                                 <span>Shipping:</span>
                                 <span>Rp {{ number_format($order->shipping_fee ?? 0, 0, ',', '.') }}</span>
                             </div>
-                             @if(isset($order->tax) && $order->tax > 0)
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>Tax:</span>
-                                <span>Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
-                            </div>
+                            @if (isset($order->tax) && $order->tax > 0)
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Tax:</span>
+                                    <span>Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
+                                </div>
                             @endif
                             @if (isset($order->voucher_discount) && $order->voucher_discount > 0)
                                 <div class="d-flex justify-content-between mb-1 text-success">
@@ -212,8 +200,8 @@
                             @endif
                             <div class="d-flex justify-content-between fw-bold mt-2 pt-2 border-top">
                                 <span>Total:</span>
-                                {{-- Use 'total' or 'orders_total_price' from your Order model --}}
-                                <span>Rp {{ number_format($order->total ?? $order->orders_total_price ?? 0, 0, ',', '.') }}</span>
+                                <span>Rp
+                                    {{ number_format($order->total ?? ($order->orders_total_price ?? 0), 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>

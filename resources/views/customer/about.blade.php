@@ -1,4 +1,7 @@
 @extends('layouts.app')
+
+@section('title', 'About Us - Chile Mart')
+
 <style>
     .text-navy {
         color: #052659 !important;
@@ -13,6 +16,7 @@
         transition: transform 0.4s ease;
     }
 </style>
+
 @section('content')
     <section class="py-5" style="background-color: #C1E8FF;">
         <div class="container py-4">
@@ -146,8 +150,7 @@
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 text-center">
                     <div class="team-member">
-                        <a href="https://www.linkedin.com/in/shasatanjaya/" target="_blank"
-                            class="text-decoration-none">
+                        <a href="https://www.linkedin.com/in/shasatanjaya/" target="_blank" class="text-decoration-none">
                             <img src="/images/aboutus/sharon.jpeg" alt="Sharon" class="rounded-circle team-img mb-3">
                             <h6 class="fw-semibold">Sharon Tan</h6>
                         </a>

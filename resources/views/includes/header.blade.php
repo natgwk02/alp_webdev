@@ -189,7 +189,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                <hr class="dropdown-divider">
+                                    <hr class="dropdown-divider">
                                 </li>
                             @endcan
 

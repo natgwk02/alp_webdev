@@ -72,7 +72,7 @@
             </div>
         @endif
 
-        {{-- table --}}
+        {{-- Table --}}
         <div class="table-responsive mb-4">
             <table class="table table-hover align-middle">
                 <thead class="table-light">
@@ -137,10 +137,9 @@
             </table>
         </div>
 
-        <!-- Pagination -->
+        {{-- Pagination --}}
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                {{-- Pastikan ada produk sebelum menampilkan teks --}}
                 @if ($trashedProducts->total() > 0)
                     <p class="mb-0">Showing {{ $trashedProducts->firstItem() }} to
                         {{ $trashedProducts->lastItem() }} dari {{ $trashedProducts->total() }} entry</p>
@@ -149,28 +148,25 @@
                 @endif
             </div>
             <nav aria-label="Page navigation">
-                {{-- Hanya tampilkan navigasi jika ada lebih dari satu halaman --}}
                 @if ($trashedProducts->hasPages())
                     <ul class="pagination mb-0">
                         {{-- Tombol Previous --}}
                         <li class="page-item {{ $trashedProducts->onFirstPage() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $trashedProducts->previousPageUrl() }}" {{-- URL untuk halaman sebelumnya --}}
-                                aria-label="Previous">
+                            <a class="page-link" href="{{ $trashedProducts->previousPageUrl() }}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
 
                         @for ($i = 1; $i <= $trashedProducts->lastPage(); $i++)
                             <li class="page-item {{ $i == $trashedProducts->currentPage() ? 'active' : '' }}">
-                                <a class="page-link" href="{{ $trashedProducts->url($i) }}">{{ $i }}</a>
-                                {{-- URL untuk halaman ke-i --}}
+                                <a class="page-link" href="{{ $trashedProducts->url($i) }}">{{ $i }}</a>  {{-- URL untuk halaman ke-i --}}
                             </li>
                         @endfor
 
                         {{-- Tombol Next --}}
-                        <li class="page-item {{ $trashedProducts->currentPage() == $trashedProducts->lastPage() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $trashedProducts->nextPageUrl() }}" {{-- URL untuk halaman berikutnya --}}
-                                aria-label="Next">
+                        <li
+                            class="page-item {{ $trashedProducts->currentPage() == $trashedProducts->lastPage() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $trashedProducts->nextPageUrl() }}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
@@ -179,17 +175,14 @@
             </nav>
         </div>
 
-        <!-- Bootstrap JS Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            // Select all checkbox functionality
+            // Select all
             document.getElementById('selectAll').addEventListener('change', function() {
                 const checkboxes = document.querySelectorAll('tbody .form-check-input');
                 checkboxes.forEach(checkbox => {
                     checkbox.checked = this.checked;
                 });
             });
-
-
         </script>
     @endsection

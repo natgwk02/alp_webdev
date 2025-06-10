@@ -17,7 +17,7 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
 
-            /** @var \App\Models\User $user An instance of your User model */
+            /** @var \App\Models\User **/
             $user = Auth::user();
 
             if ($user) {
@@ -70,10 +70,9 @@ class AuthController extends Controller
                 'regex:/@(mail\.com|gmail\.com)$/i'
             ],
             'users_password' => 'required|string|min:8|confirmed',
-            'users_address' => 'required|string|max:255', // Pastikan address tervalidasi
+            'users_address' => 'required|string|max:255',
         ]);
 
-        // Format alamat
         $formattedAddress = $this->formatAddress($validated['users_address']);
 
         User::create([
@@ -81,7 +80,7 @@ class AuthController extends Controller
             'users_email' => $validated['users_email'],
             'users_password' => bcrypt($validated['users_password']),
             'users_address' => $formattedAddress,
-            'users_phone' => $request->input('users_phone'), // Optional
+            'users_phone' => $request->input('users_phone'),
             'status_del' => false,
         ]);
 
@@ -92,11 +91,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();  // Log the user out
-        $request->session()->invalidate();  // Invalidate the session
-        $request->session()->regenerateToken();  // Regenerate CSRF token
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return redirect('/login');  // Redirect to login page
+        return redirect('/login');
     }
 
     private function formatAddress($rawAddress)
@@ -106,7 +105,6 @@ class AuthController extends Controller
         // Ganti "jalan", "jl" di awal jadi "Jl."
         $lowered = preg_replace('/^(jalan|jl)\.?\s+/i', 'Jl. ', $lowered);
 
-        // Capitalize tiap kata
         $formatted = ucwords($lowered);
 
         return $formatted;
@@ -124,7 +122,7 @@ class AuthController extends Controller
             'email' => 'required|email|exists:users,users_email',
         ]);
 
-        $otp = rand(100000, 999999); // Generate 6-digit OTP
+        $otp = rand(100000, 999999); // Generate 6 digit OTP
 
         DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $request->email],
@@ -134,7 +132,6 @@ class AuthController extends Controller
             ]
         );
 
-        // Send email
         Mail::raw("Your Chille Mart password reset OTP is: $otp\nThis code will expire in 10 minutes.", function ($message) use ($request) {
             $message->to($request->email)
                 ->subject('Your OTP Code for Password Reset');
@@ -176,8 +173,6 @@ class AuthController extends Controller
 
         $user->users_password = bcrypt($request->password);
         $user->save();
-
-        // Hapus token dan clear session
         DB::table('password_reset_tokens')->where('email', $email)->delete();
         session()->forget(['otp_verified', 'email_verified']);
 
@@ -185,10 +180,9 @@ class AuthController extends Controller
     }
     public function verifyOtpStep(Request $request)
     {
-        // Gabungkan array otp menjadi string
+        // Gabung array otp menjadi string
         $otpCode = implode('', $request->input('otp'));
 
-        // Validasi
         $request->validate([
             'email' => 'required|email|exists:users,users_email',
             'otp' => ['required', 'array', 'size:6'],
@@ -213,7 +207,7 @@ class AuthController extends Controller
 
         return redirect()->route('password.reset.form');
     }
-    
+
     public function viewAdminDashboard()
     {
         if (!Gate::allows('viewAdminDashboard')) {
