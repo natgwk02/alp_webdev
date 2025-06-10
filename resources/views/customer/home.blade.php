@@ -546,6 +546,7 @@
             flex-direction: column;
             justify-content: space-between;
             flex: 1;
+            min-height: 180px; /* atau sesuaikan */
         }
 
         .product-card img {
