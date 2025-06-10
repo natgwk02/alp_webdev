@@ -8,63 +8,60 @@
         <p class="text-muted">Placed on {{ $order['created_at'] }}</p>
 
         <div class="row mb-4">
-            <div class="col-md-8">
+            <div class="col-12 col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-header">
                         <h5>Order Items</h5>
                     </div>
                     <div class="card-body">
                         @if (!empty($order['items']))
-                            <table class="table align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                        @if (($order['orders_status'] ?? '') === 'Delivered')
-                                            <th>Rate</th>
-                                        @endif
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($order['items'] as $item)
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0">
+                                    <thead>
                                         <tr>
-                                            <td class="d-flex align-items-center gap-3">
-                                                <img src="{{ asset('images/products-img/' . ($item['image_filename'] ?? 'no-image.png')) }}"
-                                                    alt="{{ $item['products_name'] ?? 'Unknown Product' }}"
-                                                    style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
-                                                <span>{{ $item['name'] ?? 'Unknown Product' }}</span>
-                                            </td>
-                                            <td>Rp {{ number_format($item['price'] ?? 0, 0, ',', '.') }}</td>
-                                            <td>{{ $item['quantity'] ?? 0 }}</td>
-                                            <td>Rp
-                                                {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}
-                                            </td>
-                                            <td>
-                                                @if (!empty($item['product_id']) && empty($item['is_rated']) && ($order['orders_status'] ?? '') === 'Delivered')
-                                                    <form method="POST" action="{{ route('ratings.store') }}">
-                                                        @csrf
-                                                        <input type="hidden" name="product_id"
-                                                            value="{{ $item['product_id'] }}">
-                                                        <div class="d-flex">
-                                                            @for ($i = 1; $i <= 5; $i++)
-                                                                <button type="submit" name="rating"
-                                                                    value="{{ $i }}"
-                                                                    class="btn btn-link p-0 border-0">
-                                                                    <i class="bi bi-star"></i>
-                                                                </button>
-                                                            @endfor
-                                                        </div>
-                                                    </form>
-                                                @elseif(!empty($item['is_rated']))
-                                                    <span class="text-muted small">Rated</span>
-                                                @endif
-                                            </td>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-left">Total</th>
+                                            @if (($order['orders_status'] ?? '') === 'Delivered')
+                                                <th>Rate</th>
+                                            @endif
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($order['items'] as $item)
+                                            <tr>
+                                                <td class="d-flex align-items-center gap-3">
+                                                    <img src="{{ asset('images/products-img/' . ($item['image_filename'] ?? 'no-image.png')) }}"
+                                                        alt="{{ $item['products_name'] ?? 'Unknown Product' }}"
+                                                        style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
+                                                    <span>{{ $item['name'] ?? 'Unknown Product' }}</span>
+                                                </td>
+                                                <td>Rp {{ number_format($item['price'] ?? 0, 0, ',', '.') }}</td>
+                                                <td class="text-center">{{ $item['quantity'] ?? 0 }}</td>
+                                                <td>Rp {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') }}</td>
+                                                <td>
+                                                    @if (!empty($item['product_id']) && empty($item['is_rated']) && ($order['orders_status'] ?? '') === 'Delivered')
+                                                        <form method="POST" action="{{ route('ratings.store') }}">
+                                                            @csrf
+                                                            <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
+                                                            <div class="d-flex">
+                                                                @for ($i = 1; $i <= 5; $i++)
+                                                                    <button type="submit" name="rating" value="{{ $i }}" class="btn btn-link p-0 border-0">
+                                                                        <i class="bi bi-star"></i>
+                                                                    </button>
+                                                                @endfor
+                                                            </div>
+                                                        </form>
+                                                    @elseif(!empty($item['is_rated']))
+                                                        <span class="text-muted small">Rated</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         @else
                             <p>No items found in this order.</p>
                         @endif
@@ -72,15 +69,14 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-12 col-md-4 mt-4 mt-md-0">
                 <div class="card shadow-sm">
                     <div class="card-header">
                         <h5>Order Summary</h5>
                     </div>
                     <div class="card-body">
                         <p><strong>Shipping Address:</strong><br>
-                            {{ $order['customer']['first_name'] ?? 'Unknown' }}
-                            {{ $order['customer']['last_name'] ?? '' }}<br>
+                            {{ $order['customer']['first_name'] ?? 'Unknown' }} {{ $order['customer']['last_name'] ?? '' }}<br>
                             {{ $order['customer']['address'] ?? 'Unknown Address' }}<br>
                             {{ $order['customer']['city'] ?? 'Unknown City' }},
                             {{ $order['customer']['zip'] ?? '00000' }}<br>
@@ -139,4 +135,6 @@
                 </div>
             </div>
         </div>
-    @endsection
+    </div>
+
+@endsection
